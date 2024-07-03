@@ -9,6 +9,7 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(WINDOWS_BUILD ${MSVC})
+set(SERVICE_COMPONENTS s3)
 
 if (WINDOWS_BUILD) # Set the location where CMake can find the installed libraries for the AWS SDK.
     message(STATUS "CMAKE_SYSTEM_PREFIX_PATH: ${CMAKE_SYSTEM_PREFIX_PATH}")
@@ -17,8 +18,8 @@ if (WINDOWS_BUILD) # Set the location where CMake can find the installed librari
     list(APPEND CMAKE_PREFIX_PATH ${SYSTEM_MODULE_PATH})
     message(STATUS "SYSTEM_MODULE_PATH: ${SYSTEM_MODULE_PATH}")
 endif ()
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Core Network Sql HttpServer)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Core Network Sql HttpServer)
 # Find the AWS SDK for C++ package.
 find_package(AWSSDK REQUIRED COMPONENTS ${SERVICE_COMPONENTS})
 
@@ -41,7 +42,8 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(QSyncUi
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
-        core.h core.cpp
+        mycore.h mycore.cpp
+        user.h user.cpp
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET QSyncUi APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
@@ -61,9 +63,8 @@ else()
     endif()
 endif()
 
-target_link_libraries(QSyncUi PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
-target_link_libraries(${PROJECT_NAME}
-        ${AWSSDK_LINK_LIBRARIES})
+target_link_libraries(QSyncUi PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Network Qt${QT_VERSION_MAJOR}::Sql Qt${QT_VERSION_MAJOR}::HttpServer ${AWSSDK_LINK_LIBRARIES})
+
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
 # If you are developing for iOS or macOS you should consider setting an
 # explicit, fixed bundle identifier manually though.
