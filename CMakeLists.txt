@@ -41,6 +41,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(QSyncUi
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
+        core.h core.cpp
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET QSyncUi APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
@@ -78,6 +79,7 @@ set_target_properties(QSyncUi PROPERTIES
 )
 
 include(GNUInstallDirs)
+
 install(TARGETS QSyncUi
     BUNDLE DESTINATION .
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}

@@ -2,7 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-
+#include "core.h"
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow;
@@ -18,6 +18,7 @@ public:
     ~MainWindow();
 
 private:
+    Core *core;
     Ui::MainWindow *ui;
 };
 #endif // MAINWINDOW_H
