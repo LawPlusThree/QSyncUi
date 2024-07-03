@@ -11,35 +11,44 @@
 #include <QDebug>
 
 
-class User
-{
+class User : public QObject {
+    Q_OBJECT
+
 private:
-    QString account="ddd";
-    QString token="222";
-    QString hashedPassword="123";
+    QString account;
+    QString token;
+    QString hashedPassword;
+    QNetworkAccessManager *manager;
+    QNetworkReply *reply;
 public:
-    User();
-    User(QString account, QString password) {
+    User(QObject *parent = nullptr) : QObject(parent) {
+        manager = new QNetworkAccessManager(this);
+        connect(manager, &QNetworkAccessManager::finished, this, &User::onFinished);
+    }
+    User(QString account, QString password, QObject *parent = nullptr) : QObject(parent) {
         this->account = account;
         this->hashedPassword = password;
+        manager = new QNetworkAccessManager(this);
+        connect(manager, &QNetworkAccessManager::finished, this, &User::onFinished);
     }
-    QString login() {
+    void login() {
         //https post a requests
-        QNetworkAccessManager manager;
-        QUrl url("http://www.mocklib.com/public/auth/login");
+        QUrl url("https://www.mocklib.com/mock/public/auth/login");
         QNetworkRequest request(url);
         QString data = QString("username=%1&password=%2").arg(this->account).arg(this->hashedPassword);
-        QNetworkReply *reply = manager.get(request);
-        //QNetworkReply *reply = manager.post(request, data.toUtf8());
-        onFinished(reply);
-        return token;
+        //reply = manager->post(request, data.toUtf8());
+        reply = manager->get(request);
     }
-
-    void onFinished(QNetworkReply *reply) {
+    QString getUserHash() {
+        QByteArray hash = QCryptographicHash::hash(account.toUtf8(), QCryptographicHash::Sha1);
+        return hash.toHex(); // 将散列值转换为十六进制字符串并返回
+    }
+signals:
+    void loginCompleted(const QString &token);//登陆完成的信号
+private slots:
+    void onFinished() {
         if (reply->error() == QNetworkReply::NoError) {
             QByteArray responseData = reply->readAll();
-            QString responseString = QString(responseData);
-            qDebug() << responseString;
             QJsonDocument jsonDoc = QJsonDocument::fromJson(responseData);
 
             if (jsonDoc.isObject()) {
@@ -53,6 +62,7 @@ public:
                 if (jsonObject.contains("token")) {
                     qDebug() << "Value for token: " << jsonObject.value("token").toString();
                     this->token = jsonObject.value("token").toString();
+                    emit loginCompleted(token); // 发射信号,ui方建立connect进行接收
                 }
             } else {
                 qDebug() << "Invalid JSON format";
@@ -62,12 +72,6 @@ public:
         }
 
         reply->deleteLater();
-    }
-    //以上是未完成测试代码
-
-    QString getUserHash() {
-        QByteArray hash = QCryptographicHash::hash(account.toUtf8(), QCryptographicHash::Sha1);
-        return hash.toHex(); // 将散列值转换为十六进制字符串并返回
     }
 };
 
