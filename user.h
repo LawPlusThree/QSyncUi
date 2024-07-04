@@ -26,13 +26,13 @@ private:
 public:
     User(QObject *parent = nullptr) : QObject(parent) {
         manager = new QNetworkAccessManager(this);
-        connect(manager, &QNetworkAccessManager::finished, this, &User::onFinished);
+        connect(manager, &QNetworkAccessManager::finished, this, &User::loginonFinished);
     }
     User(QString account, QString password, QObject *parent = nullptr) : QObject(parent) {
         this->account = account;
         this->hashedPassword = password;
         manager = new QNetworkAccessManager(this);
-        connect(manager, &QNetworkAccessManager::finished, this, &User::onFinished);
+        connect(manager, &QNetworkAccessManager::finished, this, &User::loginonFinished);
     }
     void login() {
         //https post a requests
@@ -52,7 +52,7 @@ public:
 signals:
     void loginCompleted(const QString &session);//登陆完成的信号
 private slots:
-    void onFinished() {
+    void loginonFinished() {
         if (reply->error() == QNetworkReply::NoError) {
             QByteArray responseData = reply->readAll();
             QJsonDocument jsonDoc = QJsonDocument::fromJson(responseData);
