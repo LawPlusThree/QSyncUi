@@ -9,6 +9,18 @@ User::User(const QString &account, const QString &password, QObject *parent) : Q
     connect(manager, &QNetworkAccessManager::finished, this, &User::loginFinished);
 }
 
+void User::enroll() {
+    //注册功能
+    QUrl url("https://syncapi.snakekiss.com/***");//注册网址等待编写
+    QNetworkRequest request(url);
+
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
+    request.setHeader(QNetworkRequest::UserAgentHeader, "MyApp/1.0");
+
+    //QString postData = QString("email=%1&password=%2").arg(account, hashedPassword);
+    //reply = manager->post(request, postData.toUtf8());
+}
+
 void User::login() {
     QUrl url("https://syncapi.snakekiss.com/login");
     QNetworkRequest request(url);
@@ -18,6 +30,10 @@ void User::login() {
 
     QString postData = QString("email=%1&password=%2").arg(account, hashedPassword);
     reply = manager->post(request, postData.toUtf8());
+}
+
+void User::forgetPassword(){
+    //找回密码功能
 }
 
 QString User::getUserHash() const {

@@ -2,7 +2,7 @@
 #define MYCORE_H
 
 #include <QObject>
-#include <QHttpServer>
+//#include <QHttpServer>
 #include "user.h"
 #include "awsutils.h"
 class Core : public QObject
@@ -11,7 +11,7 @@ class Core : public QObject
 public:
     explicit Core(QObject *parent = nullptr);
 private:
-    QHttpServer server;
+    //QHttpServer server;
     User* currentUser;
     AWSUtils* awsUtils;
 signals:
