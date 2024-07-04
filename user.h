@@ -48,6 +48,10 @@ public:
         return hash.toHex();
     }
 
+    QString getSession(){
+        return session;
+    }
+
 signals:
     void loginCompleted(const QString& session);//登陆成功的信号，发送获取到的cookie
 

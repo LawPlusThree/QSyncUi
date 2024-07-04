@@ -3,14 +3,13 @@
 
 
 
-
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
     //测试用户
-    User test("newuser@example.com","123456");
-    test.login();
+    User testuser("newuser@example.com","123456");
+    testuser.login();
 
     MainWindow w;
     w.show();
