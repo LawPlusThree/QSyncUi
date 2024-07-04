@@ -59,14 +59,21 @@ else()
 # Define properties for Android with Qt 5 after find_package() calls as:
 #    set(ANDROID_PACKAGE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/android")
     else()
+        qt_add_resources(PROJECT_SOURCES
+        src/ElaWidgetTools.qrc
+    )
         add_executable(QSyncUi
             ${PROJECT_SOURCES}
+            src/ElaWidgetTools.qrc
         )
     endif()
 endif()
+add_subdirectory(thirdParty/ElaWidgetTools)
+include_directories(
+    thirdParty/ElaWidgetTools/include
+)
 
-target_link_libraries(QSyncUi PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Network Qt${QT_VERSION_MAJOR}::Sql ${AWSSDK_LINK_LIBRARIES})
-
+target_link_libraries(QSyncUi PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Network Qt${QT_VERSION_MAJOR}::Sql ${AWSSDK_LINK_LIBRARIES} elawidgettools)
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
 # If you are developing for iOS or macOS you should consider setting an
 # explicit, fixed bundle identifier manually though.
