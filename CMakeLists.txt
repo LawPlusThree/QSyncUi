@@ -18,8 +18,8 @@ if (WINDOWS_BUILD) # Set the location where CMake can find the installed librari
     list(APPEND CMAKE_PREFIX_PATH ${SYSTEM_MODULE_PATH})
     message(STATUS "SYSTEM_MODULE_PATH: ${SYSTEM_MODULE_PATH}")
 endif ()
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Core Network Sql HttpServer)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Core Network Sql HttpServer)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Core Network Sql)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Core Network Sql)
 # Find the AWS SDK for C++ package.
 find_package(AWSSDK REQUIRED COMPONENTS ${SERVICE_COMPONENTS})
 
@@ -65,7 +65,7 @@ else()
     endif()
 endif()
 
-target_link_libraries(QSyncUi PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Network Qt${QT_VERSION_MAJOR}::Sql Qt${QT_VERSION_MAJOR}::HttpServer ${AWSSDK_LINK_LIBRARIES})
+target_link_libraries(QSyncUi PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Network Qt${QT_VERSION_MAJOR}::Sql ${AWSSDK_LINK_LIBRARIES})
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
 # If you are developing for iOS or macOS you should consider setting an
