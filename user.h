@@ -44,7 +44,6 @@ public:
         //请求data
         QString data = QString("email=%1&password=%2").arg(this->account).arg(this->hashedPassword);
         reply = manager->post(request, data.toUtf8());
-        //reply = manager->get(request);
     }
     QString getUserHash() {
         QByteArray hash = QCryptographicHash::hash(account.toUtf8(), QCryptographicHash::Sha1);
@@ -77,7 +76,6 @@ private slots:
         }
 
         // 通过 QNetworkAccessManager 获取 QNetworkCookieJar 并获取 cookies
-        QNetworkAccessManager *manager = dynamic_cast<QNetworkAccessManager*>(reply->parent());
         if (manager) {
             QNetworkCookieJar *cookieJar = manager->cookieJar();
             QList<QNetworkCookie> cookies = cookieJar->cookiesForUrl(reply->url());
