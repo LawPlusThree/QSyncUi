@@ -16,17 +16,17 @@ class User : public QObject {
     Q_OBJECT
 
 private:
-    QString account;
+    QString username;//username
+    QString account;//email
     QString data;
-    QString hashedPassword;
+    QString hashedPassword;//password
     QNetworkAccessManager* manager;
     QNetworkReply* reply;
     QString session;
 
 public:
     explicit User(QObject* parent = nullptr);
-
-    User(const QString& account, const QString& password, QObject* parent = nullptr);
+    User(const QString& username,const QString& account, const QString& password, QObject* parent = nullptr);
 
     void enroll();//执行post请求，实现注册功能
     void login();//执行post请求，实现登录功能
@@ -37,15 +37,17 @@ public:
     QString getSession();//返回用户session
 
 signals:
+    void enrollCompleted(const QString& session);//注册成功的信号，发送获取到的cookie中session
     void loginCompleted(const QString& session);//登陆成功的信号，发送获取到的cookie中session
 
 private slots:
+    void enrollFinished();//注册请求返回数据处理
     void loginFinished();//登录请求返回数据处理
 
 private:
     void processJsonObject(const QJsonObject& jsonObject);//处理json
 
-    void processCookies();//处理cookie
+    bool processCookies();//处理cookie
 };
 
 #endif // USER_H

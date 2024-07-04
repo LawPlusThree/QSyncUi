@@ -1,24 +1,20 @@
 #include "user.h"
 
 
-User::User(QObject *parent) : QObject(parent), manager(new QNetworkAccessManager(this)) {
-    connect(manager, &QNetworkAccessManager::finished, this, &User::loginFinished);
-}
+User::User(QObject *parent) : QObject(parent), manager(new QNetworkAccessManager(this)) {}
 
-User::User(const QString &account, const QString &password, QObject *parent) : QObject(parent), account(account), hashedPassword(password), manager(new QNetworkAccessManager(this)) {
-    connect(manager, &QNetworkAccessManager::finished, this, &User::loginFinished);
-}
+User::User(const QString& username,const QString &account, const QString &password, QObject *parent) : QObject(parent),username(username),account(account), hashedPassword(password), manager(new QNetworkAccessManager(this)) {}
 
 void User::enroll() {
-    //注册功能
-    QUrl url("https://syncapi.snakekiss.com/***");//注册网址等待编写
+    QUrl url("https://syncapi.snakekiss.com/register");
     QNetworkRequest request(url);
 
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
-    request.setHeader(QNetworkRequest::UserAgentHeader, "MyApp/1.0");
 
-    //QString postData = QString("email=%1&password=%2").arg(account, hashedPassword);
-    //reply = manager->post(request, postData.toUtf8());
+    QString postData = QString("username=%1&email=%2&password=%3").arg(username).arg(account).arg(hashedPassword);
+    reply = manager->post(request, postData.toUtf8());
+
+    connect(reply, &QNetworkReply::finished, this, &User::enrollFinished);
 }
 
 void User::login() {
@@ -26,10 +22,11 @@ void User::login() {
     QNetworkRequest request(url);
 
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
-    request.setHeader(QNetworkRequest::UserAgentHeader, "MyApp/1.0");
 
-    QString postData = QString("email=%1&password=%2").arg(account, hashedPassword);
+    QString postData = QString("email=%1&password=%2").arg(account).arg(hashedPassword);
     reply = manager->post(request, postData.toUtf8());
+
+    connect(reply, &QNetworkReply::finished, this, &User::loginFinished);
 }
 
 void User::forgetPassword(){
@@ -43,6 +40,30 @@ QString User::getUserHash() const {
 
 QString User::getSession(){
     return session;
+}
+
+void User::enrollFinished()
+{
+    if (reply->error() == QNetworkReply::NoError) {
+        QByteArray responseData = reply->readAll();
+        QJsonDocument jsonDoc = QJsonDocument::fromJson(responseData);
+
+        if (jsonDoc.isObject()) {
+            QJsonObject jsonObject = jsonDoc.object();
+            processJsonObject(jsonObject);
+        } else {
+            qDebug() << "Invalid JSON format";
+        }
+    } else {
+        qDebug() << "Error:" << reply->errorString();
+    }
+    if(processCookies()){
+        emit enrollCompleted(session);
+        qDebug() << "enrollfinished:"<<session;
+    }
+
+    reply->deleteLater();
+    disconnect(reply, &QNetworkReply::finished, this, &User::enrollFinished);
 }
 
 void User::loginFinished() {
@@ -59,14 +80,18 @@ void User::loginFinished() {
     } else {
         qDebug() << "Error:" << reply->errorString();
     }
+    if(processCookies()){
+        emit loginCompleted(session);
+        qDebug() << "loginfinished:"<<session;
+    }
 
-    processCookies();
     reply->deleteLater();
+    disconnect(reply, &QNetworkReply::finished, this, &User::loginFinished);
 }
 
 void User::processJsonObject(const QJsonObject &jsonObject) {
     if (jsonObject.contains("code")) {
-        qDebug() << "Value for code:" << jsonObject.value("code").toString();
+        qDebug() << "Value for code:" << jsonObject.value("code").toInt();
     }
     if (jsonObject.contains("message")) {
         qDebug() << "Value for message:" << jsonObject.value("message").toString();
@@ -76,7 +101,7 @@ void User::processJsonObject(const QJsonObject &jsonObject) {
     }
 }
 
-void User::processCookies() {
+bool User::processCookies() {
     if (manager) {
         QNetworkCookieJar* cookieJar = manager->cookieJar();
         QList<QNetworkCookie> cookies = cookieJar->cookiesForUrl(reply->url());
@@ -86,7 +111,7 @@ void User::processCookies() {
                 qDebug() << "Cookie Name:" << cookie.name();
                 qDebug() << "Cookie Value:" << cookie.value();
                 session = cookie.value();
-                emit loginCompleted(session);
+                return true;
             }
         } else {
             qDebug() << "No cookies received.";
@@ -94,4 +119,5 @@ void User::processCookies() {
     } else {
         qDebug() << "Failed to get QNetworkAccessManager.";
     }
+    return false;
 }
