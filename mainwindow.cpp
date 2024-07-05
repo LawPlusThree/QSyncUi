@@ -56,9 +56,9 @@ MainWindow::MainWindow(QWidget *parent)
     QString testKey_2;
     addPageNode("HOME", _homePage, ElaIconType::House);
     addExpanderNode("同步功能",testKey_2,ElaIconType::House);
-    addPageNode("正在同步",new QWidget(this),testKey_2,ElaIconType::Numbe1);
-    addPageNode("历史同步",new QWidget(this),testKey_2,ElaIconType::Numbe2);
-    addPageNode("同步文件夹管理",new QWidget(this),testKey_2,ElaIconType::Numbe3);
+    addPageNode("正在同步",new QWidget(this),testKey_2,ElaIconType::Cloud);
+    addPageNode("历史同步",new QWidget(this),testKey_2,ElaIconType::CheckToSlot);
+    addPageNode("同步文件夹管理",new QWidget(this),testKey_2,ElaIconType::FolderClosed);
 
 
     //下拉菜单
