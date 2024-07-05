@@ -62,7 +62,8 @@ QList<SyncTask> SyncTaskManager::getTasks() {
 void SyncTaskManager::initializeDatabase(QString name) {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
     //存到userData文件夹
-    db.setDatabaseName(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/"+name+"syncTasks.db");
+    qDebug() << QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+    db.setDatabaseName(name+"syncTasks.db");
     if (!db.open()) {
         qDebug() << "Database open failed:" << db.lastError();
         return;
