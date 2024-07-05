@@ -3,6 +3,7 @@
 #include "ElaApplication.h"
 #include "synctask.h"
 #include "mainwindow.h"
+#include "synccore.h"
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
@@ -12,7 +13,9 @@ int main(int argc, char *argv[])
     User loginuser("newuser@example.com","123456");
     loginuser.login();
     SyncTaskManager stm(loginuser);
-    SyncTask mytask(1,"/home/","/home/",1);
+    SyncTask mytask("/home/","/home/",1);
+    SyncCore sc(&a);
+    sc.addTask(&mytask);
     //stm.addTask(mytask);
     qDebug()<<stm.queryTask(mytask);
     ElaApplication::getInstance()->init();

@@ -26,7 +26,7 @@ private:
     QDateTime lastSyncTime;
 
 public:
-    SyncTask(int id, QString localPath, QString remotePath, int syncStatus);
+    SyncTask(QString localPath, QString remotePath, int syncStatus, int id=-1);
     friend class SyncTaskManager;
     friend class SyncCore;
 };
