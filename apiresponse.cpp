@@ -1,7 +1,7 @@
 #include "Apiresponse.h"
 
-ApiResponse* ApiResponse::processJson(const QByteArray &responseData)
-{
+
+ApiResponse::ApiResponse(const QByteArray &responseData){
     QJsonDocument jsonDoc = QJsonDocument::fromJson(responseData);
     if (jsonDoc.isObject()) {
         QJsonObject jsonObject = jsonDoc.object();
@@ -9,7 +9,13 @@ ApiResponse* ApiResponse::processJson(const QByteArray &responseData)
     } else {
         qDebug() << "Invalid JSON format";
     }
-    return this;
+}
+
+bool ApiResponse::isSuccess()
+{
+    if(code==200||code==201)
+        return true;
+    else return false;
 }
 
 void ApiResponse::processJsonObject(const QJsonObject &jsonObject)

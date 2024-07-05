@@ -35,13 +35,21 @@ void LoginWindow::on_loadBtn_clicked()
     {
         QMessageBox::information(this, "错误","请输入密码！");
     }
-    else if(ui->account->text()!=ui->password->text())
-    {
-        QMessageBox::information(this, "错误","账号或密码错误！");
-    }
+    //else if(ui->account->text()!=ui->password->text())
+    //{
+    //    QMessageBox::information(this, "错误","账号或密码错误！");
+    //}
     else
     {
-        this->close();
+        //测试用户
+        //User loginuser("newuser@example.com","123456");
+        User loginuser(ui->account->text(),ui->password->text());
+        if(loginuser.login()){
+            QMessageBox::information(this, "成功","登录成功");
+            this->close();
+        }
+        else
+            QMessageBox::critical(this, "失败","登录失败");
         //mainforms->show();
     }
 }

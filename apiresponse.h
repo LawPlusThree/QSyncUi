@@ -11,10 +11,10 @@
 class ApiResponse
 {
 public:
-    ApiResponse(QObject *parent = nullptr){};
+    ApiResponse(int codex,QString messagex,
+                QJsonObject datax):code(codex),message(messagex),data(datax){};
+    ApiResponse(const QByteArray &responseData);
 
-    ApiResponse* processJson(const QByteArray &responseData); //处理json
-    void processJsonObject(const QJsonObject &jsonObject); //处理json内容
     int getCode(){
         return code;
     }
@@ -24,8 +24,10 @@ public:
     QJsonObject getData(){
         return data;
     }
+    bool isSuccess();
 
 private:
+    void processJsonObject(const QJsonObject &jsonObject); //处理json内容
     int code;
     QString message;
     QJsonObject data;
