@@ -47,9 +47,14 @@ jobs:
                     #set DCMAKE_PREFIX_PATH to environment variable %QTDIR%
                     cmake -B build -S . -G "Visual Studio 17 2022" -DCMAKE_PREFIX_PATH=$env:QTDIR  -DCMAKE_BUILD_TYPE=Debug
                     cmake --build build --config Debug --parallel 18
+                    mkdir output
+                    #copy all .exe, .dll, .pdb files to output directory
+                    xcopy /s /y build\*.exe output
+                    xcopy /s /y build\*.dll output
+                    xcopy /s /y build\*.pdb output
           
             - name: Upload artifacts
               uses: actions/upload-artifact@v2
               with:
-                    path: build
+                    path: output
                     name: Debug

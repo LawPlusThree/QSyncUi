@@ -80,6 +80,7 @@ endif()
 add_subdirectory(thirdParty/ElaWidgetTools)
 include_directories(
     thirdParty/ElaWidgetTools/include
+    thirdParty/wtr
 )
 
 target_link_libraries(QSyncUi PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Network Qt${QT_VERSION_MAJOR}::Sql ${AWSSDK_LINK_LIBRARIES} elawidgettools)

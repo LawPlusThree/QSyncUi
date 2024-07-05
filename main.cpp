@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
     User loginuser("newuser@example.com","123456");
     loginuser.login();
     SyncTaskManager stm(loginuser);
-    SyncTask mytask("/home/","/home/",1);
+    SyncTask mytask("D:/","/home/",1);
     SyncCore sc(&a);
     sc.addTask(&mytask);
     //stm.addTask(mytask);
