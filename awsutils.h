@@ -3,12 +3,12 @@
 
 #include <QObject>
 #include <aws/core/Aws.h>
-#include <aws/s3/S3Client.h>
 #include <aws/core/auth/AWSCredentialsProviderChain.h>
+#include <aws/s3/S3Client.h>
 using namespace Aws;
 using namespace Aws::Auth;
 
-class AWSUtils: public QObject
+class AWSUtils : public QObject
 {
     Q_OBJECT
 public:

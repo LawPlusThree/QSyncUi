@@ -1,22 +1,31 @@
-#include "mainwindow.h"
-#include "./ui_mainwindow.h"
+#include "loginwindow.h"
+#include "./ui_loginwindow.h"
 #include<QMessageBox>
 
-MainWindow::MainWindow(QWidget *parent)
+LoginWindow::LoginWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
     ui->account->setPlaceholderText("账号");
     ui->password->setPlaceholderText("密码");
+
+    connect(resetp,&reset::goback,this,[=](){
+        resetp->close();
+        this->show();
+    });
+    connect(sign,&signin::goback,this,[=](){
+        sign->close();
+        this->show();
+    });
 }
 
-MainWindow::~MainWindow()
+LoginWindow::~LoginWindow()
 {
     delete ui;
 }
 
-void MainWindow::on_loadBtn_clicked()
+void LoginWindow::on_loadBtn_clicked()
 {
     if(ui->account->text()=="")
     {
@@ -35,5 +44,18 @@ void MainWindow::on_loadBtn_clicked()
         this->close();
         //mainforms->show();
     }
+}
+
+void LoginWindow::on_resetBtn_clicked()
+{
+    this->hide();
+    resetp->show();
+}
+
+
+void LoginWindow::on_signinBtn_clicked()
+{
+    this->hide();
+    sign->show();
 }
 

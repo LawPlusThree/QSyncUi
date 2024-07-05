@@ -1,6 +1,8 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef LOGINWINDOW_H
+#define LOGINWINDOW_H
 
+#include"reset.h"
+#include"signin.h"
 #include <QMainWindow>
 #include "mycore.h"
 QT_BEGIN_NAMESPACE
@@ -9,19 +11,26 @@ class MainWindow;
 }
 QT_END_NAMESPACE
 
-class MainWindow : public QMainWindow
+class LoginWindow : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
+    LoginWindow(QWidget *parent = nullptr);
+    ~LoginWindow();
+
+    reset*resetp=new reset();
+    signin*sign=new signin();
 
 private slots:
     void on_loadBtn_clicked();
+
+    void on_resetBtn_clicked();
+
+    void on_signinBtn_clicked();
 
 private:
     Core *core;
     Ui::MainWindow *ui;
 };
-#endif // MAINWINDOW_H
+#endif // LOGINWINDOW_H

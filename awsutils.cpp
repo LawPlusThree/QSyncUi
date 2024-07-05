@@ -1,5 +1,3 @@
 #include "awsutils.h"
 
-AWSUtils::AWSUtils() {
-
-}
+AWSUtils::AWSUtils() {}
