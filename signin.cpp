@@ -13,6 +13,11 @@ signin::~signin()
     delete ui;
 }
 
+void signin::closeEvent(QCloseEvent *event)
+{
+
+}
+
 void signin::on_signinBtn_clicked()
 {
 
