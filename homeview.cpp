@@ -137,7 +137,7 @@ HomePage::HomePage(QWidget* parent)
     QKeySequence key = QKeySequence(Qt::CTRL | Qt::Key_S);
     QAction* action = _homeMenu->addAction(ElaIconType::BoxCheck, "排序方式", QKeySequence::Save);
 
-    _homeMenu->addAction(ElaIconType::      , "刷新");
+    _homeMenu->addAction(ElaIconType::ArrowRotateLeft, "刷新");
     _homeMenu->addAction(ElaIconType::ArrowRotateLeft, "撤销");
     _homeMenu->addAction(ElaIconType::Copy, "复制");
     _homeMenu->addAction(ElaIconType::MagnifyingGlassPlus, "显示设置");
