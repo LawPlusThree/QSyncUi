@@ -55,7 +55,7 @@ QList<SyncTask> SyncTaskManager::getTasks() {
         QString localPath = query.value("localPath").toString();
         QString remotePath = query.value("remotePath").toString();
         int syncStatus = query.value("syncStatus").toInt();
-        SyncTask task(id,localPath, remotePath, syncStatus);
+        SyncTask task(localPath, remotePath, syncStatus, id);
         tasks.append(task);
     }
     return tasks;
@@ -64,7 +64,7 @@ QList<SyncTask> SyncTaskManager::getTasks() {
 void SyncTaskManager::initializeDatabase(QString name) {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
     //存到userData文件夹
-    qDebug() << QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+
     db.setDatabaseName(name+"syncTasks.db");
     if (!db.open()) {
         qDebug() << "Database open failed:" << db.lastError();
@@ -77,10 +77,13 @@ void SyncTaskManager::initializeDatabase(QString name) {
     }
 }
 
-SyncTask::SyncTask(int id,QString localPath, QString remotePath, int syncStatus){
-    this->id=id;
+// 修改后的SyncTask构造函数
+SyncTask::SyncTask(QString localPath, QString remotePath, int syncStatus, int id /* = -1 */) {
+    this->id = id; // 如果id是-1，表示这是一个新的任务，id将由数据库自动生成
     QDir dir(localPath);
-    this->localPath=dir;
-    this->remotePath=remotePath;
-    this->syncStatus=syncStatus;
+    this->localPath = dir;
+    this->remotePath = remotePath;
+    this->syncStatus = syncStatus;
 }
+
+// addTask方法不变，因为它不需要知道id，数据库会自动处理
