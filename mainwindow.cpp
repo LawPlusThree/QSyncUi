@@ -122,24 +122,5 @@ void MainWindow::onCloseButtonClicked()
     dialag->show();
 }
 
-void MainWindow::on_loadBtn_clicked()
-{
-    if(ui->account->text()=="")
-    {
-        QMessageBox::information(this, "错误","请输入账号！");
-    }
-    else if(ui->password->text()=="")
-    {
-        QMessageBox::information(this, "错误","请输入密码！");
-    }
-    else if(ui->account->text()!=ui->password->text())
-    {
-        QMessageBox::information(this, "错误","账号或密码错误！");
-    }
-    else
-    {
-        this->close();
-        //mainforms->show();
-    }
-}
+
 
