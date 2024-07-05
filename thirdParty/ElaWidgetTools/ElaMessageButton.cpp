@@ -14,9 +14,8 @@ Q_PROPERTY_CREATE_Q_CPP(ElaMessageButton, int, DisplayMsec);
 Q_PROPERTY_CREATE_Q_CPP(ElaMessageButton, ElaMessageBarType::MessageMode, MessageMode);
 Q_PROPERTY_CREATE_Q_CPP(ElaMessageButton, ElaMessageBarType::PositionPolicy, PositionPolicy);
 
-ElaMessageButton::ElaMessageButton(QWidget *parent)
-    : QPushButton(parent)
-    , d_ptr(new ElaMessageButtonPrivate())
+ElaMessageButton::ElaMessageButton(QWidget* parent)
+    : QPushButton(parent), d_ptr(new ElaMessageButtonPrivate())
 {
     Q_D(ElaMessageButton);
     d->q_ptr = this;
@@ -33,51 +32,35 @@ ElaMessageButton::ElaMessageButton(QWidget *parent)
     d->_pMessageMode = ElaMessageBarType::Success;
     d->_pPositionPolicy = ElaMessageBarType::TopRight;
     d->_themeMode = ElaApplication::getInstance()->getThemeMode();
-    connect(ElaApplication::getInstance(),
-            &ElaApplication::themeModeChanged,
-            d,
-            &ElaMessageButtonPrivate::onThemeChanged);
+    connect(ElaApplication::getInstance(), &ElaApplication::themeModeChanged, d, &ElaMessageButtonPrivate::onThemeChanged);
     connect(this, &ElaMessageButton::clicked, this, [=]() {
-        switch (d->_pMessageMode) {
-        case ElaMessageBarType::Success: {
-            ElaMessageBar::success(d->_pPositionPolicy,
-                                   d->_pBarTitle,
-                                   d->_pBarText,
-                                   d->_pDisplayMsec,
-                                   window());
+        switch(d->_pMessageMode)
+        {
+        case ElaMessageBarType::Success:
+        {
+            ElaMessageBar::success(d->_pPositionPolicy,d->_pBarTitle,d->_pBarText,d->_pDisplayMsec,window());
             break;
         }
-        case ElaMessageBarType::Warning: {
-            ElaMessageBar::warning(d->_pPositionPolicy,
-                                   d->_pBarTitle,
-                                   d->_pBarText,
-                                   d->_pDisplayMsec,
-                                   window());
+        case ElaMessageBarType::Warning:
+        {
+            ElaMessageBar::warning(d->_pPositionPolicy,d->_pBarTitle,d->_pBarText,d->_pDisplayMsec,window());
             break;
         }
-        case ElaMessageBarType::Information: {
-            ElaMessageBar::information(d->_pPositionPolicy,
-                                       d->_pBarTitle,
-                                       d->_pBarText,
-                                       d->_pDisplayMsec,
-                                       window());
+        case ElaMessageBarType::Information:
+        {
+            ElaMessageBar::information(d->_pPositionPolicy,d->_pBarTitle,d->_pBarText,d->_pDisplayMsec,window());
             break;
         }
-        case ElaMessageBarType::Error: {
-            ElaMessageBar::error(d->_pPositionPolicy,
-                                 d->_pBarTitle,
-                                 d->_pBarText,
-                                 d->_pDisplayMsec,
-                                 window());
+        case ElaMessageBarType::Error:
+        {
+            ElaMessageBar::error(d->_pPositionPolicy,d->_pBarTitle,d->_pBarText,d->_pDisplayMsec,window());
             break;
         }
-        }
-    });
+        } });
 }
 
-ElaMessageButton::ElaMessageButton(QString text, QWidget *parent)
-    : QPushButton(text, parent)
-    , d_ptr(new ElaMessageButtonPrivate())
+ElaMessageButton::ElaMessageButton(QString text, QWidget* parent)
+    : QPushButton(text, parent), d_ptr(new ElaMessageButtonPrivate())
 {
     Q_D(ElaMessageButton);
     d->q_ptr = this;
@@ -93,51 +76,49 @@ ElaMessageButton::ElaMessageButton(QString text, QWidget *parent)
     d->_pMessageMode = ElaMessageBarType::Success;
     d->_pPositionPolicy = ElaMessageBarType::TopRight;
     d->_themeMode = ElaApplication::getInstance()->getThemeMode();
-    connect(ElaApplication::getInstance(),
-            &ElaApplication::themeModeChanged,
-            d,
-            &ElaMessageButtonPrivate::onThemeChanged);
+    connect(ElaApplication::getInstance(), &ElaApplication::themeModeChanged, d, &ElaMessageButtonPrivate::onThemeChanged);
     connect(this, &ElaMessageButton::clicked, this, [=]() {
-        switch (d->_pMessageMode) {
-        case ElaMessageBarType::Success: {
-            ElaMessageBar::success(d->_pPositionPolicy,
-                                   d->_pBarTitle,
-                                   d->_pBarText,
-                                   d->_pDisplayMsec);
-            break;
-        }
-        case ElaMessageBarType::Warning: {
-            ElaMessageBar::warning(d->_pPositionPolicy,
-                                   d->_pBarTitle,
-                                   d->_pBarText,
-                                   d->_pDisplayMsec);
-            break;
-        }
-        case ElaMessageBarType::Information: {
-            ElaMessageBar::information(d->_pPositionPolicy,
-                                       d->_pBarTitle,
-                                       d->_pBarText,
-                                       d->_pDisplayMsec);
-            break;
-        }
-        case ElaMessageBarType::Error: {
-            ElaMessageBar::error(d->_pPositionPolicy, d->_pBarTitle, d->_pBarText, d->_pDisplayMsec);
-            break;
-        }
-        }
-    });
+                switch(d->_pMessageMode)
+                {
+                case ElaMessageBarType::Success:
+                {
+                    ElaMessageBar::success(d->_pPositionPolicy,d->_pBarTitle,d->_pBarText,d->_pDisplayMsec);
+                    break;
+                }
+                case ElaMessageBarType::Warning:
+                {
+                    ElaMessageBar::warning(d->_pPositionPolicy,d->_pBarTitle,d->_pBarText,d->_pDisplayMsec);
+                    break;
+                }
+                case ElaMessageBarType::Information:
+                {
+                    ElaMessageBar::information(d->_pPositionPolicy,d->_pBarTitle,d->_pBarText,d->_pDisplayMsec);
+                    break;
+                }
+                case ElaMessageBarType::Error:
+                {
+                    ElaMessageBar::error(d->_pPositionPolicy,d->_pBarTitle,d->_pBarText,d->_pDisplayMsec);
+                    break;
+                }
+                } });
 }
 
-ElaMessageButton::~ElaMessageButton() {}
+ElaMessageButton::~ElaMessageButton()
+{
+}
 
-void ElaMessageButton::mousePressEvent(QMouseEvent *event)
+void ElaMessageButton::mousePressEvent(QMouseEvent* event)
 {
     Q_D(ElaMessageButton);
-    if (event->button() == Qt::LeftButton) {
+    if (event->button() == Qt::LeftButton)
+    {
         QPalette palette;
-        if (d->_themeMode == ElaApplicationType::Light) {
+        if (d->_themeMode == ElaApplicationType::Light)
+        {
             palette.setColor(QPalette::ButtonText, QColor(0x64, 0x66, 0x73));
-        } else {
+        }
+        else
+        {
             palette.setColor(QPalette::ButtonText, QColor(0xA1, 0xA2, 0xA2));
         }
         setPalette(palette);
@@ -145,14 +126,18 @@ void ElaMessageButton::mousePressEvent(QMouseEvent *event)
     QPushButton::mousePressEvent(event);
 }
 
-void ElaMessageButton::mouseReleaseEvent(QMouseEvent *event)
+void ElaMessageButton::mouseReleaseEvent(QMouseEvent* event)
 {
     Q_D(ElaMessageButton);
-    if (event->button() == Qt::LeftButton) {
+    if (event->button() == Qt::LeftButton)
+    {
         QPalette palette;
-        if (d->_themeMode == ElaApplicationType::Light) {
+        if (d->_themeMode == ElaApplicationType::Light)
+        {
             palette.setColor(QPalette::ButtonText, Qt::black);
-        } else {
+        }
+        else
+        {
             palette.setColor(QPalette::ButtonText, QColor(0xFE, 0xFE, 0xFE));
         }
         setPalette(palette);
@@ -160,28 +145,21 @@ void ElaMessageButton::mouseReleaseEvent(QMouseEvent *event)
     QPushButton::mouseReleaseEvent(event);
 }
 
-void ElaMessageButton::paintEvent(QPaintEvent *event)
+void ElaMessageButton::paintEvent(QPaintEvent* event)
 {
     Q_D(ElaMessageButton);
     QPainter painter(this);
-    painter.setRenderHints(QPainter::SmoothPixmapTransform | QPainter::Antialiasing
-                           | QPainter::TextAntialiasing);
+    painter.setRenderHints(QPainter::SmoothPixmapTransform | QPainter::Antialiasing | QPainter::TextAntialiasing);
     // 高性能阴影
     painter.save();
     QPainterPath path;
     path.setFillRule(Qt::WindingFill);
-    QColor color = d->_themeMode == ElaApplicationType::Light
-                       ? ElaApplication::getInstance()->getLightShadowEffectColor()
-                       : ElaApplication::getInstance()->getDarkShadowEffectColor();
-    for (int i = 0; i < d->_shadowBorderWidth; i++) {
+    QColor color = d->_themeMode == ElaApplicationType::Light ? ElaApplication::getInstance()->getLightShadowEffectColor() : ElaApplication::getInstance()->getDarkShadowEffectColor();
+    for (int i = 0; i < d->_shadowBorderWidth; i++)
+    {
         QPainterPath path;
         path.setFillRule(Qt::WindingFill);
-        path.addRoundedRect(d->_shadowBorderWidth - i,
-                            d->_shadowBorderWidth - i,
-                            this->width() - (d->_shadowBorderWidth - i) * 2,
-                            this->height() - (d->_shadowBorderWidth - i) * 2,
-                            d->_pBorderRadius + i,
-                            d->_pBorderRadius + i);
+        path.addRoundedRect(d->_shadowBorderWidth - i, d->_shadowBorderWidth - i, this->width() - (d->_shadowBorderWidth - i) * 2, this->height() - (d->_shadowBorderWidth - i) * 2, d->_pBorderRadius + i, d->_pBorderRadius + i);
         int alpha = 5 * (d->_shadowBorderWidth - i + 1);
         color.setAlpha(alpha > 255 ? 255 : alpha);
         painter.setPen(color);
@@ -191,14 +169,14 @@ void ElaMessageButton::paintEvent(QPaintEvent *event)
 
     // 背景绘制
     painter.save();
-    QRect foregroundRect(d->_penBorderWidth + d->_shadowBorderWidth,
-                         d->_penBorderWidth + d->_shadowBorderWidth,
-                         width() - 2 * (d->_penBorderWidth + d->_shadowBorderWidth),
-                         height() - 2 * (d->_penBorderWidth + d->_shadowBorderWidth));
-    if (d->_themeMode == ElaApplicationType::Light) {
+    QRect foregroundRect(d->_penBorderWidth + d->_shadowBorderWidth, d->_penBorderWidth + d->_shadowBorderWidth, width() - 2 * (d->_penBorderWidth + d->_shadowBorderWidth), height() - 2 * (d->_penBorderWidth + d->_shadowBorderWidth));
+    if (d->_themeMode == ElaApplicationType::Light)
+    {
         painter.setPen(QPen(QColor(0xDF, 0xDF, 0xDF), d->_penBorderWidth));
         painter.setBrush((underMouse() ? QColor(0xF6, 0xF6, 0xF6) : QColor(0xFD, 0xFD, 0xFD)));
-    } else {
+    }
+    else
+    {
         painter.setPen(QPen(QColor(0x50, 0x50, 0x50), d->_penBorderWidth));
         painter.setBrush((underMouse() ? QColor(0x44, 0x44, 0x44) : QColor(0x3E, 0x3E, 0x3E)));
     }

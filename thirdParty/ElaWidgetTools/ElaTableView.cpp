@@ -4,12 +4,13 @@
 
 #include "DeveloperComponents/ElaTableViewStyle.h"
 #include "ElaScrollBar.h"
-ElaTableView::ElaTableView(QWidget *parent)
+ElaTableView::ElaTableView(QWidget* parent)
     : QTableView(parent)
 {
     setMouseTracking(true);
-    setStyleSheet("QTableView{background-color: transparent;border:0px;}"
-                  "QTableView::item{border:none;}");
+    setStyleSheet(
+        "QTableView{background-color: transparent;border:0px;}"
+        "QTableView::item{border:none;}");
     setShowGrid(false);
     setVerticalScrollBar(new ElaScrollBar(this));
     setHorizontalScrollBar(new ElaScrollBar(this));
@@ -27,4 +28,6 @@ ElaTableView::ElaTableView(QWidget *parent)
     setStyle(new ElaTableViewStyle(style()));
 }
 
-ElaTableView::~ElaTableView() {}
+ElaTableView::~ElaTableView()
+{
+}

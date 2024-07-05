@@ -9,7 +9,7 @@
 #include "DeveloperComponents/ElaBreadcrumbBarDelegate.h"
 #include "DeveloperComponents/ElaBreadcrumbBarModel.h"
 #include "ElaListView.h"
-ElaBreadcrumbBar::ElaBreadcrumbBar(QWidget *parent)
+ElaBreadcrumbBar::ElaBreadcrumbBar(QWidget* parent)
     : QWidget{parent}
 {
     setFixedHeight(37);
@@ -26,15 +26,12 @@ ElaBreadcrumbBar::ElaBreadcrumbBar(QWidget *parent)
     _listView->setModel(_listModel);
     _listDelegate = new ElaBreadcrumbBarDelegate(this);
     _listView->setItemDelegate(_listDelegate);
-    connect(_listView, &QListView::clicked, this, [=](const QModelIndex &index) {
-        if (_listModel->getBreadcrumbListCount() != 1
-            && index.row() != _listModel->getBreadcrumbListCount() * 2 - 2
-            && index.data(Qt::DisplayRole).toString() != ">") {
-            Q_EMIT breadcrumbClicked(index.data(Qt::DisplayRole).toString(),
-                                     _listModel->getBreadcrumbList());
+    connect(_listView, &QListView::clicked, this, [=](const QModelIndex& index) {
+        if (_listModel->getBreadcrumbListCount() != 1 && index.row() != _listModel->getBreadcrumbListCount() * 2 - 2 && index.data(Qt::DisplayRole).toString() != ">")
+        {
+            Q_EMIT breadcrumbClicked(index.data(Qt::DisplayRole).toString(), _listModel->getBreadcrumbList());
             _listModel->removeBreadcrumb(index.row() / 2 + 1);
-        }
-    });
+        } });
     QFont textFont = this->font();
     textFont.setLetterSpacing(QFont::AbsoluteSpacing, 0.5);
     textFont.setPixelSize(28);
@@ -43,18 +40,19 @@ ElaBreadcrumbBar::ElaBreadcrumbBar(QWidget *parent)
     QScroller::grabGesture(_listView->viewport(), QScroller::LeftMouseButtonGesture);
     QScrollerProperties properties = QScroller::scroller(_listView->viewport())->scrollerProperties();
     properties.setScrollMetric(QScrollerProperties::MousePressEventDelay, 0);
-    properties.setScrollMetric(QScrollerProperties::HorizontalOvershootPolicy,
-                               QScrollerProperties::OvershootAlwaysOn);
+    properties.setScrollMetric(QScrollerProperties::HorizontalOvershootPolicy, QScrollerProperties::OvershootAlwaysOn);
     properties.setScrollMetric(QScrollerProperties::OvershootDragResistanceFactor, 0.35);
     properties.setScrollMetric(QScrollerProperties::OvershootScrollTime, 0.5);
     properties.setScrollMetric(QScrollerProperties::FrameRate, QScrollerProperties::Fps60);
     QScroller::scroller(_listView->viewport())->setScrollerProperties(properties);
-    QVBoxLayout *mainLayout = new QVBoxLayout(this);
+    QVBoxLayout* mainLayout = new QVBoxLayout(this);
     mainLayout->setContentsMargins(0, 0, 0, 0);
     mainLayout->addWidget(_listView);
 }
 
-ElaBreadcrumbBar::~ElaBreadcrumbBar() {}
+ElaBreadcrumbBar::~ElaBreadcrumbBar()
+{
+}
 
 void ElaBreadcrumbBar::setBreadcrumbList(QStringList breadcrumbList)
 {

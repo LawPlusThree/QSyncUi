@@ -1,7 +1,7 @@
 #include "ElaTabBar.h"
 
 #include "ElaTabBarStyle.h"
-ElaTabBar::ElaTabBar(QWidget *parent)
+ElaTabBar::ElaTabBar(QWidget* parent)
     : QTabBar(parent)
 {
     setObjectName("ElaTabBar");
@@ -11,4 +11,6 @@ ElaTabBar::ElaTabBar(QWidget *parent)
     setStyle(new ElaTabBarStyle(style()));
 }
 
-ElaTabBar::~ElaTabBar() {}
+ElaTabBar::~ElaTabBar()
+{
+}

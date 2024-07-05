@@ -5,7 +5,7 @@
 #include <QScroller>
 
 #include "ElaScrollBar.h"
-ElaScrollArea::ElaScrollArea(QWidget *parent)
+ElaScrollArea::ElaScrollArea(QWidget* parent)
     : QScrollArea(parent)
 {
     setObjectName("ElaScrollArea");
@@ -14,10 +14,8 @@ ElaScrollArea::ElaScrollArea(QWidget *parent)
     setVerticalScrollBar(new ElaScrollBar(this));
     QScroller::grabGesture(this->viewport(), QScroller::LeftMouseButtonGesture);
     QScrollerProperties properties = QScroller::scroller(this->viewport())->scrollerProperties();
-    properties.setScrollMetric(QScrollerProperties::HorizontalOvershootPolicy,
-                               QScrollerProperties::OvershootAlwaysOff);
-    properties.setScrollMetric(QScrollerProperties::VerticalOvershootPolicy,
-                               QScrollerProperties::OvershootAlwaysOff);
+    properties.setScrollMetric(QScrollerProperties::HorizontalOvershootPolicy, QScrollerProperties::OvershootAlwaysOff);
+    properties.setScrollMetric(QScrollerProperties::VerticalOvershootPolicy, QScrollerProperties::OvershootAlwaysOff);
 #if (QT_VERSION < QT_VERSION_CHECK(6, 5, 3))
     properties.setScrollMetric(QScrollerProperties::MousePressEventDelay, 0);
 #else
@@ -29,57 +27,55 @@ ElaScrollArea::ElaScrollArea(QWidget *parent)
     QScroller::scroller(this->viewport())->setScrollerProperties(properties);
 }
 
-ElaScrollArea::~ElaScrollArea() {}
+ElaScrollArea::~ElaScrollArea()
+{
+}
 
 void ElaScrollArea::setIsGrabGesture(bool isEnable, qreal mousePressEventDelay)
 {
-    if (isEnable) {
+    if (isEnable)
+    {
         QScrollerProperties properties = QScroller::scroller(this->viewport())->scrollerProperties();
-        properties.setScrollMetric(QScrollerProperties::HorizontalOvershootPolicy,
-                                   QScrollerProperties::OvershootAlwaysOn);
-        properties.setScrollMetric(QScrollerProperties::VerticalOvershootPolicy,
-                                   QScrollerProperties::OvershootAlwaysOn);
+        properties.setScrollMetric(QScrollerProperties::HorizontalOvershootPolicy, QScrollerProperties::OvershootAlwaysOn);
+        properties.setScrollMetric(QScrollerProperties::VerticalOvershootPolicy, QScrollerProperties::OvershootAlwaysOn);
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 5, 3))
         properties.setScrollMetric(QScrollerProperties::MousePressEventDelay, mousePressEventDelay);
 #endif
         QScroller::scroller(this->viewport())->setScrollerProperties(properties);
-    } else {
+    }
+    else
+    {
         QScrollerProperties properties = QScroller::scroller(this->viewport())->scrollerProperties();
-        properties.setScrollMetric(QScrollerProperties::HorizontalOvershootPolicy,
-                                   QScrollerProperties::OvershootAlwaysOff);
-        properties.setScrollMetric(QScrollerProperties::VerticalOvershootPolicy,
-                                   QScrollerProperties::OvershootAlwaysOff);
+        properties.setScrollMetric(QScrollerProperties::HorizontalOvershootPolicy, QScrollerProperties::OvershootAlwaysOff);
+        properties.setScrollMetric(QScrollerProperties::VerticalOvershootPolicy, QScrollerProperties::OvershootAlwaysOff);
         QScroller::scroller(this->viewport())->setScrollerProperties(properties);
     }
 }
 
-void ElaScrollArea::setIsGrabGesture(Qt::Orientation orientationm,
-                                     bool isEnable,
-                                     qreal mousePressEventDelay)
+void ElaScrollArea::setIsGrabGesture(Qt::Orientation orientationm, bool isEnable, qreal mousePressEventDelay)
 {
-    if (isEnable) {
+    if (isEnable)
+    {
         QScrollerProperties properties = QScroller::scroller(this->viewport())->scrollerProperties();
-        if (orientationm == Qt::Horizontal) {
-            properties.setScrollMetric(QScrollerProperties::HorizontalOvershootPolicy,
-                                       QScrollerProperties::OvershootAlwaysOn);
-            properties.setScrollMetric(QScrollerProperties::VerticalOvershootPolicy,
-                                       QScrollerProperties::OvershootAlwaysOff);
-        } else {
-            properties.setScrollMetric(QScrollerProperties::HorizontalOvershootPolicy,
-                                       QScrollerProperties::OvershootAlwaysOff);
-            properties.setScrollMetric(QScrollerProperties::VerticalOvershootPolicy,
-                                       QScrollerProperties::OvershootAlwaysOn);
+        if (orientationm == Qt::Horizontal)
+        {
+            properties.setScrollMetric(QScrollerProperties::HorizontalOvershootPolicy, QScrollerProperties::OvershootAlwaysOn);
+            properties.setScrollMetric(QScrollerProperties::VerticalOvershootPolicy, QScrollerProperties::OvershootAlwaysOff);
+        }
+        else
+        {
+            properties.setScrollMetric(QScrollerProperties::HorizontalOvershootPolicy, QScrollerProperties::OvershootAlwaysOff);
+            properties.setScrollMetric(QScrollerProperties::VerticalOvershootPolicy, QScrollerProperties::OvershootAlwaysOn);
         }
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 5, 3))
         properties.setScrollMetric(QScrollerProperties::MousePressEventDelay, mousePressEventDelay);
 #endif
         QScroller::scroller(this->viewport())->setScrollerProperties(properties);
-    } else {
+    }
+    else
+    {
         QScrollerProperties properties = QScroller::scroller(this->viewport())->scrollerProperties();
-        properties.setScrollMetric(orientationm == Qt::Horizontal
-                                       ? QScrollerProperties::HorizontalOvershootPolicy
-                                       : QScrollerProperties::VerticalOvershootPolicy,
-                                   QScrollerProperties::OvershootAlwaysOff);
+        properties.setScrollMetric(orientationm == Qt::Horizontal ? QScrollerProperties::HorizontalOvershootPolicy : QScrollerProperties::VerticalOvershootPolicy, QScrollerProperties::OvershootAlwaysOff);
         QScroller::scroller(this->viewport())->setScrollerProperties(properties);
     }
 }
@@ -87,8 +83,5 @@ void ElaScrollArea::setIsGrabGesture(Qt::Orientation orientationm,
 bool ElaScrollArea::getIsGrabGesture(Qt::Orientation orientation) const
 {
     QScrollerProperties properties = QScroller::scroller(this->viewport())->scrollerProperties();
-    return properties
-        .scrollMetric(orientation == Qt::Horizontal ? QScrollerProperties::HorizontalOvershootPolicy
-                                                    : QScrollerProperties::VerticalOvershootPolicy)
-        .toBool();
+    return properties.scrollMetric(orientation == Qt::Horizontal ? QScrollerProperties::HorizontalOvershootPolicy : QScrollerProperties::VerticalOvershootPolicy).toBool();
 }

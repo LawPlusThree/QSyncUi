@@ -1,36 +1,17 @@
 {
-    "version": 3,
+    "version": 8,
     "configurePresets": [
         {
-            "hidden": true,
-            "name": "Qt",
+            "name": "fun",
+            "displayName": "Configure preset using toolchain file",
+            "description": "Sets Ninja generator, build and install directory",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/out/build/${presetName}",
             "cacheVariables": {
-                "CMAKE_PREFIX_PATH": "$env{QTDIR}"
-            },
-            "vendor": {
-                "qt-project.org/Qt": {
-                    "checksum": "wVa86FgEkvdCTVp1/nxvrkaemJc="
-                }
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_TOOLCHAIN_FILE": "",
+                "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/install/${presetName}"
             }
-        },
-        {
-            "name": "fuk",
-            "description": "",
-            "displayName": "",
-            "inherits": [
-                "Qt"
-            ]
         }
-    ],
-    "vendor": {
-        "qt-project.org/Presets": {
-            "checksum": "67SmY24ZeVbebyKD0fGfIzb/bGI="
-        }
-    }
-  ],
-  "vendor": {
-    "qt-project.org/Presets": {
-      "checksum": "67SmY24ZeVbebyKD0fGfIzb/bGI="
-    }
-  }
+    ]
 }

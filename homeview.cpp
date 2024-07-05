@@ -7,6 +7,7 @@
 #include "ElaAcrylicUrlCard.h"
 #include "ElaFlowLayout.h"
 #include "ElaIcon.h"
+#include "ElaNavigationRouter.h"
 #include "ElaImageCard.h"
 #include "ElaMenu.h"
 #include "ElaMessageBar.h"
@@ -135,12 +136,16 @@ HomePage::HomePage(QWidget* parent)
     checkMenu2->addAction("查看3");
     checkMenu2->addAction("查看4");
     QKeySequence key = QKeySequence(Qt::CTRL | Qt::Key_S);
-    QAction* action = _homeMenu->addAction(ElaIconType::BoxCheck, "排序方式", QKeySequence::Save);
+    _homeMenu->addSeparator();
+    _homeMenu->addElaIconAction(ElaIconType::BoxCheck, "排序方式", QKeySequence::Save);
+    _homeMenu->addElaIconAction(ElaIconType::ArrowRotateRight, "刷新");
+    QAction* action = _homeMenu->addElaIconAction(ElaIconType::ArrowRotateLeft, "撤销");
+    connect(action, &QAction::triggered, this, [=]() {
+        ElaNavigationRouter::getInstance()->navigationRouteBack();
+    });
 
-    _homeMenu->addAction(ElaIconType::ArrowRotateLeft, "刷新");
-    _homeMenu->addAction(ElaIconType::ArrowRotateLeft, "撤销");
-    _homeMenu->addAction(ElaIconType::Copy, "复制");
-    _homeMenu->addAction(ElaIconType::MagnifyingGlassPlus, "显示设置");
+    _homeMenu->addElaIconAction(ElaIconType::Copy, "复制");
+    _homeMenu->addElaIconAction(ElaIconType::MagnifyingGlassPlus, "显示设置");
     // _homeMenu->addSeparator();
     // _homeMenu->addAction("复制");
     // _homeMenu->addAction("粘贴");

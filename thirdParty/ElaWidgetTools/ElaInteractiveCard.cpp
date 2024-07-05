@@ -15,9 +15,8 @@ Q_PROPERTY_CREATE_Q_CPP(ElaInteractiveCard, QPixmap, CardPixmap);
 Q_PROPERTY_CREATE_Q_CPP(ElaInteractiveCard, QSize, CardPixmapSize);
 Q_PROPERTY_CREATE_Q_CPP(ElaInteractiveCard, int, CardPixmapBorderRadius)
 Q_PROPERTY_CREATE_Q_CPP(ElaInteractiveCard, ElaCardPixType::PixMode, CardPixMode);
-ElaInteractiveCard::ElaInteractiveCard(QWidget *parent)
-    : QPushButton(parent)
-    , d_ptr(new ElaInteractiveCardPrivate())
+ElaInteractiveCard::ElaInteractiveCard(QWidget* parent)
+    : QPushButton(parent), d_ptr(new ElaInteractiveCardPrivate())
 {
     Q_D(ElaInteractiveCard);
     d->q_ptr = this;
@@ -31,13 +30,13 @@ ElaInteractiveCard::ElaInteractiveCard(QWidget *parent)
     d->_pCardPixMode = ElaCardPixType::PixMode::Ellipse;
     d->_themeMode = ElaApplication::getInstance()->getThemeMode();
     setMouseTracking(true);
-    connect(ElaApplication::getInstance(),
-            &ElaApplication::themeModeChanged,
-            this,
-            [=](ElaApplicationType::ThemeMode themeMode) { d->_themeMode = themeMode; });
+    connect(ElaApplication::getInstance(), &ElaApplication::themeModeChanged, this, [=](ElaApplicationType::ThemeMode themeMode)
+            { d->_themeMode = themeMode; });
 }
 
-ElaInteractiveCard::~ElaInteractiveCard() {}
+ElaInteractiveCard::~ElaInteractiveCard()
+{
+}
 
 void ElaInteractiveCard::setCardPixmapSize(int width, int height)
 {
@@ -45,60 +44,52 @@ void ElaInteractiveCard::setCardPixmapSize(int width, int height)
     d->_pCardPixmapSize = QSize(width, height);
 }
 
-void ElaInteractiveCard::paintEvent(QPaintEvent *event)
+void ElaInteractiveCard::paintEvent(QPaintEvent* event)
 {
     Q_D(ElaInteractiveCard);
     QPainter painter(this);
     painter.save();
-    painter.setRenderHints(QPainter::SmoothPixmapTransform | QPainter::Antialiasing
-                           | QPainter::TextAntialiasing);
+    painter.setRenderHints(QPainter::SmoothPixmapTransform | QPainter::Antialiasing | QPainter::TextAntialiasing);
     painter.setPen(Qt::NoPen);
-    if (d->_themeMode == ElaApplicationType::Light) {
+    if (d->_themeMode == ElaApplicationType::Light)
+    {
         painter.setBrush(underMouse() ? QColor(0xE9, 0xE9, 0xF0) : Qt::transparent);
-    } else {
+    }
+    else
+    {
         painter.setBrush(underMouse() ? QColor(0x27, 0x27, 0x27) : Qt::transparent);
     }
     painter.drawRoundedRect(rect(), d->_pBorderRadius, d->_pBorderRadius);
     // 图片绘制
-    if (!d->_pCardPixmap.isNull()) {
+    if (!d->_pCardPixmap.isNull())
+    {
         painter.save();
         QPainterPath path;
-        if (d->_pCardPixMode == ElaCardPixType::PixMode::Ellipse) {
-            path.addEllipse(QPointF(d->_pCardPixmapSize.width() / 2 + width() / 28, height() / 2),
-                            d->_pCardPixmapSize.width() / 2,
-                            d->_pCardPixmapSize.height() / 2);
+        if (d->_pCardPixMode == ElaCardPixType::PixMode::Ellipse)
+        {
+            path.addEllipse(QPointF(d->_pCardPixmapSize.width() / 2 + width() / 28, height() / 2), d->_pCardPixmapSize.width() / 2, d->_pCardPixmapSize.height() / 2);
             painter.setClipPath(path);
-            painter.drawPixmap(QRect(width() / 28,
-                                     (height() - d->_pCardPixmapSize.height()) / 2,
-                                     d->_pCardPixmapSize.width(),
-                                     d->_pCardPixmapSize.height()),
-                               d->_pCardPixmap); // rect为绘制区域，image为要绘制的图片
-        } else if (d->_pCardPixMode == ElaCardPixType::PixMode::Default) {
-            painter.drawPixmap(width() / 28,
-                               (height() - d->_pCardPixmapSize.height()) / 2,
-                               d->_pCardPixmapSize.width(),
-                               d->_pCardPixmapSize.height(),
-                               d->_pCardPixmap);
-        } else if (d->_pCardPixMode == ElaCardPixType::PixMode::RoundedRect) {
-            path.addRoundedRect(QRectF(width() / 28,
-                                       (height() - d->_pCardPixmapSize.height()) / 2,
-                                       d->_pCardPixmapSize.width(),
-                                       d->_pCardPixmapSize.height()),
-                                d->_pCardPixmapBorderRadius,
-                                d->_pCardPixmapBorderRadius);
+            painter.drawPixmap(QRect(width() / 28, (height() - d->_pCardPixmapSize.height()) / 2, d->_pCardPixmapSize.width(), d->_pCardPixmapSize.height()), d->_pCardPixmap); // rect为绘制区域，image为要绘制的图片
+        }
+        else if (d->_pCardPixMode == ElaCardPixType::PixMode::Default)
+        {
+            painter.drawPixmap(width() / 28, (height() - d->_pCardPixmapSize.height()) / 2, d->_pCardPixmapSize.width(), d->_pCardPixmapSize.height(), d->_pCardPixmap);
+        }
+        else if (d->_pCardPixMode == ElaCardPixType::PixMode::RoundedRect)
+        {
+            path.addRoundedRect(QRectF(width() / 28, (height() - d->_pCardPixmapSize.height()) / 2, d->_pCardPixmapSize.width(), d->_pCardPixmapSize.height()), d->_pCardPixmapBorderRadius, d->_pCardPixmapBorderRadius);
             painter.setClipPath(path);
-            painter.drawPixmap(width() / 28,
-                               (height() - d->_pCardPixmapSize.height()) / 2,
-                               d->_pCardPixmapSize.width(),
-                               d->_pCardPixmapSize.height(),
-                               d->_pCardPixmap);
+            painter.drawPixmap(width() / 28, (height() - d->_pCardPixmapSize.height()) / 2, d->_pCardPixmapSize.width(), d->_pCardPixmapSize.height(), d->_pCardPixmap);
         }
         painter.restore();
     }
     // 文字绘制
-    if (d->_themeMode == ElaApplicationType::Light) {
+    if (d->_themeMode == ElaApplicationType::Light)
+    {
         painter.setPen(Qt::black);
-    } else {
+    }
+    else
+    {
         painter.setPen(Qt::white);
     }
 
@@ -106,14 +97,10 @@ void ElaInteractiveCard::paintEvent(QPaintEvent *event)
     font.setWeight(QFont::Bold);
     font.setPixelSize(d->_pTitlePixelSize);
     painter.setFont(font);
-    painter.drawText(d->_pCardPixmapSize.width() + width() / 11,
-                     height() / 2 - d->_pTitleSpacing,
-                     d->_pTitle);
+    painter.drawText(d->_pCardPixmapSize.width() + width() / 11, height() / 2 - d->_pTitleSpacing, d->_pTitle);
     font.setWeight(QFont::Normal);
     font.setPixelSize(d->_pSubTitlePixelSize);
     painter.setFont(font);
-    painter.drawText(d->_pCardPixmapSize.width() + width() / 11,
-                     height() / 2 + d->_pTitleSpacing + d->_pSubTitlePixelSize,
-                     d->_pSubTitle);
+    painter.drawText(d->_pCardPixmapSize.width() + width() / 11, height() / 2 + d->_pTitleSpacing + d->_pSubTitlePixelSize, d->_pSubTitle);
     painter.restore();
 }

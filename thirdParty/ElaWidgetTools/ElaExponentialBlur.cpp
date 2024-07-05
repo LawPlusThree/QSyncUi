@@ -6,81 +6,90 @@
 int ElaExponentialBlur::_aprec = 12;
 int ElaExponentialBlur::_zprec = 7;
 Q_SINGLETON_CREATE_CPP(ElaExponentialBlur)
-ElaExponentialBlur::ElaExponentialBlur(QObject *parent)
+ElaExponentialBlur::ElaExponentialBlur(QObject* parent)
     : QObject{parent}
-{}
+{
+}
 
-ElaExponentialBlur::~ElaExponentialBlur() {}
+ElaExponentialBlur::~ElaExponentialBlur()
+{
+}
 
-QPixmap ElaExponentialBlur::doExponentialBlur(QImage img, const quint16 &blurRadius)
+QPixmap ElaExponentialBlur::doExponentialBlur(QImage img, const quint16& blurRadius)
 {
     QImage shadowImage = img.convertToFormat(QImage::Format_ARGB32);
     _drawExponentialBlur(shadowImage, blurRadius);
     return QPixmap::fromImage(shadowImage);
 }
 
-void ElaExponentialBlur::_drawExponentialBlur(QImage &image, const quint16 &blurRadius)
+void ElaExponentialBlur::_drawExponentialBlur(QImage& image, const quint16& blurRadius)
 {
-    if (blurRadius < 1) {
+    if (blurRadius < 1)
+    {
         return;
     }
     image = image.convertToFormat(QImage::Format_ARGB32_Premultiplied);
-    int alpha = (int) ((1 << _aprec) * (1.0f - std::exp(-2.3f / (blurRadius + 1.f))));
+    int alpha = (int)((1 << _aprec) * (1.0f - std::exp(-2.3f / (blurRadius + 1.f))));
     int height = image.height();
     int width = image.width();
-    for (int row = 0; row < height; row++) {
+    for (int row = 0; row < height; row++)
+    {
         _drawRowBlur(image, row, alpha);
     }
 
-    for (int col = 0; col < width; col++) {
+    for (int col = 0; col < width; col++)
+    {
         _drawColumnBlur(image, col, alpha);
     }
 }
 
-void ElaExponentialBlur::_drawRowBlur(QImage &image, const int &row, const int &alpha)
+void ElaExponentialBlur::_drawRowBlur(QImage& image, const int& row, const int& alpha)
 {
     int zR, zG, zB, zA;
 
-    QRgb *ptr = (QRgb *) image.scanLine(row);
+    QRgb* ptr = (QRgb*)image.scanLine(row);
     int width = image.width();
 
-    zR = *((unsigned char *) ptr) << _zprec;
-    zG = *((unsigned char *) ptr + 1) << _zprec;
-    zB = *((unsigned char *) ptr + 2) << _zprec;
-    zA = *((unsigned char *) ptr + 3) << _zprec;
+    zR = *((unsigned char*)ptr) << _zprec;
+    zG = *((unsigned char*)ptr + 1) << _zprec;
+    zB = *((unsigned char*)ptr + 2) << _zprec;
+    zA = *((unsigned char*)ptr + 3) << _zprec;
 
-    for (int index = 0; index < width; index++) {
-        _drawInnerBlur((unsigned char *) &ptr[index], zR, zG, zB, zA, alpha);
+    for (int index = 0; index < width; index++)
+    {
+        _drawInnerBlur((unsigned char*)&ptr[index], zR, zG, zB, zA, alpha);
     }
-    for (int index = width - 2; index >= 0; index--) {
-        _drawInnerBlur((unsigned char *) &ptr[index], zR, zG, zB, zA, alpha);
+    for (int index = width - 2; index >= 0; index--)
+    {
+        _drawInnerBlur((unsigned char*)&ptr[index], zR, zG, zB, zA, alpha);
     }
 }
 
-void ElaExponentialBlur::_drawColumnBlur(QImage &image, const int &column, const int &alpha)
+void ElaExponentialBlur::_drawColumnBlur(QImage& image, const int& column, const int& alpha)
 {
     int zR, zG, zB, zA;
 
-    QRgb *ptr = (QRgb *) image.bits();
+    QRgb* ptr = (QRgb*)image.bits();
     ptr += column;
     int height = image.height();
     int width = image.width();
 
-    zR = *((unsigned char *) ptr) << _zprec;
-    zG = *((unsigned char *) ptr + 1) << _zprec;
-    zB = *((unsigned char *) ptr + 2) << _zprec;
-    zA = *((unsigned char *) ptr + 3) << _zprec;
+    zR = *((unsigned char*)ptr) << _zprec;
+    zG = *((unsigned char*)ptr + 1) << _zprec;
+    zB = *((unsigned char*)ptr + 2) << _zprec;
+    zA = *((unsigned char*)ptr + 3) << _zprec;
 
-    for (int index = width; index < (height - 1) * width; index += width) {
-        _drawInnerBlur((unsigned char *) &ptr[index], zR, zG, zB, zA, alpha);
+    for (int index = width; index < (height - 1) * width; index += width)
+    {
+        _drawInnerBlur((unsigned char*)&ptr[index], zR, zG, zB, zA, alpha);
     }
-    for (int index = (height - 2) * width; index >= 0; index -= width) {
-        _drawInnerBlur((unsigned char *) &ptr[index], zR, zG, zB, zA, alpha);
+    for (int index = (height - 2) * width; index >= 0; index -= width)
+    {
+        _drawInnerBlur((unsigned char*)&ptr[index], zR, zG, zB, zA, alpha);
     }
 }
 
-void ElaExponentialBlur::_drawInnerBlur(
-    unsigned char *bptr, int &zR, int &zG, int &zB, int &zA, int alpha)
+void ElaExponentialBlur::_drawInnerBlur(unsigned char* bptr, int& zR, int& zG, int& zB, int& zA, int alpha)
 {
     int R, G, B, A;
     R = *bptr;

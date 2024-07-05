@@ -99,8 +99,9 @@ MainWindow::MainWindow(QWidget *parent)
     widget->setWindowModality(Qt::ApplicationModal);
     widget->setCentralWidget(new QWidget());
     widget->hide();
-    connect(this, &ElaWindow::footerNodeClicked, this, [=](QString footerKey) {
-        if (_aboutKey == footerKey) {
+    connect(this, &ElaWindow::navigationNodeClicked, this, [=](ElaNavigationType::NavigationNodeType nodeType, QString nodeKey) {
+        if (_aboutKey == nodeKey)
+        {
             widget->show();
         }
     });

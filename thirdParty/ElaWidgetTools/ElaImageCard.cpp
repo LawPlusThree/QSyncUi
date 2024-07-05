@@ -4,7 +4,7 @@
 #include <QPainter>
 #include <QPainterPath>
 
-ElaImageCard::ElaImageCard(QWidget *parent)
+ElaImageCard::ElaImageCard(QWidget* parent)
     : QWidget(parent)
 {
     _pBorderRadius = 6;
@@ -13,9 +13,11 @@ ElaImageCard::ElaImageCard(QWidget *parent)
     _pIsPreserveAspectCrop = true;
 }
 
-ElaImageCard::~ElaImageCard() {}
+ElaImageCard::~ElaImageCard()
+{
+}
 
-void ElaImageCard::paintEvent(QPaintEvent *event)
+void ElaImageCard::paintEvent(QPaintEvent* event)
 {
     QPainter painter(this);
     painter.save();
@@ -24,19 +26,23 @@ void ElaImageCard::paintEvent(QPaintEvent *event)
     QPainterPath path;
     path.addRoundedRect(rect(), _pBorderRadius, _pBorderRadius);
     painter.setClipPath(path);
-    if (_pIsPreserveAspectCrop) {
-        qreal itemAspectRatio = (qreal) rect().width() / rect().height();
-        if (itemAspectRatio < _pMaximumAspectRatio) {
+    if (_pIsPreserveAspectCrop)
+    {
+        qreal itemAspectRatio = (qreal)rect().width() / rect().height();
+        if (itemAspectRatio < _pMaximumAspectRatio)
+        {
             itemAspectRatio = _pMaximumAspectRatio;
             qreal cropHeight = _pCardImage.width() / itemAspectRatio;
-            painter.drawImage(QRect(0, 0, this->height() * _pMaximumAspectRatio, rect().height()),
-                              _pCardImage,
-                              QRectF(0, 0, _pCardImage.width(), cropHeight));
-        } else {
+            painter.drawImage(QRect(0, 0, this->height() * _pMaximumAspectRatio, rect().height()), _pCardImage, QRectF(0, 0, _pCardImage.width(), cropHeight));
+        }
+        else
+        {
             qreal cropHeight = _pCardImage.width() / itemAspectRatio;
             painter.drawImage(rect(), _pCardImage, QRectF(0, 0, _pCardImage.width(), cropHeight));
         }
-    } else {
+    }
+    else
+    {
         painter.drawImage(rect(), _pCardImage);
     }
     painter.restore();
