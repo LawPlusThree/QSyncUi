@@ -31,5 +31,6 @@ void ApiResponse::processJsonObject(const QJsonObject &jsonObject)
     if (jsonObject.contains("data")) {
         qDebug() << "Value for data:" << jsonObject.value("data").toObject();
         data=jsonObject.value("data").toObject();
+        datav=jsonObject.value("data");
     }
 }

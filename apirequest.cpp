@@ -16,7 +16,7 @@ ApiResponse ApiRequest::get(const QString &path) {
         QByteArray jsonData = jsonString.toUtf8();
         QJsonDocument document = QJsonDocument::fromJson(jsonData);
         QJsonObject jsonObject = document.object();
-        ApiResponse errorResponse(666,"ApiRequest error!",jsonObject);
+        ApiResponse errorResponse(666,"ApiRequest error!",jsonObject,jsonObject.value("data"));
         return errorResponse;
     }
 }
@@ -38,7 +38,7 @@ ApiResponse ApiRequest::post(const QString &path, const QByteArray &data) {
         QByteArray jsonData = jsonString.toUtf8();
         QJsonDocument document = QJsonDocument::fromJson(jsonData);
         QJsonObject jsonObject = document.object();
-        ApiResponse errorResponse(666,"ApiRequest error!",jsonObject);
+        ApiResponse errorResponse(666,"ApiRequest error!",jsonObject,jsonObject.value("data"));
         return errorResponse;
     }
 }

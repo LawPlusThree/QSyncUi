@@ -12,7 +12,7 @@ class ApiResponse
 {
 public:
     ApiResponse(int codex,QString messagex,
-                QJsonObject datax):code(codex),message(messagex),data(datax){};
+        QJsonObject datax,QJsonValue datavx):code(codex),message(messagex),data(datax),datav(datavx){};
     ApiResponse(const QByteArray &responseData);
 
     int getCode(){
@@ -24,6 +24,9 @@ public:
     QJsonObject getData(){
         return data;
     }
+    QJsonValue getDatav(){
+        return datav;
+    }
     bool isSuccess();
 
 private:
@@ -31,6 +34,7 @@ private:
     int code;
     QString message;
     QJsonObject data;
+    QJsonValue datav;
 };
 
 #endif // APIRESPONSE_H
