@@ -5,27 +5,27 @@
 #include <QWheelEvent>
 
 #include "private/ElaScrollBarPrivate.h"
-ElaScrollBar::ElaScrollBar(QWidget *parent)
-    : QScrollBar(parent)
-    , d_ptr(new ElaScrollBarPrivate())
+ElaScrollBar::ElaScrollBar(QWidget* parent)
+    : QScrollBar(parent), d_ptr(new ElaScrollBarPrivate())
 {
     Q_D(ElaScrollBar);
     d->q_ptr = this;
     d->_initStyle();
 }
 
-ElaScrollBar::ElaScrollBar(Qt::Orientation orientation, QWidget *parent)
-    : QScrollBar(orientation, parent)
-    , d_ptr(new ElaScrollBarPrivate())
+ElaScrollBar::ElaScrollBar(Qt::Orientation orientation, QWidget* parent)
+    : QScrollBar(orientation, parent), d_ptr(new ElaScrollBarPrivate())
 {
     Q_D(ElaScrollBar);
     d->q_ptr = this;
     d->_initStyle();
 }
 
-ElaScrollBar::~ElaScrollBar() {}
+ElaScrollBar::~ElaScrollBar()
+{
+}
 
-void ElaScrollBar::mousePressEvent(QMouseEvent *event)
+void ElaScrollBar::mousePressEvent(QMouseEvent* event)
 {
     Q_D(ElaScrollBar);
     d->_slideSmoothAnimation->stop();
@@ -33,7 +33,7 @@ void ElaScrollBar::mousePressEvent(QMouseEvent *event)
     d->_scrollValue = value();
 }
 
-void ElaScrollBar::mouseReleaseEvent(QMouseEvent *event)
+void ElaScrollBar::mouseReleaseEvent(QMouseEvent* event)
 {
     Q_D(ElaScrollBar);
     d->_slideSmoothAnimation->stop();
@@ -41,7 +41,7 @@ void ElaScrollBar::mouseReleaseEvent(QMouseEvent *event)
     d->_scrollValue = value();
 }
 
-void ElaScrollBar::mouseMoveEvent(QMouseEvent *event)
+void ElaScrollBar::mouseMoveEvent(QMouseEvent* event)
 {
     Q_D(ElaScrollBar);
     d->_slideSmoothAnimation->stop();
@@ -49,19 +49,24 @@ void ElaScrollBar::mouseMoveEvent(QMouseEvent *event)
     d->_scrollValue = value();
 }
 
-void ElaScrollBar::wheelEvent(QWheelEvent *event)
+void ElaScrollBar::wheelEvent(QWheelEvent* event)
 {
     Q_D(ElaScrollBar);
-    if (this->orientation() == Qt::Horizontal) {
+    if (this->orientation() == Qt::Horizontal)
+    {
         int horizontalDelta = event->angleDelta().x();
-        if (d->_lastHorizontalDeltaAngle != horizontalDelta) {
+        if (d->_lastHorizontalDeltaAngle != horizontalDelta)
+        {
             d->_scrollValue = value();
             d->_lastHorizontalDeltaAngle = horizontalDelta;
         }
         d->_scroll(horizontalDelta);
-    } else {
+    }
+    else
+    {
         int verticalDelta = event->angleDelta().y();
-        if (d->_lastVerticalDeltaAngle != verticalDelta) {
+        if (d->_lastVerticalDeltaAngle != verticalDelta)
+        {
             d->_scrollValue = value();
             d->_lastVerticalDeltaAngle = verticalDelta;
         }
@@ -72,9 +77,12 @@ void ElaScrollBar::wheelEvent(QWheelEvent *event)
 void ElaScrollBar::sliderChange(SliderChange change)
 {
     Q_D(ElaScrollBar);
-    if (change == SliderRangeChange && this->objectName() == "NavigationScrollBar") {
-        if (abs(maximum() - d->_lastMaximum) > 35) {
-            if (d->_isRangeAnimationFinished) {
+    if (change == SliderRangeChange && this->objectName() == "NavigationScrollBar")
+    {
+        if (abs(maximum() - d->_lastMaximum) > 35)
+        {
+            if (d->_isRangeAnimationFinished)
+            {
                 d->_rangeSmoothAnimation->setStartValue(d->_lastMaximum);
                 d->_rangeSmoothAnimation->setEndValue(maximum());
                 d->_isRangeAnimationFinished = false;
@@ -82,7 +90,9 @@ void ElaScrollBar::sliderChange(SliderChange change)
                 d->_rangeSmoothAnimation->start();
                 return;
             }
-        } else {
+        }
+        else
+        {
             d->_lastMaximum = maximum();
         }
     }

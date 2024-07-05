@@ -11,9 +11,8 @@ Q_PROPERTY_CREATE_Q_CPP(ElaApplication, bool, IsApplicationClosed)
 Q_PROPERTY_CREATE_Q_CPP(ElaApplication, QColor, LightShadowEffectColor)
 Q_PROPERTY_CREATE_Q_CPP(ElaApplication, QColor, DarkShadowEffectColor)
 Q_PRIVATE_CREATE_Q_CPP(ElaApplication, QIcon, WindowIcon)
-ElaApplication::ElaApplication(QObject *parent)
-    : QObject{parent}
-    , d_ptr(new ElaApplicationPrivate())
+ElaApplication::ElaApplication(QObject* parent)
+    : QObject{parent}, d_ptr(new ElaApplicationPrivate())
 {
     Q_D(ElaApplication);
     d->q_ptr = this;
@@ -23,7 +22,9 @@ ElaApplication::ElaApplication(QObject *parent)
     d->_pDarkShadowEffectColor = QColor(185, 185, 185, 155);
 }
 
-ElaApplication::~ElaApplication() {}
+ElaApplication::~ElaApplication()
+{
+}
 
 void ElaApplication::setThemeMode(ElaApplicationType::ThemeMode themeMode)
 {
@@ -51,14 +52,16 @@ void ElaApplication::init()
     qApp->setFont(font);
 }
 
-bool ElaApplication::containsCursorToItem(QWidget *item)
+bool ElaApplication::containsCursorToItem(QWidget* item)
 {
-    if (!item || !item->isVisible()) {
+    if (!item || !item->isVisible())
+    {
         return false;
     }
     auto point = QCursor::pos();
     QRectF rect = QRectF(item->mapToGlobal(QPoint(0, 0)), item->size());
-    if (rect.contains(point)) {
+    if (rect.contains(point))
+    {
         return true;
     }
     return false;

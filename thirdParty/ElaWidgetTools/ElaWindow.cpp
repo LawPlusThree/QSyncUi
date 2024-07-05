@@ -10,24 +10,19 @@
 #include <QStackedWidget>
 #include <QVBoxLayout>
 
-#include "DeveloperComponents/ElaNavigationBar.h"
-#include "DeveloperComponents/ElaThemeAnimationWidget.h"
 #include "DeveloperComponents/private/ElaNavigationBarPrivate.h"
 #include "ElaAppBar.h"
 #include "ElaApplication.h"
 #include "ElaEventBus.h"
-#include "ElaInteractiveCard.h"
+#include "ElaNavigationBar.h"
 #include "ElaNavigationRouter.h"
 #include "private/ElaAppBarPrivate.h"
 #include "private/ElaWindowPrivate.h"
 Q_PROPERTY_CREATE_Q_CPP(ElaWindow, int, ThemeChangeTime)
-Q_PROPERTY_CREATE_Q_CPP(ElaWindow,
-                        ElaNavigationType::NavigationDisplayMode,
-                        NavigationBarDisplayMode)
+Q_PROPERTY_CREATE_Q_CPP(ElaWindow, ElaNavigationType::NavigationDisplayMode, NavigationBarDisplayMode)
 
-ElaWindow::ElaWindow(QWidget *parent)
-    : QWidget{parent}
-    , d_ptr(new ElaWindowPrivate())
+ElaWindow::ElaWindow(QWidget* parent)
+    : QWidget{parent}, d_ptr(new ElaWindowPrivate())
 {
     Q_D(ElaWindow);
     d->q_ptr = this;
@@ -36,10 +31,7 @@ ElaWindow::ElaWindow(QWidget *parent)
 
     d->_pThemeChangeTime = 700;
     d->_pNavigationBarDisplayMode = ElaNavigationType::NavigationDisplayMode::Auto;
-    connect(this,
-            &ElaWindow::pNavigationBarDisplayModeChanged,
-            d,
-            &ElaWindowPrivate::onDisplayModeChanged);
+    connect(this, &ElaWindow::pNavigationBarDisplayModeChanged, d, &ElaWindowPrivate::onDisplayModeChanged);
 
     d->_windowLinearGradient = new QLinearGradient(0, 0, width(), height());
     d->_windowLinearGradient->setColorAt(0, QColor(0xF2, 0xF2, 0xF9));
@@ -54,16 +46,18 @@ ElaWindow::ElaWindow(QWidget *parent)
     // 导航栏
     d->_navigationBar = new ElaNavigationBar(this);
     // 返回按钮状态变更
-    connect(ElaNavigationRouter::getInstance(),
-            &ElaNavigationRouter::navigationRouterStateChanged,
-            this,
-            [d](bool isEnable) { d->_appBar->setRouteBackButtonEnable(isEnable); });
+    connect(ElaNavigationRouter::getInstance(), &ElaNavigationRouter::navigationRouterStateChanged, this, [d](bool isEnable) {
+        d->_appBar->setRouteBackButtonEnable(isEnable);
+    });
 
-    // 页脚没有绑定页面时发送
-    connect(d->_navigationBar,
-            &ElaNavigationBar::footerNodeClicked,
-            this,
-            &ElaWindow::footerNodeClicked);
+    // 转发用户卡片点击信号
+    connect(d->_navigationBar, &ElaNavigationBar::userInfoCardClicked, this, &ElaWindow::userInfoCardClicked);
+    // 转发点击信号
+    connect(d->_navigationBar, &ElaNavigationBar::navigationNodeClicked, this, &ElaWindow::navigationNodeClicked);
+    //跳转处理
+    connect(d->_navigationBar, &ElaNavigationBar::navigationNodeClicked, d, &ElaWindowPrivate::onNavigationNodeClicked);
+    //新增窗口
+    connect(d->_navigationBar, &ElaNavigationBar::navigationNodeAdded, d, &ElaWindowPrivate::onNavigationNodeAdded);
 
     // 中心堆栈窗口
     d->_centerStackedWidget = new QStackedWidget(this);
@@ -84,27 +78,16 @@ ElaWindow::ElaWindow(QWidget *parent)
     d->_focusEvent->registerAndInit();
 
     // 展开导航栏
-    connect(d->_appBar,
-            &ElaAppBar::navigationButtonClicked,
-            d,
-            &ElaWindowPrivate::onNavigationButtonClicked);
+    connect(d->_appBar, &ElaAppBar::navigationButtonClicked, d, &ElaWindowPrivate::onNavigationButtonClicked);
 
     // 主题变更动画
-    connect(ElaApplication::getInstance(),
-            &ElaApplication::themeModeChanged,
-            d,
-            &ElaWindowPrivate::onThemeModeChanged);
-    connect(d->_appBar,
-            &ElaAppBar::themeChangeButtonClicked,
-            d,
-            &ElaWindowPrivate::onThemeReadyChange);
-    // 主题变更绘制窗口
-    d->_animationWidget = new ElaThemeAnimationWidget(this);
-    d->_animationWidget->move(0, 0);
-    d->_animationWidget->hide();
+    connect(ElaApplication::getInstance(), &ElaApplication::themeModeChanged, d, &ElaWindowPrivate::onThemeModeChanged);
+    connect(d->_appBar, &ElaAppBar::themeChangeButtonClicked, d, &ElaWindowPrivate::onThemeReadyChange);
 }
 
-ElaWindow::~ElaWindow() {}
+ElaWindow::~ElaWindow()
+{
+}
 
 void ElaWindow::setIsNavigationBarEnable(bool isVisible)
 {
@@ -155,86 +138,79 @@ void ElaWindow::setUserInfoCardVisible(bool isVisible)
 void ElaWindow::setUserInfoCardPixmap(QPixmap pix)
 {
     Q_D(ElaWindow);
-    d->_navigationBar->d_ptr->_userCard->setCardPixmap(pix);
+    d->_navigationBar->setUserInfoCardPixmap(pix);
 }
 
 void ElaWindow::setUserInfoCardTitle(QString title)
 {
     Q_D(ElaWindow);
-    d->_navigationBar->d_ptr->_userCard->setTitle(title);
+    d->_navigationBar->setUserInfoCardTitle(title);
 }
 
 void ElaWindow::setUserInfoCardSubTitle(QString subTitle)
 {
     Q_D(ElaWindow);
-    d->_navigationBar->d_ptr->_userCard->setSubTitle(subTitle);
+    d->_navigationBar->setUserInfoCardSubTitle(subTitle);
 }
 
-ElaNavigationType::NodeOperateReturnType ElaWindow::addExpanderNode(QString expanderTitle,
-                                                                    QString &expanderKey,
-                                                                    ElaIconType awesome) const
+ElaNavigationType::NodeOperateReturnType ElaWindow::addExpanderNode(QString expanderTitle, QString& expanderKey, ElaIconType awesome) const
 {
-    return d_ptr->_navigationBar->addExpanderNode(expanderTitle, expanderKey, awesome);
+    Q_D(const ElaWindow);
+    return d->_navigationBar->addExpanderNode(expanderTitle, expanderKey, awesome);
 }
 
-ElaNavigationType::NodeOperateReturnType ElaWindow::addExpanderNode(QString expanderTitle,
-                                                                    QString &expanderKey,
-                                                                    QString targetExpanderKey,
-                                                                    ElaIconType awesome) const
+ElaNavigationType::NodeOperateReturnType ElaWindow::addExpanderNode(QString expanderTitle, QString& expanderKey, QString targetExpanderKey, ElaIconType awesome) const
 {
-    return d_ptr->_navigationBar->addExpanderNode(expanderTitle,
-                                                  expanderKey,
-                                                  targetExpanderKey,
-                                                  awesome);
+    Q_D(const ElaWindow);
+    return d->_navigationBar->addExpanderNode(expanderTitle, expanderKey, targetExpanderKey, awesome);
 }
 
-ElaNavigationType::NodeOperateReturnType ElaWindow::addPageNode(QString pageTitle,
-                                                                QWidget *page,
-                                                                ElaIconType awesome) const
+ElaNavigationType::NodeOperateReturnType ElaWindow::addPageNode(QString pageTitle, QWidget* page, ElaIconType awesome) const
 {
-    return d_ptr->_navigationBar->addPageNode(pageTitle, page, awesome);
+    Q_D(const ElaWindow);
+    return d->_navigationBar->addPageNode(pageTitle, page, awesome);
 }
 
-ElaNavigationType::NodeOperateReturnType ElaWindow::addPageNode(QString pageTitle,
-                                                                QWidget *page,
-                                                                QString targetExpanderKey,
-                                                                ElaIconType awesome) const
+ElaNavigationType::NodeOperateReturnType ElaWindow::addPageNode(QString pageTitle, QWidget* page, QString targetExpanderKey, ElaIconType awesome) const
 {
-    return d_ptr->_navigationBar->addPageNode(pageTitle, page, targetExpanderKey, awesome);
+    Q_D(const ElaWindow);
+    return d->_navigationBar->addPageNode(pageTitle, page, targetExpanderKey, awesome);
 }
 
-ElaNavigationType::NodeOperateReturnType ElaWindow::addPageNode(QString pageTitle,
-                                                                QWidget *page,
-                                                                int keyPoints,
-                                                                ElaIconType awesome) const
+ElaNavigationType::NodeOperateReturnType ElaWindow::addPageNode(QString pageTitle, QWidget* page, int keyPoints, ElaIconType awesome) const
 {
-    return d_ptr->_navigationBar->addPageNode(pageTitle, page, keyPoints, awesome);
+    Q_D(const ElaWindow);
+    return d->_navigationBar->addPageNode(pageTitle, page, keyPoints, awesome);
 }
 
-ElaNavigationType::NodeOperateReturnType ElaWindow::addPageNode(QString pageTitle,
-                                                                QWidget *page,
-                                                                QString targetExpanderKey,
-                                                                int keyPoints,
-                                                                ElaIconType awesome) const
+ElaNavigationType::NodeOperateReturnType ElaWindow::addPageNode(QString pageTitle, QWidget* page, QString targetExpanderKey, int keyPoints, ElaIconType awesome) const
 {
-    return d_ptr->_navigationBar->addPageNode(pageTitle, page, targetExpanderKey, keyPoints, awesome);
+    Q_D(const ElaWindow);
+    return d->_navigationBar->addPageNode(pageTitle, page, targetExpanderKey, keyPoints, awesome);
 }
 
-ElaNavigationType::NodeOperateReturnType ElaWindow::addFooterNode(QString footerTitle,
-                                                                  QString &footerKey,
-                                                                  int keyPoints,
-                                                                  ElaIconType awesome) const
+ElaNavigationType::NodeOperateReturnType ElaWindow::addFooterNode(QString footerTitle, QString& footerKey, int keyPoints, ElaIconType awesome) const
 {
-    return d_ptr->_navigationBar->addFooterNode(footerTitle, nullptr, footerKey, keyPoints, awesome);
+    Q_D(const ElaWindow);
+    return d->_navigationBar->addFooterNode(footerTitle, nullptr, footerKey, keyPoints, awesome);
 }
 
-ElaNavigationType::NodeOperateReturnType ElaWindow::addFooterNode(QString footerTitle,
-                                                                  QWidget *page,
-                                                                  QString &footerKey,
-                                                                  int keyPoints,
-                                                                  ElaIconType awesome) const
+ElaNavigationType::NodeOperateReturnType ElaWindow::addFooterNode(QString footerTitle, QWidget* page, QString& footerKey, int keyPoints, ElaIconType awesome) const
 {
-    return d_ptr->_navigationBar->addFooterNode(footerTitle, page, footerKey, keyPoints, awesome);
+    Q_D(const ElaWindow);
+    return d->_navigationBar->addFooterNode(footerTitle, page, footerKey, keyPoints, awesome);
+}
+
+void ElaWindow::setNodeKeyPoints(QString nodeKey, int keyPoints)
+{
+    Q_D(ElaWindow);
+    d->_navigationBar->setNodeKeyPoints(nodeKey, keyPoints);
+}
+
+int ElaWindow::getNodeKeyPoints(QString nodeKey) const
+{
+    Q_D(const ElaWindow);
+    return d->_navigationBar->getNodeKeyPoints(nodeKey);
 }
 
 void ElaWindow::navigation(QString pageKey)
@@ -277,13 +253,12 @@ void ElaWindow::closeWindow()
     d->_appBar->closeWindow();
 }
 
-void ElaWindow::paintEvent(QPaintEvent *event)
+void ElaWindow::paintEvent(QPaintEvent* event)
 {
     Q_D(ElaWindow);
     QPainter painter(this);
     painter.save();
-    painter.setRenderHints(QPainter::SmoothPixmapTransform | QPainter::Antialiasing
-                           | QPainter::TextAntialiasing);
+    painter.setRenderHints(QPainter::SmoothPixmapTransform | QPainter::Antialiasing | QPainter::TextAntialiasing);
     painter.setPen(Qt::NoPen);
     d->_windowLinearGradient->setFinalStop(width(), height());
     painter.setBrush(*d->_windowLinearGradient);
@@ -292,195 +267,41 @@ void ElaWindow::paintEvent(QPaintEvent *event)
     QWidget::paintEvent(event);
 }
 
-void ElaWindow::resizeEvent(QResizeEvent *event)
+void ElaWindow::resizeEvent(QResizeEvent* event)
 {
     Q_D(ElaWindow);
-    if (ElaApplication::getInstance()->getIsApplicationClosed() || !d->_isNavigationEnable) {
+    if (ElaApplication::getInstance()->getIsApplicationClosed() || !d->_isNavigationEnable)
+    {
         return;
     }
     d->_windowLinearGradient->setFinalStop(width(), height());
-    if (getNavigationBarDisplayMode() == ElaNavigationType::Auto) {
-        int appBarHeight = d->_appBar->height();
-        d->_adjustNavigationSize();
-        if (width() >= 850 && d->_currentNavigationBarDisplayMode != ElaNavigationType::Maximal) {
-            d->_resetWindowLayout(true);
-            //导航栏动画
-            ElaNavigationBarPrivate *navigationBarPrivate = d->_navigationBar->d_func();
-            QPropertyAnimation *navigationMoveAnimation = new QPropertyAnimation(d->_navigationBar,
-                                                                                 "pos");
-            connect(navigationMoveAnimation, &QPropertyAnimation::finished, this, [=]() {
-                d->_resetWindowLayout(false);
-                d->_navigationBar->switchCompact(false);
-                d->_isNavagationAnimationFinished = true;
-            });
-            navigationMoveAnimation->setEasingCurve(QEasingCurve::InOutSine);
-            navigationMoveAnimation->setDuration(300);
-
-            //过渡动画
-            d->_navigationBar->setFixedWidth(300);
-            d->_navigationBar->move(
-                QPoint(d->_centerStackedWidget->pos().x() - d->_navigationBar->width(),
-                       d->_navigationBar->pos().y()));
-            QPropertyAnimation *maximalAnimation
-                = new QPropertyAnimation(navigationBarPrivate->_compactWidget, "pos");
-            while (navigationBarPrivate->_mainLayout->count() > 0) {
-                navigationBarPrivate->_mainLayout->takeAt(0);
-            }
-            navigationBarPrivate->_maximalWidget->resize(300, d->_navigationBar->height());
-            navigationBarPrivate->_maximalWidget->setVisible(true);
-            connect(maximalAnimation,
-                    &QPropertyAnimation::valueChanged,
-                    this,
-                    [=](const QVariant &value) {
-                        navigationBarPrivate->_maximalWidget->move(value.toPoint().x() - 300,
-                                                                   value.toPoint().y());
-                    });
-            maximalAnimation->setEasingCurve(QEasingCurve::OutSine);
-            maximalAnimation->setDuration(300);
-            maximalAnimation->setStartValue(QPoint(d->_navigationBar->width() - 40,
-                                                   navigationBarPrivate->_compactWidget->pos().y()));
-            maximalAnimation->setEndValue(QPoint(d->_navigationBar->width(),
-                                                 navigationBarPrivate->_compactWidget->pos().y()));
-            maximalAnimation->start(QAbstractAnimation::DeleteWhenStopped);
-
-            navigationMoveAnimation->setStartValue(d->_navigationBar->pos());
-            navigationMoveAnimation->setEndValue(
-                QPoint(d->_contentsMargins, appBarHeight + d->_contentsMargins));
-
-            //堆栈动画
-            QPropertyAnimation *stackedMoveAnimation
-                = new QPropertyAnimation(d->_centerStackedWidget, "pos");
-            connect(stackedMoveAnimation,
-                    &QPropertyAnimation::valueChanged,
-                    this,
-                    [=](const QVariant &value) {
-                        d->_centerStackedWidget->resize(width() - d->_centerStackedWidget->x() - 5,
-                                                        height() - 40);
-                    });
-            stackedMoveAnimation->setEasingCurve(QEasingCurve::InOutSine);
-            stackedMoveAnimation->setDuration(300);
-            stackedMoveAnimation->setStartValue(d->_centerStackedWidget->pos());
-            // 305 = 300  + 5
-            stackedMoveAnimation->setEndValue(QPoint(305, appBarHeight + d->_contentsMargins));
-
-            navigationMoveAnimation->start(QAbstractAnimation::DeleteWhenStopped);
-            stackedMoveAnimation->start(QAbstractAnimation::DeleteWhenStopped);
+    if (d->_pNavigationBarDisplayMode == ElaNavigationType::Minimal)
+    {
+        d->_resetWindowLayout(false);
+    }
+    if (d->_pNavigationBarDisplayMode == ElaNavigationType::Auto)
+    {
+        d->_resetWindowLayout(false);
+        if (width() >= 850 && d->_currentNavigationBarDisplayMode != ElaNavigationType::Maximal)
+        {
+            d->_navigationBar->setDisplayMode(ElaNavigationType::Maximal);
+            d->_isNavigationBarExpanded = false;
             d->_currentNavigationBarDisplayMode = ElaNavigationType::Maximal;
-            d->_isNavigationBarExpanded = false;
             d->_appBar->setWindowButtonFlag(ElaAppBarType::NavigationButtonHint, false);
-            d->_isNavagationAnimationFinished = false;
-        } else if (width() >= 550 && width() < 850
-                   && d->_currentNavigationBarDisplayMode != ElaNavigationType::Compact) {
-            ElaNavigationBarPrivate *navigationBarPrivate = d->_navigationBar->d_func();
-            ElaNavigationType::NavigationDisplayMode lastMode = d->_currentNavigationBarDisplayMode;
-            QPropertyAnimation *navigationMoveAnimation = new QPropertyAnimation(d->_navigationBar,
-                                                                                 "pos");
-            connect(navigationMoveAnimation, &QPropertyAnimation::finished, this, [=]() {
-                d->_navigationBar->switchCompact(true);
-                d->_resetWindowLayout(false);
-                d->_isNavagationAnimationFinished = true;
-            });
-            //过渡动画
-            if (lastMode == ElaNavigationType::Maximal) {
-                QPropertyAnimation *maximalAnimation
-                    = new QPropertyAnimation(navigationBarPrivate->_compactWidget, "pos");
-                while (navigationBarPrivate->_mainLayout->count() > 0) {
-                    navigationBarPrivate->_mainLayout->takeAt(0);
-                }
-                navigationBarPrivate->_compactWidget->resize(40, d->_navigationBar->height());
-                navigationBarPrivate->_compactWidget->setVisible(true);
-                connect(maximalAnimation,
-                        &QPropertyAnimation::valueChanged,
-                        this,
-                        [=](const QVariant &value) {
-                            navigationBarPrivate->_maximalWidget->move(value.toPoint().x() - 300,
-                                                                       value.toPoint().y());
-                        });
-                maximalAnimation->setEasingCurve(QEasingCurve::OutSine);
-                maximalAnimation->setDuration(300);
-                maximalAnimation->setStartValue(
-                    QPoint(d->_navigationBar->width(),
-                           navigationBarPrivate->_compactWidget->pos().y()));
-                maximalAnimation->setEndValue(
-                    QPoint(d->_navigationBar->width() - 40,
-                           navigationBarPrivate->_compactWidget->pos().y()));
-                maximalAnimation->start(QAbstractAnimation::DeleteWhenStopped);
-            }
-
-            if (d->_currentNavigationBarDisplayMode == ElaNavigationType::Maximal) {
-                navigationMoveAnimation->setEasingCurve(QEasingCurve::OutSine);
-                navigationMoveAnimation->setDuration(300);
-                navigationMoveAnimation->setStartValue(d->_navigationBar->pos());
-                navigationMoveAnimation->setEndValue(
-                    QPoint(-d->_navigationBar->width() + d->_compactBarWidth, 35));
-            } else {
-                navigationMoveAnimation->setEasingCurve(QEasingCurve::OutSine);
-                navigationMoveAnimation->setDuration(300);
-                navigationMoveAnimation->setStartValue(d->_navigationBar->pos());
-                navigationMoveAnimation->setEndValue(
-                    QPoint(d->_navigationBar->pos().x() + 50, d->_navigationBar->pos().y()));
-            }
-
-            //堆栈窗口移动
-            QPropertyAnimation *stackedMoveAnimation
-                = new QPropertyAnimation(d->_centerStackedWidget, "pos");
-            connect(stackedMoveAnimation,
-                    &QPropertyAnimation::valueChanged,
-                    this,
-                    [=](const QVariant &value) {
-                        d->_centerStackedWidget->resize(width() - d->_centerStackedWidget->pos().x()
-                                                            - 5,
-                                                        height() - 40);
-                    });
-            stackedMoveAnimation->setDuration(300);
-            stackedMoveAnimation->setEasingCurve(QEasingCurve::OutSine);
-            stackedMoveAnimation->setStartValue(d->_centerStackedWidget->pos());
-            stackedMoveAnimation->setEndValue(QPoint(d->_contentsMargins + d->_compactBarWidth,
-                                                     appBarHeight + d->_contentsMargins));
-            d->_resetWindowLayout(true);
-            navigationMoveAnimation->start(QAbstractAnimation::DeleteWhenStopped);
-            stackedMoveAnimation->start(QAbstractAnimation::DeleteWhenStopped);
+        }
+        else if (width() >= 550 && width() < 850 && d->_currentNavigationBarDisplayMode != ElaNavigationType::Compact)
+        {
+            d->_navigationBar->setDisplayMode(ElaNavigationType::Compact);
+            d->_isNavigationBarExpanded = false;
             d->_currentNavigationBarDisplayMode = ElaNavigationType::Compact;
-            d->_isNavigationBarExpanded = false;
             d->_appBar->setWindowButtonFlag(ElaAppBarType::NavigationButtonHint, false);
-            d->_isNavagationAnimationFinished = false;
-        } else if (width() < 550
-                   && d->_currentNavigationBarDisplayMode != ElaNavigationType::Minimal) {
-            QPropertyAnimation *navigationMoveAnimation = new QPropertyAnimation(d->_navigationBar,
-                                                                                 "pos");
-            connect(navigationMoveAnimation, &QPropertyAnimation::finished, this, [=]() {
-                d->_navigationBar->switchCompact(true);
-                d->_centerLayout->addWidget(d->_centerStackedWidget);
-                d->_mainLayout->takeAt(2);
-                d->_isNavagationAnimationFinished = true;
-            });
-            navigationMoveAnimation->setEasingCurve(QEasingCurve::OutSine);
-            navigationMoveAnimation->setDuration(300);
-            navigationMoveAnimation->setStartValue(d->_navigationBar->pos());
-            navigationMoveAnimation->setEndValue(QPoint(-d->_navigationBar->width(), 35));
-
-            QPropertyAnimation *stackedMoveAnimation
-                = new QPropertyAnimation(d->_centerStackedWidget, "pos");
-            connect(stackedMoveAnimation,
-                    &QPropertyAnimation::valueChanged,
-                    this,
-                    [=](const QVariant &value) {
-                        d->_centerStackedWidget->resize(width() - d->_centerStackedWidget->pos().x()
-                                                            - 5,
-                                                        height() - 40);
-                    });
-            stackedMoveAnimation->setDuration(300);
-            stackedMoveAnimation->setEasingCurve(QEasingCurve::OutSine);
-            stackedMoveAnimation->setStartValue(d->_centerStackedWidget->pos());
-            stackedMoveAnimation->setEndValue(
-                QPoint(d->_contentsMargins, appBarHeight + d->_contentsMargins));
-            d->_resetWindowLayout(true);
-            navigationMoveAnimation->start(QAbstractAnimation::DeleteWhenStopped);
-            stackedMoveAnimation->start(QAbstractAnimation::DeleteWhenStopped);
-            d->_currentNavigationBarDisplayMode = ElaNavigationType::Minimal;
+        }
+        else if (width() < 550 && d->_currentNavigationBarDisplayMode != ElaNavigationType::Minimal)
+        {
+            d->_navigationBar->setDisplayMode(ElaNavigationType::Minimal);
             d->_isNavigationBarExpanded = false;
+            d->_currentNavigationBarDisplayMode = ElaNavigationType::Minimal;
             d->_appBar->setWindowButtonFlag(ElaAppBarType::NavigationButtonHint);
-            d->_isNavagationAnimationFinished = false;
         }
     }
     QWidget::resizeEvent(event);

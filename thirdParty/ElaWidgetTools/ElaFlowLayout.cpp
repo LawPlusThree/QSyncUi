@@ -5,9 +5,8 @@
 
 #include "private/ElaFlowLayoutPrivate.h"
 
-ElaFlowLayout::ElaFlowLayout(QWidget *parent, int margin, int hSpacing, int vSpacing)
-    : QLayout(parent)
-    , d_ptr(new ElaFlowLayoutPrivate())
+ElaFlowLayout::ElaFlowLayout(QWidget* parent, int margin, int hSpacing, int vSpacing)
+    : QLayout(parent), d_ptr(new ElaFlowLayoutPrivate())
 {
     Q_D(ElaFlowLayout);
     d->q_ptr = this;
@@ -30,13 +29,14 @@ ElaFlowLayout::ElaFlowLayout(int margin, int hSpacing, int vSpacing)
 
 ElaFlowLayout::~ElaFlowLayout()
 {
-    QLayoutItem *item;
-    while ((item = this->takeAt(0))) {
+    QLayoutItem* item;
+    while ((item = this->takeAt(0)))
+    {
         delete item;
     }
 }
 
-void ElaFlowLayout::addItem(QLayoutItem *item)
+void ElaFlowLayout::addItem(QLayoutItem* item)
 {
     Q_D(ElaFlowLayout);
     d->_itemList.append(item);
@@ -44,9 +44,12 @@ void ElaFlowLayout::addItem(QLayoutItem *item)
 int ElaFlowLayout::horizontalSpacing() const
 {
     Q_D(const ElaFlowLayout);
-    if (d->_hSpacing >= 0) {
+    if (d->_hSpacing >= 0)
+    {
         return d->_hSpacing;
-    } else {
+    }
+    else
+    {
         return d->_smartSpacing(QStyle::PM_LayoutHorizontalSpacing);
     }
 }
@@ -54,9 +57,12 @@ int ElaFlowLayout::horizontalSpacing() const
 int ElaFlowLayout::verticalSpacing() const
 {
     Q_D(const ElaFlowLayout);
-    if (d->_vSpacing >= 0) {
+    if (d->_vSpacing >= 0)
+    {
         return d->_vSpacing;
-    } else {
+    }
+    else
+    {
         return d->_smartSpacing(QStyle::PM_LayoutVerticalSpacing);
     }
 }
@@ -65,15 +71,16 @@ int ElaFlowLayout::count() const
     return d_ptr->_itemList.size();
 }
 
-QLayoutItem *ElaFlowLayout::itemAt(int index) const
+QLayoutItem* ElaFlowLayout::itemAt(int index) const
 {
     return d_ptr->_itemList.value(index);
 }
 
-QLayoutItem *ElaFlowLayout::takeAt(int index)
+QLayoutItem* ElaFlowLayout::takeAt(int index)
 {
     Q_D(ElaFlowLayout);
-    if (index >= 0 && index < d->_itemList.size()) {
+    if (index >= 0 && index < d->_itemList.size())
+    {
         return d->_itemList.takeAt(index);
     }
     return nullptr;
@@ -98,11 +105,11 @@ bool ElaFlowLayout::hasHeightForWidth() const
 int ElaFlowLayout::heightForWidth(int width) const
 {
     int height = d_ptr->_doLayout(QRect(0, 0, width, 0), true);
-    d_ptr->_lastHeightMap[const_cast<ElaFlowLayout *>(this)] = height;
+    d_ptr->_lastHeightMap[const_cast<ElaFlowLayout*>(this)] = height;
     return height;
 }
 
-void ElaFlowLayout::setGeometry(const QRect &rect)
+void ElaFlowLayout::setGeometry(const QRect& rect)
 {
     Q_D(ElaFlowLayout);
     QLayout::setGeometry(rect);
@@ -117,7 +124,8 @@ QSize ElaFlowLayout::sizeHint() const
 QSize ElaFlowLayout::minimumSize() const
 {
     QSize size;
-    for (const QLayoutItem *item : std::as_const(d_ptr->_itemList)) {
+    for (const QLayoutItem* item : std::as_const(d_ptr->_itemList))
+    {
         size = size.expandedTo(item->minimumSize());
     }
 

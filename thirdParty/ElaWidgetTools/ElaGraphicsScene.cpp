@@ -11,9 +11,8 @@
 Q_PROPERTY_CREATE_Q_CPP(ElaGraphicsScene, bool, IsAutoSobel)
 Q_PROPERTY_CREATE_Q_CPP(ElaGraphicsScene, bool, IsCheckLinkPort)
 Q_PROPERTY_CREATE_Q_CPP(ElaGraphicsScene, QString, SerializePath)
-ElaGraphicsScene::ElaGraphicsScene(QObject *parent)
-    : QGraphicsScene(parent)
-    , d_ptr(new ElaGraphicsScenePrivate())
+ElaGraphicsScene::ElaGraphicsScene(QObject* parent)
+    : QGraphicsScene(parent), d_ptr(new ElaGraphicsScenePrivate())
 {
     Q_D(ElaGraphicsScene);
     d->q_ptr = this;
@@ -25,16 +24,21 @@ ElaGraphicsScene::ElaGraphicsScene(QObject *parent)
     d->_pSerializePath = "./scene.bin";
 }
 
-ElaGraphicsScene::~ElaGraphicsScene() {}
+ElaGraphicsScene::~ElaGraphicsScene()
+{
+}
 
-void ElaGraphicsScene::addItem(ElaGraphicsItem *item)
+void ElaGraphicsScene::addItem(ElaGraphicsItem* item)
 {
     Q_D(ElaGraphicsScene);
-    if (!item) {
+    if (!item)
+    {
         return;
     }
-    for (const auto &pair : d->_items.toStdMap()) {
-        if (pair.second == item) {
+    for (const auto& pair : d->_items.toStdMap())
+    {
+        if (pair.second == item)
+        {
             return;
         }
     }
@@ -48,10 +52,11 @@ void ElaGraphicsScene::addItem(ElaGraphicsItem *item)
     d->_items.insert(item->getItemUID(), item);
 }
 
-void ElaGraphicsScene::removeItem(ElaGraphicsItem *item)
+void ElaGraphicsScene::removeItem(ElaGraphicsItem* item)
 {
     Q_D(ElaGraphicsScene);
-    if (!item) {
+    if (!item)
+    {
         return;
     }
     d->_items.remove(d->_items.key(item));
@@ -63,11 +68,13 @@ void ElaGraphicsScene::removeItem(ElaGraphicsItem *item)
 
 void ElaGraphicsScene::removeSelectedItems()
 {
-    QList<ElaGraphicsItem *> selectedItemList = getSelectedElaItems();
-    if (selectedItemList.count() == 0) {
+    QList<ElaGraphicsItem*> selectedItemList = getSelectedElaItems();
+    if (selectedItemList.count() == 0)
+    {
         return;
     }
-    for (auto item : selectedItemList) {
+    for (auto item : selectedItemList)
+    {
         removeItem(item);
     }
 }
@@ -76,21 +83,24 @@ void ElaGraphicsScene::clear()
 {
     Q_D(ElaGraphicsScene);
     d->_itemsLink.clear();
-    for (const auto &pair : d->_items.toStdMap()) {
+    for (const auto& pair : d->_items.toStdMap())
+    {
         delete pair.second;
     }
     d->_items.clear();
     update();
 }
 
-QList<ElaGraphicsItem *> ElaGraphicsScene::createAndAddItem(int width, int height, int count)
+QList<ElaGraphicsItem*> ElaGraphicsScene::createAndAddItem(int width, int height, int count)
 {
-    if (count <= 0) {
-        return QList<ElaGraphicsItem *>();
+    if (count <= 0)
+    {
+        return QList<ElaGraphicsItem*>();
     }
-    QList<ElaGraphicsItem *> createItemList;
-    for (int i = 0; i < count; i++) {
-        ElaGraphicsItem *item = new ElaGraphicsItem();
+    QList<ElaGraphicsItem*> createItemList;
+    for (int i = 0; i < count; i++)
+    {
+        ElaGraphicsItem* item = new ElaGraphicsItem();
         item->setWidth(width);
         item->setHeight(height);
         createItemList.append(item);
@@ -99,39 +109,45 @@ QList<ElaGraphicsItem *> ElaGraphicsScene::createAndAddItem(int width, int heigh
     return createItemList;
 }
 
-QList<ElaGraphicsItem *> ElaGraphicsScene::getSelectedElaItems() const
+QList<ElaGraphicsItem*> ElaGraphicsScene::getSelectedElaItems() const
 {
-    QList<QGraphicsItem *> selectedItemList = selectedItems();
-    QList<ElaGraphicsItem *> selectedElaItemList;
-    for (auto item : selectedItemList) {
-        ElaGraphicsItem *itemCast = dynamic_cast<ElaGraphicsItem *>(item);
-        if (itemCast) {
+    QList<QGraphicsItem*> selectedItemList = selectedItems();
+    QList<ElaGraphicsItem*> selectedElaItemList;
+    for (auto item : selectedItemList)
+    {
+        ElaGraphicsItem* itemCast = dynamic_cast<ElaGraphicsItem*>(item);
+        if (itemCast)
+        {
             selectedElaItemList.append(itemCast);
         }
     }
     return selectedElaItemList;
 }
 
-QList<ElaGraphicsItem *> ElaGraphicsScene::getElaItems(QPoint pos)
+QList<ElaGraphicsItem*> ElaGraphicsScene::getElaItems(QPoint pos)
 {
-    QList<QGraphicsItem *> itemList = items(pos);
-    QList<ElaGraphicsItem *> elaItemList;
-    for (auto item : itemList) {
-        ElaGraphicsItem *elaItem = dynamic_cast<ElaGraphicsItem *>(item);
-        if (elaItem) {
+    QList<QGraphicsItem*> itemList = items(pos);
+    QList<ElaGraphicsItem*> elaItemList;
+    for (auto item : itemList)
+    {
+        ElaGraphicsItem* elaItem = dynamic_cast<ElaGraphicsItem*>(item);
+        if (elaItem)
+        {
             elaItemList.append(elaItem);
         }
     }
     return elaItemList;
 }
 
-QList<ElaGraphicsItem *> ElaGraphicsScene::getElaItems(QPointF pos)
+QList<ElaGraphicsItem*> ElaGraphicsScene::getElaItems(QPointF pos)
 {
-    QList<QGraphicsItem *> itemList = items(pos);
-    QList<ElaGraphicsItem *> elaItemList;
-    for (auto item : itemList) {
-        ElaGraphicsItem *elaItem = dynamic_cast<ElaGraphicsItem *>(item);
-        if (elaItem) {
+    QList<QGraphicsItem*> itemList = items(pos);
+    QList<ElaGraphicsItem*> elaItemList;
+    for (auto item : itemList)
+    {
+        ElaGraphicsItem* elaItem = dynamic_cast<ElaGraphicsItem*>(item);
+        if (elaItem)
+        {
             elaItemList.append(elaItem);
         }
     }
@@ -142,9 +158,12 @@ void ElaGraphicsScene::setSceneMode(ElaGraphicsSceneType::SceneMode mode)
 {
     Q_D(ElaGraphicsScene);
     d->_sceneMode = mode;
-    if (mode == ElaGraphicsSceneType::SceneMode::DragMove) {
+    if (mode == ElaGraphicsSceneType::SceneMode::DragMove)
+    {
         views().at(0)->setDragMode(QGraphicsView::ScrollHandDrag);
-    } else {
+    }
+    else
+    {
         views().at(0)->setDragMode(QGraphicsView::RubberBandDrag);
     }
 }
@@ -157,8 +176,9 @@ ElaGraphicsSceneType::SceneMode ElaGraphicsScene::getSceneMode() const
 void ElaGraphicsScene::selectAllItems()
 {
     Q_D(ElaGraphicsScene);
-    for (const auto &pair : d->_items.toStdMap()) {
-        ElaGraphicsItem *item = pair.second;
+    for (const auto& pair : d->_items.toStdMap())
+    {
+        ElaGraphicsItem* item = pair.second;
         item->setSelected(true);
     }
 }
@@ -168,23 +188,24 @@ QList<QJsonObject> ElaGraphicsScene::getItemLinkList() const
     return d_ptr->_itemsLink;
 }
 
-bool ElaGraphicsScene::addItemLink(ElaGraphicsItem *item1,
-                                   ElaGraphicsItem *item2,
-                                   int port1,
-                                   int port2)
+bool ElaGraphicsScene::addItemLink(ElaGraphicsItem* item1, ElaGraphicsItem* item2, int port1, int port2)
 {
     Q_D(ElaGraphicsScene);
-    if (!item1 || !item2 || (item1 == item2) || port1 < 0 || port2 < 0
-        || item1->getMaxLinkPortCount() <= port1 || item2->getMaxLinkPortCount() <= port2) {
+    if (!item1 || !item2 || (item1 == item2) || port1 < 0 || port2 < 0 || item1->getMaxLinkPortCount() <= port1 || item2->getMaxLinkPortCount() <= port2)
+    {
         return false;
     }
-    if (d->_pIsCheckLinkPort) {
-        if (!item1->getCurrentLinkPortState(port1) && !item2->getCurrentLinkPortState(port2)) {
+    if (d->_pIsCheckLinkPort)
+    {
+        if (!item1->getCurrentLinkPortState(port1) && !item2->getCurrentLinkPortState(port2))
+        {
             item1->setCurrentLinkPortState(true, port1);
             item1->setCurrentLinkPortCount(item1->getCurrentLinkPortCount() + 1);
             item2->setCurrentLinkPortState(true, port2);
             item2->setCurrentLinkPortCount(item2->getCurrentLinkPortCount() + 1);
-        } else {
+        }
+        else
+        {
             return false;
         }
     }
@@ -192,31 +213,36 @@ bool ElaGraphicsScene::addItemLink(ElaGraphicsItem *item1,
     linkObject.insert(item1->getItemUID(), port1);
     linkObject.insert(item2->getItemUID(), port2);
     d->_itemsLink.append(linkObject);
-    ElaGraphicsLineItem *lineItem = new ElaGraphicsLineItem(item1, item2, port1, port2);
+    ElaGraphicsLineItem* lineItem = new ElaGraphicsLineItem(item1, item2, port1, port2);
     QGraphicsScene::addItem(lineItem);
     d->_lineItemsList.append(lineItem);
     update();
     return true;
 }
 
-bool ElaGraphicsScene::removeItemLink(ElaGraphicsItem *item1)
+bool ElaGraphicsScene::removeItemLink(ElaGraphicsItem* item1)
 {
     Q_D(ElaGraphicsScene);
-    if (!item1) {
+    if (!item1)
+    {
         return false;
     }
-    if (d->_pIsCheckLinkPort) {
+    if (d->_pIsCheckLinkPort)
+    {
         item1->setCurrentLinkPortState(false);
         item1->setCurrentLinkPortCount(0);
     }
     // 处理与该Item有关的连接
-    foreach (auto &link, d->_itemsLink) {
-        if (link.contains(item1->getItemUID())) {
-            if (d->_pIsCheckLinkPort) {
+    foreach (auto& link, d->_itemsLink)
+    {
+        if (link.contains(item1->getItemUID()))
+        {
+            if (d->_pIsCheckLinkPort)
+            {
                 // 解除otherItem端口占用
                 QStringList keys = link.keys();
                 keys.removeOne(item1->getItemUID());
-                ElaGraphicsItem *otherItem = d->_items.value(keys.at(0));
+                ElaGraphicsItem* otherItem = d->_items.value(keys.at(0));
                 otherItem->setCurrentLinkPortState(false, link.value(keys.at(0)).toInt());
                 otherItem->setCurrentLinkPortCount(otherItem->getCurrentLinkPortCount() - 1);
             }
@@ -224,8 +250,10 @@ bool ElaGraphicsScene::removeItemLink(ElaGraphicsItem *item1)
         }
     }
     // 处理连接图元
-    foreach (auto lineItem, d->_lineItemsList) {
-        if (lineItem->isTargetLink(item1)) {
+    foreach (auto lineItem, d->_lineItemsList)
+    {
+        if (lineItem->isTargetLink(item1))
+        {
             d->_lineItemsList.removeOne(lineItem);
             QGraphicsScene::removeItem(lineItem);
             delete lineItem;
@@ -235,34 +263,38 @@ bool ElaGraphicsScene::removeItemLink(ElaGraphicsItem *item1)
     return true;
 }
 
-bool ElaGraphicsScene::removeItemLink(ElaGraphicsItem *item1,
-                                      ElaGraphicsItem *item2,
-                                      int port1,
-                                      int port2)
+bool ElaGraphicsScene::removeItemLink(ElaGraphicsItem* item1, ElaGraphicsItem* item2, int port1, int port2)
 {
     Q_D(ElaGraphicsScene);
-    if (!item1 || !item2) {
+    if (!item1 || !item2)
+    {
         return false;
     }
     bool isLinkExist = false;
-    foreach (auto &link, d->_itemsLink) {
-        if (link.value(item1->getItemUID()) == port1 && link.value(item2->getItemUID()) == port2) {
+    foreach (auto& link, d->_itemsLink)
+    {
+        if (link.value(item1->getItemUID()) == port1 && link.value(item2->getItemUID()) == port2)
+        {
             d->_itemsLink.removeOne(link);
             // 这里处理连线图元
             isLinkExist = true;
             break;
         }
     }
-    foreach (auto lineItem, d->_lineItemsList) {
-        if (lineItem->isTargetLink(item1, item2, port1, port2)) {
+    foreach (auto lineItem, d->_lineItemsList)
+    {
+        if (lineItem->isTargetLink(item1, item2, port1, port2))
+        {
             d->_lineItemsList.removeOne(lineItem);
             QGraphicsScene::removeItem(lineItem);
             delete lineItem;
             break;
         }
     }
-    if (isLinkExist) {
-        if (d->_pIsCheckLinkPort) {
+    if (isLinkExist)
+    {
+        if (d->_pIsCheckLinkPort)
+        {
             item1->setCurrentLinkPortState(false, port1);
             item1->setCurrentLinkPortCount(item1->getCurrentLinkPortCount() - 1);
             item2->setCurrentLinkPortState(false, port2);
@@ -270,7 +302,9 @@ bool ElaGraphicsScene::removeItemLink(ElaGraphicsItem *item1,
         }
         update();
         return true;
-    } else {
+    }
+    else
+    {
         return false;
     }
 }
@@ -278,8 +312,9 @@ bool ElaGraphicsScene::removeItemLink(ElaGraphicsItem *item1,
 QVector<QJsonObject> ElaGraphicsScene::getItemsDataRoute() const
 {
     QVector<QJsonObject> dataRouteVector;
-    for (const auto &pair : d_ptr->_items.toStdMap()) {
-        ElaGraphicsItem *item = pair.second;
+    for (const auto& pair : d_ptr->_items.toStdMap())
+    {
+        ElaGraphicsItem* item = pair.second;
         dataRouteVector.append(item->getDataRoutes());
     }
     return dataRouteVector;
@@ -289,7 +324,8 @@ void ElaGraphicsScene::serialize()
 {
     Q_D(ElaGraphicsScene);
     QFile file(d->_pSerializePath);
-    if (!file.open(QIODevice::WriteOnly)) {
+    if (!file.open(QIODevice::WriteOnly))
+    {
         qDebug() << "serialize Error";
         return;
     }
@@ -303,7 +339,8 @@ void ElaGraphicsScene::deserialize()
 {
     Q_D(ElaGraphicsScene);
     QFile file(d->_pSerializePath);
-    if (!file.open(QIODevice::ReadOnly)) {
+    if (!file.open(QIODevice::ReadOnly))
+    {
         qDebug() << "deserialize Error";
         return;
     }
@@ -313,7 +350,7 @@ void ElaGraphicsScene::deserialize()
     update();
 }
 
-void ElaGraphicsScene::focusOutEvent(QFocusEvent *event)
+void ElaGraphicsScene::focusOutEvent(QFocusEvent* event)
 {
     Q_D(ElaGraphicsScene);
     d->_sceneMode = ElaGraphicsSceneType::SceneMode::Default;
@@ -321,20 +358,24 @@ void ElaGraphicsScene::focusOutEvent(QFocusEvent *event)
     QGraphicsScene::focusOutEvent(event);
 }
 
-void ElaGraphicsScene::keyPressEvent(QKeyEvent *event)
+void ElaGraphicsScene::keyPressEvent(QKeyEvent* event)
 {
     Q_D(ElaGraphicsScene);
-    switch (event->key()) {
-    case Qt::Key_Control: {
+    switch (event->key())
+    {
+    case Qt::Key_Control:
+    {
         d->_sceneMode = ElaGraphicsSceneType::SceneMode::MultiSelect;
         break;
     }
-    case Qt::Key_Shift: {
+    case Qt::Key_Shift:
+    {
         d->_sceneMode = ElaGraphicsSceneType::SceneMode::ItemLink;
         clearSelection();
         break;
     }
-    case Qt::Key_Delete: {
+    case Qt::Key_Delete:
+    {
         removeSelectedItems();
         break;
     }
@@ -342,7 +383,7 @@ void ElaGraphicsScene::keyPressEvent(QKeyEvent *event)
     QGraphicsScene::keyPressEvent(event);
 }
 
-void ElaGraphicsScene::keyReleaseEvent(QKeyEvent *event)
+void ElaGraphicsScene::keyReleaseEvent(QKeyEvent* event)
 {
     Q_D(ElaGraphicsScene);
     d->_sceneMode = ElaGraphicsSceneType::SceneMode::Default;
@@ -350,48 +391,63 @@ void ElaGraphicsScene::keyReleaseEvent(QKeyEvent *event)
     QGraphicsScene::keyReleaseEvent(event);
 }
 
-void ElaGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
+void ElaGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent* event)
 {
     Q_D(ElaGraphicsScene);
-    if (event->button() == Qt::LeftButton) {
-        if (d->_sceneMode == ElaGraphicsSceneType::SceneMode::Default) {
+    if (event->button() == Qt::LeftButton)
+    {
+        if (d->_sceneMode == ElaGraphicsSceneType::SceneMode::Default)
+        {
             d->_lastPos = event->pos();
         }
     }
-    QList<QGraphicsItem *> selectedItemList = selectedItems();
+    QList<QGraphicsItem*> selectedItemList = selectedItems();
     QGraphicsScene::mousePressEvent(event);
-    if (d->_sceneMode == ElaGraphicsSceneType::SceneMode::ItemLink) {
-        for (auto item : selectedItemList) {
+    if (d->_sceneMode == ElaGraphicsSceneType::SceneMode::ItemLink)
+    {
+        for (auto item : selectedItemList)
+        {
             item->setSelected(true);
         }
         d->_lastPos = event->pos();
     }
 }
 
-void ElaGraphicsScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+void ElaGraphicsScene::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 {
     Q_D(ElaGraphicsScene);
-    QList<ElaGraphicsItem *> itemList = getElaItems(event->scenePos());
-    if (event->button() == Qt::LeftButton) {
-        switch (d->_sceneMode) {
-        case ElaGraphicsSceneType::SceneMode::Default: {
-            if (itemList.count() > 0) {
+    QList<ElaGraphicsItem*> itemList = getElaItems(event->scenePos());
+    if (event->button() == Qt::LeftButton)
+    {
+        switch (d->_sceneMode)
+        {
+        case ElaGraphicsSceneType::SceneMode::Default:
+        {
+            if (itemList.count() > 0)
+            {
                 Q_EMIT mouseLeftClickedItem(itemList[0]);
             }
             break;
         }
-        case ElaGraphicsSceneType::SceneMode::ItemLink: {
-            QList<ElaGraphicsItem *> selectedItemList = getSelectedElaItems();
-            if (selectedItemList.count() == 1 && !d->_linkLineItem) {
-                d->_linkLineItem = new ElaGraphicsLineItem(selectedItemList.at(0)->pos(),
-                                                           selectedItemList.at(0)->pos());
+        case ElaGraphicsSceneType::SceneMode::ItemLink:
+        {
+            QList<ElaGraphicsItem*> selectedItemList = getSelectedElaItems();
+            if (selectedItemList.count() == 1 && !d->_linkLineItem)
+            {
+                d->_linkLineItem = new ElaGraphicsLineItem(selectedItemList.at(0)->pos(), selectedItemList.at(0)->pos());
                 QGraphicsScene::addItem(d->_linkLineItem);
-            } else if (selectedItemList.count() == 2) {
-                if (d->_pIsCheckLinkPort) {
+            }
+            else if (selectedItemList.count() == 2)
+            {
+                if (d->_pIsCheckLinkPort)
+                {
                     Q_EMIT showItemLink();
-                } else {
+                }
+                else
+                {
                     QJsonObject linkObject;
-                    for (auto item : selectedItemList) {
+                    for (auto item : selectedItemList)
+                    {
                         linkObject.insert(item->getItemUID(), 0);
                     }
                     d->_itemsLink.append(linkObject);
@@ -401,18 +457,24 @@ void ElaGraphicsScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
                     clearSelection();
                     return;
                 }
-            } else {
+            }
+            else
+            {
                 d->_removeLinkLineItem();
                 update();
             }
             break;
         }
-        default: {
+        default:
+        {
             break;
         }
         }
-    } else if (event->button() == Qt::RightButton) {
-        if (itemList.count() > 0) {
+    }
+    else if (event->button() == Qt::RightButton)
+    {
+        if (itemList.count() > 0)
+        {
             clearSelection();
             itemList[0]->setSelected(true);
             Q_EMIT mouseRightClickedItem(itemList[0]);
@@ -421,12 +483,15 @@ void ElaGraphicsScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     QGraphicsScene::mouseReleaseEvent(event);
 }
 
-void ElaGraphicsScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
+void ElaGraphicsScene::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 {
     Q_D(ElaGraphicsScene);
-    if (d->_sceneMode == ElaGraphicsSceneType::SceneMode::ItemLink) {
-        if (getSelectedElaItems().count() == 1) {
-            if (d->_linkLineItem) {
+    if (d->_sceneMode == ElaGraphicsSceneType::SceneMode::ItemLink)
+    {
+        if (getSelectedElaItems().count() == 1)
+        {
+            if (d->_linkLineItem)
+            {
                 d->_linkLineItem->setEndPoint(event->scenePos());
                 d->_linkLineItem->update();
             }
@@ -435,10 +500,11 @@ void ElaGraphicsScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     QGraphicsScene::mouseMoveEvent(event);
 }
 
-void ElaGraphicsScene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
+void ElaGraphicsScene::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
 {
-    QList<ElaGraphicsItem *> itemList = getElaItems(event->scenePos());
-    if (itemList.count() > 0) {
+    QList<ElaGraphicsItem*> itemList = getElaItems(event->scenePos());
+    if (itemList.count() > 0)
+    {
         Q_EMIT mouseDoubleClickedItem(itemList[0]);
     }
     QGraphicsScene::mouseDoubleClickEvent(event);

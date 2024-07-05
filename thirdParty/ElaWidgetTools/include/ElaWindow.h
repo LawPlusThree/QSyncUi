@@ -9,7 +9,6 @@
 #include "Def.h"
 #include "stdafx.h"
 class ElaWindowPrivate;
-class ElaNavigationBar;
 class QStackedWidget;
 class ELA_EXPORT ElaWindow : public QWidget
 {
@@ -42,6 +41,9 @@ public:
     ElaNavigationType::NodeOperateReturnType addFooterNode(QString footerTitle, QString& footerKey, int keyPoints = 0, ElaIconType awesome = ElaIconType::None) const;
     ElaNavigationType::NodeOperateReturnType addFooterNode(QString footerTitle, QWidget* page, QString& footerKey, int keyPoints = 0, ElaIconType awesome = ElaIconType::None) const;
 
+    void setNodeKeyPoints(QString nodeKey, int keyPoints);
+    int getNodeKeyPoints(QString nodeKey) const;
+
     void navigation(QString pageKey);
     void setWindowButtonFlag(ElaAppBarType::ButtonType buttonFlag, bool isEnable = true);
     void setWindowButtonFlags(ElaAppBarType::ButtonFlags buttonFlags);
@@ -52,15 +54,12 @@ public:
     void closeWindow();
 Q_SIGNALS:
     Q_SIGNAL void userInfoCardClicked();
-    Q_SIGNAL void footerNodeClicked(QString footerKey); // 页脚没有绑定页面时发送
     Q_SIGNAL void closeButtonClicked();
+    Q_SIGNAL void navigationNodeClicked(ElaNavigationType::NavigationNodeType nodeType, QString nodeKey);
 
 protected:
     virtual void paintEvent(QPaintEvent* event) override;
     virtual void resizeEvent(QResizeEvent* event) override;
-
-private:
-    friend class ElaNavigationBarPrivate;
 };
 
 #endif // ELAWINDOW_H

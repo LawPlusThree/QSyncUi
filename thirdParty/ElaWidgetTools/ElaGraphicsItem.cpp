@@ -15,16 +15,14 @@ Q_PROPERTY_CREATE_Q_CPP(ElaGraphicsItem, QString, ItemName)
 Q_PROPERTY_CREATE_Q_CPP(ElaGraphicsItem, QJsonObject, DataRoutes)
 Q_PROPERTY_CREATE_Q_CPP(ElaGraphicsItem, int, MaxLinkPortCount)
 Q_PROPERTY_CREATE_Q_CPP(ElaGraphicsItem, int, CurrentLinkPortCount)
-ElaGraphicsItem::ElaGraphicsItem(QGraphicsItem *parent)
-    : QGraphicsObject(parent)
-    , d_ptr(new ElaGraphicsItemPrivate())
+ElaGraphicsItem::ElaGraphicsItem(QGraphicsItem* parent)
+    : QGraphicsObject(parent), d_ptr(new ElaGraphicsItemPrivate())
 {
     Q_D(ElaGraphicsItem);
     d->q_ptr = this;
     setAcceptHoverEvents(true);
     setAcceptedMouseButtons(Qt::AllButtons);
-    setFlags(QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemIsFocusable
-             | QGraphicsItem::ItemIsSelectable | ItemAcceptsInputMethod);
+    setFlags(QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemIsFocusable | QGraphicsItem::ItemIsSelectable | ItemAcceptsInputMethod);
     d->_pWidth = 50;
     d->_pHeight = 50;
     d->_itemUID = QUuid::createUuid().toString().remove("{").remove("}").remove("-");
@@ -35,16 +33,14 @@ ElaGraphicsItem::ElaGraphicsItem(QGraphicsItem *parent)
     d->_pCurrentLinkPortCount = 0;
 }
 
-ElaGraphicsItem::ElaGraphicsItem(int width, int height, QGraphicsItem *parent)
-    : QGraphicsObject(parent)
-    , d_ptr(new ElaGraphicsItemPrivate())
+ElaGraphicsItem::ElaGraphicsItem(int width, int height, QGraphicsItem* parent)
+    : QGraphicsObject(parent), d_ptr(new ElaGraphicsItemPrivate())
 {
     Q_D(ElaGraphicsItem);
     d->q_ptr = this;
     setAcceptHoverEvents(true);
     setAcceptedMouseButtons(Qt::AllButtons);
-    setFlags(QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemIsFocusable
-             | QGraphicsItem::ItemIsSelectable | ItemAcceptsInputMethod);
+    setFlags(QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemIsFocusable | QGraphicsItem::ItemIsSelectable | ItemAcceptsInputMethod);
     d->_pWidth = width;
     d->_pHeight = height;
     d->_itemUID = QUuid::createUuid().toString().remove("{").remove("}").remove("-");
@@ -55,7 +51,9 @@ ElaGraphicsItem::ElaGraphicsItem(int width, int height, QGraphicsItem *parent)
     d->_pCurrentLinkPortCount = 0;
 }
 
-ElaGraphicsItem::~ElaGraphicsItem() {}
+ElaGraphicsItem::~ElaGraphicsItem()
+{
+}
 
 QRectF ElaGraphicsItem::boundingRect() const
 {
@@ -67,7 +65,7 @@ QString ElaGraphicsItem::getItemUID() const
     return d_ptr->_itemUID;
 }
 
-void ElaGraphicsItem::setScene(ElaGraphicsScene *scene)
+void ElaGraphicsItem::setScene(ElaGraphicsScene* scene)
 {
     Q_D(ElaGraphicsItem);
     d->_scene = scene;
@@ -76,11 +74,15 @@ void ElaGraphicsItem::setScene(ElaGraphicsScene *scene)
 void ElaGraphicsItem::setCurrentLinkPortState(bool isFullLink)
 {
     Q_D(ElaGraphicsItem);
-    if (d->_scene->getIsCheckLinkPort()) {
-        if (isFullLink) {
+    if (d->_scene->getIsCheckLinkPort())
+    {
+        if (isFullLink)
+        {
             d->_currentLinkPortState = 0;
             d->_currentLinkPortState = ~d->_currentLinkPortState;
-        } else {
+        }
+        else
+        {
             d->_currentLinkPortState = 0;
         }
     }
@@ -89,10 +91,14 @@ void ElaGraphicsItem::setCurrentLinkPortState(bool isFullLink)
 void ElaGraphicsItem::setCurrentLinkPortState(bool isLink, int portNumber)
 {
     Q_D(ElaGraphicsItem);
-    if (d->_scene->getIsCheckLinkPort()) {
-        if (isLink) {
+    if (d->_scene->getIsCheckLinkPort())
+    {
+        if (isLink)
+        {
             d->_currentLinkPortState |= (1LL << portNumber);
-        } else {
+        }
+        else
+        {
             d->_currentLinkPortState &= ~(1LL << portNumber);
         }
     }
@@ -110,7 +116,8 @@ bool ElaGraphicsItem::getCurrentLinkPortState(int portNumber) const
 
 int ElaGraphicsItem::getUnusedLinkPortCount() const
 {
-    if (d_ptr->_scene->getIsCheckLinkPort()) {
+    if (d_ptr->_scene->getIsCheckLinkPort())
+    {
         return d_ptr->_pMaxLinkPortCount - d_ptr->_pCurrentLinkPortCount;
     }
     return 0;
@@ -119,9 +126,12 @@ int ElaGraphicsItem::getUnusedLinkPortCount() const
 QVector<int> ElaGraphicsItem::getUnusedLinkPort() const
 {
     QVector<int> unusedPortVector;
-    if (d_ptr->_scene->getIsCheckLinkPort()) {
-        for (int i = 0; i < d_ptr->_pMaxLinkPortCount; i++) {
-            if (!(d_ptr->_currentLinkPortState & (1LL << i))) {
+    if (d_ptr->_scene->getIsCheckLinkPort())
+    {
+        for (int i = 0; i < d_ptr->_pMaxLinkPortCount; i++)
+        {
+            if (!(d_ptr->_currentLinkPortState & (1LL << i)))
+            {
                 unusedPortVector.append(i);
             }
         }
@@ -129,23 +139,23 @@ QVector<int> ElaGraphicsItem::getUnusedLinkPort() const
     return unusedPortVector;
 }
 
-void ElaGraphicsItem::paint(QPainter *painter,
-                            const QStyleOptionGraphicsItem *option,
-                            QWidget *widget)
+void ElaGraphicsItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget)
 {
     Q_D(ElaGraphicsItem);
     painter->save();
-    painter->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing
-                            | QPainter::SmoothPixmapTransform);
-    if (isSelected()) {
+    painter->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform);
+    if (isSelected())
+    {
         painter->drawImage(boundingRect(), d->_pItemSelectedImage);
-    } else {
+    }
+    else
+    {
         painter->drawImage(boundingRect(), d->_pItemImage);
     }
     painter->restore();
 }
 
-QDataStream &operator<<(QDataStream &stream, const ElaGraphicsItem *item)
+QDataStream& operator<<(QDataStream& stream, const ElaGraphicsItem* item)
 {
     stream << item->x();
     stream << item->y();
@@ -156,7 +166,7 @@ QDataStream &operator<<(QDataStream &stream, const ElaGraphicsItem *item)
     return stream;
 }
 
-QDataStream &operator>>(QDataStream &stream, ElaGraphicsItem *item)
+QDataStream& operator>>(QDataStream& stream, ElaGraphicsItem* item)
 {
     qreal itemX;
     qreal itemY;
@@ -173,22 +183,22 @@ QDataStream &operator>>(QDataStream &stream, ElaGraphicsItem *item)
     return stream;
 }
 
-void ElaGraphicsItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
+void ElaGraphicsItem::mousePressEvent(QGraphicsSceneMouseEvent* event)
 {
     QGraphicsObject::mousePressEvent(event);
 }
 
-void ElaGraphicsItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+void ElaGraphicsItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 {
     QGraphicsObject::mouseReleaseEvent(event);
 }
 
-void ElaGraphicsItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
+void ElaGraphicsItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 {
     QGraphicsObject::mouseMoveEvent(event);
 }
 
-void ElaGraphicsItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event)
+void ElaGraphicsItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
 {
     QGraphicsObject::mouseDoubleClickEvent(event);
 }
