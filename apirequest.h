@@ -6,12 +6,14 @@
 #include <QUrl>
 #include <QByteArray>
 #include <QEventLoop>
+#include "apiresponse.h"
 class ApiRequest : public QObject
 {
     Q_OBJECT
 public:
     explicit ApiRequest(QObject *parent = nullptr){
         manager = new QNetworkAccessManager(this);
+        response = new ApiResponse(this);
     };
 
     // 设置 API 主域名
@@ -20,29 +22,15 @@ public:
     }
 
     // 发起 GET 请求
-    QByteArray get(const QString& path) {
-        QNetworkRequest request(QUrl(baseUrl + path));
-        QNetworkReply* reply = manager->get(request);
-        QEventLoop loop;
-        connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
-        loop.exec();
-        return reply->readAll();
-    }
+    QByteArray get(const QString& path);
 
     // 发起 POST 请求
-    QByteArray post(const QString& path, const QByteArray& data) {
-        QNetworkRequest request(QUrl(baseUrl + path));
-        request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
-        QNetworkReply* reply = manager->post(request, data);
-        QEventLoop loop;
-        connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
-        loop.exec();
-        return reply->readAll();
-    }
+    QByteArray post(const QString& path, const QByteArray& data);
 
 private:
     QString baseUrl;
     QNetworkAccessManager* manager;
+    ApiResponse* response;
 };
 
 #endif // APIREQUEST_H
