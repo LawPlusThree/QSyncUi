@@ -2,6 +2,7 @@
 #define SIGNIN_H
 
 #include <QWidget>
+#include "user.h"
 
 namespace Ui {
 class signin;

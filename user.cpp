@@ -23,22 +23,25 @@ User::User(const QString &account, const QString &password, QObject *parent)
     apiRequest->setBaseUrl("https://syncapi.snakekiss.com");
 }
 
-void User::enroll()
+bool User::enroll()
 {
     QString postData
     = QString("username=%1&email=%2&password=%3").arg(username).arg(account).arg(hashedPassword);
-    apiRequest->post("/register",postData.toUtf8());
+    ApiResponse response=apiRequest->post("/register",postData.toUtf8());
+    return response.isSuccess();
 }
 
-void User::login()
+bool User::login()
 {
     QString postData = QString("email=%1&password=%2").arg(account).arg(hashedPassword);
-    apiRequest->post("/login",postData.toUtf8());
+    ApiResponse response=apiRequest->post("/login",postData.toUtf8());
+    return response.isSuccess();
 }
 
-void User::forgetPassword()
+bool User::forgetPassword()
 {
     //找回密码功能
+    return true;
 }
 
 QString User::getUserHash() const

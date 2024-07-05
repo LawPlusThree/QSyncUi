@@ -13,7 +13,6 @@ class ApiRequest : public QObject
 public:
     explicit ApiRequest(QObject *parent = nullptr){
         manager = new QNetworkAccessManager(this);
-        response = new ApiResponse(this);
     };
 
     // 设置 API 主域名
@@ -22,15 +21,14 @@ public:
     }
 
     // 发起 GET 请求
-    QByteArray get(const QString& path);
+    ApiResponse get(const QString& path);
 
     // 发起 POST 请求
-    QByteArray post(const QString& path, const QByteArray& data);
+    ApiResponse post(const QString& path, const QByteArray& data);
 
 private:
     QString baseUrl;
     QNetworkAccessManager* manager;
-    ApiResponse* response;
 };
 
 #endif // APIREQUEST_H
