@@ -17,7 +17,6 @@ private:
     QString session;
     ApiRequest *apiRequest;
 public:
-    explicit User(QObject *parent = nullptr);
     User(const QString &username,
          const QString &account,
          const QString &password,
