@@ -11,6 +11,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(WINDOWS_BUILD ${MSVC})
 set(SERVICE_COMPONENTS s3)
 
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+
 if (WINDOWS_BUILD) # Set the location where CMake can find the installed libraries for the AWS SDK.
     message(STATUS "CMAKE_SYSTEM_PREFIX_PATH: ${CMAKE_SYSTEM_PREFIX_PATH}")
     message(STATUS "SYSTEM_MODULE_PATH: ${SYSTEM_MODULE_PATH}")
@@ -22,11 +26,11 @@ find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Core Network Sql)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Core Network Sql)
 # Find the AWS SDK for C++ package.
 find_package(AWSSDK REQUIRED COMPONENTS ${SERVICE_COMPONENTS})
-
+message(STATUS "CMAKE: ${CMAKE_CURRENT_BINARY_DIR}")
 if (WINDOWS_BUILD AND AWSSDK_INSTALL_AS_SHARED_LIBS)
     # Copy relevant AWS SDK for C++ libraries into the current binary directory for running and debugging.
 
-    # set(BIN_SUB_DIR "/Debug") # if you are building from the command line you may need to uncomment this
+    set(BIN_SUB_DIR "/Debug") # if you are building from the command line you may need to uncomment this
     # and set the proper subdirectory to the executables' location.
 
     AWSSDK_CPY_DYN_LIBS(SERVICE_COMPONENTS "" ${CMAKE_CURRENT_BINARY_DIR}${BIN_SUB_DIR})
