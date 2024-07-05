@@ -9,6 +9,7 @@ LoginWindow::LoginWindow(QWidget *parent)
     ui->setupUi(this);
     ui->account->setPlaceholderText("账号");
     ui->password->setPlaceholderText("密码");
+    ui->password->setEchoMode(QLineEdit::Password);
 
     connect(resetp,&reset::goback,this,[=](){
         resetp->close();

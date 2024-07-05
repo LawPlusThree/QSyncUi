@@ -9,6 +9,8 @@ reset::reset(QWidget *parent)
     ui->setupUi(this);
     ui->Password->setPlaceholderText("新密码");
     ui->Passagain->setPlaceholderText("再次确认密码");
+    ui->Password->setEchoMode(QLineEdit::Password);
+    ui->Passagain->setEchoMode(QLineEdit::Password);
 }
 
 reset::~reset()

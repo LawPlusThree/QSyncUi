@@ -11,6 +11,8 @@ signin::signin(QWidget *parent)
     ui->account->setPlaceholderText("账号");
     ui->password->setPlaceholderText("密码");
     ui->passagain->setPlaceholderText("再次确认密码");
+    ui->password->setEchoMode(QLineEdit::Password);
+    ui->passagain->setEchoMode(QLineEdit::Password);
 }
 
 signin::~signin()
