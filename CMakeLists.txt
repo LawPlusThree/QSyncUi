@@ -51,6 +51,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         mainwindow.h mainwindow.cpp
         homeview.h homeview.cpp
         apirequest.h apirequest.cpp
+        apiresponse.h apiresponse.cpp
 
 
     )
