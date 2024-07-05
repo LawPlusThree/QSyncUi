@@ -5,6 +5,7 @@
 
 #include "ElaContentDialog.h"
 #include "ElaWindow.h"
+#include"loginwindow.h"
 class HomePage;
 class T_Icon;
 class T_ElaScreen;
@@ -17,6 +18,7 @@ class MainWindow : public ElaWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    LoginWindow*login=new LoginWindow();
     Q_SLOT void onCloseButtonClicked();
 
 

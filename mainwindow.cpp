@@ -28,6 +28,9 @@ MainWindow::MainWindow(QWidget *parent)
     // setUserInfoCardVisible(false);
     _homePage = new HomePage(this);
 
+    connect(this, &ElaWindow::userInfoCardClicked, this, [=]() {
+        login->show();
+    });
 
     // GraphicsView
     ElaGraphicsScene *scene = new ElaGraphicsScene(this);
