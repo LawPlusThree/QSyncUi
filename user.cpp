@@ -40,20 +40,18 @@ bool User::forgetPassword()
     return true;
 }
 
-bool User::createTask()
+bool User::loadTask()
 {
-    //新建task
+    //获取云端task
     ApiResponse response=apiRequest->get("/tasks");
     QJsonArray tasksArray = response.getDatav().toArray();
 
     for (int i = 0; i < tasksArray.size(); ++i) {
         QJsonObject taskObj = tasksArray[i].toObject();
-        SyncTask task;
-        task.localDir = taskObj["localDir"].toString();
-        task.s3Dir = taskObj["s3Dir"].toString();
-        task.syncType = taskObj["syncType"].toString();
-        task.usedSize = taskObj["usedSize"].toDouble();
-        task.totalSize = taskObj["totalSize"].toDouble();
+        SyncTask task(taskObj["localDir"].toString(),
+                taskObj["s3Dir"].toString(),taskObj["syncType"].toInt());
+        //task.usedSize = taskObj["usedSize"].toDouble();
+        //task.totalSize = taskObj["totalSize"].toDouble();
         tasks.push_back(task);
     }
     return response.isSuccess();
@@ -70,4 +68,3 @@ QString User::getSession()
     return session;
 }
 
-void User::createTask(){};
