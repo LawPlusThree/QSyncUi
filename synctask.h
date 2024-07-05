@@ -12,6 +12,7 @@
 #include "user.h"
 
 //声明友元类
+class SyncCore;
 class SyncTaskManager;
 class SyncTask
 {
@@ -27,6 +28,7 @@ private:
 public:
     SyncTask(int id, QString localPath, QString remotePath, int syncStatus);
     friend class SyncTaskManager;
+    friend class SyncCore;
 };
 
 class SyncTaskManager

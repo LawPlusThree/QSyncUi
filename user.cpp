@@ -25,8 +25,7 @@ User::User(const QString &account, const QString &password, QObject *parent)
 
 void User::enroll()
 {
-    QString postData
-    = QString("username=%1&email=%2&password=%3").arg(username).arg(account).arg(hashedPassword);
+    QString postData = QString("username=%1&email=%2&password=%3").arg(username).arg(account).arg(hashedPassword);
     apiRequest->post("/register",postData.toUtf8());
 }
 

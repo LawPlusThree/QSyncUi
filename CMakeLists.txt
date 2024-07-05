@@ -52,6 +52,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         homeview.h homeview.cpp
         apirequest.h apirequest.cpp
         apiresponse.h apiresponse.cpp
+        synccore.h synccore.cpp
 
 
     )
