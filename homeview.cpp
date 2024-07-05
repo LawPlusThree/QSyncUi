@@ -1,4 +1,4 @@
-#include "homeview.h".h"
+#include "homeview.h"
 
 #include <QHBoxLayout>
 #include <QMouseEvent>
@@ -11,6 +11,7 @@
 #include "ElaMenu.h"
 #include "ElaMessageBar.h"
 #include "ElaReminderCard.h"
+#include "DirCard.h"
 #include "ElaScrollArea.h"
 #include "ElaText.h"
 HomePage::HomePage(QWidget* parent)
@@ -38,8 +39,10 @@ HomePage::HomePage(QWidget* parent)
 
     ElaText* flowLayoutText = new ElaText("欢迎", this);
     // ElaFlowLayout
-    ElaReminderCard* homeCard1 = new ElaReminderCard(this);
-    connect(homeCard1, &ElaReminderCard::clicked, this, [=]() { Q_EMIT elaScreenNavigation(); });
+    //ElaReminderCard* homeCard1 = new ElaReminderCard(this);
+    //connect(homeCard1, &ElaReminderCard::clicked, this, [=]() { Q_EMIT elaScreenNavigation(); });
+    DirCard* homeCard1 = new DirCard(this);
+    connect(homeCard1, &DirCard::clicked, this, [=]() { Q_EMIT elaScreenNavigation(); });
     homeCard1->setTitle("ElaScreen");
     homeCard1->setSubTitle("Use ElaDxgiManager To Grab Screen");
     homeCard1->setCardPixmap(QPixmap(":/include/Image/control/AutomationProperties.png"));
