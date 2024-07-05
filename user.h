@@ -30,7 +30,9 @@ public:
          const QString &account,
          const QString &password,
          QObject *parent = nullptr);
-
+    User(         const QString &account,
+         const QString &password,
+         QObject *parent = nullptr);
     void enroll();         //执行post请求，实现注册功能
     void login();          //执行post请求，实现登录功能
     void forgetPassword(); //执行post请求，实现找回密码功能

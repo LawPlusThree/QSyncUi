@@ -16,6 +16,16 @@ User::User(const QString &username, const QString &account, const QString &passw
     apiRequest->setBaseUrl("https://syncapi.snakekiss.com");
 }
 
+User::User(const QString &account, const QString &password, QObject *parent)
+    : QObject(parent)
+    , account(account)
+    , hashedPassword(password)
+    , manager(new QNetworkAccessManager(this))
+{
+    apiRequest=new ApiRequest(this);
+    apiRequest->setBaseUrl("https://syncapi.snakekiss.com");
+}
+
 void User::enroll()
 {
     QUrl url("https://syncapi.snakekiss.com/register");
@@ -32,13 +42,12 @@ void User::enroll()
 
 void User::login()
 {
-    QUrl url("https://syncapi.snakekiss.com/login");
-    QNetworkRequest request(url);
+    //QUrl url("https://syncapi.snakekiss.com/login");
+    //QNetworkRequest request(url);
 
-    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
+    //request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
 
     QString postData = QString("email=%1&password=%2").arg(account).arg(hashedPassword);
-    reply = manager->post(request, postData.toUtf8());
     qDebug()<<apiRequest->post("/login",postData.toUtf8());
 }
 
