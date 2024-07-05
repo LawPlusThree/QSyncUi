@@ -9,11 +9,12 @@
 #include <QStandardPaths>
 #include <QString>
 #include "qcontainerfwd.h"
-#include "user.h"
+
 
 //声明友元类
 class SyncCore;
 class SyncTaskManager;
+class User;
 class SyncTask
 {
 private:
@@ -34,7 +35,7 @@ public:
 class SyncTaskManager
 {
 public:
-    SyncTaskManager(User &u) { initializeDatabase(u.getUserHash()); }
+    SyncTaskManager(User* u);
 
     void addTask(const SyncTask &task);
 

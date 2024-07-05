@@ -24,6 +24,9 @@ public:
     QJsonObject getData(){
         return data;
     }
+    QJsonValueRef getDatav(){
+        return datav;
+    }
     bool isSuccess();
 
 private:
@@ -31,6 +34,7 @@ private:
     int code;
     QString message;
     QJsonObject data;
+    QJsonValueRef datav;
 };
 
 #endif // APIRESPONSE_H

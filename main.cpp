@@ -9,7 +9,7 @@ int main(int argc, char *argv[])
 
 
     //测试用户
-    User loginuser("newuser@example.com","123456");
+    User loginuser("enrolluser@example.com","123456");
     loginuser.login();
     SyncTaskManager stm(loginuser);
     SyncTask mytask(1,"/home/","/home/",1);

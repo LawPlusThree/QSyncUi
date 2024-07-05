@@ -4,7 +4,10 @@
 #include <QDebug>
 #include <QObject>
 #include <QString>
+#include <QVector>
+#include <QJsonArray>
 #include "apirequest.h"
+#include "synctask.h"
 class User : public QObject
 {
     Q_OBJECT
@@ -16,6 +19,7 @@ private:
     QString hashedPassword; //password
     QString session;
     ApiRequest *apiRequest;
+    QVector<SyncTask> tasks;
 public:
     User(const QString &username,
          const QString &account,
@@ -27,6 +31,7 @@ public:
     bool enroll();         //执行post请求，实现注册功能
     bool login();          //执行post请求，实现登录功能
     bool forgetPassword(); //执行post请求，实现找回密码功能
+    bool createTask();//新建task
 
     QString getUserHash() const; //返回用户账户的哈希
 

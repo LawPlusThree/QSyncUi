@@ -1,6 +1,8 @@
 #include "synctask.h"
+#include "user.h"
 
 
+SyncTaskManager::SyncTaskManager(User *u) { initializeDatabase(u->getUserHash()); }
 
 void SyncTaskManager::addTask(const SyncTask &task) {
     QSqlQuery query;
