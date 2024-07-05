@@ -1,5 +1,7 @@
 #include "loginwindow.h"
 #include "./ui_loginwindow.h"
+#include"user.h"
+#include"synctask.h"
 #include<QMessageBox>
 
 LoginWindow::LoginWindow(QWidget *parent)
