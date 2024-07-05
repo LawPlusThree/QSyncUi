@@ -4,6 +4,7 @@
 #include"reset.h"
 #include"signin.h"
 #include <QMainWindow>
+#include "ElaWindow.h"
 #include "mycore.h"
 QT_BEGIN_NAMESPACE
 namespace Ui {

@@ -28,6 +28,9 @@ MainWindow::MainWindow(QWidget *parent)
     // setUserInfoCardVisible(false);
     _homePage = new HomePage(this);
 
+    connect(this, &ElaWindow::userInfoCardClicked, this, [=]() {
+        login->show();
+    });
 
     // GraphicsView
     ElaGraphicsScene *scene = new ElaGraphicsScene(this);
@@ -52,6 +55,12 @@ MainWindow::MainWindow(QWidget *parent)
     QString testKey_1;
     QString testKey_2;
     addPageNode("HOME", _homePage, ElaIconType::House);
+    addExpanderNode("同步功能",testKey_2,ElaIconType::House);
+    addPageNode("正在同步",new QWidget(this),testKey_2,ElaIconType::Numbe1);
+    addPageNode("历史同步",new QWidget(this),testKey_2,ElaIconType::Numbe2);
+    addPageNode("同步文件夹管理",new QWidget(this),testKey_2,ElaIconType::Numbe3);
+
+
     //下拉菜单
     addExpanderNode("ElaDxgi", _elaDxgiKey, ElaIconType::TvMusic);
     //addPageNode("ElaScreen", _elaScreenPage, _elaDxgiKey, 3, ElaIconType::ObjectGroup);
