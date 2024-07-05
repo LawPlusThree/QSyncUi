@@ -19,6 +19,9 @@ public:
     ~MainWindow();
     Q_SLOT void onCloseButtonClicked();
 
+private slots:
+    void on_loadBtn_clicked();
+
 private:
     HomePage *_homePage{nullptr};
     T_ElaScreen *_elaScreenPage{nullptr};
