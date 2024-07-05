@@ -32,7 +32,7 @@ public:
 class SyncTaskManager
 {
 public:
-    SyncTaskManager(User u) { initializeDatabase(u.getUserHash()); }
+    SyncTaskManager(User &u) { initializeDatabase(u.getUserHash()); }
 
     void addTask(const SyncTask &task);
 
@@ -46,9 +46,10 @@ public:
 
     QList<SyncTask> getTasks();
 
-    // 其他方法：修改、删除、查询等
+    ~SyncTaskManager() { db.close(); }
 
 private:
     void initializeDatabase(QString name);
+    QSqlDatabase db;
 };
 #endif // SYNCTASK_H

@@ -54,14 +54,23 @@ MainWindow::MainWindow(QWidget *parent)
 
     QString testKey_1;
     QString testKey_2;
-    addPageNode("HOME", _homePage, ElaIconType::House);
+    QString testKey_3;
+    QString testKey_4;
+
     addExpanderNode("同步功能",testKey_2,ElaIconType::House);
-    addPageNode("正在同步",new QWidget(this),testKey_2,ElaIconType::Numbe1);
-    addPageNode("历史同步",new QWidget(this),testKey_2,ElaIconType::Numbe2);
-    addPageNode("同步文件夹管理",new QWidget(this),testKey_2,ElaIconType::Numbe3);
+    addPageNode("正在同步",new QWidget(this),testKey_2,ElaIconType::Cloud);
+    addPageNode("历史同步",new QWidget(this),testKey_2,ElaIconType::CheckToSlot);
+    addPageNode("同步文件夹管理",new QWidget(this),testKey_2,ElaIconType::FolderClosed);
+    addExpanderNode("版本控制",testKey_3,ElaIconType::EnvelopeOpenText);
+    addPageNode("查看历史",new QWidget(this),testKey_3,ElaIconType::CalendarClock);
+    addExpanderNode("个人功能",testKey_4,ElaIconType::User);
+    addPageNode("修改信息",new QWidget(this),testKey_4,ElaIconType::Text);
+    addPageNode("注销账号",new QWidget(this),testKey_4,ElaIconType::UserSlash);
+    addPageNode("退出登录",new QWidget(this),testKey_4,ElaIconType::ArrowRightFromBracket);
 
 
     //下拉菜单
+    addPageNode("HOME", _homePage, ElaIconType::House);
     addExpanderNode("ElaDxgi", _elaDxgiKey, ElaIconType::TvMusic);
     //addPageNode("ElaScreen", _elaScreenPage, _elaDxgiKey, 3, ElaIconType::ObjectGroup);
     // navigation(elaScreenWidget->property("ElaPageKey").toString());
