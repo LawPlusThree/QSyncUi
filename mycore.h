@@ -3,8 +3,8 @@
 
 #include <QObject>
 //#include <QHttpServer>
-#include "awsutils.h"
 #include "user.h"
+//#include "awsutils.h"
 class Core : public QObject
 {
     Q_OBJECT
@@ -13,8 +13,8 @@ public:
 
 private:
     //QHttpServer server;
-    User *currentUser;
-    AWSUtils *awsUtils;
+    User* currentUser;
+    //AWSUtils* awsUtils;
 signals:
 };
 

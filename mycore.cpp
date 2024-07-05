@@ -3,6 +3,6 @@
 Core::Core(QObject *parent)
     : QObject{parent}
 {
-    currentUser = nullptr;
-    awsUtils = new AWSUtils();
+    currentUser=nullptr;
+    //awsUtils=new AWSUtils();
 }
