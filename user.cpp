@@ -1,9 +1,5 @@
 #include "user.h"
 
-User::User(QObject *parent)
-    : QObject(parent)
-{}
-
 User::User(const QString &username, const QString &account, const QString &password, QObject *parent)
     : QObject(parent)
     , username(username)
