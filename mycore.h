@@ -4,7 +4,7 @@
 #include <QObject>
 //#include <QHttpServer>
 #include "user.h"
-#include "awsutils.h"
+//#include "awsutils.h"
 class Core : public QObject
 {
     Q_OBJECT
@@ -13,7 +13,7 @@ public:
 private:
     //QHttpServer server;
     User* currentUser;
-    AWSUtils* awsUtils;
+    //AWSUtils* awsUtils;
 signals:
 };
 

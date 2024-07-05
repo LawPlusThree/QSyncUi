@@ -33,9 +33,9 @@ if (WINDOWS_BUILD AND AWSSDK_INSTALL_AS_SHARED_LIBS)
 endif ()
 set(PROJECT_SOURCES
         main.cpp
-        mainwindow.cpp
-        mainwindow.h
-        mainwindow.ui
+        loginwindow.cpp
+        loginwindow.h
+        loginwindow.ui
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
@@ -46,6 +46,9 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         user.h user.cpp
         synctask.h synctask.cpp
         awsutils.h awsutils.cpp
+        mainwindow.h mainwindow.cpp
+        homeview.h homeview.cpp
+
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET QSyncUi APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
