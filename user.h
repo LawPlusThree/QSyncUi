@@ -10,7 +10,7 @@
 #include <QNetworkReply>
 #include <QObject>
 #include <QString>
-
+#include "apirequest.h"
 class User : public QObject
 {
     Q_OBJECT
@@ -23,7 +23,7 @@ private:
     QNetworkAccessManager *manager;
     QNetworkReply *reply;
     QString session;
-
+    ApiRequest *apiRequest;
 public:
     explicit User(QObject *parent = nullptr);
     User(const QString &username,

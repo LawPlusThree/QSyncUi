@@ -11,7 +11,10 @@ User::User(const QString &username, const QString &account, const QString &passw
     , account(account)
     , hashedPassword(password)
     , manager(new QNetworkAccessManager(this))
-{}
+{
+    apiRequest=new ApiRequest(this);
+    apiRequest->setBaseUrl("https://syncapi.snakekiss.com");
+}
 
 void User::enroll()
 {
@@ -36,8 +39,7 @@ void User::login()
 
     QString postData = QString("email=%1&password=%2").arg(account).arg(hashedPassword);
     reply = manager->post(request, postData.toUtf8());
-
-    connect(reply, &QNetworkReply::finished, this, &User::loginFinished);
+    qDebug()<<apiRequest->post("/login",postData.toUtf8());
 }
 
 void User::forgetPassword()
