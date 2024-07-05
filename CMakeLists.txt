@@ -36,9 +36,6 @@ set(PROJECT_SOURCES
         loginwindow.cpp
         loginwindow.h
         loginwindow.ui
-        loginwindow.cpp
-        loginwindow.h
-        loginwindow.ui
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
@@ -49,8 +46,6 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         user.h user.cpp
         synctask.h synctask.cpp
         awsutils.h awsutils.cpp
-        reset.h reset.cpp reset.ui
-        signin.h signin.cpp signin.ui
         mainwindow.h mainwindow.cpp
         homeview.h homeview.cpp
 
