@@ -11,6 +11,7 @@
 #include "user.h"
 class HomePage;
 class SyncingPage;
+class HistorysyncPage;
 class T_Icon;
 class T_ElaScreen;
 class T_BaseComponents;
@@ -32,6 +33,7 @@ public slots:
 private:
     HomePage *_homePage{nullptr};
     SyncingPage *_syncingPage{nullptr};
+    HistorysyncPage *_historysyncPage{nullptr};
     T_ElaScreen *_elaScreenPage{nullptr};
     T_Icon *_iconPage{nullptr};
     T_BaseComponents *_baseComponentsPage{nullptr};
