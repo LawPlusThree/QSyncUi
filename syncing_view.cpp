@@ -21,8 +21,11 @@ SyncingPage::SyncingPage(QWidget* parent)
     // 设置进度条的最小值和最大值
     _progressBar->setMinimum(0);
     _progressBar->setMaximum(0); // 表示不确定的进度
+    QWidget* progressBarArea = new QWidget();
+    progressBarArea->setWindowFlags(Qt::FramelessWindowHint); // 去除窗口边框
+    progressBarArea->setAttribute(Qt::WA_TranslucentBackground); // 设置背景透明
     // 创建一个 ElaScrollPageArea 对象，用作进度条的容器
-    ElaScrollPageArea* progressBarArea = new ElaScrollPageArea(this);
+    //ElaScrollPageArea* progressBarArea = new ElaScrollPageArea(this);
     // 为进度条容器设置水平布局
     QHBoxLayout* progressBarLayout = new QHBoxLayout(progressBarArea);
     progressBarLayout->setContentsMargins(50, 0, 55, 0); // 设置布局的边距
@@ -39,8 +42,11 @@ SyncingPage::SyncingPage(QWidget* parent)
     _pushButton->setFixedSize(100, 40); // 设置按钮的固定大小
     _toggleButton = new ElaToggleButton("完成时提醒", this);
     _toggleButton->setFixedSize(100, 40); // 设置按钮的固定大小
+    QWidget* pushButtonArea = new QWidget();
+    pushButtonArea->setWindowFlags(Qt::FramelessWindowHint); // 去除窗口边框
+    pushButtonArea->setAttribute(Qt::WA_TranslucentBackground); // 设置背景透明
     // 创建一个 ElaScrollPageArea 对象，用作切换按钮的容器，并指定其父对象
-    ElaScrollPageArea* pushButtonArea = new ElaScrollPageArea(this);
+    //ElaScrollPageArea* pushButtonArea = new ElaScrollPageArea(this);
     // 为切换按钮容器设置水平布局
     QHBoxLayout* pushButtonLayout = new QHBoxLayout(pushButtonArea);
     pushButtonLayout->setContentsMargins(50, 0, 55, 0);
@@ -50,7 +56,10 @@ SyncingPage::SyncingPage(QWidget* parent)
     // 在布局中添加一个弹性空间，使得所有控件靠左对齐
     pushButtonLayout->addStretch();
 
-    ElaScrollPageArea* catalogueArea = new ElaScrollPageArea(this);
+    QWidget* catalogueArea = new QWidget();
+    catalogueArea->setWindowFlags(Qt::FramelessWindowHint); // 去除窗口边框
+    catalogueArea->setAttribute(Qt::WA_TranslucentBackground); // 设置背景透明
+    //ElaScrollPageArea* catalogueArea = new ElaScrollPageArea(this);
     QHBoxLayout* catalogueLayout = new QHBoxLayout(catalogueArea);
     catalogueLayout->setContentsMargins(10, 0, 15, 0);
     ElaText* catalogueText1 = new ElaText("文件名", this);
