@@ -57,6 +57,18 @@ bool User::loadTask()
     return response.isSuccess();
 }
 
+bool User::getS3Location()
+{
+    if(session!=""){
+        ApiResponse response=apiRequest->get("/s3info");
+        return response.isSuccess();
+    }
+    else{
+        qDebug()<<"pls login before get s3 location!";
+        return false;
+    }
+}
+
 QString User::getUserHash() const
 {
     QByteArray hash = QCryptographicHash::hash(account.toUtf8(), QCryptographicHash::Sha1);
