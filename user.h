@@ -33,10 +33,10 @@ public:
     bool forgetPassword(); //执行post请求，实现找回密码功能
     bool loadTask();//获取云端task
     QString getS3Location();//获取云端容器地址
-
+    QString getUsername();//获取用户名
     QString getUserHash() const; //返回用户账户的哈希
 
-    QString getSession(); //返回用户session
+    bool getisLogin(); //返回用户登陆状态
 
 signals:
     void enrollCompleted(const QString &session); //注册成功的信号，发送获取到的cookie中session
