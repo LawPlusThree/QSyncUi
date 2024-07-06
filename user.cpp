@@ -33,6 +33,7 @@ bool User::login()
     ApiResponse response=apiRequest->post("/login",postData.toUtf8());
     if(response.isSuccess()){
         isLogin=true;
+        username=response.getData().value("username").toString();
     }
     else if(response.getCode()==403){
         isLogin=false;
@@ -74,6 +75,11 @@ QString User::getS3Location()
         qDebug()<<"pls login before get s3 location!";
         return "";
     }
+}
+
+QString User::getUsername()
+{
+    return username;
 }
 
 QString User::getUserHash() const
