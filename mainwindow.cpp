@@ -122,7 +122,7 @@ MainWindow::MainWindow(QWidget *parent)
     });
 */
     qDebug() << ElaEventBus::getInstance()->getRegisteredEventsName();
-    QObject::connect(loginWindow, &LoginWindow::on_login_complete, mainWindow, &MainWindow::onUserLoggedIn);
+    QObject::connect(login, &LoginWindow::on_login_complete, this, &MainWindow::onUserLoggedIn);
     // 拦截默认关闭事件
     this->setIsDefaultClosed(false);
     connect(this, &MainWindow::closeButtonClicked, this, &MainWindow::onCloseButtonClicked);
