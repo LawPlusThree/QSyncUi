@@ -2,32 +2,21 @@
 #define DIRCARD_H
 
 #include <QPushButton>
+#include"ElaScrollPageArea.h"
 
-#include "Def.h"
 #include "stdafx.h"
+class ElaCheckBox;
 class DirCardPrivate;
-class ELA_EXPORT DirCard : public QPushButton
+class ELA_EXPORT DirCard : public ElaScrollPageArea
 {
-    Q_OBJECT
-    Q_Q_CREATE(DirCard)
-    Q_PROPERTY_CREATE_Q_H(int, BorderRadius)
-    Q_PROPERTY_CREATE_Q_H(QString, Title);
-    Q_PROPERTY_CREATE_Q_H(QString, SubTitle);
-    Q_PROPERTY_CREATE_Q_H(int, TitlePixelSize);
-    Q_PROPERTY_CREATE_Q_H(int, SubTitlePixelSize);
-    Q_PROPERTY_CREATE_Q_H(int, TitleSpacing);
-    Q_PROPERTY_CREATE_Q_H(QPixmap, CardPixmap);
-    Q_PROPERTY_CREATE_Q_H(QSize, CardPixmapSize);
-    Q_PROPERTY_CREATE_Q_H(int, CardPixmapBorderRadius)
-    Q_PROPERTY_CREATE_Q_H(ElaCardPixType::PixMode, CardPixMode);
-
 public:
-    explicit DirCard(QWidget* parent = nullptr);
+    explicit DirCard(QString filename,QString datasize,QString bingtime);
     ~DirCard();
-    void setCardPixmapSize(int width, int height);
-
-protected:
-    void paintEvent(QPaintEvent* event) override;
+private:
+    ElaCheckBox* _checkBox{nullptr};
+    QString filename;
+    QString datasize;
+    QString bingtime;
 };
 
 #endif // ELAREMINDERCARD_H

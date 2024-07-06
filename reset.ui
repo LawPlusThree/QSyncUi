@@ -107,7 +107,7 @@ background-color: rgb(0, 170, 255);</string>
    <property name="geometry">
     <rect>
      <x>150</x>
-     <y>90</y>
+     <y>100</y>
      <width>151</width>
      <height>151</height>
     </rect>
