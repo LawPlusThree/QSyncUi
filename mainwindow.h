@@ -5,7 +5,10 @@
 
 #include "ElaContentDialog.h"
 #include "ElaWindow.h"
-#include"loginwindow.h"
+#include"loginwin.h"
+#include"ElaCheckBox.h"
+
+#include "user.h"
 class HomePage;
 class SyncingPage;
 class T_Icon;
@@ -19,8 +22,11 @@ class MainWindow : public ElaWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-    LoginWindow*login=new LoginWindow();
+    loginwin* login=new loginwin();
     Q_SLOT void onCloseButtonClicked();
+
+public slots:
+    void onUserLoggedIn(User user);
 
 
 private:
@@ -33,5 +39,8 @@ private:
     QString _elaDxgiKey{""};
     QString _aboutKey{""};
     QString _settingKey{""};
+
+    ElaCheckBox* _checkBox{nullptr};
+
 };
 #endif // MAINWINDOW_H

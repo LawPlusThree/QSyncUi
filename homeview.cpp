@@ -42,11 +42,11 @@ HomePage::HomePage(QWidget* parent)
     // ElaFlowLayout
     //ElaReminderCard* homeCard1 = new ElaReminderCard(this);
     //connect(homeCard1, &ElaReminderCard::clicked, this, [=]() { Q_EMIT elaScreenNavigation(); });
-    DirCard* homeCard1 = new DirCard(this);
+    /*DirCard* homeCard1 = new DirCard(this);
     connect(homeCard1, &DirCard::clicked, this, [=]() { Q_EMIT elaScreenNavigation(); });
     homeCard1->setTitle("ElaScreen");
     homeCard1->setSubTitle("Use ElaDxgiManager To Grab Screen");
-    homeCard1->setCardPixmap(QPixmap(":/include/Image/control/AutomationProperties.png"));
+    homeCard1->setCardPixmap(QPixmap(":/include/Image/control/AutomationProperties.png"));*/
 
     ElaReminderCard* homeCard2 = new ElaReminderCard(this);
     connect(homeCard2, &ElaReminderCard::clicked, this, [=]() { Q_EMIT elaSceneNavigation(); });
@@ -73,7 +73,7 @@ HomePage::HomePage(QWidget* parent)
     homeCard5->setCardPixmap(QPixmap(":/include/Image/control/Canvas.png"));
     ElaFlowLayout* flowLayout = new ElaFlowLayout(0, 5, 5);
     flowLayout->setIsAnimation(true);
-    flowLayout->addWidget(homeCard1);
+    //flowLayout->addWidget(homeCard1);
     flowLayout->addWidget(homeCard2);
     flowLayout->addWidget(homeCard3);
     flowLayout->addWidget(homeCard4);

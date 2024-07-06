@@ -6,6 +6,8 @@
 #include <QMainWindow>
 #include "ElaWindow.h"
 #include "mycore.h"
+#include "user.h"
+
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow;
@@ -22,6 +24,10 @@ public:
 
     reset*resetp=new reset();
     signin*sign=new signin();
+
+private:
+signals:
+    void on_login_complete(User user);
 
 private slots:
     void on_loadBtn_clicked();

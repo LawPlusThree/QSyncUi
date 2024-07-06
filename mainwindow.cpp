@@ -12,6 +12,8 @@
 #include "ElaGraphicsView.h"
 #include "ElaWidget.h"
 #include "homeView.h"
+#include "DirCard.h"
+#include "loginwin.h"
 #include "syncing_view.h"
 
 MainWindow::MainWindow(QWidget *parent)
@@ -24,7 +26,7 @@ MainWindow::MainWindow(QWidget *parent)
     setUserInfoCardPixmap(QPixmap(":/include/Image/Cirno.jpg"));
     setUserInfoCardTitle("未登录");
     setUserInfoCardSubTitle("");
-    setWindowTitle("ElaWidgetTool");
+    setWindowTitle("珞珈云");
     //setIsStayTop(true);
     // setUserInfoCardVisible(false);
     _homePage = new HomePage(this);
@@ -32,6 +34,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     connect(this, &ElaWindow::userInfoCardClicked, this, [=]() {
+        //login->show();
         login->show();
     });
 
@@ -60,10 +63,19 @@ MainWindow::MainWindow(QWidget *parent)
     QString testKey_3;
     QString testKey_4;
 
+    QWidget*fileManage=new QWidget();
+
     addExpanderNode("同步功能",testKey_2,ElaIconType::House);
     addPageNode("正在同步",_syncingPage,testKey_2,ElaIconType::Cloud);
     addPageNode("历史同步",new QWidget(this),testKey_2,ElaIconType::CheckToSlot);
-    addPageNode("同步文件夹管理",new QWidget(this),testKey_2,ElaIconType::FolderClosed);
+    //addPageNode("同步文件夹管理",new QWidget(this),testKey_2,ElaIconType::FolderClosed);
+
+    addPageNode("同步文件夹管理",fileManage,testKey_2,ElaIconType::FolderClosed);
+    DirCard*DirCardArea=new DirCard("文件1","3.5GB","2024.7.2");
+    QVBoxLayout*fmArea=new QVBoxLayout(fileManage);
+    fmArea->addWidget(DirCardArea);
+    fmArea->setAlignment(Qt::AlignTop);
+
     addExpanderNode("版本控制",testKey_3,ElaIconType::EnvelopeOpenText);
     addPageNode("查看历史",new QWidget(this),testKey_3,ElaIconType::CalendarClock);
     addExpanderNode("个人功能",testKey_4,ElaIconType::User);
@@ -72,15 +84,15 @@ MainWindow::MainWindow(QWidget *parent)
     addPageNode("退出登录",new QWidget(this),testKey_4,ElaIconType::ArrowRightFromBracket);
 
 
-    //下拉菜单
+    // 下拉菜单
     addPageNode("HOME", _homePage, ElaIconType::House);
     addExpanderNode("ElaDxgi", _elaDxgiKey, ElaIconType::TvMusic);
-    //addPageNode("ElaScreen", _elaScreenPage, _elaDxgiKey, 3, ElaIconType::ObjectGroup);
-    // navigation(elaScreenWidget->property("ElaPageKey").toString());
-    //addPageNode("ElaBaseComponents", _baseComponentsPage, ElaIconType::CabinetFiling);
-    //addPageNode("ElaGraphics", view, 9, ElaIconType::KeySkeleton);
-    //addPageNode("ElaIcon", _iconPage, 99, ElaIconType::FontAwesome);
-    //addPageNode("ElaTabWidget", _tabWidgetPage, ElaIconType::Table);
+    // addPageNode("ElaScreen", _elaScreenPage, _elaDxgiKey, 3, ElaIconType::ObjectGroup);
+    //  navigation(elaScreenWidget->property("ElaPageKey").toString());
+    // addPageNode("ElaBaseComponents", _baseComponentsPage, ElaIconType::CabinetFiling);
+    // addPageNode("ElaGraphics", view, 9, ElaIconType::KeySkeleton);
+    // addPageNode("ElaIcon", _iconPage, 99, ElaIconType::FontAwesome);
+    // addPageNode("ElaTabWidget", _tabWidgetPage, ElaIconType::Table);
     addExpanderNode("TEST4", testKey_2, ElaIconType::Acorn);
     addExpanderNode("TEST5", testKey_1, testKey_2, ElaIconType::Acorn);
     addPageNode("Third Level", new QWidget(this), testKey_1, ElaIconType::Acorn);
@@ -102,16 +114,15 @@ MainWindow::MainWindow(QWidget *parent)
     widget->setWindowModality(Qt::ApplicationModal);
     widget->setCentralWidget(new QWidget());
     widget->hide();
-    connect(this, &ElaWindow::navigationNodeClicked, this, [=](ElaNavigationType::NavigationNodeType nodeType, QString nodeKey) {
+    connect(this, &ElaWindow::navigationNodeClicked, this, [=](ElaNavigationType::NavigationNodeType nodeType, QString nodeKey)
+            {
         if (_aboutKey == nodeKey)
         {
             widget->show();
-        }
-    });
+        } });
     addFooterNode("Setting", new QWidget(this), _settingKey, 0, ElaIconType::GearComplex);
-    connect(this, &MainWindow::userInfoCardClicked, this, [=]() {
-        this->navigation(_homePage->property("ElaPageKey").toString());
-    });
+    connect(this, &MainWindow::userInfoCardClicked, this, [=]()
+            { this->navigation(_homePage->property("ElaPageKey").toString()); });
     /*
     connect(_homePage, &HomePage::elaScreenNavigation, this, [=]() {
         this->navigation(_elaScreenPage->property("ElaPageKey").toString());
@@ -128,13 +139,18 @@ MainWindow::MainWindow(QWidget *parent)
     });
 */
     qDebug() << ElaEventBus::getInstance()->getRegisteredEventsName();
-
+    QObject::connect(login, &loginwin::on_login_complete, this, &MainWindow::onUserLoggedIn);
     // 拦截默认关闭事件
     this->setIsDefaultClosed(false);
     connect(this, &MainWindow::closeButtonClicked, this, &MainWindow::onCloseButtonClicked);
 }
 
 MainWindow::~MainWindow() {}
+void MainWindow::onUserLoggedIn(User user)
+{
+    setUserInfoCardTitle(user.getUsername());
+    setUserInfoCardSubTitle(user.getEmail());
+}
 
 void MainWindow::onCloseButtonClicked()
 {
@@ -143,6 +159,3 @@ void MainWindow::onCloseButtonClicked()
     connect(dialag, &ElaContentDialog::middleButtonClicked, this, &MainWindow::showMinimized);
     dialag->show();
 }
-
-
-

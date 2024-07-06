@@ -19,6 +19,17 @@ User::User(const QString &account, const QString &password, QObject *parent)
     apiRequest->setBaseUrl("https://syncapi.snakekiss.com");
 }
 
+User::User(const User &user)
+{
+    username=user.username;
+    account=user.account;
+    hashedPassword=user.hashedPassword;
+    isLogin=user.isLogin;
+    apiRequest=new ApiRequest(this);
+    apiRequest->setBaseUrl("https://syncapi.snakekiss.com");
+}
+
+
 bool User::enroll()
 {
     QString postData
@@ -33,6 +44,7 @@ bool User::login()
     ApiResponse response=apiRequest->post("/login",postData.toUtf8());
     if(response.isSuccess()){
         isLogin=true;
+        username=response.getData().value("username").toString();
     }
     else if(response.getCode()==403){
         isLogin=false;
@@ -76,14 +88,25 @@ QString User::getS3Location()
     }
 }
 
+QString User::getUsername()
+{
+    return username;
+}
+
+QString User::getEmail()
+{
+    return account;
+}
+
 QString User::getUserHash() const
 {
     QByteArray hash = QCryptographicHash::hash(account.toUtf8(), QCryptographicHash::Sha1);
     return hash.toHex();
 }
 
+/*QString User::getSession()
 bool User::getisLogin()
 {
-    return isLogin;
-}
+   // return session;
+}*/
 

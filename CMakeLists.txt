@@ -30,10 +30,10 @@ message(STATUS "CMAKE: ${CMAKE_CURRENT_BINARY_DIR}")
 if (WINDOWS_BUILD AND AWSSDK_INSTALL_AS_SHARED_LIBS)
     # Copy relevant AWS SDK for C++ libraries into the current binary directory for running and debugging.
 
-    #set(BIN_SUB_DIR "/Debug") # if you are building from the command line you may need to uncomment this
+    set(BIN_SUB_DIR ${CMAKE_BUILD_TYPE}) # if you are building from the command line you may need to uncomment this
     # and set the proper subdirectory to the executables' location.
 
-    AWSSDK_CPY_DYN_LIBS(SERVICE_COMPONENTS "" ${CMAKE_BINARY_DIR})
+    AWSSDK_CPY_DYN_LIBS(SERVICE_COMPONENTS "" ${CMAKE_CURRENT_BINARY_DIR}/${BIN_SUB_DIR})
 endif ()
 set(PROJECT_SOURCES
         main.cpp
@@ -57,6 +57,10 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         apirequest.h apirequest.cpp
         apiresponse.h apiresponse.cpp
         synccore.h synccore.cpp
+        loginwin.h loginwin.cpp
+        resetwin.h resetwin.cpp
+        signinwin.h signinwin.cpp
+        databasemanager.h databasemanager.cpp
         syncing_view.h syncing_view.cpp
 
 
