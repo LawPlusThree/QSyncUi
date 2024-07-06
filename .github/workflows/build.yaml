@@ -68,7 +68,9 @@ jobs:
 
       - name: Use windeployqt
         run: |
-          $env:QTDIR/bin/windeployqt.exe build/${{ matrix.build-type }}/bin/Release/QSyncUi.exe
+          - name: Use windeployqt
+            run: |
+              windeployqt.exe build/${{ matrix.build-type }}/QSyncUi.exe
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
