@@ -60,7 +60,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         loginwin.h loginwin.cpp
         resetwin.h resetwin.cpp
         signinwin.h signinwin.cpp
-
+        databasemanager.h databasemanager.cpp
 
 
     )
