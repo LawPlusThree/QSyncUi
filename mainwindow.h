@@ -5,7 +5,7 @@
 
 #include "ElaContentDialog.h"
 #include "ElaWindow.h"
-#include"loginwindow.h"
+#include"loginwin.h"
 #include"ElaCheckBox.h"
 
 #include "user.h"
@@ -21,7 +21,7 @@ class MainWindow : public ElaWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-    LoginWindow*login=new LoginWindow();
+    loginwin* login=new loginwin();
     Q_SLOT void onCloseButtonClicked();
 
 public slots:

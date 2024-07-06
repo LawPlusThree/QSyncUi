@@ -30,11 +30,9 @@ MainWindow::MainWindow(QWidget *parent)
     // setUserInfoCardVisible(false);
     _homePage = new HomePage(this);
 
-    loginwin*loginWin=new loginwin();
-
     connect(this, &ElaWindow::userInfoCardClicked, this, [=]() {
         //login->show();
-        loginWin->show();
+        login->show();
     });
 
     // GraphicsView
@@ -138,7 +136,7 @@ MainWindow::MainWindow(QWidget *parent)
     });
 */
     qDebug() << ElaEventBus::getInstance()->getRegisteredEventsName();
-    QObject::connect(login, &LoginWindow::on_login_complete, this, &MainWindow::onUserLoggedIn);
+    QObject::connect(login, &loginwin::on_login_complete, this, &MainWindow::onUserLoggedIn);
     // 拦截默认关闭事件
     this->setIsDefaultClosed(false);
     connect(this, &MainWindow::closeButtonClicked, this, &MainWindow::onCloseButtonClicked);

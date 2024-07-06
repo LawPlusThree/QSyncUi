@@ -122,6 +122,7 @@ void loginwin::on_loginBtn_clicked()
         User loginuser(accountLine->text(),passwordLine->text());
         if(loginuser.login()){
             QMessageBox::information(this, "成功","登录成功");
+            emit on_login_complete(loginuser);
             this->close();
         }
         else

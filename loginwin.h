@@ -18,6 +18,9 @@ public:
     ElaLineEdit*accountLine;
     ElaLineEdit*passwordLine;
 
+signals:
+    void on_login_complete(User user);
+
 private slots:
     void on_resetBtn_clicked();
     void on_signinBtn_clicked();
