@@ -61,7 +61,37 @@ jobs:
           cmake --build build --config ${{ matrix.build-type }} --parallel 32
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           path: build/${{ matrix.build-type }}
           name: ${{ matrix.build-type }}
+
+      - name: Use windeployqt
+        run: |
+          $env:QTDIR/bin/windeployqt.exe build/${{ matrix.build-type }}/bin/Release/QSyncUi.exe
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          path: build/${{ matrix.build-type }}
+          name: ${{ matrix.build-type }}-deployed
+
+
+      - name: Compress artifacts
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          7z a build/${{ matrix.build-type }}.7z build/${{ matrix.build-type }}
+
+      - name: Create Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          body_path: ext/${{github.ref_name}}-CHANGELOG
+
+      - name: Upload Release Asset
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            build/${{ matrix.build-type }}.7z
+      
