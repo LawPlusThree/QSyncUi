@@ -9,10 +9,11 @@
 #include<QPalette>
 #include<QColor>
 #include<QMessageBox>
+#include<QFileDialog>
 
 #include"ElaPushButton.h"
 #include"ElaText.h"
-#include"ElaImageCard.h"
+#include"ElaInteractiveCard.h"
 
 signinwin::signinwin(QWidget* parent):ElaWidget(parent)
 {
@@ -29,11 +30,13 @@ signinwin::signinwin(QWidget* parent):ElaWidget(parent)
     QHBoxLayout*textArea=new QHBoxLayout();
     textArea->addWidget(text,0,Qt::AlignCenter);
 
-    QImage image;
-    ElaImageCard*avatar=new ElaImageCard();
-    avatar->setCardImage(image);
+    ElaInteractiveCard*avatar=new ElaInteractiveCard();
     avatar->setFixedSize(150,150);
-    QHBoxLayout*avatarArea=new QHBoxLayout();
+    avatar->setCardPixmapSize(140,140);
+    avatar->setCardPixmapBorderRadius(70);
+    QPixmap image(":\\avatarImage\\AvatarImage\\setAvatar.png");
+    avatar->setCardPixmap(image);
+    avatarArea=new QHBoxLayout();
     avatarArea->addWidget(avatar,0,Qt::AlignCenter);
 
     IDLine=new ElaLineEdit();
@@ -79,6 +82,7 @@ signinwin::signinwin(QWidget* parent):ElaWidget(parent)
     area->setLayout(signinWinArea);
 
     connect(signinBtn,&ElaPushButton::clicked,this, &signinwin::on_signinBtn_clicked);
+    connect(avatar,&ElaInteractiveCard::clicked,this,&signinwin::on_image_clicked);
 }
 
 void signinwin::on_signinBtn_clicked()
@@ -124,3 +128,31 @@ void signinwin::closeEvent(QCloseEvent *event)
 {
     emit goback();
 }
+
+void signinwin::on_image_clicked()
+{
+    QString fileName = QFileDialog::getOpenFileName(this, tr("选择图片"), "", tr("图像文件 (*.png *.jpg *.jpeg *.bmp)"));
+    fileName = QDir::toNativeSeparators(fileName);
+    qDebug() << "Selected file path: " << fileName;
+    if (!fileName.isEmpty())
+    {
+        QPixmap pix(fileName);
+        if (pix.isNull())
+        {
+            // 处理加载失败的情况
+            return;
+        }
+        while (QLayoutItem* item = avatarArea->takeAt(0)) {
+            delete item;
+        }
+        avatar=new ElaInteractiveCard();
+        avatar->setCardPixmap(pix);
+        avatar->setFixedSize(150,150);
+        avatar->setCardPixmapSize(140,140);
+        avatar->setCardPixmapBorderRadius(70);
+        avatarArea->addWidget(avatar,0,Qt::AlignCenter);
+        connect(avatar,&ElaInteractiveCard::clicked,this,&signinwin::on_image_clicked);
+        update();
+    }
+}
+

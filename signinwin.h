@@ -5,7 +5,8 @@
 #include"ElaLineEdit.h"
 #include "user.h"
 
-
+class ElaInteractiveCard;
+class QHBoxLayout;
 class signinwin:public ElaWidget
 {
     Q_OBJECT
@@ -16,6 +17,8 @@ public:
 signals:
     void goback();
 public:
+    ElaInteractiveCard*avatar;
+    QHBoxLayout*avatarArea;
     ElaLineEdit*IDLine;
     ElaLineEdit*accoutLine;
     ElaLineEdit*passwordLine;
@@ -23,6 +26,7 @@ public:
 private slots:
     void on_signinBtn_clicked();
     void closeEvent(QCloseEvent*Event);
+    void on_image_clicked();
 };
 
 #endif // SIGNINWIN_H

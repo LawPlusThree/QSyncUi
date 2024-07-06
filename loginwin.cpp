@@ -128,7 +128,6 @@ void loginwin::on_loginBtn_clicked()
         }
         else
             QMessageBox::critical(this, "失败","登录失败");
-        //mainforms->show();
     }
     loginBtn->setEnabled(true);
 }
