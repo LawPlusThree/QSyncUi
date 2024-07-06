@@ -17,39 +17,31 @@ DirCard::DirCard(QString f, QString d,QString b)
     filename=new ElaText(f);
     datasize=new ElaText(d);
     bindtime=new ElaText(b);
-    QFont font("宋体",10);
-    font.setBold(true);
 
     _checkBox = new ElaCheckBox(filename->text(), this);
-    _checkBox->setFont(font);
     QVBoxLayout*checkBoxArea=new QVBoxLayout();
     checkBoxArea->addWidget(_checkBox,0,Qt::AlignCenter);
 
-    datasize->setTextSize(12);
-    datasize->setFont(font);
+    datasize->setTextSize(16);
     QVBoxLayout*dataSizeArea=new QVBoxLayout();
     dataSizeArea->addWidget(datasize,0,Qt::AlignCenter);
 
-    bindtime->setTextSize(12);
-    bindtime->setFont(font);
+    bindtime->setTextSize(16);
     QVBoxLayout*bindTimeArea=new QVBoxLayout();
     ElaText*text=new ElaText("绑定于",this);
-    text->setTextSize(12);
-    text->setFont(font);
+    text->setTextSize(16);
     bindTimeArea->addWidget(text,0,Qt::AlignCenter);
     bindTimeArea->setSpacing(0);
     bindTimeArea->addWidget(bindtime,0,Qt::AlignCenter);
 
     QVBoxLayout*pauseArea=new QVBoxLayout();
     ElaToggleButton*pauseBtn=new ElaToggleButton("暂时停止");
-    pauseBtn->setFixedSize(70,25);
-    pauseBtn->setFont(font);
+    pauseBtn->setFixedSize(80,30);
     pauseArea->addWidget(pauseBtn,0,Qt::AlignCenter);
 
     QVBoxLayout*relieveArea=new QVBoxLayout();
     ElaPushButton*relieveBtn=new ElaPushButton("解除绑定");
-    relieveBtn->setFixedSize(70,25);
-    relieveBtn->setFont(font);
+    relieveBtn->setFixedSize(80,30);
     relieveArea->addWidget(relieveBtn,0,Qt::AlignCenter);
 
     QHBoxLayout*prArea=new QHBoxLayout();
