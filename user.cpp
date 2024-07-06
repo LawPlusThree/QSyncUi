@@ -82,8 +82,8 @@ QString User::getUserHash() const
     return hash.toHex();
 }
 
-QString User::getSession()
+bool User::getisLogin()
 {
-    return session;
+    return isLogin;
 }
 

@@ -36,7 +36,7 @@ public:
 
     QString getUserHash() const; //返回用户账户的哈希
 
-    QString getSession(); //返回用户session
+    bool getisLogin(); //返回用户登陆状态
 
 signals:
     void enrollCompleted(const QString &session); //注册成功的信号，发送获取到的cookie中session
