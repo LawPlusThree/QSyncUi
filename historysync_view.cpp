@@ -10,7 +10,7 @@ HistorysyncPage::HistorysyncPage(QWidget* parent)
     QWidget* centralWidget = new QWidget(this); // 创建中心部件
     QVBoxLayout* centerVLayout = new QVBoxLayout(centralWidget); // 为中心部件设置垂直布局
     centerVLayout->setContentsMargins(0, 0, 5, 0); // 设置布局边距,5为到右边的距离
-    centralWidget->setWindowTitle("正在同步"); // 设置窗口标题
+    centralWidget->setWindowTitle("历史同步"); // 设置窗口标题
 
     // 创建一个 ElaProgressBar 对象，用作进度条
     _progressBar = new ElaProgressBar(this);
