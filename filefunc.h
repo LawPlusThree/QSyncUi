@@ -5,6 +5,8 @@
 #include <QDir>
 #include <QFileInfoList>
 #include <QFileInfo>
+#include <QDateTime>
+#include <QString>
 
 class Filefunc : public QObject
 {
@@ -31,6 +33,7 @@ signals:
 public:
     // 获取文件信息列表
     QFileInfoList getFileInfoList() const { return fileInfoList; }
+    bool comparetime(QDateTime localtime,QString cloudtimestr);//比较两端文件时间,若本地文件时间新则返回真
 };
 
 
