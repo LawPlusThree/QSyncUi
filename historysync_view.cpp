@@ -1,10 +1,10 @@
-#include "syncing_view.h"
+#include "historysync_view.h"
 #include "ElaText.h"
 #include "ElaPushButton.h"
 #include "ElaToggleButton.h"
 #include <QVBoxLayout>
 
-SyncingPage::SyncingPage(QWidget* parent)
+HistorysyncPage::HistorysyncPage(QWidget* parent)
     : ElaScrollPage(parent)
 {
     QWidget* centralWidget = new QWidget(this); // 创建中心部件
@@ -37,25 +37,6 @@ SyncingPage::SyncingPage(QWidget* parent)
     progressBarLayout->addWidget(progressBarText);
     progressBarLayout->addWidget(_progressBar);
 
-    // 创建一个 ElaToggleButton 对象，设置其标签为 "Head" 并指定其父对象
-    _pushButton = new ElaPushButton("上传文件", this);
-    _pushButton->setFixedSize(100, 40); // 设置按钮的固定大小
-    _toggleButton = new ElaToggleButton("完成时提醒", this);
-    _toggleButton->setFixedSize(100, 40); // 设置按钮的固定大小
-    QWidget* pushButtonArea = new QWidget();
-    pushButtonArea->setWindowFlags(Qt::FramelessWindowHint); // 去除窗口边框
-    pushButtonArea->setAttribute(Qt::WA_TranslucentBackground); // 设置背景透明
-    // 创建一个 ElaScrollPageArea 对象，用作切换按钮的容器，并指定其父对象
-    //ElaScrollPageArea* pushButtonArea = new ElaScrollPageArea(this);
-    // 为切换按钮容器设置水平布局
-    QHBoxLayout* pushButtonLayout = new QHBoxLayout(pushButtonArea);
-    pushButtonLayout->setContentsMargins(50, 0, 55, 0);
-    // 将切换按钮控件添加到布局中
-    pushButtonLayout->addWidget(_pushButton);
-    pushButtonLayout->addWidget(_toggleButton);
-    // 在布局中添加一个弹性空间，使得所有控件靠左对齐
-    pushButtonLayout->addStretch();
-
     QWidget* catalogueArea = new QWidget();
     catalogueArea->setWindowFlags(Qt::FramelessWindowHint); // 去除窗口边框
     catalogueArea->setAttribute(Qt::WA_TranslucentBackground); // 设置背景透明
@@ -68,30 +49,25 @@ SyncingPage::SyncingPage(QWidget* parent)
     ElaText* catalogueText2 = new ElaText("数据大小", this);
     catalogueText2->setTextSize(15);
     catalogueText2->setAlignment(Qt::AlignCenter); // 设置文本居中对齐
-    ElaText* catalogueText3 = new ElaText("网络速度", this);
-    catalogueText3->setTextSize(15);
-    catalogueText3->setAlignment(Qt::AlignCenter); // 设置文本居中对齐
     ElaText* catalogueText4 = new ElaText("同步状态", this);
     catalogueText4->setTextSize(15);
     catalogueText4->setAlignment(Qt::AlignCenter); // 设置文本居中对齐
-    ElaText* catalogueText5 = new ElaText("操作", this);
+    ElaText* catalogueText5 = new ElaText("已完成", this);
     catalogueText5->setTextSize(15);
     catalogueText5->setAlignment(Qt::AlignCenter); // 设置文本居中对齐
     catalogueLayout->addWidget(catalogueText1);
     catalogueLayout->addWidget(catalogueText2);
-    catalogueLayout->addWidget(catalogueText3);
+    //catalogueLayout->addStretch();
     catalogueLayout->addWidget(catalogueText4);
     catalogueLayout->addWidget(catalogueText5);
 
     centerVLayout->addWidget(progressBarArea); // 将上方固定区域添加到布局中
-    centerVLayout->addWidget(pushButtonArea); // 将切换按钮容器添加到布局中
     centerVLayout->addWidget(catalogueArea); // 将目录文本添加到布局中
     centerVLayout->addStretch(); // 在布局的末尾添加一个弹性空间
 
     this->addCentralWidget(centralWidget); // 将中心部件添加到窗口中
 }
 
-SyncingPage::~SyncingPage()
+HistorysyncPage::~HistorysyncPage()
 {
-
 }

@@ -63,6 +63,8 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         databasemanager.h databasemanager.cpp
         syncing_view.h syncing_view.cpp
         userinfopage.h userinfopage.cpp
+        filefunc.h filefunc.cpp
+        historysync_view.h historysync_view.cpp
 
 
     )

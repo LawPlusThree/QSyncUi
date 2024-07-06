@@ -15,6 +15,7 @@
 #include "DirCard.h"
 #include "loginwin.h"
 #include "syncing_view.h"
+#include "historysync_view.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : ElaWindow(parent)
@@ -31,6 +32,7 @@ MainWindow::MainWindow(QWidget *parent)
     // setUserInfoCardVisible(false);
     _homePage = new HomePage(this);
     _syncingPage = new SyncingPage(this);
+    _historysyncPage = new HistorysyncPage(this);
 
     connect(this, &ElaWindow::userInfoCardClicked, this, [=]() {
         //login->show();
@@ -66,7 +68,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     addExpanderNode("同步功能",testKey_2,ElaIconType::House);
     addPageNode("正在同步",_syncingPage,testKey_2,ElaIconType::Cloud);
-    addPageNode("历史同步",new QWidget(this),testKey_2,ElaIconType::CheckToSlot);
+    addPageNode("历史同步",_historysyncPage,testKey_2,ElaIconType::CheckToSlot);
     //addPageNode("同步文件夹管理",new QWidget(this),testKey_2,ElaIconType::FolderClosed);
 
     addPageNode("同步文件夹管理",fileManage,testKey_2,ElaIconType::FolderClosed);
