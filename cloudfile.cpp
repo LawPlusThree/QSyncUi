@@ -29,7 +29,7 @@ void CloudFile::readCloudDir(const QString &path)
         // 读取响应数据
         dataxml = reply->readAll();
         // 在这里处理响应数据
-        qDebug() << "Response:" << data;
+        qDebug() << "Response:" << dataxml;
         processXml(dataxml);
     } else {
         // 处理请求错误
