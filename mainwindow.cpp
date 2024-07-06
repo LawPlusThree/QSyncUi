@@ -15,6 +15,7 @@
 #include "DirCard.h"
 #include "loginwin.h"
 #include "syncing_view.h"
+#include"filemange_view.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : ElaWindow(parent)
@@ -31,6 +32,7 @@ MainWindow::MainWindow(QWidget *parent)
     // setUserInfoCardVisible(false);
     _homePage = new HomePage(this);
     _syncingPage = new SyncingPage(this);
+    _filemanagePage=new FileManagePage(this);
 
 
     connect(this, &ElaWindow::userInfoCardClicked, this, [=]() {
@@ -63,19 +65,10 @@ MainWindow::MainWindow(QWidget *parent)
     QString testKey_3;
     QString testKey_4;
 
-    QWidget*fileManage=new QWidget();
-
     addExpanderNode("同步功能",testKey_2,ElaIconType::House);
     addPageNode("正在同步",_syncingPage,testKey_2,ElaIconType::Cloud);
     addPageNode("历史同步",new QWidget(this),testKey_2,ElaIconType::CheckToSlot);
-    //addPageNode("同步文件夹管理",new QWidget(this),testKey_2,ElaIconType::FolderClosed);
-
-    addPageNode("同步文件夹管理",fileManage,testKey_2,ElaIconType::FolderClosed);
-    DirCard*DirCardArea=new DirCard("文件1","3.5GB","2024.7.2");
-    QVBoxLayout*fmArea=new QVBoxLayout(fileManage);
-    fmArea->addWidget(DirCardArea);
-    fmArea->setAlignment(Qt::AlignTop);
-
+    addPageNode("同步文件夹管理",_filemanagePage,testKey_2,ElaIconType::FolderClosed);
     addExpanderNode("版本控制",testKey_3,ElaIconType::EnvelopeOpenText);
     addPageNode("查看历史",new QWidget(this),testKey_3,ElaIconType::CalendarClock);
     addExpanderNode("个人功能",testKey_4,ElaIconType::User);
