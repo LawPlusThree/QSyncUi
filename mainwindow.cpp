@@ -12,6 +12,7 @@
 #include "ElaGraphicsView.h"
 #include "ElaWidget.h"
 #include "homeView.h"
+#include "syncing_view.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : ElaWindow(parent)
@@ -27,6 +28,8 @@ MainWindow::MainWindow(QWidget *parent)
     //setIsStayTop(true);
     // setUserInfoCardVisible(false);
     _homePage = new HomePage(this);
+    _syncingPage = new SyncingPage(this);
+
 
     connect(this, &ElaWindow::userInfoCardClicked, this, [=]() {
         login->show();
@@ -58,7 +61,7 @@ MainWindow::MainWindow(QWidget *parent)
     QString testKey_4;
 
     addExpanderNode("同步功能",testKey_2,ElaIconType::House);
-    addPageNode("正在同步",new QWidget(this),testKey_2,ElaIconType::Cloud);
+    addPageNode("正在同步",_syncingPage,testKey_2,ElaIconType::Cloud);
     addPageNode("历史同步",new QWidget(this),testKey_2,ElaIconType::CheckToSlot);
     addPageNode("同步文件夹管理",new QWidget(this),testKey_2,ElaIconType::FolderClosed);
     addExpanderNode("版本控制",testKey_3,ElaIconType::EnvelopeOpenText);

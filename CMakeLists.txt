@@ -57,6 +57,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         apirequest.h apirequest.cpp
         apiresponse.h apiresponse.cpp
         synccore.h synccore.cpp
+        syncing_view.h syncing_view.cpp
 
 
     )
