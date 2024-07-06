@@ -4,6 +4,9 @@
 #include "ElaProgressBar.h"
 #include "ElaScrollPage.h"
 #include "ElaScrollPageArea.h"
+
+class ElaToggleButton;
+class ElaPushButton;
 class SyncingPage : public ElaScrollPage
 {
 public:
@@ -11,6 +14,8 @@ public:
     ~SyncingPage();
 private:
     ElaProgressBar* _progressBar{nullptr};
+    ElaPushButton* _pushButton{nullptr};
+    ElaToggleButton* _toggleButton{nullptr};
 };
 
 #endif // SYNCING_VIEW_H
