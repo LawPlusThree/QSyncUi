@@ -8,6 +8,7 @@
 #include"loginwindow.h"
 #include"ElaCheckBox.h"
 
+#include "user.h"
 class HomePage;
 class T_Icon;
 class T_ElaScreen;
@@ -22,6 +23,9 @@ public:
     ~MainWindow();
     LoginWindow*login=new LoginWindow();
     Q_SLOT void onCloseButtonClicked();
+
+public slots:
+    void onUserLoggedIn(User user);
 
 
 private:

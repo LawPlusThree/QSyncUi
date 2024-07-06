@@ -19,6 +19,17 @@ User::User(const QString &account, const QString &password, QObject *parent)
     apiRequest->setBaseUrl("https://syncapi.snakekiss.com");
 }
 
+User::User(const User &user)
+{
+    username=user.username;
+    account=user.account;
+    hashedPassword=user.hashedPassword;
+    isLogin=user.isLogin;
+    apiRequest=new ApiRequest(this);
+    apiRequest->setBaseUrl("https://syncapi.snakekiss.com");
+}
+
+
 bool User::enroll()
 {
     QString postData
@@ -31,6 +42,14 @@ bool User::login()
 {
     QString postData = QString("email=%1&password=%2").arg(account).arg(hashedPassword);
     ApiResponse response=apiRequest->post("/login",postData.toUtf8());
+    if(response.isSuccess()){
+        isLogin=true;
+        username=response.getData().value("username").toString();
+    }
+    else if(response.getCode()==403){
+        isLogin=false;
+
+    }
     return response.isSuccess();
 }
 
@@ -57,14 +76,32 @@ bool User::loadTask()
     return response.isSuccess();
 }
 
+QString User::getS3Location()
+{
+    if(isLogin){
+        ApiResponse response=apiRequest->get("/s3/Info");
+        return response.getData().value("endpoint").toString();
+    }
+    else{
+        qDebug()<<"pls login before get s3 location!";
+        return "";
+    }
+}
+
+QString User::getUsername()
+{
+    return username;
+}
+
 QString User::getUserHash() const
 {
     QByteArray hash = QCryptographicHash::hash(account.toUtf8(), QCryptographicHash::Sha1);
     return hash.toHex();
 }
 
-QString User::getSession()
+/*QString User::getSession()
+bool User::getisLogin()
 {
-    return session;
-}
+   // return session;
+}*/
 
