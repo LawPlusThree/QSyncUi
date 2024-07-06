@@ -61,6 +61,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         resetwin.h resetwin.cpp
         signinwin.h signinwin.cpp
         databasemanager.h databasemanager.cpp
+        syncing_view.h syncing_view.cpp
         filefunc.h filefunc.cpp
 
 
