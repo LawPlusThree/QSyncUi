@@ -19,6 +19,17 @@ User::User(const QString &account, const QString &password, QObject *parent)
     apiRequest->setBaseUrl("https://syncapi.snakekiss.com");
 }
 
+User::User(const User &user)
+{
+    username=user.username;
+    account=user.account;
+    hashedPassword=user.hashedPassword;
+    isLogin=user.isLogin;
+    apiRequest=new ApiRequest(this);
+    apiRequest->setBaseUrl("https://syncapi.snakekiss.com");
+}
+
+
 bool User::enroll()
 {
     QString postData

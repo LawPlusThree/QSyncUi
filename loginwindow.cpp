@@ -49,6 +49,7 @@ void LoginWindow::on_loadBtn_clicked()
         User loginuser(ui->account->text(),ui->password->text());
         if(loginuser.login()){
             QMessageBox::information(this, "成功","登录成功");
+            emit on_login_complete(loginuser);
             this->close();
         }
         else
