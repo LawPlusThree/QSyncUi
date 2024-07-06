@@ -17,7 +17,7 @@ private:
     QString account;  //email
     QString data;
     QString hashedPassword; //password
-    QString session="";
+    bool isLogin=false;
     ApiRequest *apiRequest;
     QVector<SyncTask> tasks;
 public:
@@ -32,7 +32,7 @@ public:
     bool login();          //执行post请求，实现登录功能
     bool forgetPassword(); //执行post请求，实现找回密码功能
     bool loadTask();//获取云端task
-    bool getS3Location();//获取云端容器地址
+    QString getS3Location();//获取云端容器地址
 
     QString getUserHash() const; //返回用户账户的哈希
 
