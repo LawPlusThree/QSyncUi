@@ -12,6 +12,8 @@
 #include "ElaGraphicsView.h"
 #include "ElaWidget.h"
 #include "homeView.h"
+#include"DirCard.h"
+#include"loginwin.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : ElaWindow(parent)
@@ -23,13 +25,17 @@ MainWindow::MainWindow(QWidget *parent)
     setUserInfoCardPixmap(QPixmap(":/include/Image/Cirno.jpg"));
     setUserInfoCardTitle("未登录");
     setUserInfoCardSubTitle("");
-    setWindowTitle("ElaWidgetTool");
-    // setIsStayTop(true);
-    //  setUserInfoCardVisible(false);
+    setWindowTitle("珞珈云");
+    //setIsStayTop(true);
+    // setUserInfoCardVisible(false);
     _homePage = new HomePage(this);
 
-    connect(this, &ElaWindow::userInfoCardClicked, this, [=]()
-            { login->show(); });
+    loginwin*loginWin=new loginwin();
+
+    connect(this, &ElaWindow::userInfoCardClicked, this, [=]() {
+        //login->show();
+        loginWin->show();
+    });
 
     // GraphicsView
     ElaGraphicsScene *scene = new ElaGraphicsScene(this);
@@ -56,16 +62,26 @@ MainWindow::MainWindow(QWidget *parent)
     QString testKey_3;
     QString testKey_4;
 
-    addExpanderNode("同步功能", testKey_2, ElaIconType::House);
-    addPageNode("正在同步", new QWidget(this), testKey_2, ElaIconType::Cloud);
-    addPageNode("历史同步", new QWidget(this), testKey_2, ElaIconType::CheckToSlot);
-    addPageNode("同步文件夹管理", new QWidget(this), testKey_2, ElaIconType::FolderClosed);
-    addExpanderNode("版本控制", testKey_3, ElaIconType::EnvelopeOpenText);
-    addPageNode("查看历史", new QWidget(this), testKey_3, ElaIconType::CalendarClock);
-    addExpanderNode("个人功能", testKey_4, ElaIconType::User);
-    addPageNode("修改信息", new QWidget(this), testKey_4, ElaIconType::Text);
-    addPageNode("注销账号", new QWidget(this), testKey_4, ElaIconType::UserSlash);
-    addPageNode("退出登录", new QWidget(this), testKey_4, ElaIconType::ArrowRightFromBracket);
+    QWidget*fileManage=new QWidget();
+
+    addExpanderNode("同步功能",testKey_2,ElaIconType::House);
+    addPageNode("正在同步",new QWidget(this),testKey_2,ElaIconType::Cloud);
+    addPageNode("历史同步",new QWidget(this),testKey_2,ElaIconType::CheckToSlot);
+    //addPageNode("同步文件夹管理",new QWidget(this),testKey_2,ElaIconType::FolderClosed);
+
+    addPageNode("同步文件夹管理",fileManage,testKey_2,ElaIconType::FolderClosed);
+    DirCard*DirCardArea=new DirCard("文件1","3.5GB","2024.7.2");
+    QVBoxLayout*fmArea=new QVBoxLayout(fileManage);
+    fmArea->addWidget(DirCardArea);
+    fmArea->setAlignment(Qt::AlignTop);
+
+    addExpanderNode("版本控制",testKey_3,ElaIconType::EnvelopeOpenText);
+    addPageNode("查看历史",new QWidget(this),testKey_3,ElaIconType::CalendarClock);
+    addExpanderNode("个人功能",testKey_4,ElaIconType::User);
+    addPageNode("修改信息",new QWidget(this),testKey_4,ElaIconType::Text);
+    addPageNode("注销账号",new QWidget(this),testKey_4,ElaIconType::UserSlash);
+    addPageNode("退出登录",new QWidget(this),testKey_4,ElaIconType::ArrowRightFromBracket);
+
 
     // 下拉菜单
     addPageNode("HOME", _homePage, ElaIconType::House);

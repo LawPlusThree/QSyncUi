@@ -6,6 +6,8 @@
 #include "ElaContentDialog.h"
 #include "ElaWindow.h"
 #include"loginwindow.h"
+#include"ElaCheckBox.h"
+
 #include "user.h"
 class HomePage;
 class T_Icon;
@@ -35,5 +37,8 @@ private:
     QString _elaDxgiKey{""};
     QString _aboutKey{""};
     QString _settingKey{""};
+
+    ElaCheckBox* _checkBox{nullptr};
+
 };
 #endif // MAINWINDOW_H

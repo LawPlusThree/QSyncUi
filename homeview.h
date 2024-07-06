@@ -1,6 +1,7 @@
 #ifndef T_HOME_H
 #define T_HOME_H
 
+#include"ElaCheckBox.h"
 #include "ElaScrollPage.h"
 class ElaMenu;
 class HomePage : public ElaScrollPage
@@ -20,6 +21,7 @@ protected:
 
 private:
     ElaMenu* _homeMenu{nullptr};
+    ElaCheckBox* _checkBox{nullptr};
 };
 
 #endif // T_HOME_H

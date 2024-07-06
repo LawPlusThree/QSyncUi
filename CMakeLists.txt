@@ -57,7 +57,11 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         apirequest.h apirequest.cpp
         apiresponse.h apiresponse.cpp
         synccore.h synccore.cpp
+        loginwin.h loginwin.cpp
+        resetwin.h resetwin.cpp
+        signinwin.h signinwin.cpp
         databasemanager.h databasemanager.cpp
+
 
     )
 # Define target properties for Android with Qt 6 as:
