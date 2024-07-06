@@ -1,8 +1,27 @@
 #include "databasemanager.h"
 #include "qsqlerror.h"
+#include<QMap>
 
 DatabaseManager::DatabaseManager(QObject *parent):QObject(parent)
 {
+    //初始化时填充账号密码映射
+    QSqlQuery query;
+    QMap<QString,QString>accountPasswordMap;
+
+    query.prepare("SELECT account, password FROM Users");
+    if(query.exec())
+    {
+        while (query.next()) {
+            accountPasswordMap[query.value(0).toString()] = query.value(1).toString();
+        }
+    }
+    else
+    {
+        qWarning() << "Failed to get all accounts:" << query.lastError();
+    }
+
+    // 将账号密码映射存储在类成员变量中
+    accountPasswordMap_ = accountPasswordMap;
 }
 
 bool DatabaseManager::initializeDatabase(const QString &name)
@@ -39,17 +58,33 @@ bool DatabaseManager::insertUser(const QString &account, const QString &hashedPa
     return true;
 }
 
-bool DatabaseManager::userExists(const QString &account)
+QList<QString> DatabaseManager::getAllAccounts()
 {
     QSqlQuery query;
-    query.prepare("SELECT COUNT(*) FROM Users WHERE account = :account");
-    query.bindValue(":account", account);
+    QList<QString> accounts;
 
-    if (!query.exec()) {
-        qWarning() << "Failed to check user existence:" << query.lastError();
-        return false;
+    query.prepare("SELECT account FROM Users");
+    if (query.exec()) {
+        while (query.next()) {
+            accounts.append(query.value(0).toString());
+        }
+    } else {
+        qWarning() << "Failed to get all accounts:" << query.lastError();
     }
 
-    query.next();
-    return query.value(0).toInt() > 0;
+    return accounts;
+}
+
+QPair<QString, QString> DatabaseManager::getUserPassword(const QString &account)
+{
+    QPair<QString, QString> userPassword;
+    userPassword.first = account; // 账号
+
+    if (accountPasswordMap_.contains(account)) {
+        userPassword.second = accountPasswordMap_[account]; // 密码
+        return userPassword;
+    }
+
+    // 如果没有找到匹配的账号，返回空值
+    return userPassword;
 }
