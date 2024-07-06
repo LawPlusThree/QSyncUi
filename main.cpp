@@ -13,8 +13,8 @@ int main(int argc, char *argv[])
 
     //测试用户
     User loginuser("enrolluser@example.com","123456");
-    loginuser.login();
-    qDebug() <<"s3 location:"<< loginuser.getS3Location();
+    //loginuser.login();
+    //qDebug() <<"s3 location:"<< loginuser.getS3Location();
     SyncTaskManager stm(&loginuser);
     SyncTask mytask("D:/","/home/",1);
     SyncCore sc(&a);
