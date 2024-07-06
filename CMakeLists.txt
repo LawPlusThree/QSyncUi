@@ -66,6 +66,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         filefunc.h filefunc.cpp
         filemange_view.h filemange_view.cpp
         historysync_view.h historysync_view.cpp
+        cloudfile.h cloudfile.cpp
 
 
     )
