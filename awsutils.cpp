@@ -5,7 +5,6 @@ AWSUtils::AWSUtils()
 {
     Aws::SDKOptions options;
     Aws::InitAPI(options);
-    // 保存options以便稍后关闭SDK
     this->options = options;
 }
 
