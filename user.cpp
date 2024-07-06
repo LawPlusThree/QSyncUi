@@ -93,6 +93,11 @@ QString User::getUsername()
     return username;
 }
 
+QString User::getEmail()
+{
+    return account;
+}
+
 QString User::getUserHash() const
 {
     QByteArray hash = QCryptographicHash::hash(account.toUtf8(), QCryptographicHash::Sha1);

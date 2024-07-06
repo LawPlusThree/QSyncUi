@@ -132,6 +132,7 @@ MainWindow::~MainWindow() {}
 void MainWindow::onUserLoggedIn(User user)
 {
     setUserInfoCardTitle(user.getUsername());
+    setUserInfoCardSubTitle(user.getEmail());
 }
 
 void MainWindow::onCloseButtonClicked()
