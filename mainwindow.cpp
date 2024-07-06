@@ -16,6 +16,7 @@
 #include "loginwin.h"
 #include "syncing_view.h"
 #include"filemange_view.h"
+#include "historysync_view.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : ElaWindow(parent)
@@ -34,6 +35,7 @@ MainWindow::MainWindow(QWidget *parent)
     _syncingPage = new SyncingPage(this);
     _filemanagePage=new FileManagePage(this);
 
+    _historysyncPage = new HistorysyncPage(this);
 
     connect(this, &ElaWindow::userInfoCardClicked, this, [=]() {
         //login->show();
@@ -69,6 +71,8 @@ MainWindow::MainWindow(QWidget *parent)
     addPageNode("正在同步",_syncingPage,testKey_2,ElaIconType::Cloud);
     addPageNode("历史同步",new QWidget(this),testKey_2,ElaIconType::CheckToSlot);
     addPageNode("同步文件夹管理",_filemanagePage,testKey_2,ElaIconType::FolderClosed);
+    addPageNode("历史同步",_historysyncPage,testKey_2,ElaIconType::CheckToSlot);
+
     addExpanderNode("版本控制",testKey_3,ElaIconType::EnvelopeOpenText);
     addPageNode("查看历史",new QWidget(this),testKey_3,ElaIconType::CalendarClock);
     addExpanderNode("个人功能",testKey_4,ElaIconType::User);

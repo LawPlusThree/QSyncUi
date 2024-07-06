@@ -13,7 +13,7 @@ private:
     QMap<QString,QString>accountPasswordMap_;
 public:
     explicit DatabaseManager(QObject *parent = nullptr);
-
+    bool updateUserInfo(const QString &account, const QString &newId, const QString &newHashedPassword);
     bool initializeDatabase(const QString &name);
     bool insertUser(const QString &account, const QString &hashedPassword);
     QList<QString>getAllAccounts();

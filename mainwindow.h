@@ -12,6 +12,7 @@
 class HomePage;
 class SyncingPage;
 class FileManagePage;
+class HistorysyncPage;
 class T_Icon;
 class T_ElaScreen;
 class T_BaseComponents;
@@ -34,6 +35,7 @@ private:
     HomePage *_homePage{nullptr};
     SyncingPage *_syncingPage{nullptr};
     FileManagePage*_filemanagePage{nullptr};
+    HistorysyncPage *_historysyncPage{nullptr};
     T_ElaScreen *_elaScreenPage{nullptr};
     T_Icon *_iconPage{nullptr};
     T_BaseComponents *_baseComponentsPage{nullptr};
