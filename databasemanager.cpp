@@ -58,6 +58,27 @@ bool DatabaseManager::insertUser(const QString &account, const QString &hashedPa
     return true;
 }
 
+    bool DatabaseManager::updateUserInfo(const QString &account,
+                                     const QString &newId,
+                                     const QString &newHashedPassword)
+{
+    QSqlQuery query;
+    query.prepare("UPDATE Users SET account = :newId, password = :newHashedPassword WHERE account = :account");
+    query.bindValue(":newId", newId);
+    query.bindValue(":newHashedPassword", newHashedPassword);
+    query.bindValue(":account", account);
+
+    if (!query.exec()) {
+        qWarning() << "Failed to update user info:" << query.lastError();
+        return false;
+    }
+
+    // 更新账号密码映射
+    accountPasswordMap_[newId] = newHashedPassword;
+
+    return true;
+}
+
 QList<QString> DatabaseManager::getAllAccounts()
 {
     QSqlQuery query;

@@ -62,6 +62,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         signinwin.h signinwin.cpp
         databasemanager.h databasemanager.cpp
         syncing_view.h syncing_view.cpp
+        userinfopage.h userinfopage.cpp
 
 
     )

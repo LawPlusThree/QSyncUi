@@ -32,7 +32,6 @@ MainWindow::MainWindow(QWidget *parent)
     _homePage = new HomePage(this);
     _syncingPage = new SyncingPage(this);
 
-
     connect(this, &ElaWindow::userInfoCardClicked, this, [=]() {
         //login->show();
         login->show();
