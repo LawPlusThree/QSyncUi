@@ -60,7 +60,7 @@ loginwin::loginwin(QWidget* parent):ElaWidget(parent)
     QHBoxLayout*passwordArea=new QHBoxLayout();
     passwordArea->addWidget(passwordLine,0,Qt::AlignCenter);
 
-    ElaPushButton*loginBtn=new ElaPushButton("登录");
+    loginBtn=new ElaPushButton("登录");
     loginBtn->setFixedSize(270,30);
     loginBtn->setStyleSheet("background-color:rgb(0,204,255)");
     QHBoxLayout*loginBtnArea=new QHBoxLayout();
@@ -107,6 +107,7 @@ void loginwin::on_signinBtn_clicked()
 
 void loginwin::on_loginBtn_clicked()
 {
+    loginBtn->setEnabled(false);
     if(accountLine->text()=="")
     {
         QMessageBox::information(this, "错误","请输入账号！");
@@ -129,5 +130,6 @@ void loginwin::on_loginBtn_clicked()
             QMessageBox::critical(this, "失败","登录失败");
         //mainforms->show();
     }
+    loginBtn->setEnabled(true);
 }
 

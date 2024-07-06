@@ -6,6 +6,7 @@
 #include"signinwin.h"
 #include "mycore.h"
 
+class ElaPushButton;
 class loginwin:public ElaWidget
 {
     Q_OBJECT
@@ -17,6 +18,7 @@ public:
 
     ElaLineEdit*accountLine;
     ElaLineEdit*passwordLine;
+    ElaPushButton*loginBtn;
 
 signals:
     void on_login_complete(User user);
