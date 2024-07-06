@@ -69,10 +69,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     addExpanderNode("同步功能",testKey_2,ElaIconType::House);
     addPageNode("正在同步",_syncingPage,testKey_2,ElaIconType::Cloud);
-    addPageNode("历史同步",new QWidget(this),testKey_2,ElaIconType::CheckToSlot);
-    addPageNode("同步文件夹管理",_filemanagePage,testKey_2,ElaIconType::FolderClosed);
     addPageNode("历史同步",_historysyncPage,testKey_2,ElaIconType::CheckToSlot);
-
+    addPageNode("同步文件夹管理",_filemanagePage,testKey_2,ElaIconType::FolderClosed);
     addExpanderNode("版本控制",testKey_3,ElaIconType::EnvelopeOpenText);
     addPageNode("查看历史",new QWidget(this),testKey_3,ElaIconType::CalendarClock);
     addExpanderNode("个人功能",testKey_4,ElaIconType::User);
