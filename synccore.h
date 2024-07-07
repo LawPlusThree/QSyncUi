@@ -2,7 +2,6 @@
 #define SYNCCORE_H
 #include <QObject>
 #include "watcher.hpp"
-#include <iostream>
 using namespace wtr;
 class SyncTask;
 class SyncCore : public QObject
@@ -11,10 +10,10 @@ class SyncCore : public QObject
 public:
     explicit SyncCore(QObject *parent = nullptr);
     void addTask(SyncTask *task);
-    void generalCallback(struct event e);
-
+    void doTask(SyncTask *task);
+    void filesystemChanged(struct event e);
 private:
-    QVector<watch*> watchers;
+    QVector<QPair<SyncTask*,watch*>> watchers;
 private slots:
     void onDirectoryChanged(const QString &path);
     void onFileChanged(const QString &path);

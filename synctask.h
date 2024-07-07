@@ -10,10 +10,9 @@
 #include <QString>
 #include "qcontainerfwd.h"
 
-
 //声明友元类
 class SyncCore;
-class SyncTaskManager;
+class SyncTaskDatabaseManager;
 class User;
 class SyncTask
 {
@@ -28,14 +27,20 @@ private:
 
 public:
     SyncTask(QString localPath, QString remotePath, int syncStatus, int id=-1);
-    friend class SyncTaskManager;
+    SyncTask(const SyncTask &task){
+        localPath = task.localPath;
+        remotePath = task.remotePath;
+        syncStatus = task.syncStatus;
+        lastSyncTime = task.lastSyncTime;
+    }
+    friend class SyncTaskDatabaseManager;
     friend class SyncCore;
 };
 
-class SyncTaskManager
+class SyncTaskDatabaseManager
 {
 public:
-    SyncTaskManager(User* u);
+    SyncTaskDatabaseManager(User* u);
 
     void addTask(const SyncTask &task);
 
@@ -49,7 +54,7 @@ public:
 
     QList<SyncTask> getTasks();
 
-    ~SyncTaskManager() { db.close(); }
+    ~SyncTaskDatabaseManager() { db.close(); }
 
 private:
     void initializeDatabase(QString name);

@@ -2,9 +2,9 @@
 #include "user.h"
 
 
-SyncTaskManager::SyncTaskManager(User *u) { initializeDatabase(u->getUserHash()); }
+SyncTaskDatabaseManager::SyncTaskDatabaseManager(User *u) { initializeDatabase(u->getUserHash()); }
 
-void SyncTaskManager::addTask(const SyncTask &task) {
+void SyncTaskDatabaseManager::addTask(const SyncTask &task) {
     QSqlQuery query;
     query.prepare("INSERT INTO SyncTasks (localPath, remotePath, syncStatus) VALUES (:localPath, :remotePath, :syncStatus)");
     query.bindValue(":localPath", task.localPath.absolutePath());
@@ -12,14 +12,14 @@ void SyncTaskManager::addTask(const SyncTask &task) {
     query.bindValue(":syncStatus", task.syncStatus);
 }
 
-bool SyncTaskManager::deleteTask(int id) {
+bool SyncTaskDatabaseManager::deleteTask(int id) {
     QSqlQuery query;
     query.prepare("DELETE FROM SyncTasks WHERE id = :id");
     query.bindValue(":id", id);
     return query.exec();
 }
 
-bool SyncTaskManager::updateTask(const SyncTask &task) {
+bool SyncTaskDatabaseManager::updateTask(const SyncTask &task) {
     QSqlQuery query;
     // Update the task with the same id
     //CREATE TABLE IF NOT EXISTS SyncTasks (id INTEGER PRIMARY KEY AUTOINCREMENT, localPath TEXT, remotePath TEXT, syncStatus INTEGER)
@@ -31,7 +31,7 @@ bool SyncTaskManager::updateTask(const SyncTask &task) {
     return query.exec();
 }
 
-bool SyncTaskManager::deleteATask(const SyncTask &task) {
+bool SyncTaskDatabaseManager::deleteATask(const SyncTask &task) {
     QSqlQuery query;
     // Update the task with the same id
     //CREATE TABLE IF NOT EXISTS SyncTasks (id INTEGER PRIMARY KEY AUTOINCREMENT, localPath TEXT, remotePath TEXT, syncStatus INTEGER)
@@ -40,14 +40,14 @@ bool SyncTaskManager::deleteATask(const SyncTask &task) {
     return query.exec();
 }
 
-bool SyncTaskManager::queryTask(const SyncTask &task) {
+bool SyncTaskDatabaseManager::queryTask(const SyncTask &task) {
     QSqlQuery query;
     query.prepare("SELECT * FROM SyncTasks WHERE id = :id");
     query.bindValue(":id", task.id);
     return query.exec();
 }
 
-QList<SyncTask> SyncTaskManager::getTasks() {
+QList<SyncTask> SyncTaskDatabaseManager::getTasks() {
     QList<SyncTask> tasks;
     QSqlQuery query("SELECT * FROM SyncTasks");
     while (query.next()) {
@@ -61,7 +61,7 @@ QList<SyncTask> SyncTaskManager::getTasks() {
     return tasks;
 }
 
-void SyncTaskManager::initializeDatabase(QString name) {
+void SyncTaskDatabaseManager::initializeDatabase(QString name) {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
     //存到userData文件夹
 

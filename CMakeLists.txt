@@ -68,6 +68,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         historysync_view.h historysync_view.cpp
         avatarImage.qrc
         cloudfile.h cloudfile.cpp
+        filequeue.h filequeue.cpp
 
 
     )

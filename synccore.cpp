@@ -7,7 +7,7 @@ SyncCore::SyncCore(QObject *parent)
     //connect(&watcher, &QFileSystemWatcher::directoryChanged, this, &SyncCore::onDirectoryChanged);
     //connect(&watcher, &QFileSystemWatcher::fileChanged, this, &SyncCore::onFileChanged);
 }
-void SyncCore::generalCallback(struct event e)
+void SyncCore::filesystemChanged(struct event e)
 {
     //e.associated;
     qDebug()<<e.path_name;
@@ -58,9 +58,41 @@ void SyncCore::generalCallback(struct event e)
 void SyncCore::addTask(SyncTask *task)
 {
     QDir listen=task->localPath;
-    watch* w=new watch(listen.absolutePath().toStdString(),[this](struct event e){this->generalCallback(e);});
-    watchers.push_back(w);
+    if(task==nullptr)
+        return;
+    if(task->localPath.exists()==false)
+    {
+        qDebug()<<"local path not exists";
+        return;
+    }
+    if(task->syncStatus==-1)
+    {
+        qDebug()<<"paused";
+        return;
+    }
+    else if(task->syncStatus==1)
+    {
+        qDebug()<<"upload/download";
+        watch* w=new watch(listen.absolutePath().toStdString(),[this](struct event e){this->filesystemChanged(e);});
+        watchers.push_back(w);
+    }
+    else if(task->syncStatus==2)
+    {
+        qDebug()<<"only upload";
+        watch* w=new watch(listen.absolutePath().toStdString(),[this](struct event e){this->filesystemChanged(e);});
+        watchers.push_back(w);
+    }
+    else
+    {
+        qDebug()<<"only download";
+        return;
+    }
     //watcher.addPath(listen.absolutePath());
+}
+
+void SyncCore::doTask(SyncTask *task)
+{
+
 }
 
 
