@@ -8,77 +8,77 @@ on:
   workflow_dispatch:
 
 jobs:
-build:
-    runs-on: ${{ matrix.os }}
-    strategy:
-        matrix:
-            os: [windows-latest, ubuntu-latest]
-            build-type: [Debug, Release]
-    steps:
-        - name: Checkout code
-          uses: actions/checkout@v4
-          with:
-              submodules: recursive
+  build:
+      runs-on: ${{ matrix.os }}
+      strategy:
+          matrix:
+              os: [windows-latest, ubuntu-latest]
+              build-type: [Debug, Release]
+      steps:
+          - name: Checkout code
+            uses: actions/checkout@v4
+            with:
+                submodules: recursive
 
-        - name: Setup Qt
-          if: matrix.os == 'windows-latest'
-          uses: jurplel/install-qt-action@v4
-          with:
-              version: '6.7.2'
-              target: 'desktop'
-              arch: 'win64_mingw'
-              cache: true
+          - name: Setup Qt
+            if: matrix.os == 'windows-latest'
+            uses: jurplel/install-qt-action@v4
+            with:
+                version: '6.7.2'
+                target: 'desktop'
+                arch: 'win64_mingw'
+                cache: true
 
-        - name: Setup Qt
-          if: matrix.os == 'ubuntu-latest'
-          uses: jurplel/install-qt-action@v4
-          with:
-              version: '6.7.2'
-              target: 'desktop'
-              arch: 'linux_gcc_64'
-              cache: true
+          - name: Setup Qt
+            if: matrix.os == 'ubuntu-latest'
+            uses: jurplel/install-qt-action@v4
+            with:
+                version: '6.7.2'
+                target: 'desktop'
+                arch: 'linux_gcc_64'
+                cache: true
 
-        - uses: lukka/get-cmake@latest
+          - uses: lukka/get-cmake@latest
 
-        - name: Run CMake
-          run: |
-              cmake -B build -S . -G Ninja -DCMAKE_PREFIX_PATH=$env:QTDIR -DCMAKE_BUILD_TYPE=${{ matrix.build-type }}
-              cmake --build build --config ${{ matrix.build-type }} --parallel 32
+          - name: Run CMake
+            run: |
+                cmake -B build -S . -G Ninja -DCMAKE_PREFIX_PATH=$env:QTDIR -DCMAKE_BUILD_TYPE=${{ matrix.build-type }}
+                cmake --build build --config ${{ matrix.build-type }} --parallel 32
 
-        - name: Upload artifacts
-          uses: actions/upload-artifact@v4
-          with:
-              path: build/${{ matrix.build-type }}
-              name: ${{ matrix.build-type }}-${{ runner.os }}
+          - name: Upload artifacts
+            uses: actions/upload-artifact@v4
+            with:
+                path: build/${{ matrix.build-type }}
+                name: ${{ matrix.build-type }}-${{ runner.os }}
 
-        - name: Use windeployqt
-          if: matrix.os == 'windows-latest'
-          run: |
-              windeployqt.exe build/${{ matrix.build-type }}/QSyncUi.exe
+          - name: Use windeployqt
+            if: matrix.os == 'windows-latest'
+            run: |
+                windeployqt.exe build/${{ matrix.build-type }}/QSyncUi.exe
 
-        - name: Upload artifacts
-          if: matrix.os == 'windows-latest'
-          uses: actions/upload-artifact@v4
-          with:
-              path: build/${{ matrix.build-type }}
-              name: ${{ matrix.build-type }}-deployed
+          - name: Upload artifacts
+            if: matrix.os == 'windows-latest'
+            uses: actions/upload-artifact@v4
+            with:
+                path: build/${{ matrix.build-type }}
+                name: ${{ matrix.build-type }}-deployed
 
 
-        - name: Compress artifacts
-          if: startsWith(github.ref, 'refs/tags/')
-          run: |
-            7z a build/${{ matrix.build-type }}.7z build/${{ matrix.build-type }}
+          - name: Compress artifacts
+            if: startsWith(github.ref, 'refs/tags/')
+            run: |
+              7z a build/${{ matrix.build-type }}.7z build/${{ matrix.build-type }}
 
-        - name: Create Release
-          if: startsWith(github.ref, 'refs/tags/')
-          uses: softprops/action-gh-release@v2
-          with:
-            body_path: ext/${{github.ref_name}}-CHANGELOG
+          - name: Create Release
+            if: startsWith(github.ref, 'refs/tags/')
+            uses: softprops/action-gh-release@v2
+            with:
+              body_path: ext/${{github.ref_name}}-CHANGELOG
 
-        - name: Upload Release Asset
-          if: startsWith(github.ref, 'refs/tags/')
-          uses: softprops/action-gh-release@v2
-          with:
-            files: |
-              build/${{ matrix.build-type }}-${{runner.os}}.7z
-      
+          - name: Upload Release Asset
+            if: startsWith(github.ref, 'refs/tags/')
+            uses: softprops/action-gh-release@v2
+            with:
+              files: |
+                build/${{ matrix.build-type }}-${{runner.os}}.7z
+        
