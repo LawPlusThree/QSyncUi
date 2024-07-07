@@ -1,10 +1,10 @@
 #ifndef AWSUTILS_H
 #define AWSUTILS_H
-
+/*
 #include <QObject>
-#include <aws/core/Aws.h>
-#include <aws/core/auth/AWSCredentialsProvider.h>
-#include <aws/s3/S3Client.h>
+//#include <aws/core/Aws.h>
+//#include <aws/core/auth/AWSCredentialsProvider.h>
+//#include <aws/s3/S3Client.h>
 
 //using namespace Aws;
 //using namespace Aws::Auth;
@@ -31,5 +31,5 @@ public:
     };
     ~AWSUtils();
 };
-
+*/
 #endif // AWSUTILS_H

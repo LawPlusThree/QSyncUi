@@ -1,4 +1,4 @@
-#include <aws/core/Aws.h>
+/*#include <aws/core/Aws.h>
 #include "awsutils.h"
 
 AWSUtils::AWSUtils()
@@ -12,3 +12,4 @@ AWSUtils::~AWSUtils()
 {
     Aws::ShutdownAPI(options);
 }
+*/
