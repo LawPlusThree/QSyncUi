@@ -10,7 +10,7 @@ void Filefunc::readDirectory(const QString &path)
     recursiveRead(path);
 
     // 发出文件列表更新信号
-    emit fileListUpdated();
+    emit fileListUpdated(path, fileInfoList);
 }
 
 void Filefunc::recursiveRead(const QString &path)
@@ -25,6 +25,7 @@ void Filefunc::recursiveRead(const QString &path)
         } else {
             // 如果是文件，添加到文件信息列表
             fileInfoList.append(info);
+            qDebug()<<info.fileName();
         }
     }
 }

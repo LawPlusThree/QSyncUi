@@ -8,8 +8,7 @@
 #include <aws/s3/model/ListObjectsV2Request.h>
 #include <aws/s3/model/Object.h>
 
-using namespace Aws;
-using namespace Aws::Auth;
+
 
 class AWSUtils : public QObject
 {
@@ -27,6 +26,7 @@ public:
         this->clientConfig.region = region.toStdString();
     };
     bool isSessionValid();
+
     void updateSessionCredentials(const QString &accessKeyId, const QString &secretAccessKey, const QString &sessionToken);;
     ~AWSUtils();
 };

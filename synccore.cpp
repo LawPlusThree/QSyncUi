@@ -1,5 +1,7 @@
 #include "synccore.h"
 #include "synctask.h"
+#include "filefunc.h"
+
 using namespace wtr;
 SyncCore::SyncCore(QObject *parent)
     : QObject{parent}
@@ -58,6 +60,9 @@ void SyncCore::filesystemChanged(struct event e)
 void SyncCore::addTask(SyncTask *task)
 {
     QDir listen=task->localPath;
+    Filefunc *filefunc=new Filefunc(this);
+    filefunc->readDirectory(listen.absolutePath());
+    connect(filefunc, &Filefunc::fileListUpdated, this, &SyncCore::onFileListUpdated);
     if(task==nullptr)
         return;
     if(task->localPath.exists()==false)
@@ -92,7 +97,7 @@ void SyncCore::addTask(SyncTask *task)
 
 void SyncCore::doTask(SyncTask *task)
 {
-
+    qDebug()<<"doTask";
 }
 
 
@@ -105,4 +110,10 @@ void SyncCore::onDirectoryChanged(const QString &path)
 void SyncCore::onFileChanged(const QString &path)
 {
     qDebug() << "File changed: " << path;
+}
+
+void SyncCore::onFileListUpdated(const QString &path, const QFileInfoList &list)
+{
+    qDebug() << "File list updated: " << path;
+    doTask(findTaskByLocalPath(path));
 }

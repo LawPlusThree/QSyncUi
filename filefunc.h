@@ -28,7 +28,7 @@ private:
     QFileInfoList fileInfoList;
 
 signals:
-    void fileListUpdated(); // 文件列表更新信号
+    void fileListUpdated(const QString &path, const QFileInfoList &list);
 
 public:
     // 获取文件信息列表

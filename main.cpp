@@ -16,11 +16,11 @@ int main(int argc, char *argv[])
     //loginuser.login();
     //qDebug() <<"s3 location:"<< loginuser.getS3Location();
     SyncTaskDatabaseManager stm(&loginuser);
-    SyncTask mytask("D:/","/home/",1);
+    SyncTask mytask("E:/","/home/",1);
     SyncCore sc(&a);
     sc.addTask(&mytask);
     //stm.addTask(mytask);
-    qDebug()<<stm.queryTask(mytask);
+    //qDebug()<<stm.queryTask(mytask);
     ElaApplication::getInstance()->init();
     MainWindow w;
     w.show();
