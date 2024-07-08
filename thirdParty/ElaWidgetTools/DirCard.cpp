@@ -34,7 +34,7 @@ DirCard::DirCard(QString f, QString d,QString b)
     bindTimeArea->addWidget(bindtime,0,Qt::AlignCenter);
 
     QVBoxLayout*pauseArea=new QVBoxLayout();
-    ElaToggleButton*pauseBtn=new ElaToggleButton("暂时停止");
+    pauseBtn=new ElaToggleButton("暂时停止");
     pauseBtn->setFixedSize(80,30);
     pauseArea->addWidget(pauseBtn,0,Qt::AlignCenter);
 

@@ -8,13 +8,15 @@
 #include "stdafx.h"
 class ElaCheckBox;
 class DirCardPrivate;
+class ElaToggleButton;
 class ELA_EXPORT DirCard : public ElaScrollPageArea
 {
 public:
     explicit DirCard(QString f, QString d,QString b);
     ~DirCard();
-private:
+
     ElaCheckBox* _checkBox{nullptr};
+    ElaToggleButton*pauseBtn;
     ElaText *filename;
     ElaText *datasize;
     ElaText *bindtime;

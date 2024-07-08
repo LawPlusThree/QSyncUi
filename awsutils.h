@@ -7,6 +7,9 @@
 #include <aws/s3/S3Client.h>
 #include <aws/s3/model/ListObjectsV2Request.h>
 #include <aws/s3/model/Object.h>
+#include <aws/s3/model/GetObjectRequest.h>
+#include <aws/s3/model/PutObjectRequest.h>
+#include <fstream>
 
 
 
@@ -26,6 +29,9 @@ public:
         this->clientConfig.region = region.toStdString();
     };
     bool isSessionValid();
+    bool listObjects(const QString &bucketName);
+    bool getObject(const QString &objectKey,const QString &fromBucket);
+    bool putObject(const QString &bucketName,const QString &fileName);
 
     void updateSessionCredentials(const QString &accessKeyId, const QString &secretAccessKey, const QString &sessionToken);;
     ~AWSUtils();
