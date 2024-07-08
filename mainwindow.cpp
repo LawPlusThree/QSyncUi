@@ -88,6 +88,7 @@ MainWindow::MainWindow(QWidget *parent)
     // addPageNode("ElaGraphics", view, 9, ElaIconType::KeySkeleton);
     // addPageNode("ElaIcon", _iconPage, 99, ElaIconType::FontAwesome);
     // addPageNode("ElaTabWidget", _tabWidgetPage, ElaIconType::Table);
+    /*
     addExpanderNode("TEST4", testKey_2, ElaIconType::Acorn);
     addExpanderNode("TEST5", testKey_1, testKey_2, ElaIconType::Acorn);
     addPageNode("Third Level", new QWidget(this), testKey_1, ElaIconType::Acorn);
@@ -103,7 +104,7 @@ MainWindow::MainWindow(QWidget *parent)
     addExpanderNode("TEST15", testKey_1, ElaIconType::Acorn);
     addExpanderNode("TEST16", testKey_1, ElaIconType::Acorn);
     addExpanderNode("TEST17", testKey_1, ElaIconType::Acorn);
-
+*/
     addFooterNode("About", nullptr, _aboutKey, 0, ElaIconType::User);
     ElaWidget *widget = new ElaWidget();
     widget->setWindowModality(Qt::ApplicationModal);
@@ -116,8 +117,10 @@ MainWindow::MainWindow(QWidget *parent)
             widget->show();
         } });
     addFooterNode("Setting", new QWidget(this), _settingKey, 0, ElaIconType::GearComplex);
+    /*
     connect(this, &MainWindow::userInfoCardClicked, this, [=]()
             { this->navigation(_homePage->property("ElaPageKey").toString()); });
+            */
     /*
     connect(_homePage, &HomePage::elaScreenNavigation, this, [=]() {
         this->navigation(_elaScreenPage->property("ElaPageKey").toString());
