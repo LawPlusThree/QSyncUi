@@ -38,8 +38,8 @@ MainWindow::MainWindow(QWidget *parent)
     _historysyncPage = new HistorysyncPage(this);
 
     connect(this, &ElaWindow::userInfoCardClicked, this, [=]() {
-        //login->show();
-        login->show();
+        if(CurrentUser==nullptr)
+            login->show();
     });
 
     // GraphicsView
@@ -145,6 +145,7 @@ void MainWindow::onUserLoggedIn(User user)
 {
     setUserInfoCardTitle(user.getUsername());
     setUserInfoCardSubTitle(user.getEmail());
+    CurrentUser=new User(user.getUsername(),user.getEmail());
 }
 
 void MainWindow::onCloseButtonClicked()
