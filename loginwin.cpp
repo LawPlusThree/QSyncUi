@@ -17,7 +17,7 @@
 #include"ElaText.h"
 #include"ElaImageCard.h"
 
-loginwin::loginwin(QWidget* parent):ElaWidget(parent)
+loginwin::loginwin(QWidget* parent):ElaWidget(parent,400,500)
 {
     setWindowTitle("珞珈云");
     connect(resetWin,&resetwin::goback,this,[=](){
@@ -32,7 +32,7 @@ loginwin::loginwin(QWidget* parent):ElaWidget(parent)
     this->setWindowModality(Qt::ApplicationModal);
     this->setCentralWidget(area);
     this->hide();
-    this->setFixedSize(250,700);
+    //this->setFixedSize(250,700);
     this->setWindowFlags(Qt::WindowMinimizeButtonHint);
 
     QImage image;

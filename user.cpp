@@ -32,6 +32,15 @@ User::User(const User &user)
 
 bool User::enroll()
 {
+    QString postData
+        = QString("username=%1&email=%2&password=%3").arg(username).arg(account).arg(hashedPassword);
+    ApiResponse response=apiRequest->post("/register",postData.toUtf8());
+    emit enrollResponse(response.getCode(),response.getData(),response.getMessage());
+    return response.isSuccess();
+}
+
+bool User::enroll(const QString &avatarpath)
+{
     QImageReader reader(avatarpath);
     if (!reader.canRead()) {
         qDebug()<<"read picture failed!";

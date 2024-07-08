@@ -3,6 +3,7 @@
 
 #include "ElaScrollPage.h"
 #include "ElaProgressBar.h"
+#include "linknewfolder_window.h"
 
 class ElaToggleButton;
 class ElaPushButton;
@@ -21,6 +22,7 @@ private:
     ElaPushButton* _pushButton2{nullptr};
     ElaPushButton* _pushButton3{nullptr};
     ElaToggleButton* _toggleButton{nullptr};
+    linkNewFolder_window* linknewfolderwindow=new linkNewFolder_window();
 };
 
 #endif // FILEMANGE_VIEW_H

@@ -14,7 +14,7 @@
 #include"ElaText.h"
 #include"ElaImageCard.h"
 
-resetwin::resetwin(QWidget* parent):ElaWidget(parent)
+resetwin::resetwin(QWidget* parent):ElaWidget(parent,400,500)
 {
     setWindowTitle("珞珈云");
     QWidget*area=new QWidget();
