@@ -51,6 +51,8 @@ jobs:
           cmake .. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX="C:/Program Files (x86)/aws" -DBUILD_ONLY="s3"
           cmake --build . --config=${{matrix.build-type}}
           cmake --install . --config=${{matrix.build-type}}
+          #使用xcopy复制C:\Program Files (x86)\aws\bin下的所有dll到build/${{ matrix.build-type }}文件夹，自动覆盖
+          xcopy "C:\Program Files (x86)\aws\bin" "${{ matrix.build-type }}" /s /y
           cd ../..
           #display the content of the directory
 
