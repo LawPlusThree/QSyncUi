@@ -33,7 +33,29 @@ User::User(const User &user)
 bool User::enroll()
 {
     QString postData
-    = QString("username=%1&email=%2&password=%3").arg(username).arg(account).arg(hashedPassword);
+        = QString("username=%1&email=%2&password=%3").arg(username).arg(account).arg(hashedPassword);
+    ApiResponse response=apiRequest->post("/register",postData.toUtf8());
+    emit enrollResponse(response.getCode(),response.getData(),response.getMessage());
+    return response.isSuccess();
+}
+
+bool User::enroll(const QString &avatarpath)
+{
+    QImageReader reader(avatarpath);
+    if (!reader.canRead()) {
+        qDebug()<<"read picture failed!";
+    }
+    QImage image = reader.read();
+    if (image.isNull()) {
+        qDebug()<<"read picture failed!";
+    }
+    QByteArray byteArray;
+    QBuffer buffer(&byteArray);
+    image.save(&buffer, reader.format()); // 使用图片的原始格式保存
+    // 将字节数据编码为Base64字符串
+    QString avatar = byteArray.toBase64();
+    QString postData
+        = QString("username=%1&email=%2&password=%3&avatar=%4").arg(username).arg(account).arg(hashedPassword).arg(avatar);
     ApiResponse response=apiRequest->post("/register",postData.toUtf8());
     emit enrollResponse(response.getCode(),response.getData(),response.getMessage());
     return response.isSuccess();

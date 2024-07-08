@@ -69,9 +69,11 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         avatarImage.qrc
         filequeue.h filequeue.cpp
         storage.h storage.cpp
+        linknewfolder_window.h linknewfolder_window.cpp
         tasktoken.h tasktoken.cpp
         filecard.h filecard.cpp
         signhelper.h signhelper.cpp
+        historycard.h historycard.cpp
 
 
     )

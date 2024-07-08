@@ -3,6 +3,8 @@
 #include "ElaPushButton.h"
 #include "ElaToggleButton.h"
 #include <QVBoxLayout>
+#include"historycard.h"
+#include"ElaScrollArea.h"
 
 HistorysyncPage::HistorysyncPage(QWidget* parent)
     : ElaScrollPage(parent)
@@ -57,17 +59,52 @@ HistorysyncPage::HistorysyncPage(QWidget* parent)
     catalogueText5->setAlignment(Qt::AlignCenter); // 设置文本居中对齐
     catalogueLayout->addWidget(catalogueText1);
     catalogueLayout->addWidget(catalogueText2);
-    //catalogueLayout->addStretch();
     catalogueLayout->addWidget(catalogueText4);
     catalogueLayout->addWidget(catalogueText5);
 
+    ElaScrollArea* scrollArea = new ElaScrollArea();
+    scrollArea->viewport()->setStyleSheet("background:transparent;");//设置背景透明
+    HistoryCard*HistoryCardArea1=new HistoryCard("文件1","3.5GB","2024.7.1",0);
+    HistoryCard*HistoryCardArea2=new HistoryCard("文件2","3.5GB","2024.7.2",0);
+    HistoryCard*HistoryCardArea3=new HistoryCard("文件3","3.5GB","2024.7.3",1);
+    HistoryCard*HistoryCardArea4=new HistoryCard("文件4","3.5GB","2024.7.4",0);
+    HistoryCard*HistoryCardArea5=new HistoryCard("文件5","3.5GB","2024.7.5",1);
+    HistoryCard*HistoryCardArea6=new HistoryCard("文件6","3.5GB","2024.7.6",1);
+    HistoryCard*HistoryCardArea7=new HistoryCard("文件7","3.5GB","2024.7.7",1);
+    HistoryCard*HistoryCardArea8=new HistoryCard("文件8","3.5GB","2024.7.8",0);
+    HistoryCard*HistoryCardArea9=new HistoryCard("文件9","3.5GB","2024.7.9",0);
+    HistoryCard*HistoryCardArea10=new HistoryCard("文件10","3.5GB","2024.7.10",1);
+
+    QWidget* filesWidget=new QWidget();
+    filesLayout=new QVBoxLayout(filesWidget);
+    filesLayout->addWidget(HistoryCardArea1);
+    filesLayout->addWidget(HistoryCardArea2);
+    filesLayout->addWidget(HistoryCardArea3);
+    filesLayout->addWidget(HistoryCardArea4);
+    filesLayout->addWidget(HistoryCardArea5);
+    filesLayout->addWidget(HistoryCardArea6);
+    filesLayout->addWidget(HistoryCardArea7);
+    filesLayout->addWidget(HistoryCardArea8);
+    filesLayout->addWidget(HistoryCardArea9);
+    filesLayout->addWidget(HistoryCardArea10);
+    filesLayout->setAlignment(Qt::AlignTop);
+
+    scrollArea->setWidget(filesWidget); // 设置scrollArea的内容部件
+    scrollArea->setWidgetResizable(true); // 允许scrollArea根据内容自动调整大小
+
     centerVLayout->addWidget(progressBarArea); // 将上方固定区域添加到布局中
     centerVLayout->addWidget(catalogueArea); // 将目录文本添加到布局中
-    centerVLayout->addStretch(); // 在布局的末尾添加一个弹性空间
+    centerVLayout->addWidget(scrollArea);
 
     this->addCentralWidget(centralWidget); // 将中心部件添加到窗口中
 }
 
 HistorysyncPage::~HistorysyncPage()
 {
+}
+
+void HistorysyncPage::addHistory(QString filename, QString datasize,QString time,bool upif)
+{
+    HistoryCard*historyCard=new HistoryCard(filename,datasize,time,upif);
+    filesLayout->addWidget(historyCard);
 }

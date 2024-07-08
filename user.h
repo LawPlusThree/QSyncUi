@@ -24,6 +24,7 @@ private:
     QString hashedPassword; //password
     bool isLogin=false;
     ApiRequest *apiRequest;
+    QString avatarpath;
 
 public:
     User(const QString &username,
@@ -35,6 +36,7 @@ public:
          QObject *parent = nullptr);
     User(const User &user);
     bool enroll();         //执行post请求，实现注册功能
+    bool enroll(const QString &avatarpath);//注册带头像
     bool login();          //执行post请求，实现登录功能
     bool forgetPassword(); //执行post请求，实现找回密码功能
     bool updateAvatar(const QString &filePath);//更新头像

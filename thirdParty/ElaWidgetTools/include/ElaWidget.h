@@ -11,7 +11,7 @@ class ELA_EXPORT ElaWidget : public QWidget
     Q_OBJECT
     Q_Q_CREATE(ElaWidget)
 public:
-    explicit ElaWidget(QWidget* parent = nullptr);
+    explicit ElaWidget(QWidget* parent = nullptr,int wi=500,int he=500);
     ~ElaWidget();
     void setCentralWidget(QWidget* centralWidget);
 
