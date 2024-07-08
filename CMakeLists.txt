@@ -69,6 +69,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         avatarImage.qrc
         filequeue.h filequeue.cpp
         storage.h storage.cpp
+        filecard.h filecard.cpp
 
 
     )
