@@ -188,6 +188,11 @@ QString User::getEmail()
     return account;
 }
 
+QString User::gethashedPassword()
+{
+    return hashedPassword;
+}
+
 QString User::getUserHash() const
 {
     QByteArray hash = QCryptographicHash::hash(account.toUtf8(), QCryptographicHash::Sha1);
@@ -200,3 +205,7 @@ bool User::getisLogin()
    // return session;
 }*/
 
+bool User::updateUser(User &user)
+{
+    return true;
+}

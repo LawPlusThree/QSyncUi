@@ -21,6 +21,10 @@
 MainWindow::MainWindow(QWidget *parent)
     : ElaWindow(parent)
 {
+
+    db = new DatabaseManager(this); // 创建数据库管理器实例
+    db->initializeDatabase(); // 初始化数据库
+
     // ElaApplication::getInstance()->setThemeMode(ElaApplicationType::Dark);
     // setIsNavigationBarEnable(false);
     // setNavigationBarDisplayMode(ElaNavigationType::Minimal);
@@ -35,11 +39,14 @@ MainWindow::MainWindow(QWidget *parent)
     _syncingPage = new SyncingPage(this);
     _filemanagePage=new FileManagePage(this);
     _historysyncPage = new HistorysyncPage(this);
+    _userinfopage = new UserInfoPage(this);
 
     connect(this, &ElaWindow::userInfoCardClicked, this, [=]() {
         if(CurrentUser==nullptr)
             login->show();
     });
+    connect(this,&MainWindow::dbPassword,login,&loginwin::on_db_response);
+    connect(login,&loginwin::needPassword,this,&MainWindow::onNeedPassword);
 
     // GraphicsView
     ElaGraphicsScene *scene = new ElaGraphicsScene(this);
@@ -73,7 +80,7 @@ MainWindow::MainWindow(QWidget *parent)
     addExpanderNode("版本控制",testKey_3,ElaIconType::EnvelopeOpenText);
     addPageNode("查看历史",new QWidget(this),testKey_3,ElaIconType::CalendarClock);
     addExpanderNode("个人功能",testKey_4,ElaIconType::User);
-    addPageNode("修改信息",new QWidget(this),testKey_4,ElaIconType::Text);
+    addPageNode("修改信息",_userinfopage,testKey_4,ElaIconType::Text);
     addPageNode("注销账号",new QWidget(this),testKey_4,ElaIconType::UserSlash);
     addPageNode("退出登录",new QWidget(this),testKey_4,ElaIconType::ArrowRightFromBracket);
 
@@ -137,6 +144,7 @@ MainWindow::MainWindow(QWidget *parent)
 */
     qDebug() << ElaEventBus::getInstance()->getRegisteredEventsName();
     QObject::connect(login, &loginwin::on_login_complete, this, &MainWindow::onUserLoggedIn);
+    QObject::connect(_userinfopage, &UserInfoPage::changexinxi, this, &MainWindow::onUserLoggedIn);
     // 拦截默认关闭事件
     this->setIsDefaultClosed(false);
     connect(this, &MainWindow::closeButtonClicked, this, &MainWindow::onCloseButtonClicked);
@@ -148,6 +156,14 @@ void MainWindow::onUserLoggedIn(User user)
     setUserInfoCardTitle(user.getUsername());
     setUserInfoCardSubTitle(user.getEmail());
     CurrentUser=new User(user);
+    _userinfopage->currentUser=CurrentUser;
+    db->insertUser(user.getEmail(),user.gethashedPassword());
+}
+
+void MainWindow::onNeedPassword(const QString &account)
+{
+    QString password = db->getUserPassword(account).second;
+    emit dbPassword(password);
 }
 
 void MainWindow::onCloseButtonClicked()

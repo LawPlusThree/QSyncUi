@@ -70,6 +70,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         filequeue.h filequeue.cpp
         storage.h storage.cpp
         tasktoken.h tasktoken.cpp
+        filecard.h filecard.cpp
 
 
     )

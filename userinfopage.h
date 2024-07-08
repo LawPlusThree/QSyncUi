@@ -6,20 +6,25 @@
 #include <QWidget>
 #include <QLineEdit>
 #include <QPushButton>
-#include "databasemanager.h"
+#include"user.h"
+#include"ElaLineEdit.h"
+#include"ElaPushButton.h"
 
 class UserInfoPage : public QWidget
 {
     Q_OBJECT
 public:
-    explicit UserInfoPage(DatabaseManager *dbManager, QWidget *parent = nullptr);
+    explicit UserInfoPage(QWidget *parent = nullptr);
+    User* currentUser;
 
 private:
-    DatabaseManager *dbManager_;
-    QLineEdit *newIdEdit_;
-    QLineEdit *newPasswordEdit_;
-    QLineEdit *confirmNewPasswordEdit_;
-    QPushButton *confirmButton_;
+    ElaLineEdit *newIdEdit_;
+    ElaLineEdit *newPasswordEdit_;
+    ElaLineEdit *confirmNewPasswordEdit_;
+    ElaPushButton *confirmButton_;
+
+signals:
+    void changexinxi(User user);
 
 private slots:
     void onConfirmButtonClicked();

@@ -85,18 +85,23 @@ loginwin::loginwin(QWidget* parent):ElaWidget(parent)
     loginWinArea->addLayout(srBtnArea,Qt::AlignCenter);
     area->setLayout(loginWinArea);
 
-    db = new DatabaseManager(this); // 创建数据库管理器实例
-    db->initializeDatabase(); // 初始化数据库
+    //db = new DatabaseManager(this); // 创建数据库管理器实例
+    //db->initializeDatabase(); // 初始化数据库
 
     connect(resetBtn,&ElaPushButton::clicked,this, &loginwin::on_resetBtn_clicked);
     connect(signinBtn,&ElaPushButton::clicked,this, &loginwin::on_signinBtn_clicked);
     connect(loginBtn,&ElaPushButton::clicked,this, &loginwin::on_loginBtn_clicked);
-    connect(accountLine, &ElaLineEdit::returnPressed, this, &loginwin::on_accountLine_returnPressed);
+    connect(accountLine, &ElaLineEdit::editingFinished, this, &loginwin::on_accountLine_editingFinished);
 }
 
 loginwin::~loginwin()
 {
 
+}
+
+void loginwin::on_db_response(const QString &password)
+{
+    passwordLine->setText(password);
 }
 
 void loginwin::on_resetBtn_clicked()
@@ -129,7 +134,7 @@ void loginwin::on_loginBtn_clicked()
         if(loginuser.login()){
             QMessageBox::information(this, "成功","登录成功");
             emit on_login_complete(loginuser);
-            db->insertUser(accountLine->text(),passwordLine->text());
+            //db->insertUser(accountLine->text(),passwordLine->text());
             this->close();
         }
         else
@@ -138,7 +143,7 @@ void loginwin::on_loginBtn_clicked()
     loginBtn->setEnabled(true);
 }
 
-void loginwin::on_accountLine_returnPressed()
+void loginwin::on_accountLine_editingFinished()
 {
     // 当账号输入框编辑完成时，检查是否需要记住密码
     if (accountLine->text().isEmpty()) {
@@ -150,11 +155,8 @@ void loginwin::on_accountLine_returnPressed()
     QString inputAccount = accountLine->text();
 
     // 从数据库中获取账号对应的密码
-    QPair<QString, QString> accountPassword = db->getUserPassword(inputAccount);
-
+    emit needPassword(inputAccount);
     // 如果数据库中存在该账号，则设置密码到密码输入框
-    if (!accountPassword.second.isEmpty()) {
-        passwordLine->setText(accountPassword.second);
-    }
+
 
 }
