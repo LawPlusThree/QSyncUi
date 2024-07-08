@@ -115,3 +115,7 @@ bool User::getisLogin()
    // return session;
 }*/
 
+bool User::updateUser(User &user)
+{
+    return true;
+}

@@ -91,7 +91,7 @@ loginwin::loginwin(QWidget* parent):ElaWidget(parent)
     connect(resetBtn,&ElaPushButton::clicked,this, &loginwin::on_resetBtn_clicked);
     connect(signinBtn,&ElaPushButton::clicked,this, &loginwin::on_signinBtn_clicked);
     connect(loginBtn,&ElaPushButton::clicked,this, &loginwin::on_loginBtn_clicked);
-    connect(accountLine, &ElaLineEdit::returnPressed, this, &loginwin::on_accountLine_returnPressed);
+    connect(accountLine, &ElaLineEdit::editingFinished, this, &loginwin::on_accountLine_editingFinished);
 }
 
 loginwin::~loginwin()
@@ -138,7 +138,7 @@ void loginwin::on_loginBtn_clicked()
     loginBtn->setEnabled(true);
 }
 
-void loginwin::on_accountLine_returnPressed()
+void loginwin::on_accountLine_editingFinished()
 {
     // 当账号输入框编辑完成时，检查是否需要记住密码
     if (accountLine->text().isEmpty()) {

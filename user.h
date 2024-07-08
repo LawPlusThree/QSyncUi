@@ -33,6 +33,7 @@ public:
     bool login();          //执行post请求，实现登录功能
     bool forgetPassword(); //执行post请求，实现找回密码功能
     bool loadTask();//获取云端task
+    bool updateUser(User &user);
     QString getS3Location();//获取云端容器地址
     QString getUsername();//获取用户名
     QString getEmail();//获取用户邮箱

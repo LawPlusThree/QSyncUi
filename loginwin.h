@@ -29,7 +29,7 @@ private slots:
     void on_resetBtn_clicked();
     void on_signinBtn_clicked();
     void on_loginBtn_clicked();
-    void on_accountLine_returnPressed();
+    void on_accountLine_editingFinished();
 private:
     Core *core;
 
