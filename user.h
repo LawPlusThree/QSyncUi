@@ -6,8 +6,13 @@
 #include <QString>
 #include <QVector>
 #include <QJsonArray>
+#include <QImageReader>
+#include <QImage>
+#include <QBuffer>
+#include <QByteArray>
 #include "apirequest.h"
 #include "synctask.h"
+#include "tasktoken.h"
 class User : public QObject
 {
     Q_OBJECT
@@ -19,7 +24,7 @@ private:
     QString hashedPassword; //password
     bool isLogin=false;
     ApiRequest *apiRequest;
-    QVector<SyncTask> tasks;
+
 public:
     User(const QString &username,
          const QString &account,
@@ -32,7 +37,12 @@ public:
     bool enroll();         //执行post请求，实现注册功能
     bool login();          //执行post请求，实现登录功能
     bool forgetPassword(); //执行post请求，实现找回密码功能
-    bool loadTask();//获取云端task
+    bool updateAvatar(const QString &filePath);//更新头像
+    bool addTask(const QString& localDir, const QString& s3Dir, int syncType, int usedSize, int totalSize);//添加云端task
+    QVector<SyncTask> getTask();//获取云端task
+    TaskToken getTaskToken(int id);//获取tasktoken
+    TaskToken getTaskTokenByRemote(QString s3Dir);
+    bool logout();//登出
     QString getS3Location();//获取云端容器地址
     QString getUsername();//获取用户名
     QString getEmail();//获取用户邮箱
@@ -41,8 +51,11 @@ public:
     bool getisLogin(); //返回用户登陆状态
 
 signals:
-    void enrollCompleted(const QString &session); //注册成功的信号，发送获取到的cookie中session
-    void loginCompleted(const QString &session); //登陆成功的信号，发送获取到的cookie中session
+    void enrollResponse(const int &code,const QJsonObject &data,const QString &message); //注册的信号
+    void loginResponse(const int &code,const QJsonObject &data,const QString &message); //登陆的信号
+    void addTaskResponse(const int &code,const QJsonObject &data,const QString &message); //新建任务的信号
+    void updateAvatarResponse(const int &code,const QJsonObject &data,const QString &message);//改头像的信号
+    void logoutResponse(const int &code,const QJsonObject &data,const QString &message);
 
 };
 
