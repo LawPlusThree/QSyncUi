@@ -14,7 +14,7 @@ private:
 public:
     explicit DatabaseManager(QObject *parent = nullptr);
     bool updateUserInfo(const QString &account, const QString &newId, const QString &newHashedPassword);
-    bool initializeDatabase(const QString &name);
+    bool initializeDatabase();
     bool insertUser(const QString &account, const QString &hashedPassword);
     QList<QString>getAllAccounts();
     QPair<QString, QString>getUserPassword(const QString &account);

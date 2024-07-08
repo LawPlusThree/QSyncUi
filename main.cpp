@@ -18,7 +18,7 @@ int main(int argc, char *argv[])
     SyncTaskDatabaseManager stm(&loginuser);
     SyncTask mytask("E:/","/home/",1);
     SyncCore sc(&a);
-    sc.addTask(&mytask);
+    //sc.addTask(&mytask);
     //stm.addTask(mytask);
     //qDebug()<<stm.queryTask(mytask);
     ElaApplication::getInstance()->init();

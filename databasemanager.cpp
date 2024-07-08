@@ -8,26 +8,14 @@ DatabaseManager::DatabaseManager(QObject *parent):QObject(parent)
     QSqlQuery query;
     QMap<QString,QString>accountPasswordMap;
 
-    query.prepare("SELECT account, password FROM Users");
-    if(query.exec())
-    {
-        while (query.next()) {
-            accountPasswordMap[query.value(0).toString()] = query.value(1).toString();
-        }
-    }
-    else
-    {
-        qWarning() << "Failed to get all accounts:" << query.lastError();
-    }
-
     // 将账号密码映射存储在类成员变量中
     accountPasswordMap_ = accountPasswordMap;
 }
 
-bool DatabaseManager::initializeDatabase(const QString &name)
+bool DatabaseManager::initializeDatabase()
 {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-    db.setDatabaseName(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/" + name +".db");
+    db.setDatabaseName("database.db");
     if(!db.open())
     {
         qWarning() << "Database open failed:" << db.lastError();
@@ -35,7 +23,20 @@ bool DatabaseManager::initializeDatabase(const QString &name)
     }
 
     QSqlQuery query;
-    if (!query.exec("CREATE TABLE IF NOT EXISTS Users (id INTEGER PRIMARY KEY AUTOINCREMENT, account TEXT UNIQUE, password TEXT)")) {
+
+    query.prepare("SELECT account, hashedPassword FROM Users");
+    if(query.exec())
+    {
+        while (query.next()) {
+            accountPasswordMap_[query.value(0).toString()] = query.value(1).toString();
+        }
+    }
+    else
+    {
+        qWarning() << "Failed to get all accounts:" << query.lastError();
+    }
+
+    if (!query.exec("CREATE TABLE IF NOT EXISTS Users (id INTEGER PRIMARY KEY AUTOINCREMENT, account TEXT UNIQUE, hashedPassword TEXT)")) {
         qWarning() << "Failed to create table:" << query.lastError();
         return false;
     }
@@ -63,7 +64,7 @@ bool DatabaseManager::insertUser(const QString &account, const QString &hashedPa
                                      const QString &newHashedPassword)
 {
     QSqlQuery query;
-    query.prepare("UPDATE Users SET account = :newId, password = :newHashedPassword WHERE account = :account");
+    query.prepare("UPDATE Users SET account = :newId, hashedPassword = :newHashedPassword WHERE account = :account");
     query.bindValue(":newId", newId);
     query.bindValue(":newHashedPassword", newHashedPassword);
     query.bindValue(":account", account);
@@ -86,6 +87,7 @@ QList<QString> DatabaseManager::getAllAccounts()
 
     query.prepare("SELECT account FROM Users");
     if (query.exec()) {
+
         while (query.next()) {
             accounts.append(query.value(0).toString());
         }
