@@ -127,7 +127,6 @@ FileManagePage::FileManagePage(QWidget* parent):ElaScrollPage(parent)
     centerVLayout->addWidget(pushButtonArea); // 将切换按钮容器添加到布局中
     centerVLayout->addWidget(catalogueArea); // 将目录文本添加到布局中
     centerVLayout->addWidget(scrollArea); // 将scrollArea添加到布局中
-    //centerVLayout->addStretch(); // 在布局的末尾添加一个弹性空间
 
     this->addCentralWidget(centralWidget); // 将中心部件添加到窗口
 }
