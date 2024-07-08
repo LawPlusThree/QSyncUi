@@ -3,6 +3,8 @@
 #include "ElaPushButton.h"
 #include "ElaToggleButton.h"
 #include <QVBoxLayout>
+#include"filecard.h"
+#include"ElaScrollArea.h"
 
 SyncingPage::SyncingPage(QWidget* parent)
     : ElaScrollPage(parent)
@@ -83,10 +85,41 @@ SyncingPage::SyncingPage(QWidget* parent)
     catalogueLayout->addWidget(catalogueText4);
     catalogueLayout->addWidget(catalogueText5);
 
+    ElaScrollArea* scrollArea = new ElaScrollArea();
+    scrollArea->viewport()->setStyleSheet("background:transparent;");//设置背景透明
+    FileCard*FileCardArea1=new FileCard("文件1","3.5GB","1MB/s","0%");
+    FileCard*FileCardArea2=new FileCard("文件2","3.5GB","2MB/s","0%");
+    FileCard*FileCardArea3=new FileCard("文件3","3.5GB","3MB/s","0%");
+    FileCard*FileCardArea4=new FileCard("文件4","3.5GB","4MB/s","0%");
+    FileCard*FileCardArea5=new FileCard("文件5","3.5GB","5MB/s","0%");
+    FileCard*FileCardArea6=new FileCard("文件6","3.5GB","6MB/s","0%");
+    FileCard*FileCardArea7=new FileCard("文件7","3.5GB","7MB/s","0%");
+    FileCard*FileCardArea8=new FileCard("文件8","3.5GB","8MB/s","0%");
+    FileCard*FileCardArea9=new FileCard("文件9","3.5GB","9MB/s","0%");
+    FileCard*FileCardArea10=new FileCard("文件10","3.5GB","10MB/s","0%");
+
+
+    QWidget* filesWidget=new QWidget();
+    filesLayout=new QVBoxLayout(filesWidget);
+    filesLayout->addWidget(FileCardArea1);
+    filesLayout->addWidget(FileCardArea2);
+    filesLayout->addWidget(FileCardArea3);
+    filesLayout->addWidget(FileCardArea4);
+    filesLayout->addWidget(FileCardArea5);
+    filesLayout->addWidget(FileCardArea6);
+    filesLayout->addWidget(FileCardArea7);
+    filesLayout->addWidget(FileCardArea8);
+    filesLayout->addWidget(FileCardArea9);
+    filesLayout->addWidget(FileCardArea10);
+    filesLayout->setAlignment(Qt::AlignTop);
+
+    scrollArea->setWidget(filesWidget); // 设置scrollArea的内容部件
+    scrollArea->setWidgetResizable(true); // 允许scrollArea根据内容自动调整大小
+
     centerVLayout->addWidget(progressBarArea); // 将上方固定区域添加到布局中
     centerVLayout->addWidget(pushButtonArea); // 将切换按钮容器添加到布局中
     centerVLayout->addWidget(catalogueArea); // 将目录文本添加到布局中
-    centerVLayout->addStretch(); // 在布局的末尾添加一个弹性空间
+    centerVLayout->addWidget(scrollArea);
 
     this->addCentralWidget(centralWidget); // 将中心部件添加到窗口中
 }
@@ -94,4 +127,10 @@ SyncingPage::SyncingPage(QWidget* parent)
 SyncingPage::~SyncingPage()
 {
 
+}
+
+void SyncingPage::addFile(QString filename, QString datasize,QString speed,QString progress)
+{
+    FileCard*firecard=new FileCard(filename,datasize,speed,progress);
+    filesLayout->addWidget(firecard);
 }
