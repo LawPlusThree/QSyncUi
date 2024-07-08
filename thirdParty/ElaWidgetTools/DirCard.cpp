@@ -12,7 +12,6 @@
 
 DirCard::DirCard(QString f, QString d,QString b)
 {
-    this->setMaximumHeight(25);
 
     filename=new ElaText(f);
     datasize=new ElaText(d);
@@ -53,6 +52,7 @@ DirCard::DirCard(QString f, QString d,QString b)
     DirCardArea->addLayout(dataSizeArea,Qt::AlignCenter);
     DirCardArea->addLayout(bindTimeArea,Qt::AlignCenter);
     DirCardArea->addLayout(prArea,Qt::AlignCenter);
+
 }
 
 DirCard::~DirCard() {}

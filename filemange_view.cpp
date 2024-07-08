@@ -119,6 +119,7 @@ FileManagePage::FileManagePage(QWidget* parent):ElaScrollPage(parent)
     filesLayout->addWidget(DirCardArea9);
     filesLayout->addWidget(DirCardArea10);
     filesLayout->setAlignment(Qt::AlignTop);
+
     scrollArea->setWidget(filesWidget); // 设置scrollArea的内容部件
     scrollArea->setWidgetResizable(true); // 允许scrollArea根据内容自动调整大小
 
