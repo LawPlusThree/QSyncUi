@@ -5,6 +5,7 @@
 #include"ElaText.h"
 #include"ElaPushButton.h"
 #include"ElaToggleButton.h"
+#include"ElaScrollArea.h"
 
 #include"DirCard.h"
 
@@ -92,7 +93,9 @@ FileManagePage::FileManagePage(QWidget* parent):ElaScrollPage(parent)
     catalogueLayout->addWidget(catalogueText3);
     catalogueLayout->addWidget(catalogueText4);
 
-
+    // 创建QScrollArea用于包裹files
+    ElaScrollArea* scrollArea = new ElaScrollArea();
+    scrollArea->viewport()->setStyleSheet("background:transparent;");//设置背景透明
     DirCard*DirCardArea1=new DirCard("文件1","1.0GB","2024.7.1");
     DirCard*DirCardArea2=new DirCard("文件2","2.0GB","2024.7.2");
     DirCard*DirCardArea3=new DirCard("文件3","3.0GB","2024.7.3");
@@ -103,25 +106,27 @@ FileManagePage::FileManagePage(QWidget* parent):ElaScrollPage(parent)
     DirCard*DirCardArea8=new DirCard("文件8","8.0GB","2024.7.8");
     DirCard*DirCardArea9=new DirCard("文件9","9.0GB","2024.7.9");
     DirCard*DirCardArea10=new DirCard("文件10","10.0GB","2024.7.10");
-    QWidget*files=new QWidget();
-    QVBoxLayout*filesArea=new QVBoxLayout(files);
-    filesArea->addWidget(DirCardArea1);
-    filesArea->addWidget(DirCardArea2);
-    filesArea->addWidget(DirCardArea3);
-    filesArea->addWidget(DirCardArea4);
-    filesArea->addWidget(DirCardArea5);
-    filesArea->addWidget(DirCardArea6);
-    filesArea->addWidget(DirCardArea7);
-    filesArea->addWidget(DirCardArea8);
-    filesArea->addWidget(DirCardArea9);
-    filesArea->addWidget(DirCardArea10);
-    filesArea->setAlignment(Qt::AlignTop);
+    QWidget* filesWidget=new QWidget();
+    QVBoxLayout* filesLayout=new QVBoxLayout(filesWidget);
+    filesLayout->addWidget(DirCardArea1);
+    filesLayout->addWidget(DirCardArea2);
+    filesLayout->addWidget(DirCardArea3);
+    filesLayout->addWidget(DirCardArea4);
+    filesLayout->addWidget(DirCardArea5);
+    filesLayout->addWidget(DirCardArea6);
+    filesLayout->addWidget(DirCardArea7);
+    filesLayout->addWidget(DirCardArea8);
+    filesLayout->addWidget(DirCardArea9);
+    filesLayout->addWidget(DirCardArea10);
+    filesLayout->setAlignment(Qt::AlignTop);
+    scrollArea->setWidget(filesWidget); // 设置scrollArea的内容部件
+    scrollArea->setWidgetResizable(true); // 允许scrollArea根据内容自动调整大小
 
     centerVLayout->addWidget(progressBarArea); // 将上方固定区域添加到布局中
     centerVLayout->addWidget(pushButtonArea); // 将切换按钮容器添加到布局中
     centerVLayout->addWidget(catalogueArea); // 将目录文本添加到布局中
-    centerVLayout->addWidget(files);
-    centerVLayout->addStretch(); // 在布局的末尾添加一个弹性空间
+    centerVLayout->addWidget(scrollArea); // 将scrollArea添加到布局中
+    //centerVLayout->addStretch(); // 在布局的末尾添加一个弹性空间
 
     this->addCentralWidget(centralWidget); // 将中心部件添加到窗口
 
