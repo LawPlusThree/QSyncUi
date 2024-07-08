@@ -1,4 +1,6 @@
 #include "synccore.h"
+#include "filefunc.h"
+#include <iostream>
 
 using namespace wtr;
 SyncCore::SyncCore(QObject *parent)

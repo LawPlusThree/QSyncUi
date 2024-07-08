@@ -4,7 +4,7 @@
 #include "qfileinfo.h"
 #include "synctask.h"
 #include "watcher.hpp"
-#include <iostream>
+
 using namespace wtr;
 class SyncTask;
 class SyncCore : public QObject
