@@ -135,19 +135,3 @@ void FileManagePage::addDirCard(DirCard*newDir)
 {
     filesArea->addWidget(newDir);
 }
-
-/*void FileManagePage::removeDirCard(DirCard* oldDirCard)
-{
-    // 检查传入的指针是否为空
-    if (oldDirCard == nullptr) {
-        return;
-    }
-
-    // 从布局中移除 DirCard 组件
-    filesArea->removeWidget(oldDirCard);
-
-    // 如果 DirCard 组件确实存在于布局中，则从布局中删除它
-    if (filesArea->layout()->itemAt(filesArea->indexOfWidget(oldDirCard)) != nullptr) {
-        filesArea->layout()->removeItem(filesArea->indexOfWidget(oldDirCard));
-    }
-}*/

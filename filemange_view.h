@@ -13,7 +13,6 @@ class FileManagePage:public ElaScrollPage
 public:
     FileManagePage(QWidget* parent = nullptr);
     void addDirCard(DirCard*newDirCard);
-    void removeCard(DirCard*oldDirCard);
     QVBoxLayout*filesArea;
 
 private:
