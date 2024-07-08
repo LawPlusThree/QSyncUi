@@ -2,17 +2,18 @@
 #include <QVBoxLayout>
 #include <QMessageBox>
 
-UserInfoPage::UserInfoPage(DatabaseManager *dbManager, QWidget *parent) : QWidget(parent), dbManager_(dbManager)
+
+UserInfoPage::UserInfoPage(QWidget *parent) : QWidget(parent)
 {
     // 创建控件
-    newIdEdit_ = new QLineEdit(this);
-    newPasswordEdit_ = new QLineEdit(this);
-    confirmNewPasswordEdit_ = new QLineEdit(this);
-    confirmButton_ = new QPushButton("确认修改", this);
+    newIdEdit_ = new ElaLineEdit(this);
+    newPasswordEdit_ = new ElaLineEdit(this);
+    confirmNewPasswordEdit_ = new ElaLineEdit(this);
+    confirmButton_ = new ElaPushButton("确认修改", this);
 
     // 设置密码输入为密码模式
-    newPasswordEdit_->setEchoMode(QLineEdit::Password);
-    confirmNewPasswordEdit_->setEchoMode(QLineEdit::Password);
+    newPasswordEdit_->setEchoMode(ElaLineEdit::Password);
+    confirmNewPasswordEdit_->setEchoMode(ElaLineEdit::Password);
 
     // 布局
     QVBoxLayout *layout = new QVBoxLayout(this);
@@ -21,8 +22,15 @@ UserInfoPage::UserInfoPage(DatabaseManager *dbManager, QWidget *parent) : QWidge
     layout->addWidget(confirmNewPasswordEdit_);
     layout->addWidget(confirmButton_);
 
+    // 获取当前登录的用户信息
+    //QString userEmail = currentUser->getEmail();
+    newIdEdit_->setPlaceholderText("修改ID");
+    newPasswordEdit_->setPlaceholderText("新密码");
+    confirmNewPasswordEdit_->setPlaceholderText("确认密码");
+
+
     // 连接信号与槽
-    connect(confirmButton_, &QPushButton::clicked, this, &UserInfoPage::onConfirmButtonClicked);
+    connect(confirmButton_, &ElaPushButton::clicked, this, &UserInfoPage::onConfirmButtonClicked);
 }
 
 void UserInfoPage::onConfirmButtonClicked()
@@ -43,13 +51,7 @@ void UserInfoPage::onConfirmButtonClicked()
     }
 
     // 更新数据库
-    QString currentAccount = "currentUserAccount"; // 应替换为实际的当前用户账号
-    if (dbManager_->updateUserInfo(currentAccount, newId, newPassword)) {
-        QMessageBox::information(this, "成功", "用户信息更新成功。");
-        // 更新主界面显示的用户ID
-        // 假设主界面有一个label来显示用户ID，我们将更新它的文本
-        //emit updateUserIdSignal(newId);
-    } else {
-        QMessageBox::warning(this, "错误", "用户信息更新失败。");
-    }
+    emit changexinxi(User(*currentUser));
+
+    QMessageBox::information(this, "成功","修改成功");
 }

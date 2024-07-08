@@ -7,6 +7,7 @@
 #include "ElaWindow.h"
 #include"loginwin.h"
 #include"ElaCheckBox.h"
+#include"userinfopage.h"
 
 #include "user.h"
 class HomePage;
@@ -31,6 +32,10 @@ public:
 
 public slots:
     void onUserLoggedIn(User user);
+    void onNeedPassword(const QString& account);
+
+signals:
+    void dbPassword(const QString &);
 
 
 private:
@@ -47,6 +52,7 @@ private:
     QString _settingKey{""};
 
     ElaCheckBox* _checkBox{nullptr};
+    UserInfoPage* _userinfopage{nullptr};
 
 };
 #endif // MAINWINDOW_H
