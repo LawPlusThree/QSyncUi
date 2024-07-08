@@ -9,6 +9,7 @@
 #include <QStandardPaths>
 #include <QString>
 #include "qcontainerfwd.h"
+#include "awsutils.h"
 
 //声明友元类
 class SyncCore;
@@ -24,6 +25,7 @@ private:
     int syncStatus; //1 for upload/download,2 for only upload,3 for only download. -1 for paused
     //lastSyncTime, use Qt::currentDateTime() to get the current time
     QDateTime lastSyncTime;
+    AWSUtils* awsutils;
 
 public:
     SyncTask(QString localPath, QString remotePath, int syncStatus, int id=-1);

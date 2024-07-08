@@ -33,8 +33,31 @@ User::User(const User &user)
 bool User::enroll()
 {
     QString postData
-    = QString("username=%1&email=%2&password=%3").arg(username).arg(account).arg(hashedPassword);
+        = QString("username=%1&email=%2&password=%3").arg(username).arg(account).arg(hashedPassword);
     ApiResponse response=apiRequest->post("/register",postData.toUtf8());
+    emit enrollResponse(response.getCode(),response.getData(),response.getMessage());
+    return response.isSuccess();
+}
+
+bool User::enroll(const QString &avatarpath)
+{
+    QImageReader reader(avatarpath);
+    if (!reader.canRead()) {
+        qDebug()<<"read picture failed!";
+    }
+    QImage image = reader.read();
+    if (image.isNull()) {
+        qDebug()<<"read picture failed!";
+    }
+    QByteArray byteArray;
+    QBuffer buffer(&byteArray);
+    image.save(&buffer, reader.format()); // 使用图片的原始格式保存
+    // 将字节数据编码为Base64字符串
+    QString avatar = byteArray.toBase64();
+    QString postData
+        = QString("username=%1&email=%2&password=%3&avatar=%4").arg(username).arg(account).arg(hashedPassword).arg(avatar);
+    ApiResponse response=apiRequest->post("/register",postData.toUtf8());
+    emit enrollResponse(response.getCode(),response.getData(),response.getMessage());
     return response.isSuccess();
 }
 
@@ -48,8 +71,8 @@ bool User::login()
     }
     else if(response.getCode()==403){
         isLogin=false;
-
     }
+    emit loginResponse(response.getCode(),response.getData(),response.getMessage());
     return response.isSuccess();
 }
 
@@ -59,20 +82,109 @@ bool User::forgetPassword()
     return true;
 }
 
-bool User::loadTask()
+bool User::updateAvatar(const QString &filePath)
+{
+    QImageReader reader(filePath);
+    if (!reader.canRead()) {
+        qDebug()<<"read picture failed!";
+        QString jsonString = R"({"code": 666, "message": "select picture error!", "data": "Nooo!"})";
+        QByteArray jsonData = jsonString.toUtf8();
+        QJsonDocument document = QJsonDocument::fromJson(jsonData);
+        QJsonObject jsonObject = document.object();
+        emit updateAvatarResponse(666,jsonObject,"select picture error!");
+        return false; // 图片读取失败
+    }
+    QImage image = reader.read();
+    if (image.isNull()) {
+        qDebug()<<"read picture failed!";
+        QString jsonString = R"({"code": 666, "message": "select picture error!", "data": "Nooo!"})";
+        QByteArray jsonData = jsonString.toUtf8();
+        QJsonDocument document = QJsonDocument::fromJson(jsonData);
+        QJsonObject jsonObject = document.object();
+        emit updateAvatarResponse(666,jsonObject,"select picture error!");
+        return false; // 图片读取失败
+    }
+    QByteArray byteArray;
+    QBuffer buffer(&byteArray);
+    image.save(&buffer, reader.format()); // 使用图片的原始格式保存
+    // 将字节数据编码为Base64字符串
+    QString postData = byteArray.toBase64();
+    ApiResponse response=apiRequest->post("/updateAvatar",postData.toUtf8());
+    emit updateAvatarResponse(response.getCode(),response.getData(),response.getMessage());
+    return response.isSuccess();
+}
+
+bool User::addTask(const QString& localDir, const QString& s3Dir, int syncType, int usedSize, int totalSize)
+{
+    //添加云端task
+    QString postData = QString("localDir=%1&s3Dir=%2&syncType=%3&usedSize=%4&totalSize=%5")
+                           .arg(localDir)
+                           .arg(s3Dir)
+                           .arg(syncType)
+                           .arg(usedSize)
+                           .arg(totalSize);
+    ApiResponse response=apiRequest->post("/addTask",postData.toUtf8());
+    emit addTaskResponse(response.getCode(),response.getData(),response.getMessage());
+    return response.isSuccess();
+}
+
+QVector<SyncTask> User::getTask()
 {
     //获取云端task
     ApiResponse response=apiRequest->get("/tasks");
     QJsonArray tasksArray = response.getDatav().toArray();
+    QVector<SyncTask> tasks;
 
     for (int i = 0; i < tasksArray.size(); ++i) {
         QJsonObject taskObj = tasksArray[i].toObject();
         SyncTask task(taskObj["localDir"].toString(),
-                taskObj["s3Dir"].toString(),taskObj["syncType"].toInt());
-        //task.usedSize = taskObj["usedSize"].toDouble();
-        //task.totalSize = taskObj["totalSize"].toDouble();
+                taskObj["s3Dir"].toString(),
+                taskObj["syncType"].toInt());
+                //taskObj["usedSize"].toDouble(),
+                //taskObj["totalSize"].toDouble()
         tasks.push_back(task);
     }
+    return tasks;
+}
+
+TaskToken User::getTaskToken(int id)
+{
+    ApiResponse response=apiRequest->get(QString("/getTaskToken?task_id=%1").arg(id));
+    if(response.isSuccess()){
+        TaskToken tasktoken(response.getData());
+        return tasktoken;
+    }
+    else{
+        QString jsonString = R"({"code": 666, "message": "get token error!", "data": "Nooo!"})";
+        QByteArray jsonData = jsonString.toUtf8();
+        QJsonDocument document = QJsonDocument::fromJson(jsonData);
+        QJsonObject jsonObject = document.object();
+        TaskToken errortasktoken(jsonObject);
+        return errortasktoken;
+    }
+}
+
+TaskToken User::getTaskTokenByRemote(QString s3Dir)
+{
+    ApiResponse response=apiRequest->get(QString("/getTaskTokenByS3Dir?s3Dir=%1").arg(s3Dir));
+    if(response.isSuccess()){
+        TaskToken tasktoken(response.getData());
+        return tasktoken;
+    }
+    else{
+        QString jsonString = R"({"code": 666, "message": "get tokenRemote error!", "data": "Nooo!"})";
+        QByteArray jsonData = jsonString.toUtf8();
+        QJsonDocument document = QJsonDocument::fromJson(jsonData);
+        QJsonObject jsonObject = document.object();
+        TaskToken errortasktoken(jsonObject);
+        return errortasktoken;
+    }
+}
+
+bool User::logout()
+{
+    ApiResponse response=apiRequest->get("/logout");
+    emit logoutResponse(response.getCode(),response.getData(),response.getMessage());
     return response.isSuccess();
 }
 
@@ -98,6 +210,11 @@ QString User::getEmail()
     return account;
 }
 
+QString User::gethashedPassword()
+{
+    return hashedPassword;
+}
+
 QString User::getUserHash() const
 {
     QByteArray hash = QCryptographicHash::hash(account.toUtf8(), QCryptographicHash::Sha1);
@@ -110,3 +227,7 @@ bool User::getisLogin()
    // return session;
 }*/
 
+bool User::updateUser(User &user)
+{
+    return true;
+}

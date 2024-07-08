@@ -59,13 +59,10 @@ bool DatabaseManager::insertUser(const QString &account, const QString &hashedPa
     return true;
 }
 
-    bool DatabaseManager::updateUserInfo(const QString &account,
-                                     const QString &newId,
-                                     const QString &newHashedPassword)
+bool DatabaseManager::updateUserInfo(const QString &account,const QString &newHashedPassword)
 {
     QSqlQuery query;
-    query.prepare("UPDATE Users SET account = :newId, hashedPassword = :newHashedPassword WHERE account = :account");
-    query.bindValue(":newId", newId);
+    query.prepare("UPDATE Users SET hashedPassword = :newHashedPassword WHERE account = :account");
     query.bindValue(":newHashedPassword", newHashedPassword);
     query.bindValue(":account", account);
 
@@ -75,7 +72,7 @@ bool DatabaseManager::insertUser(const QString &account, const QString &hashedPa
     }
 
     // 更新账号密码映射
-    accountPasswordMap_[newId] = newHashedPassword;
+    accountPasswordMap_[account] = newHashedPassword;
 
     return true;
 }
@@ -111,3 +108,5 @@ QPair<QString, QString> DatabaseManager::getUserPassword(const QString &account)
     // 如果没有找到匹配的账号，返回空值
     return userPassword;
 }
+
+
