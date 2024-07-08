@@ -113,6 +113,7 @@ void signinwin::on_signinBtn_clicked()
             //测试用户
             //User enrolluser("newuser@example.com","123456");
             User enrolluser(IDLine->text(),accoutLine->text(),passwordLine->text());
+            enrolluser.avatarpath=fileroad;
             if(enrolluser.enroll())
                 QMessageBox::information(this, "成功","注册成功");
             else
@@ -155,6 +156,7 @@ void signinwin::on_image_clicked()
         avatarArea->addWidget(avatar,0,Qt::AlignCenter);
         connect(avatar,&ElaInteractiveCard::clicked,this,&signinwin::on_image_clicked);
         update();
+        fileroad=fileName;
     }
 }
 
