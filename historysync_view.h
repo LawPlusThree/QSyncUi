@@ -12,7 +12,7 @@ public:
     HistorysyncPage(QWidget* parent = nullptr);
     ~HistorysyncPage();
     QVBoxLayout*filesLayout;
-    //void addHistory(QString filename, QString datasize,QString time,bool upif);
+    void addHistory(QString filename, QString datasize,QString time,bool upif);
 private:
     ElaProgressBar* _progressBar{nullptr};
 };

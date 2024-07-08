@@ -102,3 +102,9 @@ HistorysyncPage::HistorysyncPage(QWidget* parent)
 HistorysyncPage::~HistorysyncPage()
 {
 }
+
+void HistorysyncPage::addHistory(QString filename, QString datasize,QString time,bool upif)
+{
+    HistoryCard*historyCard=new HistoryCard(filename,datasize,time,upif);
+    filesLayout->addWidget(historyCard);
+}

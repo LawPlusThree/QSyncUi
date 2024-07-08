@@ -5,8 +5,6 @@
 
 HistoryCard::HistoryCard(QString f, QString d,QString t,bool u)
 {
-    setMaximumHeight(25);
-
     filename=new ElaText(f);
     datasize=new ElaText(d);
     time=new ElaText(t);
