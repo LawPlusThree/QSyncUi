@@ -65,7 +65,7 @@ signinwin::signinwin(QWidget* parent):ElaWidget(parent)
     QHBoxLayout*passagainArea=new QHBoxLayout();
     passagainArea->addWidget(passagainLine,0,Qt::AlignCenter);
 
-    ElaPushButton*signinBtn=new ElaPushButton("注册");
+    signinBtn=new ElaPushButton("注册");
     signinBtn->setFixedSize(270,30);
     signinBtn->setStyleSheet("background-color:rgb(0,204,255)");
     QHBoxLayout*signinBtnArea=new QHBoxLayout();
@@ -87,6 +87,7 @@ signinwin::signinwin(QWidget* parent):ElaWidget(parent)
 
 void signinwin::on_signinBtn_clicked()
 {
+    signinBtn->setEnabled(false);
     if(IDLine->text()=="")
     {
         QMessageBox::information(this, "错误","请输入用户ID！");
@@ -118,6 +119,7 @@ void signinwin::on_signinBtn_clicked()
                 QMessageBox::critical(this, "失败","注册失败");
             emit goback();
     }
+    signinBtn->setEnabled(true);
 }
 
 signinwin::~signinwin()

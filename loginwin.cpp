@@ -11,7 +11,7 @@
 #include<QPalette>
 #include<QColor>
 #include<QMessageBox>
-
+#include "databasemanager.h"
 #include"ElaPushButton.h"
 #include"ElaLineEdit.h"
 #include"ElaText.h"
@@ -85,9 +85,13 @@ loginwin::loginwin(QWidget* parent):ElaWidget(parent)
     loginWinArea->addLayout(srBtnArea,Qt::AlignCenter);
     area->setLayout(loginWinArea);
 
+    db = new DatabaseManager(this); // 创建数据库管理器实例
+    db->initializeDatabase(); // 初始化数据库
+
     connect(resetBtn,&ElaPushButton::clicked,this, &loginwin::on_resetBtn_clicked);
     connect(signinBtn,&ElaPushButton::clicked,this, &loginwin::on_signinBtn_clicked);
     connect(loginBtn,&ElaPushButton::clicked,this, &loginwin::on_loginBtn_clicked);
+    connect(accountLine, &ElaLineEdit::returnPressed, this, &loginwin::on_accountLine_returnPressed);
 }
 
 loginwin::~loginwin()
@@ -108,6 +112,7 @@ void loginwin::on_signinBtn_clicked()
 void loginwin::on_loginBtn_clicked()
 {
     loginBtn->setEnabled(false);
+
     if(accountLine->text()=="")
     {
         QMessageBox::information(this, "错误","请输入账号！");
@@ -124,6 +129,7 @@ void loginwin::on_loginBtn_clicked()
         if(loginuser.login()){
             QMessageBox::information(this, "成功","登录成功");
             emit on_login_complete(loginuser);
+            db->insertUser(accountLine->text(),passwordLine->text());
             this->close();
         }
         else
@@ -132,3 +138,23 @@ void loginwin::on_loginBtn_clicked()
     loginBtn->setEnabled(true);
 }
 
+void loginwin::on_accountLine_returnPressed()
+{
+    // 当账号输入框编辑完成时，检查是否需要记住密码
+    if (accountLine->text().isEmpty()) {
+        // 如果账号输入框为空，不做任何操作
+        return;
+    }
+
+    // 获取输入的账号
+    QString inputAccount = accountLine->text();
+
+    // 从数据库中获取账号对应的密码
+    QPair<QString, QString> accountPassword = db->getUserPassword(inputAccount);
+
+    // 如果数据库中存在该账号，则设置密码到密码输入框
+    if (!accountPassword.second.isEmpty()) {
+        passwordLine->setText(accountPassword.second);
+    }
+
+}

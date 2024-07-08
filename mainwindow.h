@@ -26,6 +26,7 @@ public:
     ~MainWindow();
     loginwin* login=new loginwin();
     Q_SLOT void onCloseButtonClicked();
+    User*CurrentUser=nullptr;
 
 public slots:
     void onUserLoggedIn(User user);

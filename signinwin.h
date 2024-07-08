@@ -7,12 +7,14 @@
 
 class ElaInteractiveCard;
 class QHBoxLayout;
+class ElaPushButton;
 class signinwin:public ElaWidget
 {
     Q_OBJECT
 public:
     explicit signinwin(QWidget *parent = nullptr);
     ~signinwin();
+    ElaPushButton*signinBtn;
 
 signals:
     void goback();
