@@ -34,15 +34,15 @@ FileCard::FileCard(QString f, QString d,QString s,QString p)
     proBarArea->addWidget(proBar,0,Qt::AlignCenter);
     proBarArea->setAlignment(Qt::AlignCenter);
 
-    modifyBtn=new ElaIconButton(ElaIconType::CalendarLinesPen);
-    pauseBtn=new ElaIconButton(ElaIconType::Pause);
-    relieveBtn=new ElaIconButton(ElaIconType::Xmark);
-    modifyBtn->setFixedSize(30,30);
+    //modifyBtn=new ElaIconButton(ElaIconType::CalendarLinesPen);
+    pauseBtn=new ElaIconButton(ElaIconType::CirclePause);
+    relieveBtn=new ElaIconButton(ElaIconType::CircleXmark);
+    //modifyBtn->setFixedSize(30,30);
     pauseBtn->setFixedSize(30,30);
     relieveBtn->setFixedSize(30,30);
 
     QHBoxLayout*actionArea=new QHBoxLayout();
-    actionArea->addWidget(modifyBtn);
+    //actionArea->addWidget(modifyBtn);
     actionArea->addWidget(pauseBtn);
     actionArea->addWidget(relieveBtn);
     actionArea->setAlignment(Qt::AlignCenter);
