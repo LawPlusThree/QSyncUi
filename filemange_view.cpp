@@ -93,7 +93,7 @@ FileManagePage::FileManagePage(QWidget* parent):ElaScrollPage(parent)
     catalogueLayout->addWidget(catalogueText4);
 
 
-    DirCard*DirCardArea1=new DirCard("文件1","1.0GB","2024.7.1");
+   DirCard*DirCardArea1=new DirCard("文件1","1.0GB","2024.7.1");
     DirCard*DirCardArea2=new DirCard("文件2","2.0GB","2024.7.2");
     DirCard*DirCardArea3=new DirCard("文件3","3.0GB","2024.7.3");
     DirCard*DirCardArea4=new DirCard("文件4","4.0GB","2024.7.4");
@@ -104,7 +104,7 @@ FileManagePage::FileManagePage(QWidget* parent):ElaScrollPage(parent)
     DirCard*DirCardArea9=new DirCard("文件9","9.0GB","2024.7.9");
     DirCard*DirCardArea10=new DirCard("文件10","10.0GB","2024.7.10");
     QWidget*files=new QWidget();
-    QVBoxLayout*filesArea=new QVBoxLayout(files);
+    filesArea=new QVBoxLayout(files);
     filesArea->addWidget(DirCardArea1);
     filesArea->addWidget(DirCardArea2);
     filesArea->addWidget(DirCardArea3);
@@ -124,5 +124,25 @@ FileManagePage::FileManagePage(QWidget* parent):ElaScrollPage(parent)
     centerVLayout->addStretch(); // 在布局的末尾添加一个弹性空间
 
     this->addCentralWidget(centralWidget); // 将中心部件添加到窗口
-
 }
+
+void FileManagePage::addDirCard(DirCard*newDir)
+{
+    filesArea->addWidget(newDir);
+}
+
+/*void FileManagePage::removeDirCard(DirCard* oldDirCard)
+{
+    // 检查传入的指针是否为空
+    if (oldDirCard == nullptr) {
+        return;
+    }
+
+    // 从布局中移除 DirCard 组件
+    filesArea->removeWidget(oldDirCard);
+
+    // 如果 DirCard 组件确实存在于布局中，则从布局中删除它
+    if (filesArea->layout()->itemAt(filesArea->indexOfWidget(oldDirCard)) != nullptr) {
+        filesArea->layout()->removeItem(filesArea->indexOfWidget(oldDirCard));
+    }
+}*/

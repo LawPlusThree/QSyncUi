@@ -6,10 +6,16 @@
 
 class ElaToggleButton;
 class ElaPushButton;
+class DirCard;
+class QVBoxLayout;
 class FileManagePage:public ElaScrollPage
 {
 public:
     FileManagePage(QWidget* parent = nullptr);
+    void addDirCard(DirCard*newDirCard);
+    void removeCard(DirCard*oldDirCard);
+    QVBoxLayout*filesArea;
+
 private:
     ElaProgressBar* _progressBar{nullptr};
     ElaPushButton* _pushButton1{nullptr};

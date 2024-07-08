@@ -28,10 +28,10 @@ DirCard::DirCard(QString f, QString d,QString b)
 
     bindtime->setTextSize(16);
     QVBoxLayout*bindTimeArea=new QVBoxLayout();
-    ElaText*text=new ElaText("绑定于",this);
+    /*ElaText*text=new ElaText("绑定于",this);
     text->setTextSize(16);
     bindTimeArea->addWidget(text,0,Qt::AlignCenter);
-    bindTimeArea->setSpacing(0);
+    bindTimeArea->setSpacing(0);*/
     bindTimeArea->addWidget(bindtime,0,Qt::AlignCenter);
 
     QVBoxLayout*pauseArea=new QVBoxLayout();

@@ -34,7 +34,6 @@ MainWindow::MainWindow(QWidget *parent)
     _homePage = new HomePage(this);
     _syncingPage = new SyncingPage(this);
     _filemanagePage=new FileManagePage(this);
-
     _historysyncPage = new HistorysyncPage(this);
 
     connect(this, &ElaWindow::userInfoCardClicked, this, [=]() {
