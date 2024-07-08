@@ -1,6 +1,4 @@
 #include "synccore.h"
-#include "synctask.h"
-#include "filefunc.h"
 
 using namespace wtr;
 SyncCore::SyncCore(QObject *parent)
@@ -61,8 +59,8 @@ void SyncCore::addTask(SyncTask *task)
 {
     QDir listen=task->localPath;
     Filefunc *filefunc=new Filefunc(this);
+    connect(filefunc, &Filefunc::fileListUpdated, this, &SyncCore::onFileListUpdated, Qt::QueuedConnection);
     filefunc->readDirectory(listen.absolutePath());
-    connect(filefunc, &Filefunc::fileListUpdated, this, &SyncCore::onFileListUpdated);
     if(task==nullptr)
         return;
     if(task->localPath.exists()==false)
