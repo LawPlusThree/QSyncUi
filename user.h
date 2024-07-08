@@ -24,6 +24,7 @@ private:
     QString hashedPassword; //password
     bool isLogin=false;
     ApiRequest *apiRequest;
+public:
     QString avatarpath;
 
 public:
