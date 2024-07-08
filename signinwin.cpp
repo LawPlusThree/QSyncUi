@@ -15,7 +15,7 @@
 #include"ElaText.h"
 #include"ElaInteractiveCard.h"
 
-signinwin::signinwin(QWidget* parent):ElaWidget(parent)
+signinwin::signinwin(QWidget* parent):ElaWidget(parent,400,500)
 {
     setWindowTitle("珞珈云");
     QWidget*area=new QWidget();

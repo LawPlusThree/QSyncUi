@@ -7,12 +7,12 @@
 #include "ElaAppBar.h"
 #include "ElaApplication.h"
 #include "private/ElaWidgetPrivate.h"
-ElaWidget::ElaWidget(QWidget* parent)
+ElaWidget::ElaWidget(QWidget* parent, int wi, int he)
     : QWidget{parent}, d_ptr(new ElaWidgetPrivate())
 {
     Q_D(ElaWidget);
     d->q_ptr = this;
-    resize(500, 500); // 默认宽高
+    resize(wi, he); // 默认宽高
     setObjectName("ElaWidget");
 
     d->_windowLinearGradient = new QLinearGradient(0, 0, width(), height());

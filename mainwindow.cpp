@@ -36,7 +36,7 @@ MainWindow::MainWindow(QWidget *parent)
     _filemanagePage=new FileManagePage(this);
     _historysyncPage = new HistorysyncPage(this);
 
-    connect(this, &ElaWindow::userInfoCardClicked, this, [=]() {
+    connect(this, &ElaWindow::userInfoCardClicked, [=]() {
         if(CurrentUser==nullptr)
             login->show();
     });
