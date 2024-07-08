@@ -85,8 +85,8 @@ loginwin::loginwin(QWidget* parent):ElaWidget(parent)
     loginWinArea->addLayout(srBtnArea,Qt::AlignCenter);
     area->setLayout(loginWinArea);
 
-    db = new DatabaseManager(this); // 创建数据库管理器实例
-    db->initializeDatabase(); // 初始化数据库
+    //db = new DatabaseManager(this); // 创建数据库管理器实例
+    //db->initializeDatabase(); // 初始化数据库
 
     connect(resetBtn,&ElaPushButton::clicked,this, &loginwin::on_resetBtn_clicked);
     connect(signinBtn,&ElaPushButton::clicked,this, &loginwin::on_signinBtn_clicked);
@@ -129,7 +129,7 @@ void loginwin::on_loginBtn_clicked()
         if(loginuser.login()){
             QMessageBox::information(this, "成功","登录成功");
             emit on_login_complete(loginuser);
-            db->insertUser(accountLine->text(),passwordLine->text());
+            //db->insertUser(accountLine->text(),passwordLine->text());
             this->close();
         }
         else

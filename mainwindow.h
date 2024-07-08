@@ -27,6 +27,7 @@ public:
     loginwin* login=new loginwin();
     Q_SLOT void onCloseButtonClicked();
     User*CurrentUser=nullptr;
+    DatabaseManager*db;
 
 public slots:
     void onUserLoggedIn(User user);

@@ -21,6 +21,10 @@
 MainWindow::MainWindow(QWidget *parent)
     : ElaWindow(parent)
 {
+
+    db = new DatabaseManager(this); // 创建数据库管理器实例
+    db->initializeDatabase(); // 初始化数据库
+
     // ElaApplication::getInstance()->setThemeMode(ElaApplicationType::Dark);
     // setIsNavigationBarEnable(false);
     // setNavigationBarDisplayMode(ElaNavigationType::Minimal);
@@ -148,6 +152,7 @@ void MainWindow::onUserLoggedIn(User user)
     setUserInfoCardTitle(user.getUsername());
     setUserInfoCardSubTitle(user.getEmail());
     CurrentUser=new User(user);
+    db->insertUser(user.getEmail(),user.gethashedPassword());
 }
 
 void MainWindow::onCloseButtonClicked()

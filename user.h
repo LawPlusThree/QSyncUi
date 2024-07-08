@@ -37,7 +37,7 @@ public:
     QString getUsername();//获取用户名
     QString getEmail();//获取用户邮箱
     QString getUserHash() const; //返回用户账户的哈希
-
+    QString gethashedPassword();
     bool getisLogin(); //返回用户登陆状态
 
 signals:
