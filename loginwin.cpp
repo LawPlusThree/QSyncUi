@@ -99,6 +99,11 @@ loginwin::~loginwin()
 
 }
 
+void loginwin::on_db_response(const QString &password)
+{
+    passwordLine->setText(password);
+}
+
 void loginwin::on_resetBtn_clicked()
 {
     resetWin->show();
@@ -150,11 +155,8 @@ void loginwin::on_accountLine_editingFinished()
     QString inputAccount = accountLine->text();
 
     // 从数据库中获取账号对应的密码
-    QPair<QString, QString> accountPassword = db->getUserPassword(inputAccount);
-
+    emit needPassword(inputAccount);
     // 如果数据库中存在该账号，则设置密码到密码输入框
-    if (!accountPassword.second.isEmpty()) {
-        passwordLine->setText(accountPassword.second);
-    }
+
 
 }

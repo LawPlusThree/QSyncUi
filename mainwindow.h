@@ -32,6 +32,10 @@ public:
 
 public slots:
     void onUserLoggedIn(User user);
+    void onNeedPassword(const QString& account);
+
+signals:
+    void dbPassword(const QString &);
 
 
 private:

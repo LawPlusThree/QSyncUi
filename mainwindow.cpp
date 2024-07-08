@@ -160,6 +160,12 @@ void MainWindow::onUserLoggedIn(User user)
     db->insertUser(user.getEmail(),user.gethashedPassword());
 }
 
+void MainWindow::onNeedPassword(const QString &account)
+{
+    QString password = db->getUserPassword(account).second;
+    emit dbPassword(password);
+}
+
 void MainWindow::onCloseButtonClicked()
 {
     ElaContentDialog *dialag = new ElaContentDialog(this);

@@ -24,12 +24,16 @@ public:
 
 signals:
     void on_login_complete(User user);
+    void needPassword(const QString & account);
 
+public slots:
+    void on_db_response(const QString & password);
 private slots:
     void on_resetBtn_clicked();
     void on_signinBtn_clicked();
     void on_loginBtn_clicked();
     void on_accountLine_editingFinished();
+
 private:
     Core *core;
 
