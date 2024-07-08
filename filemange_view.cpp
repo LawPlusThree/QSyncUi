@@ -107,7 +107,7 @@ FileManagePage::FileManagePage(QWidget* parent):ElaScrollPage(parent)
     DirCard*DirCardArea9=new DirCard("文件9","9.0GB","2024.7.9");
     DirCard*DirCardArea10=new DirCard("文件10","10.0GB","2024.7.10");
     QWidget* filesWidget=new QWidget();
-    QVBoxLayout* filesLayout=new QVBoxLayout(filesWidget);
+    filesLayout=new QVBoxLayout(filesWidget);
     filesLayout->addWidget(DirCardArea1);
     filesLayout->addWidget(DirCardArea2);
     filesLayout->addWidget(DirCardArea3);
@@ -131,7 +131,8 @@ FileManagePage::FileManagePage(QWidget* parent):ElaScrollPage(parent)
     this->addCentralWidget(centralWidget); // 将中心部件添加到窗口
 }
 
-void FileManagePage::addDirCard(DirCard*newDir)
+void FileManagePage::addDirCard(QString filename,QString datasize,QString bingtime)
 {
-    filesArea->addWidget(newDir);
+    DirCard*newDir=new DirCard(filename,datasize,bingtime);
+    filesLayout->addWidget(newDir);
 }

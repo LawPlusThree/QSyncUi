@@ -147,7 +147,7 @@ void MainWindow::onUserLoggedIn(User user)
 {
     setUserInfoCardTitle(user.getUsername());
     setUserInfoCardSubTitle(user.getEmail());
-    CurrentUser=new User(user.getUsername(),user.getEmail());
+    CurrentUser=new User(user);
 }
 
 void MainWindow::onCloseButtonClicked()

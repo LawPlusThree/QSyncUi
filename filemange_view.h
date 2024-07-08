@@ -12,8 +12,8 @@ class FileManagePage:public ElaScrollPage
 {
 public:
     FileManagePage(QWidget* parent = nullptr);
-    void addDirCard(DirCard*newDirCard);
-    QVBoxLayout*filesArea;
+    void addDirCard(QString filename,QString datasize,QString bingtime);
+    QVBoxLayout*filesLayout;
 
 private:
     ElaProgressBar* _progressBar{nullptr};
