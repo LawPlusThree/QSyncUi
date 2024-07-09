@@ -2,8 +2,6 @@ name: Build
 
 on:
   push:
-    branches:
-      - main
   #可以手动触发
   workflow_dispatch:
 
