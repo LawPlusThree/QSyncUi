@@ -25,8 +25,7 @@ public:
     explicit XmlProcesser(QObject *parent = nullptr) : QObject(parent) {}
 
 public slots:
-    void toXml(QByteArray &byteArray);
-    void processXml(QXmlStreamReader &xmlReader);
+    void processXml(const QString &xmlString);
 
 private:
     // 存储文件信息列表
