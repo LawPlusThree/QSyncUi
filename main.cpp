@@ -6,6 +6,8 @@
 #include "signhelper.h"
 #include "tasktoken.h"
 #include "cosclient.h"
+#include "xmlprocesser.h"
+
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
@@ -26,7 +28,10 @@ int main(int argc, char *argv[])
     QString token=tt.sessionToken;
     QDateTime expiredTime=tt.expiredTime;
     COSClient cosclient(bucketName,appId,region,secretId,secretKey,token,expiredTime);
-    qDebug()<<cosclient.listObjects("home/","");
+    QString xmlstr=cosclient.listObjects("home/","");
+    XmlProcesser xp;
+    Bucket bucket=xp.processXml(xmlstr);
+
     //sh.generateSignature(request,60);
     //qDebug() <<"s3 location:"<< loginuser.getS3Location();
     SyncTaskDatabaseManager stm(&loginuser);
