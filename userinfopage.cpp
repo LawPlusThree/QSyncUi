@@ -1,15 +1,40 @@
 #include "userinfopage.h"
 #include <QVBoxLayout>
 #include <QMessageBox>
-
+#include"ElaInteractiveCard.h"
 
 UserInfoPage::UserInfoPage(QWidget *parent) : QWidget(parent)
 {
     // 创建控件
+    ElaInteractiveCard*avatar=new ElaInteractiveCard();
+    avatar->setFixedSize(200,200);
+    avatar->setCardPixmapSize(180,180);
+    avatar->setCardPixmapBorderRadius(90);
+    QPixmap image(":\\avatarImage\\AvatarImage\\setAvatar.png");
+    avatar->setCardPixmap(image);
+    avatarArea=new QHBoxLayout();
+    avatarArea->addWidget(avatar,0,Qt::AlignCenter);
+
     newIdEdit_ = new ElaLineEdit(this);
+    newIdEdit_->setFixedSize(360,40);
+    QHBoxLayout*IDArea=new QHBoxLayout();
+    IDArea->addWidget(newIdEdit_,0,Qt::AlignCenter);
+
     newPasswordEdit_ = new ElaLineEdit(this);
+    newPasswordEdit_->setFixedSize(360,40);
+    QHBoxLayout*PasswordArea=new QHBoxLayout();
+    PasswordArea->addWidget(newPasswordEdit_,0,Qt::AlignCenter);
+
     confirmNewPasswordEdit_ = new ElaLineEdit(this);
+    confirmNewPasswordEdit_->setFixedSize(360,40);
+    QHBoxLayout*ConfirmArea=new QHBoxLayout();
+    ConfirmArea->addWidget(confirmNewPasswordEdit_,0,Qt::AlignCenter);
+
     confirmButton_ = new ElaPushButton("确认修改", this);
+    confirmButton_->setFixedSize(360,40);
+    confirmButton_->setStyleSheet("background-color:rgb(0,204,255)");
+    QHBoxLayout*confirmBtnArea=new QHBoxLayout();
+    confirmBtnArea->addWidget(confirmButton_,0,Qt::AlignCenter);
 
     // 设置密码输入为密码模式
     newPasswordEdit_->setEchoMode(ElaLineEdit::Password);
@@ -17,10 +42,16 @@ UserInfoPage::UserInfoPage(QWidget *parent) : QWidget(parent)
 
     // 布局
     QVBoxLayout *layout = new QVBoxLayout(this);
-    layout->addWidget(newIdEdit_);
+    /*layout->addWidget(newIdEdit_);
     layout->addWidget(newPasswordEdit_);
     layout->addWidget(confirmNewPasswordEdit_);
-    layout->addWidget(confirmButton_);
+    layout->addWidget(confirmButton_);*/
+    layout->addLayout(avatarArea);
+    layout->addLayout(IDArea);
+    layout->addLayout(PasswordArea);
+    layout->addLayout(ConfirmArea);
+    layout->addLayout(confirmBtnArea);
+
 
     // 获取当前登录的用户信息
     //QString userEmail = currentUser->getEmail();
@@ -29,10 +60,10 @@ UserInfoPage::UserInfoPage(QWidget *parent) : QWidget(parent)
     confirmNewPasswordEdit_->setPlaceholderText("确认密码");
 
     // 设置样式
-    QString styleSheet = "QLineEdit { background-color: #e5e5e5; border: 1px solid #ccc; padding: 5px; }";
+    /*QString styleSheet = "QLineEdit { background-color: #e5e5e5; border: 1px solid #ccc; padding: 5px; }";
     newIdEdit_->setStyleSheet(styleSheet);
     newPasswordEdit_->setStyleSheet(styleSheet);
-    confirmNewPasswordEdit_->setStyleSheet(styleSheet);
+    confirmNewPasswordEdit_->setStyleSheet(styleSheet);*/
 
     // 重新设置布局边距和间距
     layout->setContentsMargins(40, 20, 40, 20);
