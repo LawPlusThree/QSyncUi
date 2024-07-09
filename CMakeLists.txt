@@ -71,6 +71,9 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         filecard.h filecard.cpp
         signhelper.h signhelper.cpp
         historycard.h historycard.cpp
+        historyview.h historyview.cpp
+        historyviewcard.h historyviewcard.cpp
+        cosclient.h cosclient.cpp
         setexcludeditems_view.h setexcludeditems_view.cpp
         xmlprocesser.h xmlprocesser.cpp
         bucket.h bucket.cpp

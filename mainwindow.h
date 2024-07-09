@@ -18,6 +18,7 @@ class T_Icon;
 class T_ElaScreen;
 class T_BaseComponents;
 class T_TabWidget;
+class HistoryViewPage;
 class MainWindow : public ElaWindow
 {
     Q_OBJECT
@@ -43,6 +44,7 @@ private:
     SyncingPage *_syncingPage{nullptr};
     FileManagePage*_filemanagePage{nullptr};
     HistorysyncPage *_historysyncPage{nullptr};
+    HistoryViewPage *_historyviewPage{nullptr};
     T_ElaScreen *_elaScreenPage{nullptr};
     T_Icon *_iconPage{nullptr};
     T_BaseComponents *_baseComponentsPage{nullptr};

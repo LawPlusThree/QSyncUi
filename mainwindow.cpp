@@ -17,6 +17,7 @@
 #include "syncing_view.h"
 #include"filemange_view.h"
 #include "historysync_view.h"
+#include"historyview.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : ElaWindow(parent)
@@ -40,6 +41,7 @@ MainWindow::MainWindow(QWidget *parent)
     _filemanagePage=new FileManagePage(this);
     _historysyncPage = new HistorysyncPage(this);
     _userinfopage = new UserInfoPage(this);
+    _historyviewPage = new HistoryViewPage(this);
 
     connect(this, &ElaWindow::userInfoCardClicked, [=]() {
         if(CurrentUser==nullptr)
@@ -78,7 +80,7 @@ MainWindow::MainWindow(QWidget *parent)
     addPageNode("历史同步",_historysyncPage,testKey_2,ElaIconType::CheckToSlot);
     addPageNode("同步文件夹管理",_filemanagePage,testKey_2,ElaIconType::FolderClosed);
     addExpanderNode("版本控制",testKey_3,ElaIconType::EnvelopeOpenText);
-    addPageNode("查看历史",new QWidget(this),testKey_3,ElaIconType::CalendarClock);
+    addPageNode("查看历史",_historyviewPage,testKey_3,ElaIconType::CalendarClock);
     addExpanderNode("个人功能",testKey_4,ElaIconType::User);
     addPageNode("修改信息",_userinfopage,testKey_4,ElaIconType::Text);
     addPageNode("注销账号",new QWidget(this),testKey_4,ElaIconType::UserSlash);
@@ -153,11 +155,11 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow() {}
 void MainWindow::onUserLoggedIn(User user)
 {
-    setUserInfoCardTitle(user.getUsername());
-    setUserInfoCardSubTitle(user.getEmail());
     CurrentUser=new User(user);
     _userinfopage->currentUser=CurrentUser;
     db->insertUser(user.getEmail(),user.gethashedPassword());
+    setUserInfoCardTitle(user.getUsername());
+    setUserInfoCardSubTitle(user.getEmail());
 }
 
 void MainWindow::onNeedPassword(const QString &account)
