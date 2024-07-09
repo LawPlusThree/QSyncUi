@@ -89,43 +89,6 @@ QByteArray COSClient::invokeGetFileRequest(const QString &path, const QMap<QStri
     return reply->readAll();
 }
 
-QByteArray COSClient::getObject(const QString &path,const QString &versionId)
-{
-    QMap<QString, QString> queryParams;
-    if(versionId!="")
-    {
-        queryParams.insert("versionId",versionId);
-    }
-    return invokeGetFileRequest(path,queryParams);
-}
-
-bool COSClient::save2Local(const QString &path, const QString &localpath,const QString &versionId)
-{
-    QFile file(localpath);
-    //如果文件不存在则创建文件
-    if (!file.exists()) {
-        if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-            file.write(getObject(path,versionId));
-        } else {
-            qDebug() << "无法创建文件：" << localpath;
-            return false;
-        }
-    }
-    file.close();
-    return true;
-}
-
-QByteArray COSClient::invokeGetFileRequest(const QString &path, const QMap<QString, QString> queryParams)
-{
-    QNetworkRequest request = buildGetRequest(path, queryParams);
-    qDebug()<<request.url();
-    QNetworkReply *reply = manager->get(request);
-    QEventLoop loop;
-    connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
-    loop.exec();
-    return reply->readAll();
-}
-
 QString COSClient::invokeGetRequest(const QString &path, const QMap<QString, QString> queryParams)
 {
     QNetworkRequest request = buildGetRequest(path, queryParams);
