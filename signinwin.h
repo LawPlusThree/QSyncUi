@@ -18,6 +18,8 @@ public:
 
 signals:
     void goback();
+    void on_signin_complete(User user);
+
 public:
     ElaInteractiveCard*avatar;
     QHBoxLayout*avatarArea;

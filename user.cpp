@@ -82,6 +82,8 @@ bool User::login()
     else if(response.getCode()==403){
         isLogin=false;
     }
+    avatarpath=response.getData().value("avatar_url").toString();
+    qDebug()<<"login avatar:"<<avatarpath;
     emit loginResponse(response.getCode(),response.getData(),response.getMessage());
     return response.isSuccess();
 }
@@ -120,6 +122,8 @@ bool User::updateAvatar(const QString &filePath)
     // 将字节数据编码为Base64字符串
     QString postData = byteArray.toBase64();
     ApiResponse response=apiRequest->post("/updateAvatar",postData.toUtf8());
+    avatarpath=response.getData().value("avatar_url").toString();
+    qDebug()<<"update avatar:"<<avatarpath;
     emit updateAvatarResponse(response.getCode(),response.getData(),response.getMessage());
     return response.isSuccess();
 }
@@ -223,6 +227,11 @@ QString User::getEmail()
 QString User::gethashedPassword()
 {
     return hashedPassword;
+}
+
+QString User::getAvatarPath()
+{
+    return avatarpath;
 }
 
 QString User::getUserHash() const

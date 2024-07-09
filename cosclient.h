@@ -9,6 +9,28 @@
 #include <QtNetwork/QNetworkReply>
 #include <QUrl>
 #include <QDomDocument>
+struct preRequest{
+    QString path;
+    QMap<QString, QString> queryParams;
+    QByteArray data;
+    QString contentType;
+    QMap<QString,QString> customHeaders;
+};
+struct preResponse{
+    QByteArray data;
+    QMap<QString,QString> headers;
+    QMap<QString,QString> getMetaDatas(){
+      //  x-cos-meta-*
+    QMap<QString,QString> metaDatas;
+    for(auto it=headers.begin();it!=headers.end();it++){
+        if(it.key().startsWith("x-cos-meta-")){
+            metaDatas[it.key().mid(11)]=it.value();
+        }
+    }
+        return metaDatas;
+    };
+    int statusCode;
+};
 class COSClient : public QObject
 {
     Q_OBJECT
@@ -37,8 +59,9 @@ public:
     QString listObjects(const QString &prefix, const QString &delimiter);
     bool putObject(const QString &path, const QByteArray &data,const QString &contentType="application/octet-stream");
     bool putLocalObject(const QString &path, const QString &localpath);
-    QByteArray getObject(const QString &path,const QString &versionId);
-    bool save2Local(const QString &path, const QString &localpath,const QString &versionId);
+    QByteArray getObject(const QString &path,const QString &versionId, QMap<QString,QString> &respHeaders);
+    bool save2Local(const QString &path, const QString &localpath,const QString &versionId, QMap<QString,QString> &respMetaDatas);
+
 
 private:
     QString bucketName;
@@ -59,11 +82,12 @@ private:
     QNetworkRequest buildPutRequest(const QString& path,const QMap<QString, QString> queryParams, const QByteArray& data);
     QNetworkRequest buildHeadRequest(const QString& path,const QMap<QString, QString> queryParams);
     QNetworkRequest buildDeleteRequest(const QString& path,const QMap<QString, QString> queryParams);
-    QByteArray invokeGetFileRequest(const QString& path, const QMap<QString, QString> queryParams);
-    QString invokeGetRequest(const QString& path,const QMap<QString, QString> queryParams);
-    bool invokePutRequest(const QString& path,const QMap<QString, QString> queryParams, const QByteArray& data,QString contentType);
-    bool invokeHeadRequest(const QString& path,const QMap<QString, QString> queryParams);
-    bool invokeDeleteRequest(const QString& path,const QMap<QString, QString> queryParams);
+    QNetworkRequest buildPostRequest(const QString& path,const QMap<QString, QString> queryParams, const QByteArray& data);
+    preResponse invokeGetFileRequest(const QString& path, const preRequest& request);
+    preResponse invokePutRequest(const QString& path, const preRequest& request);
+    preResponse invokeHeadRequest(const QString& path, const preRequest& request);
+    preResponse invokeDeleteRequest(const QString& path, const preRequest& request);
+    preResponse invokePostRequest(const QString& path, const preRequest& request);
     // 构建XML字符串
     QString buildTagXmlFromMap(const QMap<QString, QString> &map);
 

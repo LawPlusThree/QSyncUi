@@ -15,7 +15,9 @@ int main(int argc, char *argv[])
 
     //测试用户
     User loginuser("enrolluser@example.com","123456");
+    loginuser.enroll();
     loginuser.login();
+    loginuser.addTask("E:/","home/",1,22,22);
     TaskToken tt=loginuser.getTaskTokenByRemote("home/");
     //request: https://qsync-1320107701.cos.ap-nanjing.myqcloud.com/?prefix=home
     QNetworkRequest request(QUrl("https://qsync-1320107701.cos.ap-nanjing.myqcloud.com/?prefix=home"));
