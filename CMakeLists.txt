@@ -74,6 +74,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         filecard.h filecard.cpp
         signhelper.h signhelper.cpp
         historycard.h historycard.cpp
+        cosclient.h cosclient.cpp
 
 
     )
