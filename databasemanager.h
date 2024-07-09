@@ -15,12 +15,11 @@ private:
     QMap<QString,QString>accountPasswordMap_;
 public:
     explicit DatabaseManager(QObject *parent = nullptr);
-    bool updateUserInfo(const QString &account, const QString &newHashedPassword, const QString &newAvatar);
+    bool updateUserInfo(const QString &account, const QString &newHashedPassword);
     bool initializeDatabase();
-    bool insertUser(const QString &account, const QString &hashedPassword, const QString &avatar = "E:\24SummerTraining\avatar_placeholder.png");
+    bool insertUser(const QString &account, const QString &hashedPassword);
     QList<QString>getAllAccounts();
     QPair<QString, QString>getUserPassword(const QString &account);
-    QString getUserAvatar(const QString &account);
 };
 
 #endif // DATABASEMANAGER_H
