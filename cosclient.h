@@ -96,6 +96,6 @@ private:
 
     // 从XML字符串解析为QMap
     QMap<QString, QString> parseTagXmlToMap(const QString &xmlString);
-    QString buildCompleteXml(QMap<int, QString>);
+    QString buildCompleteUploadXml(QMap<int, QString>);
 };
 #endif // COSCLIENT_H

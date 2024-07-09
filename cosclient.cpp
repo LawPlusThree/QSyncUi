@@ -97,7 +97,7 @@ QString COSClient::uploadPart(const QString &path, const QString &uploadId, int 
 QString COSClient::completeMultipartUpload(QString path, QString uploadId, QMap<int, QString> partEtagMap)
 {
     preRequest request;
-    request.data = buildCompleteXml(partEtagMap).toUtf8();
+    request.data = buildCompleteUploadXml(partEtagMap).toUtf8();
     request.contentType = "application/xml";
     request.queryParams.insert("uploadId", uploadId);
     preResponse response = invokePostRequest(path + "?uploadId=" + uploadId, request);
@@ -297,7 +297,7 @@ QMap<QString, QString> COSClient::parseTagXmlToMap(const QString &xmlString) {
     return map;
 }
 
-QString COSClient::buildCompleteXml(QMap<int, QString>)
+QString COSClient::buildCompleteUploadXml(QMap<int, QString>)
 {
 /*
   <CompleteMultipartUpload>
