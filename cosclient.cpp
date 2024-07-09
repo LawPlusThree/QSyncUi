@@ -57,6 +57,43 @@ bool COSClient::putLocalObject(const QString &path, const QString &localpath)
     return putObject(path, data, contentType);
 }
 
+QString COSClient::initMultiUpload(const QString &path, QMap<QString, QString> metaDatas,const  QString &contentType)
+{
+    preRequest request;
+    //build metadata
+    QMap<QString, QString> headers;
+    for(auto it = metaDatas.begin(); it != metaDatas.end(); ++it)
+    {
+        headers.insert("x-cos-meta-" + it.key(), it.value());
+    }
+    request.customHeaders = headers;
+    request.contentType = contentType;
+    preResponse response = invokePostRequest(path + "?uploads", request);
+    //解析xml：InitiateMultipartUploadResult-》UploadId
+    QDomDocument doc;
+    doc.setContent(response.data);
+    QDomElement root = doc.documentElement();
+    QDomElement uploadIdElement = root.firstChildElement("UploadId");
+    return uploadIdElement.text();
+}
+
+QString COSClient::initLocalMultiUpload(const QString &path, const QString &localpath, QMap<QString, QString> metaDatas)
+{
+    QString contentType = _getContentTypeByPath(localpath); // Assuming this function exists and returns a content type based on the file extension
+    return initMultiUpload(path, metaDatas, contentType);
+}
+
+bool COSClient::uploadPart(const QString &path, const QString &uploadId, int partNumber, const QByteArray &data)
+{
+    preRequest request;
+    request.data = data;
+    request.contentType = "application/octet-stream";
+    request.queryParams.insert("partNumber", QString::number(partNumber));
+    request.queryParams.insert("uploadId", uploadId);
+    preResponse response = invokePutRequest(path, request);
+    return response.statusCode >= 200 && response.statusCode < 300; // Assuming success is 2xx status code
+}
+
 QByteArray COSClient::getObject(const QString &path, const QString &versionId, QMap<QString,QString> &respHeaders)
 {
     preRequest request;
