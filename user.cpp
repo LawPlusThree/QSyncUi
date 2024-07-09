@@ -24,6 +24,7 @@ User::User(const User &user)
     username=user.username;
     account=user.account;
     hashedPassword=user.hashedPassword;
+    avatarpath=user.avatarpath;
     isLogin=user.isLogin;
     apiRequest=new ApiRequest(this);
     apiRequest->setBaseUrl("https://syncapi.snakekiss.com");
@@ -84,7 +85,6 @@ bool User::login()
     }
     avatarpath=response.getData().value("avatar_url").toString();
     qDebug()<<"login avatar:"<<avatarpath;
-    emit loginResponse(response.getCode(),response.getData(),response.getMessage());
     return response.isSuccess();
 }
 
