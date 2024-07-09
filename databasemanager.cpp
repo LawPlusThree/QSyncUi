@@ -24,7 +24,7 @@ bool DatabaseManager::initializeDatabase()
 
     QSqlQuery query;
 
-    query.prepare("SELECT account, hashedPassword FROM Users");
+    query.prepare("SELECT account, hashedPassword, avatar FROM Users");
     if(query.exec())
     {
         while (query.next()) {
@@ -36,7 +36,7 @@ bool DatabaseManager::initializeDatabase()
         qWarning() << "Failed to get all accounts:" << query.lastError();
     }
 
-    if (!query.exec("CREATE TABLE IF NOT EXISTS Users (id INTEGER PRIMARY KEY AUTOINCREMENT, account TEXT UNIQUE, hashedPassword TEXT)")) {
+    if (!query.exec("CREATE TABLE IF NOT EXISTS Users (id INTEGER PRIMARY KEY AUTOINCREMENT, account TEXT UNIQUE, hashedPassword TEXT, avatar TEXT)")) {
         qWarning() << "Failed to create table:" << query.lastError();
         return false;
     }
@@ -44,12 +44,13 @@ bool DatabaseManager::initializeDatabase()
     return true;
 }
 
-bool DatabaseManager::insertUser(const QString &account, const QString &hashedPassword)
+bool DatabaseManager::insertUser(const QString &account, const QString &hashedPassword, const QString &avatar)
 {
     QSqlQuery query;
-    query.prepare("INSERT INTO Users (account, hashedPassword) VALUES (:account, :hashedPassword)");
+    query.prepare("INSERT INTO Users (account, hashedPassword, avatar) VALUES (:account, :hashedPassword, :avatar)");
     query.bindValue(":account", account);
     query.bindValue(":hashedPassword", hashedPassword);
+    query.bindValue(":avatar", avatar);
 
     if (!query.exec()) {
         qWarning() << "Failed to insert user:" << query.lastError();
@@ -59,11 +60,12 @@ bool DatabaseManager::insertUser(const QString &account, const QString &hashedPa
     return true;
 }
 
-bool DatabaseManager::updateUserInfo(const QString &account,const QString &newHashedPassword)
+bool DatabaseManager::updateUserInfo(const QString &account,const QString &newHashedPassword, const QString &newAvatar)
 {
     QSqlQuery query;
-    query.prepare("UPDATE Users SET hashedPassword = :newHashedPassword WHERE account = :account");
+    query.prepare("UPDATE Users SET hashedPassword = :newHashedPassword, avatar = :newAvatar WHERE account = :account");
     query.bindValue(":newHashedPassword", newHashedPassword);
+    query.bindValue(":newAvatar", newAvatar);
     query.bindValue(":account", account);
 
     if (!query.exec()) {
@@ -109,4 +111,19 @@ QPair<QString, QString> DatabaseManager::getUserPassword(const QString &account)
     return userPassword;
 }
 
+QString DatabaseManager::getUserAvatar(const QString &account)
+{
+    QSqlQuery query;
+    query.prepare("SELECT avatar FROM Users WHERE account = :account");
+    query.bindValue(":account", account);
 
+    if (query.exec()) {
+        if (query.next()) {
+            return query.value(0).toString();
+        }
+    } else {
+        qWarning() << "Failed to get user avatar:" << query.lastError();
+    }
+
+    return QString();
+}
