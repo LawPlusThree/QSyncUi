@@ -27,25 +27,24 @@ DirCard::DirCard(QString f, QString d,QString b)
 
     bindtime->setTextSize(16);
     QVBoxLayout*bindTimeArea=new QVBoxLayout();
-    /*ElaText*text=new ElaText("绑定于",this);
-    text->setTextSize(16);
-    bindTimeArea->addWidget(text,0,Qt::AlignCenter);
-    bindTimeArea->setSpacing(0);*/
     bindTimeArea->addWidget(bindtime,0,Qt::AlignCenter);
 
-    QVBoxLayout*pauseArea=new QVBoxLayout();
+    //QVBoxLayout*pauseArea=new QVBoxLayout();
     pauseBtn=new ElaToggleButton("暂时停止");
     pauseBtn->setFixedSize(80,30);
-    pauseArea->addWidget(pauseBtn,0,Qt::AlignCenter);
+    //pauseArea->addWidget(pauseBtn,0,Qt::AlignCenter);
 
-    QVBoxLayout*relieveArea=new QVBoxLayout();
-    ElaPushButton*relieveBtn=new ElaPushButton("解除绑定");
+    //QVBoxLayout*relieveArea=new QVBoxLayout();
+    relieveBtn=new ElaPushButton("解除绑定");
     relieveBtn->setFixedSize(80,30);
-    relieveArea->addWidget(relieveBtn,0,Qt::AlignCenter);
+    //relieveArea->addWidget(relieveBtn,0,Qt::AlignCenter);
 
     QHBoxLayout*prArea=new QHBoxLayout();
-    prArea->addLayout(pauseArea,Qt::AlignCenter);
-    prArea->addLayout(relieveArea,Qt::AlignCenter);
+    //prArea->addLayout(pauseArea,Qt::AlignCenter);
+    //prArea->addLayout(relieveArea,Qt::AlignCenter);
+    prArea->addWidget(pauseBtn);
+    prArea->addWidget(relieveBtn);
+    prArea->setAlignment(Qt::AlignCenter);
 
     QHBoxLayout*DirCardArea=new QHBoxLayout(this);
     DirCardArea->addLayout(checkBoxArea,Qt::AlignCenter);
@@ -53,6 +52,10 @@ DirCard::DirCard(QString f, QString d,QString b)
     DirCardArea->addLayout(bindTimeArea,Qt::AlignCenter);
     DirCardArea->addLayout(prArea,Qt::AlignCenter);
 
+    connect(relieveBtn,&ElaPushButton::clicked,this,&DirCard::on_relieveBtn_clicked);
 }
 
-DirCard::~DirCard() {}
+void DirCard::on_relieveBtn_clicked()
+{
+    emit relieve();
+}

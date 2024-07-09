@@ -9,17 +9,24 @@
 class ElaCheckBox;
 class DirCardPrivate;
 class ElaToggleButton;
+class ElaPushButton;
 class ELA_EXPORT DirCard : public ElaScrollPageArea
 {
+    Q_OBJECT
 public:
     explicit DirCard(QString f, QString d,QString b);
-    ~DirCard();
 
     ElaCheckBox* _checkBox{nullptr};
     ElaToggleButton*pauseBtn;
     ElaText *filename;
     ElaText *datasize;
     ElaText *bindtime;
+    ElaPushButton*relieveBtn;
+
+private slots:
+    void on_relieveBtn_clicked();
+signals:
+    void relieve();
 };
 
 #endif // ELAREMINDERCARD_H

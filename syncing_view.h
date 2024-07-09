@@ -14,6 +14,7 @@ public:
     SyncingPage(QWidget* parent = nullptr);
     ~SyncingPage();
     void addFile(QString filename, QString datasize,QString speed,QString progress);
+    void removeFile();
     QVBoxLayout*filesLayout;
 private:
     ElaProgressBar* _progressBar{nullptr};
