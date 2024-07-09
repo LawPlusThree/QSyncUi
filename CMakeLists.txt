@@ -49,9 +49,6 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         mycore.h mycore.cpp
         user.h user.cpp
         synctask.h synctask.cpp
-
-
-
         mainwindow.h mainwindow.cpp
         homeview.h homeview.cpp
         apirequest.h apirequest.cpp
@@ -74,7 +71,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         filecard.h filecard.cpp
         signhelper.h signhelper.cpp
         historycard.h historycard.cpp
-
+        xmlprocesser.h xmlprocesser.cpp
 
     )
 # Define target properties for Android with Qt 6 as:
@@ -103,8 +100,9 @@ include_directories(
     thirdParty/ElaWidgetTools/include
     thirdParty/wtr
 )
-
-target_link_libraries(QSyncUi PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Network Qt${QT_VERSION_MAJOR}::Sql ${AWSSDK_LINK_LIBRARIES} elawidgettools)
+find_package(Qt6 REQUIRED COMPONENTS Xml)
+target_link_libraries(QSyncUi PRIVATE Qt6::Xml)
+target_link_libraries(QSyncUi PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Xml Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Network Qt${QT_VERSION_MAJOR}::Sql ${AWSSDK_LINK_LIBRARIES} elawidgettools)
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
 # If you are developing for iOS or macOS you should consider setting an
 # explicit, fixed bundle identifier manually though.
