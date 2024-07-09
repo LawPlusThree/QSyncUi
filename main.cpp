@@ -15,7 +15,9 @@ int main(int argc, char *argv[])
 
     //测试用户
     User loginuser("enrolluser@example.com","123456");
+    loginuser.enroll();
     loginuser.login();
+    loginuser.addTask("E:/","home/",1,22,22);
     TaskToken tt=loginuser.getTaskTokenByRemote("home/");
     //request: https://qsync-1320107701.cos.ap-nanjing.myqcloud.com/?prefix=home
     QNetworkRequest request(QUrl("https://qsync-1320107701.cos.ap-nanjing.myqcloud.com/?prefix=home"));
@@ -29,6 +31,7 @@ int main(int argc, char *argv[])
     QDateTime expiredTime=tt.expiredTime;
     COSClient cosclient(bucketName,appId,region,secretId,secretKey,token,expiredTime);
     QString xmlstr=cosclient.listObjects("home/","");
+    qDebug()<<cosclient.putLocalObject("/home/1.jpg","C:/Users/33327/Documents/Tencent Files/3332770186/Image/Group2/LN/[B/LN[BMJILV2RA]X6$X49XPGS.jpg");
     XmlProcesser xp;
     Bucket bucket=xp.processXml(xmlstr);
 
