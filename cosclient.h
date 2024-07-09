@@ -19,13 +19,13 @@ struct preResponse{
     QByteArray data;
     QMap<QString,QString> headers;
     QMap<QString,QString> getMetaDatas(){
-      //  x-cos-meta-*
-    QMap<QString,QString> metaDatas;
-    for(auto it=headers.begin();it!=headers.end();it++){
-        if(it.key().startsWith("x-cos-meta-")){
-            metaDatas[it.key().mid(11)]=it.value();
+        //  x-cos-meta-*
+        QMap<QString,QString> metaDatas;
+        for(auto it=headers.begin();it!=headers.end();it++){
+            if(it.key().startsWith("x-cos-meta-")){
+                metaDatas[it.key().mid(11)]=it.value();
+            }
         }
-    }
         return metaDatas;
     };
     int statusCode;
@@ -64,6 +64,7 @@ public:
     QString completeMultipartUpload(QString path, QString uploadId, QMap<int, QString> partEtagMap);
     QByteArray getObject(const QString &path,const QString &versionId, QMap<QString,QString> &respHeaders);
     bool save2Local(const QString &path, const QString &localpath,const QString &versionId, QMap<QString,QString> &respMetaDatas);
+    QMap<QString,QString> headObject(const QString &path, const QString &localpath, const QString &versionId);
     QString multiUpload(const QString &path, const QString &localpath, QMap<QString,QString> metaDatas=QMap<QString,QString>());
 
 private:

@@ -144,6 +144,21 @@ bool COSClient::save2Local(const QString &path, const QString &localpath, const 
     return true;
 }
 
+QMap<QString,QString> COSClient::headObject(const QString &path, const QString &localpath, const QString &versionId)
+{
+    preRequest request;
+    if(!versionId.isEmpty())
+    {
+        request.customHeaders.insert("versionId", versionId);
+    }
+    request.customHeaders.insert("If-Modified-Since", "");
+    request.customHeaders.insert("If-Unmodified-Since", "");
+    request.customHeaders.insert("If-Match", "");
+    request.customHeaders.insert("If-None-Match", "");
+    preResponse response = invokeHeadRequest(path, request);
+    return response.getMetaDatas();
+}
+
 QString COSClient::multiUpload(const QString &path, const QString &localpath, QMap<QString, QString> metaDatas)
 {
     //判断文件存在且可读
