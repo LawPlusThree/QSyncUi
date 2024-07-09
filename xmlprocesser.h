@@ -15,6 +15,7 @@
 #include <QString>
 #include <QXmlStreamWriter>
 #include <QtXml>
+#include "bucket.h"
 
 
 class XmlProcesser : public QObject
@@ -23,9 +24,10 @@ class XmlProcesser : public QObject
 
 public:
     explicit XmlProcesser(QObject *parent = nullptr) : QObject(parent) {}
+    Bucket processXml(const QString &xmlString);
 
 public slots:
-    void processXml(const QString &xmlString);
+
 
 private:
     // 存储文件信息列表

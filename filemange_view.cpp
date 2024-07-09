@@ -69,6 +69,9 @@ FileManagePage::FileManagePage(QWidget* parent):ElaScrollPage(parent)
     pushButtonLayout->addWidget(_pushButton3);
     // 在布局中添加一个弹性空间，使得所有控件靠左对齐
     pushButtonLayout->addStretch();
+    connect(_pushButton2,&ElaPushButton::clicked,[=](){
+        setexcludeditemsview->show();
+    });
     connect(_pushButton3,&ElaPushButton::clicked,[=](){
         linknewfolderwindow->show();
     });
