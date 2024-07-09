@@ -29,6 +29,7 @@ int main(int argc, char *argv[])
     QDateTime expiredTime=tt.expiredTime;
     COSClient cosclient(bucketName,appId,region,secretId,secretKey,token,expiredTime);
     QString xmlstr=cosclient.listObjects("home/","");
+    qDebug()<<cosclient.putLocalObject("/home/1.jpg","C:/Users/33327/Documents/Tencent Files/3332770186/Image/Group2/LN/[B/LN[BMJILV2RA]X6$X49XPGS.jpg");
     XmlProcesser xp;
     Bucket bucket=xp.processXml(xmlstr);
 
