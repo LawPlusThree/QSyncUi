@@ -5,7 +5,7 @@
 #include "synccore.h"
 #include "signhelper.h"
 #include "tasktoken.h"
-
+#include "cosclient.h"
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
@@ -15,11 +15,19 @@ int main(int argc, char *argv[])
     User loginuser("enrolluser@example.com","123456");
     loginuser.login();
     TaskToken tt=loginuser.getTaskTokenByRemote("home/");
-    SignHelper sh("100037680555",tt.tmpSecretId,tt.tmpSecretKey);
     //request: https://qsync-1320107701.cos.ap-nanjing.myqcloud.com/?prefix=home
     QNetworkRequest request(QUrl("https://qsync-1320107701.cos.ap-nanjing.myqcloud.com/?prefix=home"));
     request.setAttribute(QNetworkRequest::CustomVerbAttribute,"GET");
-    sh.generateSignature(request,60);
+    QString bucketName="qsync";
+    QString appId="1320107701";
+    QString region="ap-nanjing";
+    QString secretId=tt.tmpSecretId;
+    QString secretKey=tt.tmpSecretKey;
+    QString token=tt.sessionToken;
+    QDateTime expiredTime=tt.expiredTime;
+    COSClient cosclient(bucketName,appId,region,secretId,secretKey,token,expiredTime);
+    qDebug()<<cosclient.listObjects("home/","");
+    //sh.generateSignature(request,60);
     //qDebug() <<"s3 location:"<< loginuser.getS3Location();
     SyncTaskDatabaseManager stm(&loginuser);
     SyncTask mytask("E:/","/home/",1);
