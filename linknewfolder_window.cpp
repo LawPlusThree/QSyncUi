@@ -16,7 +16,7 @@ linkNewFolder_window::linkNewFolder_window(QWidget *parent)
     this->setWindowFlags(Qt::WindowMinimizeButtonHint); // 设置窗口标志，允许最小化
     QWidget*centerarea=new QWidget(); // 创建一个新的QWidget对象作为主区域
     QVBoxLayout* centerVLayout = new QVBoxLayout(centerarea); // 为中心部件设置垂直布局
-    centerVLayout->setContentsMargins(60, 0, 60, 40); // 设置布局边距
+    centerVLayout->setContentsMargins(60, 0, 60, 30); // 设置布局边距
 
     ElaText* Title = new ElaText("链接新文件夹", this);
     Title->setTextSize(25); // 设置文字大小
