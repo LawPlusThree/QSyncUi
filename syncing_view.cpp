@@ -98,6 +98,16 @@ SyncingPage::SyncingPage(QWidget* parent)
     FileCard*FileCardArea9=new FileCard("文件9","3.5GB","9MB/s","0%");
     FileCard*FileCardArea10=new FileCard("文件10","3.5GB","10MB/s","0%");
 
+    connect(FileCardArea1,&FileCard::Relieve,this,&SyncingPage::removeFile);
+    connect(FileCardArea2,&FileCard::Relieve,this,&SyncingPage::removeFile);
+    connect(FileCardArea3,&FileCard::Relieve,this,&SyncingPage::removeFile);
+    connect(FileCardArea4,&FileCard::Relieve,this,&SyncingPage::removeFile);
+    connect(FileCardArea5,&FileCard::Relieve,this,&SyncingPage::removeFile);
+    connect(FileCardArea6,&FileCard::Relieve,this,&SyncingPage::removeFile);
+    connect(FileCardArea7,&FileCard::Relieve,this,&SyncingPage::removeFile);
+    connect(FileCardArea8,&FileCard::Relieve,this,&SyncingPage::removeFile);
+    connect(FileCardArea9,&FileCard::Relieve,this,&SyncingPage::removeFile);
+    connect(FileCardArea10,&FileCard::Relieve,this,&SyncingPage::removeFile);
 
     QWidget* filesWidget=new QWidget();
     filesLayout=new QVBoxLayout(filesWidget);
@@ -132,5 +142,16 @@ SyncingPage::~SyncingPage()
 void SyncingPage::addFile(QString filename, QString datasize,QString speed,QString progress)
 {
     FileCard*firecard=new FileCard(filename,datasize,speed,progress);
+    connect(firecard,&FileCard::Relieve,this,&SyncingPage::removeFile);
     filesLayout->addWidget(firecard);
+}
+
+void SyncingPage::removeFile()
+{
+    FileCard *card = qobject_cast<FileCard*>(sender());
+    if (card)
+    {
+        layout()->removeWidget(card);
+        delete card;
+    }
 }

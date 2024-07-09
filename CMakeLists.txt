@@ -72,7 +72,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         signhelper.h signhelper.cpp
         historycard.h historycard.cpp
         setexcludeditems_view.h setexcludeditems_view.cpp
-        #xmlprocesser.h xmlprocesser.cpp
+        xmlprocesser.h xmlprocesser.cpp
 
     )
 # Define target properties for Android with Qt 6 as:
