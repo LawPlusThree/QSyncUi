@@ -60,7 +60,8 @@ public:
     bool putLocalObject(const QString &path, const QString &localpath);
     QString initMultiUpload(const QString &path,const QMap<QString,QString> metaDatas=QMap<QString,QString>(),const  QString &contentType="application/octet-stream");
     QString initLocalMultiUpload(const QString &path, const  QString &localpath,QMap<QString,QString> metaDatas=QMap<QString,QString>());
-    bool uploadPart(const QString &path, const QString &uploadId, int partNumber, const QByteArray &data);
+    QString uploadPart(const QString &path, const QString &uploadId, int partNumber, const QByteArray &data);
+    QString completeMultipartUpload(QString path, QString uploadId, QMap<int, QString> partEtagMap);
     QByteArray getObject(const QString &path,const QString &versionId, QMap<QString,QString> &respHeaders);
     bool save2Local(const QString &path, const QString &localpath,const QString &versionId, QMap<QString,QString> &respMetaDatas);
 
@@ -95,5 +96,6 @@ private:
 
     // 从XML字符串解析为QMap
     QMap<QString, QString> parseTagXmlToMap(const QString &xmlString);
+    QString buildCompleteXml(QMap<int, QString>);
 };
 #endif // COSCLIENT_H

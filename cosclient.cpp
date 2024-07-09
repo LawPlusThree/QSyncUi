@@ -83,7 +83,7 @@ QString COSClient::initLocalMultiUpload(const QString &path, const QString &loca
     return initMultiUpload(path, metaDatas, contentType);
 }
 
-bool COSClient::uploadPart(const QString &path, const QString &uploadId, int partNumber, const QByteArray &data)
+QString COSClient::uploadPart(const QString &path, const QString &uploadId, int partNumber, const QByteArray &data)
 {
     preRequest request;
     request.data = data;
@@ -91,7 +91,18 @@ bool COSClient::uploadPart(const QString &path, const QString &uploadId, int par
     request.queryParams.insert("partNumber", QString::number(partNumber));
     request.queryParams.insert("uploadId", uploadId);
     preResponse response = invokePutRequest(path, request);
-    return response.statusCode >= 200 && response.statusCode < 300; // Assuming success is 2xx status code
+    return response.headers.value("ETag");
+}
+
+QString COSClient::completeMultipartUpload(QString path, QString uploadId, QMap<int, QString> partEtagMap)
+{
+    preRequest request;
+    request.data = buildCompleteXml(partEtagMap).toUtf8();
+    request.contentType = "application/xml";
+    request.queryParams.insert("uploadId", uploadId);
+    preResponse response = invokePostRequest(path + "?uploadId=" + uploadId, request);
+    //xml, wait for processing
+    return QString::fromUtf8(response.data);
 }
 
 QByteArray COSClient::getObject(const QString &path, const QString &versionId, QMap<QString,QString> &respHeaders)
@@ -284,6 +295,42 @@ QMap<QString, QString> COSClient::parseTagXmlToMap(const QString &xmlString) {
     }
 
     return map;
+}
+
+QString COSClient::buildCompleteXml(QMap<int, QString>)
+{
+/*
+  <CompleteMultipartUpload>
+    <Part>
+        <PartNumber>integer</PartNumber>
+        <ETag>string</ETag>
+    </Part>
+    <Part>
+        <PartNumber>integer</PartNumber>
+        <ETag>string</ETag>
+    </Part>
+</CompleteMultipartUpload>
+*/
+    QDomDocument doc;
+    QDomElement root = doc.createElement("CompleteMultipartUpload");
+    doc.appendChild(root);
+
+    QMapIterator<int, QString> i(partEtagMap);
+    while (i.hasNext()) {
+        i.next();
+        QDomElement part = doc.createElement("Part");
+        QDomElement partNumber = doc.createElement("PartNumber");
+        QDomElement eTag = doc.createElement("ETag");
+        QDomText partNumberText = doc.createTextNode(QString::number(i.key()));
+        QDomText eTagText = doc.createTextNode(i.value());
+        partNumber.appendChild(partNumberText);
+        eTag.appendChild(eTagText);
+        part.appendChild(partNumber);
+        part.appendChild(eTag);
+        root.appendChild(part);
+    }
+
+    return doc.toString();
 }
 
 bool COSClient::preCheckSession()
