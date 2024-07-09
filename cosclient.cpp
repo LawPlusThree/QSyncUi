@@ -27,109 +27,158 @@ COSClient::COSClient(QString bucketName, QString appId, QString region, QString 
 
 QString COSClient::listObjects(const QString &prefix, const QString &delimiter)
 {
-    QMap<QString, QString> queryParams;
-    queryParams.insert("prefix", prefix);
-    queryParams.insert("delimiter", delimiter);
-    return invokeGetRequest("/", queryParams);
+    preRequest request;
+    request.customHeaders.insert("prefix", prefix);
+    request.customHeaders.insert("delimiter", delimiter);
+    preResponse response = invokeGetFileRequest("/", request);
+    return QString::fromUtf8(response.data);
 }
 
-bool COSClient::putObject(const QString &path, const QByteArray &data,const QString &contentType)
+bool COSClient::putObject(const QString &path, const QByteArray &data, const QString &contentType)
 {
-    QMap<QString, QString> queryParams;
-    return invokePutRequest(path, queryParams, data,contentType);
+    preRequest request;
+    request.data = data;
+    request.contentType = contentType;
+    preResponse response = invokePutRequest(path, request);
+    return response.statusCode >= 200 && response.statusCode < 300; // Assuming success is 2xx status code
 }
 
 bool COSClient::putLocalObject(const QString &path, const QString &localpath)
 {
     QFile file(localpath);
-    QString contentType = _getContentTypeByPath(localpath);
     if (!file.open(QIODevice::ReadOnly))
     {
         return false;
     }
     QByteArray data = file.readAll();
     file.close();
+
+    QString contentType = _getContentTypeByPath(localpath); // Assuming this function exists and returns a content type based on the file extension
     return putObject(path, data, contentType);
 }
 
-QByteArray COSClient::getObject(const QString &path,const QString &versionId)
+QByteArray COSClient::getObject(const QString &path, const QString &versionId, QMap<QString,QString> &respHeaders)
 {
-    QMap<QString, QString> queryParams;
-    if(versionId!="")
+    preRequest request;
+    if(!versionId.isEmpty())
     {
-        queryParams.insert("versionId",versionId);
+        request.customHeaders.insert("versionId", versionId);
     }
-    return invokeGetFileRequest(path,queryParams);
+    preResponse response = invokeGetFileRequest(path, request);
+    respHeaders = response.headers; // Assuming we want to pass back the headers
+    return response.data;
 }
 
-bool COSClient::save2Local(const QString &path, const QString &localpath,const QString &versionId)
+bool COSClient::save2Local(const QString &path, const QString &localpath, const QString &versionId, QMap<QString,QString> &respMetaDatas)
 {
+    QMap<QString, QString> tempHeaders;
+    QByteArray data = getObject(path, versionId, tempHeaders);
+
     QFile file(localpath);
-    //如果文件不存在则创建文件
-    if (!file.exists()) {
-        if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-            file.write(getObject(path,versionId));
-        } else {
-            qDebug() << "无法创建文件：" << localpath;
-            return false;
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        qDebug() << "无法创建文件：" << localpath;
+        return false;
+    }
+    file.write(data);
+    file.close();
+
+    // Extracting meta-data starting with x-cos-meta-*
+    for(auto it = tempHeaders.begin(); it != tempHeaders.end(); ++it)
+    {
+        if(it.key().startsWith("x-cos-meta-"))
+        {
+            // Don't keep the x-cos-meta- prefix
+            respMetaDatas.insert(it.key().mid(11), it.value());
         }
     }
-    file.close();
     return true;
 }
 
-QByteArray COSClient::invokeGetFileRequest(const QString &path, const QMap<QString, QString> queryParams)
-{
-    QNetworkRequest request = buildGetRequest(path, queryParams);
-    qDebug()<<request.url();
-    QNetworkReply *reply = manager->get(request);
+// 修改后的函数实现
+
+preResponse COSClient::invokeGetFileRequest(const QString& path, const preRequest& request) {
+    preResponse response;
+    // 构建请求
+    QNetworkRequest networkRequest = buildGetRequest(path, request.customHeaders); // 假设已经有一个构建GET请求的函数
+    // 发送请求并等待响应
+    QNetworkReply* reply = manager->get(networkRequest);
+    // 等待响应完成
     QEventLoop loop;
-    connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
+    connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
     loop.exec();
-    return reply->readAll();
+    // 处理响应
+    response.data = reply->readAll();
+    response.statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+    const QList<QByteArray> rawHeaderList = reply->rawHeaderList();
+    for (const QByteArray& header : rawHeaderList) {
+        response.headers.insert(QString(header), QString(reply->rawHeader(header)));
+    }
+    reply->deleteLater();
+    return response;
 }
 
-QString COSClient::invokeGetRequest(const QString &path, const QMap<QString, QString> queryParams)
-{
-    QNetworkRequest request = buildGetRequest(path, queryParams);
-    qDebug()<<request.url();
-    QNetworkReply *reply = manager->get(request);
+preResponse COSClient::invokePutRequest(const QString& path, const preRequest& request) {
+    preResponse response;
+    // 构建请求
+    QNetworkRequest networkRequest = buildPutRequest(path, request.queryParams, request.data); // 使用提供的代码片段构建PUT请求
+    networkRequest.setHeader(QNetworkRequest::ContentTypeHeader, request.contentType);
+    networkRequest.setRawHeader("Content-MD5",_getContentMD5(request.data).toUtf8());
+    // 发送请求并等待响应
+    QNetworkReply* reply = manager->put(networkRequest, request.data);
+    // 等待响应完成
     QEventLoop loop;
-    connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
+    connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
     loop.exec();
-    return reply->readAll();
+    // 处理响应
+    response.data = reply->readAll();
+    response.statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+    const QList<QByteArray> rawHeaderList = reply->rawHeaderList();
+    for (const QByteArray& header : rawHeaderList) {
+        response.headers.insert(QString(header), QString(reply->rawHeader(header)));
+    }
+    reply->deleteLater();
+    return response;
 }
 
-bool COSClient::invokePutRequest(const QString &path, const QMap<QString, QString> queryParams, const QByteArray &data,QString contentType)
-{
-    QNetworkRequest request = buildPutRequest(path, queryParams,data);
-    request.setHeader(QNetworkRequest::ContentTypeHeader,contentType);
-    request.setRawHeader("Content-MD5",_getContentMD5(data).toUtf8());
-    QNetworkReply *reply = manager->put(request, data);
+preResponse COSClient::invokeHeadRequest(const QString& path, const preRequest& request) {
+    preResponse response;
+    // 构建请求
+    QNetworkRequest networkRequest = buildHeadRequest(path, request.customHeaders); // 假设已经有一个构建HEAD请求的函数
+    // 发送请求并等待响应
+    QNetworkReply* reply = manager->head(networkRequest);
+    // 等待响应完成
     QEventLoop loop;
-    connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
+    connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
     loop.exec();
-    return reply->error()==QNetworkReply::NoError;
+    // 处理响应
+    response.statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+    const QList<QByteArray> rawHeaderList = reply->rawHeaderList();
+    for (const QByteArray& header : rawHeaderList) {
+        response.headers.insert(QString(header), QString(reply->rawHeader(header)));
+    }
+    reply->deleteLater();
+    return response;
 }
 
-bool COSClient::invokeHeadRequest(const QString &path, const QMap<QString, QString> queryParams)
-{
-    QNetworkRequest request = buildHeadRequest(path, queryParams);
-    QNetworkReply *reply = manager->head(request);
+preResponse COSClient::invokeDeleteRequest(const QString& path, const preRequest& request) {
+    preResponse response;
+    // 构建请求
+    QNetworkRequest networkRequest = buildDeleteRequest(path, request.customHeaders); // 使用提供的代码片段构建DELETE请求
+    // 发送请求并等待响应
+    QNetworkReply* reply = manager->deleteResource(networkRequest);
+    // 等待响应完成
     QEventLoop loop;
-    connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
+    connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
     loop.exec();
-    return reply->error()==QNetworkReply::NoError;
-}
-
-bool COSClient::invokeDeleteRequest(const QString &path, const QMap<QString, QString> queryParams)
-{
-    QNetworkRequest request = buildDeleteRequest(path, queryParams);
-    QNetworkReply *reply = manager->deleteResource(request);
-    QEventLoop loop;
-    connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
-    loop.exec();
-    return reply->error()==QNetworkReply::NoError;
+    // 处理响应
+    response.statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+    const QList<QByteArray> rawHeaderList = reply->rawHeaderList();
+    for (const QByteArray& header : rawHeaderList) {
+        response.headers.insert(QString(header), QString(reply->rawHeader(header)));
+    }
+    reply->deleteLater();
+    return response;
 }
 
 QString COSClient::buildTagXmlFromMap(const QMap<QString, QString> &map) {
