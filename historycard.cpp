@@ -30,7 +30,7 @@ HistoryCard::HistoryCard(QString f, QString d,QString t,bool u)
     timeArea->addWidget(text,0,Qt::AlignCenter);
     timeArea->addWidget(time,0,Qt::AlignCenter);
 
-    ElaIconButton* checkIcon=new ElaIconButton(ElaIconType::Check);
+    ElaIconButton* checkIcon=new ElaIconButton(ElaIconType::Check,30);
     checkIcon->setFixedSize(30,30);
     checkIcon->setEnabled(false); // 禁用按钮
     QVBoxLayout*bingoArea=new QVBoxLayout();
