@@ -171,6 +171,9 @@ void MainWindow::onNeedPassword(const QString &account)
 void MainWindow::onCloseButtonClicked()
 {
     ElaContentDialog *dialag = new ElaContentDialog(this);
+    dialag->setLeftButtonText("取消");
+    dialag->setMiddleButtonText("最小化");
+    dialag->setRightButtonText("退出");
     connect(dialag, &ElaContentDialog::rightButtonClicked, this, &MainWindow::closeWindow);
     connect(dialag, &ElaContentDialog::middleButtonClicked, this, &MainWindow::showMinimized);
     dialag->show();
