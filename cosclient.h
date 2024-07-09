@@ -10,7 +10,6 @@
 #include <QUrl>
 #include <QDomDocument>
 struct preRequest{
-    QString path;
     QMap<QString, QString> queryParams;
     QByteArray data;
     QString contentType;
@@ -59,9 +58,13 @@ public:
     QString listObjects(const QString &prefix, const QString &delimiter);
     bool putObject(const QString &path, const QByteArray &data,const QString &contentType="application/octet-stream");
     bool putLocalObject(const QString &path, const QString &localpath);
+    QString initMultiUpload(const QString &path,const QMap<QString,QString> metaDatas=QMap<QString,QString>(),const  QString &contentType="application/octet-stream");
+    QString initLocalMultiUpload(const QString &path, const  QString &localpath,QMap<QString,QString> metaDatas=QMap<QString,QString>());
+    QString uploadPart(const QString &path, const QString &uploadId, int partNumber, const QByteArray &data);
+    QString completeMultipartUpload(QString path, QString uploadId, QMap<int, QString> partEtagMap);
     QByteArray getObject(const QString &path,const QString &versionId, QMap<QString,QString> &respHeaders);
     bool save2Local(const QString &path, const QString &localpath,const QString &versionId, QMap<QString,QString> &respMetaDatas);
-
+    QString multiUpload(const QString &path, const QString &localpath, QMap<QString,QString> metaDatas=QMap<QString,QString>());
 
 private:
     QString bucketName;
@@ -93,5 +96,6 @@ private:
 
     // 从XML字符串解析为QMap
     QMap<QString, QString> parseTagXmlToMap(const QString &xmlString);
+    QString buildCompleteUploadXml(QMap<int, QString>);
 };
 #endif // COSCLIENT_H

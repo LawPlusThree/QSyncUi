@@ -57,6 +57,55 @@ bool COSClient::putLocalObject(const QString &path, const QString &localpath)
     return putObject(path, data, contentType);
 }
 
+QString COSClient::initMultiUpload(const QString &path, QMap<QString, QString> metaDatas,const  QString &contentType)
+{
+    preRequest request;
+    //build metadata
+    QMap<QString, QString> headers;
+    for(auto it = metaDatas.begin(); it != metaDatas.end(); ++it)
+    {
+        headers.insert("x-cos-meta-" + it.key(), it.value());
+    }
+    request.customHeaders = headers;
+    request.contentType = contentType;
+    request.queryParams.insert("uploads", "");
+    preResponse response = invokePostRequest(path, request);
+    //解析xml：InitiateMultipartUploadResult-》UploadId
+    QDomDocument doc;
+    doc.setContent(response.data);
+    QDomElement root = doc.documentElement();
+    QDomElement uploadIdElement = root.firstChildElement("UploadId");
+    return uploadIdElement.text();
+}
+
+QString COSClient::initLocalMultiUpload(const QString &path, const QString &localpath, QMap<QString, QString> metaDatas)
+{
+    QString contentType = _getContentTypeByPath(localpath); // Assuming this function exists and returns a content type based on the file extension
+    return initMultiUpload(path, metaDatas, contentType);
+}
+
+QString COSClient::uploadPart(const QString &path, const QString &uploadId, int partNumber, const QByteArray &data)
+{
+    preRequest request;
+    request.data = data;
+    request.contentType = "application/octet-stream";
+    request.queryParams.insert("partNumber", QString::number(partNumber));
+    request.queryParams.insert("uploadId", uploadId);
+    preResponse response = invokePutRequest(path, request);
+    return response.headers.value("ETag");
+}
+
+QString COSClient::completeMultipartUpload(QString path, QString uploadId, QMap<int, QString> partEtagMap)
+{
+    preRequest request;
+    request.data = buildCompleteUploadXml(partEtagMap).toUtf8();
+    request.contentType = "application/xml";
+    request.queryParams.insert("uploadId", uploadId);
+    preResponse response = invokePostRequest(path, request);
+    //xml, wait for processing
+    return QString::fromUtf8(response.data);
+}
+
 QByteArray COSClient::getObject(const QString &path, const QString &versionId, QMap<QString,QString> &respHeaders)
 {
     preRequest request;
@@ -93,6 +142,32 @@ bool COSClient::save2Local(const QString &path, const QString &localpath, const 
         }
     }
     return true;
+}
+
+QString COSClient::multiUpload(const QString &path, const QString &localpath, QMap<QString, QString> metaDatas)
+{
+    //判断文件存在且可读
+    QFile file(localpath);
+    if (!file.open(QIODevice::ReadOnly))
+    {
+        return "";
+    }
+    //初始化分片上传
+    QString uploadId = initLocalMultiUpload(path, localpath, metaDatas);
+    //分片上传
+    int partNumber = 1;
+    QMap<int, QString> partEtagMap;
+    while (!file.atEnd())
+    {
+        QByteArray data = file.read(5 * 1024 * 1024); // Assuming 5MB parts
+        QString etag = uploadPart(path, uploadId, partNumber, data);
+        partEtagMap.insert(partNumber, etag);
+        partNumber++;
+    }
+    //完成分片上传
+    QString result = completeMultipartUpload(path, uploadId, partEtagMap);
+    file.close();
+    return result;
 }
 
 // 修改后的函数实现
@@ -247,6 +322,42 @@ QMap<QString, QString> COSClient::parseTagXmlToMap(const QString &xmlString) {
     }
 
     return map;
+}
+
+QString COSClient::buildCompleteUploadXml(QMap<int, QString>partEtagMap)
+{
+/*
+  <CompleteMultipartUpload>
+    <Part>
+        <PartNumber>integer</PartNumber>
+        <ETag>string</ETag>
+    </Part>
+    <Part>
+        <PartNumber>integer</PartNumber>
+        <ETag>string</ETag>
+    </Part>
+</CompleteMultipartUpload>
+*/
+    QDomDocument doc;
+    QDomElement root = doc.createElement("CompleteMultipartUpload");
+    doc.appendChild(root);
+
+    QMapIterator<int, QString> i(partEtagMap);
+    while (i.hasNext()) {
+        i.next();
+        QDomElement part = doc.createElement("Part");
+        QDomElement partNumber = doc.createElement("PartNumber");
+        QDomElement eTag = doc.createElement("ETag");
+        QDomText partNumberText = doc.createTextNode(QString::number(i.key()));
+        QDomText eTagText = doc.createTextNode(i.value());
+        partNumber.appendChild(partNumberText);
+        eTag.appendChild(eTagText);
+        part.appendChild(partNumber);
+        part.appendChild(eTag);
+        root.appendChild(part);
+    }
+
+    return doc.toString();
 }
 
 bool COSClient::preCheckSession()
@@ -492,6 +603,7 @@ QNetworkRequest COSClient::buildPostRequest(const QString &path, const QMap<QStr
         return QNetworkRequest();
     }
     QUrl url;
+    qDebug()<<queryParams;
     QUrlQuery query;
     url=QUrl(generalApiUrl+path);
     for(auto it=queryParams.begin();it!=queryParams.end();it++)
@@ -500,6 +612,7 @@ QNetworkRequest COSClient::buildPostRequest(const QString &path, const QMap<QStr
     }
     url.setQuery(query);
     QNetworkRequest request(url);
+    qDebug()<<request.url();
     request.setRawHeader("Host",endpoint.toUtf8());
     //设置请求方法
     request.setAttribute(QNetworkRequest::CustomVerbAttribute,"POST");
