@@ -2,6 +2,8 @@
 
 #include<QVBoxLayout>
 #include"ElaCheckBox.h"
+#include"ElaIcon.h"
+#include"ElaIconButton.h"
 
 HistoryCard::HistoryCard(QString f, QString d,QString t,bool u)
 {
@@ -28,10 +30,11 @@ HistoryCard::HistoryCard(QString f, QString d,QString t,bool u)
     timeArea->addWidget(text,0,Qt::AlignCenter);
     timeArea->addWidget(time,0,Qt::AlignCenter);
 
-    ElaText*bingoText=new ElaText("√");
-    bingoText->setTextSize(16);
+    ElaIconButton* checkIcon=new ElaIconButton(ElaIconType::Check);
+    checkIcon->setFixedSize(30,30);
+    checkIcon->setEnabled(false); // 禁用按钮
     QVBoxLayout*bingoArea=new QVBoxLayout();
-    bingoArea->addWidget(bingoText,0,Qt::AlignCenter);
+    bingoArea->addWidget(checkIcon,0,Qt::AlignCenter);
 
     QHBoxLayout*HistoryCardArea=new QHBoxLayout(this);
     HistoryCardArea->addLayout(checkBoxArea,Qt::AlignCenter);

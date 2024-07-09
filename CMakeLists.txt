@@ -37,9 +37,9 @@ if (WINDOWS_BUILD AND AWSSDK_INSTALL_AS_SHARED_LIBS)
 endif ()
 set(PROJECT_SOURCES
         main.cpp
-        loginwindow.cpp
-        loginwindow.h
-        loginwindow.ui
+
+
+
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
@@ -49,9 +49,6 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         mycore.h mycore.cpp
         user.h user.cpp
         synctask.h synctask.cpp
-        awsutils.h awsutils.cpp
-        reset.h reset.cpp reset.ui
-        signin.h signin.cpp signin.ui
         mainwindow.h mainwindow.cpp
         homeview.h homeview.cpp
         apirequest.h apirequest.cpp
@@ -72,10 +69,13 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         linknewfolder_window.h linknewfolder_window.cpp
         tasktoken.h tasktoken.cpp
         filecard.h filecard.cpp
+        signhelper.h signhelper.cpp
         historycard.h historycard.cpp
         historyview.h historyview.cpp
         historyviewcard.h historyviewcard.cpp
-
+        setexcludeditems_view.h setexcludeditems_view.cpp
+        xmlprocesser.h xmlprocesser.cpp
+        bucket.h bucket.cpp
 
     )
 # Define target properties for Android with Qt 6 as:
@@ -104,8 +104,9 @@ include_directories(
     thirdParty/ElaWidgetTools/include
     thirdParty/wtr
 )
-
-target_link_libraries(QSyncUi PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Network Qt${QT_VERSION_MAJOR}::Sql ${AWSSDK_LINK_LIBRARIES} elawidgettools)
+find_package(Qt6 REQUIRED COMPONENTS Xml)
+target_link_libraries(QSyncUi PRIVATE Qt6::Xml)
+target_link_libraries(QSyncUi PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Xml Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Network Qt${QT_VERSION_MAJOR}::Sql ${AWSSDK_LINK_LIBRARIES} elawidgettools)
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
 # If you are developing for iOS or macOS you should consider setting an
 # explicit, fixed bundle identifier manually though.
