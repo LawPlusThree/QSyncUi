@@ -1,6 +1,7 @@
 #include "linknewfolder_window.h"
 #include <QVBoxLayout>
 #include <QHBoxLayout>
+#include <QFileDialog>
 #include "ElaCheckBox.h"
 #include "ElaLineEdit.h"
 #include "ElaPushButton.h"
@@ -36,6 +37,12 @@ linkNewFolder_window::linkNewFolder_window(QWidget *parent)
     lineEditLayout1->addWidget(folderName1); // 将输入框添加到布局中
     lineEditLayout1->addStretch();
     lineEditLayout1->addWidget(_pushButton1); // 将按钮添加到布局中
+    connect(_pushButton1, &ElaPushButton::clicked, [=]() {
+        QString folderPath = QFileDialog::getExistingDirectory(this, "选择文件夹", QString(), QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+        if (!folderPath.isEmpty()) {
+            folderName1->setText(folderPath);
+        }
+    });
 
     QWidget* lineEditArea2 = new QWidget();
     lineEditArea2->setWindowFlags(Qt::FramelessWindowHint); // 去除窗口边框

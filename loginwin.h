@@ -5,7 +5,6 @@
 #include"resetwin.h"
 #include"signinwin.h"
 #include "mycore.h"
-#include"databasemanager.h"
 
 class ElaPushButton;
 class loginwin:public ElaWidget
@@ -20,7 +19,6 @@ public:
     ElaLineEdit*accountLine;
     ElaLineEdit*passwordLine;
     ElaPushButton*loginBtn;
-    DatabaseManager *db;
 
 signals:
     void on_login_complete(User user);
