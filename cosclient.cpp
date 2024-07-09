@@ -181,6 +181,30 @@ preResponse COSClient::invokeDeleteRequest(const QString& path, const preRequest
     return response;
 }
 
+preResponse COSClient::invokePostRequest(const QString &path, const preRequest &request)
+{
+    preResponse response;
+    // 构建请求
+    QNetworkRequest networkRequest = buildPostRequest(path, request.queryParams, request.data); // 使用提供的代码片段构建POST请求
+    networkRequest.setHeader(QNetworkRequest::ContentTypeHeader, request.contentType);
+    networkRequest.setRawHeader("Content-MD5",_getContentMD5(request.data).toUtf8());
+    // 发送请求并等待响应
+    QNetworkReply* reply = manager->post(networkRequest, request.data);
+    // 等待响应完成
+    QEventLoop loop;
+    connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+    loop.exec();
+    // 处理响应
+    response.data = reply->readAll();
+    response.statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+    const QList<QByteArray> rawHeaderList = reply->rawHeaderList();
+    for (const QByteArray& header : rawHeaderList) {
+        response.headers.insert(QString(header), QString(reply->rawHeader(header)));
+    }
+    reply->deleteLater();
+    return response;
+}
+
 QString COSClient::buildTagXmlFromMap(const QMap<QString, QString> &map) {
     QDomDocument doc;
     QDomElement root = doc.createElement("Tagging");
@@ -460,4 +484,32 @@ QNetworkRequest COSClient::buildDeleteRequest(const QString &path, const QMap<QS
     }
     return request;
 }
+
+QNetworkRequest COSClient::buildPostRequest(const QString &path, const QMap<QString, QString> queryParams, const QByteArray &data)
+{
+    if (!preCheckSession())
+    {
+        return QNetworkRequest();
+    }
+    QUrl url;
+    QUrlQuery query;
+    url=QUrl(generalApiUrl+path);
+    for(auto it=queryParams.begin();it!=queryParams.end();it++)
+    {
+        query.addQueryItem(it.key(),it.value());
+    }
+    url.setQuery(query);
+    QNetworkRequest request(url);
+    request.setRawHeader("Host",endpoint.toUtf8());
+    //设置请求方法
+    request.setAttribute(QNetworkRequest::CustomVerbAttribute,"POST");
+    QString sig=this->signHelper->generateSignature(request,300);
+    request.setRawHeader("Authorization",sig.toUtf8());
+    if(token!="")
+    {
+        request.setRawHeader("x-cos-security-token",token.toUtf8());
+    }
+    return request;
+}
+
 

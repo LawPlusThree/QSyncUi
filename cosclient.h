@@ -19,7 +19,16 @@ struct preRequest{
 struct preResponse{
     QByteArray data;
     QMap<QString,QString> headers;
+    QMap<QString,QString> getMetaDatas(){
+      //  x-cos-meta-*
     QMap<QString,QString> metaDatas;
+    for(auto it=headers.begin();it!=headers.end();it++){
+        if(it.key().startsWith("x-cos-meta-")){
+            metaDatas[it.key().mid(11)]=it.value();
+        }
+    }
+        return metaDatas;
+    };
     int statusCode;
 };
 class COSClient : public QObject
@@ -73,10 +82,12 @@ private:
     QNetworkRequest buildPutRequest(const QString& path,const QMap<QString, QString> queryParams, const QByteArray& data);
     QNetworkRequest buildHeadRequest(const QString& path,const QMap<QString, QString> queryParams);
     QNetworkRequest buildDeleteRequest(const QString& path,const QMap<QString, QString> queryParams);
+    QNetworkRequest buildPostRequest(const QString& path,const QMap<QString, QString> queryParams, const QByteArray& data);
     preResponse invokeGetFileRequest(const QString& path, const preRequest& request);
     preResponse invokePutRequest(const QString& path, const preRequest& request);
     preResponse invokeHeadRequest(const QString& path, const preRequest& request);
     preResponse invokeDeleteRequest(const QString& path, const preRequest& request);
+    preResponse invokePostRequest(const QString& path, const preRequest& request);
     // 构建XML字符串
     QString buildTagXmlFromMap(const QMap<QString, QString> &map);
 
