@@ -9,6 +9,7 @@ class ElaIconButton;
 class ElaProgressBar;
 class FileCard : public ElaScrollPageArea
 {
+    Q_OBJECT
 public:
     explicit FileCard(QString f, QString d,QString s,QString p);
 
@@ -21,6 +22,11 @@ public:
     ElaIconButton*pauseBtn;
     ElaIconButton*relieveBtn;
     ElaProgressBar*proBar;
+
+private slots:
+    void on_relieveBtn_clicked();
+signals:
+    void Relieve();
 };
 
 #endif // FILECARD_H

@@ -55,4 +55,10 @@ FileCard::FileCard(QString f, QString d,QString s,QString p)
     FileCardArea->addLayout(actionArea,Qt::AlignCenter);
     FileCardArea->addStretch();
 
+    connect(relieveBtn,&ElaIconButton::clicked,this,&FileCard::on_relieveBtn_clicked);
+}
+
+void FileCard::on_relieveBtn_clicked()
+{
+    emit Relieve();
 }
