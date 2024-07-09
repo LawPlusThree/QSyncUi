@@ -35,8 +35,8 @@ FileCard::FileCard(QString f, QString d,QString s,QString p)
     proBarArea->setAlignment(Qt::AlignCenter);
 
     //modifyBtn=new ElaIconButton(ElaIconType::CalendarLinesPen);
-    pauseBtn=new ElaIconButton(ElaIconType::CirclePause);
-    relieveBtn=new ElaIconButton(ElaIconType::CircleXmark);
+    pauseBtn=new ElaIconButton(ElaIconType::CirclePause,20);
+    relieveBtn=new ElaIconButton(ElaIconType::CircleXmark,20);
     //modifyBtn->setFixedSize(30,30);
     pauseBtn->setFixedSize(30,30);
     relieveBtn->setFixedSize(30,30);
@@ -56,9 +56,18 @@ FileCard::FileCard(QString f, QString d,QString s,QString p)
     FileCardArea->addStretch();
 
     connect(relieveBtn,&ElaIconButton::clicked,this,&FileCard::on_relieveBtn_clicked);
+    connect(pauseBtn,&ElaIconButton::clicked,this,&FileCard::on_pauseBtn_clicked);
 }
 
 void FileCard::on_relieveBtn_clicked()
 {
     emit Relieve();
+}
+
+void FileCard::on_pauseBtn_clicked()
+{
+    if(pauseBtn->getAwesome()==ElaIconType::CirclePause)
+        pauseBtn->setAwesome(ElaIconType::CirclePlay);
+    else
+        pauseBtn->setAwesome(ElaIconType::CirclePause);
 }

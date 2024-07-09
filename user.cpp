@@ -41,19 +41,29 @@ bool User::enroll()
 
 bool User::enroll(const QString &avatarpath)
 {
-    QImageReader reader(avatarpath);
-    if (!reader.canRead()) {
-        qDebug()<<"read picture failed!";
+    //读取文件并转换为base64字符串
+    QFile file(avatarpath);
+    if (!file.open(QIODevice::ReadOnly)) {
+        qDebug()<<"open file failed!";
+        return false;
     }
-    QImage image = reader.read();
-    if (image.isNull()) {
-        qDebug()<<"read picture failed!";
-    }
-    QByteArray byteArray;
-    QBuffer buffer(&byteArray);
-    image.save(&buffer, reader.format()); // 使用图片的原始格式保存
-    // 将字节数据编码为Base64字符串
+    QByteArray byteArray = file.readAll();
     QString avatar = byteArray.toBase64();
+    QFileInfo fileInfo(avatarpath);
+    QString extension = fileInfo.suffix().toLower();
+
+    if (extension == "png") {
+        avatar.prepend("data:image/png;base64,");
+    } else if (extension == "jpg" || extension == "jpeg") {
+        avatar.prepend("data:image/jpeg;base64,");
+    } else if (extension == "gif") {
+        avatar.prepend("data:image/gif;base64,");
+    } else {
+        return false; // 图片格式不支持
+    }
+    //post时保留字符串中的加号
+    //avatar.replace("+","%2B");
+    //qDebug()<<avatar;
     QString postData
         = QString("username=%1&email=%2&password=%3&avatar=%4").arg(username).arg(account).arg(hashedPassword).arg(avatar);
     ApiResponse response=apiRequest->post("/register",postData.toUtf8());

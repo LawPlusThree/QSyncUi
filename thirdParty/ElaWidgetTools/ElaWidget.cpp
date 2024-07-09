@@ -82,6 +82,12 @@ bool ElaWidget::getIsFixedSize() const
     return d_ptr->_appBar->getIsFixedSize();
 }
 
+void ElaWidget::setWindowButtonFlag(ElaAppBarType::ButtonType buttonFlag, bool isEnable)
+{
+    Q_D(ElaWidget);
+    d->_appBar->setWindowButtonFlag(buttonFlag, isEnable);
+}
+
 void ElaWidget::paintEvent(QPaintEvent* event)
 {
     Q_D(ElaWidget);

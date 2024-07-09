@@ -4,6 +4,7 @@
 #include <QWidget>
 
 #include "stdafx.h"
+#include "ElaAppBar.h"
 
 class ElaWidgetPrivate;
 class ELA_EXPORT ElaWidget : public QWidget
@@ -20,6 +21,8 @@ public:
     bool getIsStayTop() const;
     void setIsFixedSize(bool isFixedSize);
     bool getIsFixedSize() const;
+
+    void setWindowButtonFlag(ElaAppBarType::ButtonType buttonFlag, bool isEnable = true);
 
 protected:
     virtual void paintEvent(QPaintEvent* event) override;

@@ -37,6 +37,8 @@ public:
     QString listObjects(const QString &prefix, const QString &delimiter);
     bool putObject(const QString &path, const QByteArray &data,const QString &contentType="application/octet-stream");
     bool putLocalObject(const QString &path, const QString &localpath);
+    QByteArray getObject(const QString &path,const QString &versionId);
+    bool save2Local(const QString &path, const QString &localpath,const QString &versionId);
 
 private:
     QString bucketName;
@@ -57,6 +59,7 @@ private:
     QNetworkRequest buildPutRequest(const QString& path,const QMap<QString, QString> queryParams, const QByteArray& data);
     QNetworkRequest buildHeadRequest(const QString& path,const QMap<QString, QString> queryParams);
     QNetworkRequest buildDeleteRequest(const QString& path,const QMap<QString, QString> queryParams);
+    QByteArray invokeGetFileRequest(const QString& path, const QMap<QString, QString> queryParams);
     QString invokeGetRequest(const QString& path,const QMap<QString, QString> queryParams);
     bool invokePutRequest(const QString& path,const QMap<QString, QString> queryParams, const QByteArray& data,QString contentType);
     bool invokeHeadRequest(const QString& path,const QMap<QString, QString> queryParams);

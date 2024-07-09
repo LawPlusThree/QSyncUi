@@ -10,12 +10,16 @@
 #include"ElaLineEdit.h"
 #include"ElaPushButton.h"
 
+class ElaInteractiveCard;
+class QHBoxLayout;
 class UserInfoPage : public QWidget
 {
     Q_OBJECT
 public:
     explicit UserInfoPage(QWidget *parent = nullptr);
     User* currentUser;
+    ElaInteractiveCard*avatar;
+    QHBoxLayout*avatarArea;
 
 private:
     ElaLineEdit *newIdEdit_;
