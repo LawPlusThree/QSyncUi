@@ -9,6 +9,12 @@
 #include <QtNetwork/QNetworkReply>
 #include <QUrl>
 #include <QDomDocument>
+struct headHeader {
+    QString ifModifiedSince;   // If-Modified-Since 请求头
+    QString ifUnmodifiedSince; // If-Unmodified-Since 请求头
+    QString ifMatch;           // If-Match 请求头
+    QString ifNoneMatch;       // If-None-Match 请求头
+};
 struct preRequest{
     QMap<QString, QString> queryParams;
     QByteArray data;
@@ -64,7 +70,8 @@ public:
     QString completeMultipartUpload(QString path, QString uploadId, QMap<int, QString> partEtagMap);
     QByteArray getObject(const QString &path,const QString &versionId, QMap<QString,QString> &respHeaders);
     bool save2Local(const QString &path, const QString &localpath,const QString &versionId, QMap<QString,QString> &respMetaDatas);
-    QMap<QString,QString> headObject(const QString &path, const QString &localpath, const QString &versionId);
+    preResponse headObject(const QString &path, const QString &localpath,const QString &versionId, headHeader &reqHeader);
+    bool deleteObject(const QString &path, const QString &versionId);
     QString multiUpload(const QString &path, const QString &localpath, QMap<QString,QString> metaDatas=QMap<QString,QString>());
 
 private:

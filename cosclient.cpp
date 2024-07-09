@@ -144,19 +144,47 @@ bool COSClient::save2Local(const QString &path, const QString &localpath, const 
     return true;
 }
 
-QMap<QString,QString> COSClient::headObject(const QString &path, const QString &localpath, const QString &versionId)
+preResponse COSClient::headObject(const QString &path, const QString &localpath,const QString &versionId, headHeader &reqHeader)
 {
     preRequest request;
-    if(!versionId.isEmpty())
-    {
+    if(!versionId.isEmpty()) {
         request.customHeaders.insert("versionId", versionId);
     }
-    request.customHeaders.insert("If-Modified-Since", "");
-    request.customHeaders.insert("If-Unmodified-Since", "");
-    request.customHeaders.insert("If-Match", "");
-    request.customHeaders.insert("If-None-Match", "");
+    if(!reqHeader.ifModifiedSince.isEmpty()) {
+        request.customHeaders.insert("If-Modified-Since", reqHeader.ifModifiedSince);
+    }
+    if(!reqHeader.ifUnmodifiedSince.isEmpty()) {
+        request.customHeaders.insert("If-Unmodified-Since", reqHeader.ifUnmodifiedSince);
+    }
+    if(!reqHeader.ifMatch.isEmpty()) {
+        request.customHeaders.insert("If-Match", reqHeader.ifMatch);
+    }
+    if(!reqHeader.ifNoneMatch.isEmpty()) {
+        request.customHeaders.insert("If-None-Match", reqHeader.ifNoneMatch);
+    }
     preResponse response = invokeHeadRequest(path, request);
-    return response.getMetaDatas();
+    return response;
+}
+
+bool COSClient::deleteObject(const QString &path, const QString &versionId)
+{
+    preRequest request;
+    bool haveId=!versionId.isEmpty();
+    if(haveId) {
+        request.customHeaders.insert("versionId", versionId);
+    }
+    preResponse response = invokeDeleteRequest(path,request);
+    // 获取 x-cos-version-id 响应头
+    QString responseVersionId = response.headers.value("x-cos-version-id");
+    // 获取 x-cos-delete-marker 响应头
+    bool deleteMarker = response.headers.value("x-cos-delete-marker")=="true"?"true":"false";
+    if(haveId&&deleteMarker){
+        qDebug()<<"标记"<<responseVersionId<<"为删除";
+    }
+    else if(!haveId && deleteMarker){
+        qDebug()<<"创建了一个删除标记作为"<<path<<"的最新版本";
+    }
+    return deleteMarker;
 }
 
 QString COSClient::multiUpload(const QString &path, const QString &localpath, QMap<QString, QString> metaDatas)
