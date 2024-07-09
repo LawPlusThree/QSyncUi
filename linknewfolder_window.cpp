@@ -67,6 +67,12 @@ linkNewFolder_window::linkNewFolder_window(QWidget *parent)
     _pushButton3->setFixedSize(120, 40);
     buttonLayout->addWidget(_pushButton2);
     buttonLayout->addWidget(_pushButton3);
+    connect(_pushButton2,&ElaPushButton::clicked,[=](){
+        this->hide();
+    });
+    connect(_pushButton3,&ElaPushButton::clicked,[=](){
+        this->hide();
+    });
 
 
     centerVLayout->addWidget(Title);
