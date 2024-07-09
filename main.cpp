@@ -1,4 +1,3 @@
-#include "loginwindow.h"
 #include <QApplication>
 #include "ElaApplication.h"
 #include "synctask.h"

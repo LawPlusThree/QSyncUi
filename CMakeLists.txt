@@ -37,9 +37,9 @@ if (WINDOWS_BUILD AND AWSSDK_INSTALL_AS_SHARED_LIBS)
 endif ()
 set(PROJECT_SOURCES
         main.cpp
-        loginwindow.cpp
-        loginwindow.h
-        loginwindow.ui
+
+
+
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
@@ -49,9 +49,9 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         mycore.h mycore.cpp
         user.h user.cpp
         synctask.h synctask.cpp
-        awsutils.h awsutils.cpp
-        reset.h reset.cpp reset.ui
-        signin.h signin.cpp signin.ui
+
+
+
         mainwindow.h mainwindow.cpp
         homeview.h homeview.cpp
         apirequest.h apirequest.cpp
