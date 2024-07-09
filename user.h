@@ -24,6 +24,7 @@ private:
     QString hashedPassword; //password
     bool isLogin=false;
     ApiRequest *apiRequest;
+public:
     QString avatarpath;
 
 public:
@@ -51,6 +52,7 @@ public:
     QString getEmail();//获取用户邮箱
     QString getUserHash() const; //返回用户账户的哈希
     QString gethashedPassword();
+    QString getAvatarPath();//获取头像路径
     bool getisLogin(); //返回用户登陆状态
 
 signals:

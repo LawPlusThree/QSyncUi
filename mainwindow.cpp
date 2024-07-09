@@ -162,6 +162,25 @@ void MainWindow::onUserLoggedIn(User user)
     db->insertUser(user.getEmail(),user.gethashedPassword());
     setUserInfoCardTitle(user.getUsername());
     setUserInfoCardSubTitle(user.getEmail());
+
+    QString url=user.avatarpath;
+    QNetworkAccessManager *manager = new QNetworkAccessManager();
+    QNetworkRequest request;
+    request.setUrl(QUrl(url));
+    QNetworkReply *reply = manager->get(request);
+    QEventLoop loop;
+    connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+    loop.exec();
+    QFile file("downloaded_image.jpg");
+    if (file.open(QIODevice::WriteOnly))
+    {
+        file.write(reply->readAll());
+        file.close();
+    }
+    delete reply;
+    QString filename=QDir::toNativeSeparators(file.fileName());
+    QPixmap pix(filename);
+    setUserInfoCardPixmap(pix);
 }
 
 void MainWindow::onNeedPassword(const QString &account)
@@ -194,6 +213,9 @@ void MainWindow::onLoginResponse(const int &code, const QJsonObject &data, const
 void MainWindow::onCloseButtonClicked()
 {
     ElaContentDialog *dialag = new ElaContentDialog(this);
+    dialag->setLeftButtonText("取消");
+    dialag->setMiddleButtonText("最小化");
+    dialag->setRightButtonText("退出");
     connect(dialag, &ElaContentDialog::rightButtonClicked, this, &MainWindow::closeWindow);
     connect(dialag, &ElaContentDialog::middleButtonClicked, this, &MainWindow::showMinimized);
     dialag->show();
