@@ -73,6 +73,8 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         tasktoken.h tasktoken.cpp
         filecard.h filecard.cpp
         historycard.h historycard.cpp
+        historyview.h historyview.cpp
+        historyviewcard.h historyviewcard.cpp
 
 
     )

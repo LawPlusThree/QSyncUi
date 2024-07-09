@@ -4,6 +4,7 @@
 #include "ElaProgressBar.h"
 #include "ElaScrollPage.h"
 #include "ElaScrollPageArea.h"
+#include"ElaPushButton.h"
 
 class QVBoxLayout;
 class HistorysyncPage : public ElaScrollPage

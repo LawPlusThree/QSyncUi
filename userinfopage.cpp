@@ -28,6 +28,15 @@ UserInfoPage::UserInfoPage(QWidget *parent) : QWidget(parent)
     newPasswordEdit_->setPlaceholderText("新密码");
     confirmNewPasswordEdit_->setPlaceholderText("确认密码");
 
+    // 设置样式
+    QString styleSheet = "QLineEdit { background-color: #e5e5e5; border: 1px solid #ccc; padding: 5px; }";
+    newIdEdit_->setStyleSheet(styleSheet);
+    newPasswordEdit_->setStyleSheet(styleSheet);
+    confirmNewPasswordEdit_->setStyleSheet(styleSheet);
+
+    // 重新设置布局边距和间距
+    layout->setContentsMargins(40, 20, 40, 20);
+    layout->setSpacing(10);
 
     // 连接信号与槽
     connect(confirmButton_, &ElaPushButton::clicked, this, &UserInfoPage::onConfirmButtonClicked);
