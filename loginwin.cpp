@@ -19,6 +19,7 @@
 
 loginwin::loginwin(QWidget* parent):ElaWidget(parent,400,500)
 {
+    this->setWindowButtonFlag(ElaAppBarType::MaximizeButtonHint,false);
     setWindowTitle("珞珈云");
     connect(resetWin,&resetwin::goback,this,[=](){
         resetWin->hide();
