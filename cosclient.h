@@ -34,6 +34,8 @@ public:
         this->expiredTime = expiredTime;
     }
     QString listObjects(const QString &prefix, const QString &delimiter);
+    bool putObject(const QString &path, const QByteArray &data);
+    bool putLocalObject(const QString &path, const QString &localpath);
 
 private:
     QString bucketName;

@@ -2,6 +2,7 @@
 #include "qeventloop.h"
 #include <QUrlQuery>
 #include <QNetworkReply>
+#include <QFile>
 COSClient::COSClient(QObject *parent)
 {
     return ;
@@ -28,6 +29,24 @@ QString COSClient::listObjects(const QString &prefix, const QString &delimiter)
     queryParams.insert("prefix", prefix);
     queryParams.insert("delimiter", delimiter);
     return invokeGetRequest("/", queryParams);
+}
+
+bool COSClient::putObject(const QString &path, const QByteArray &data)
+{
+    QMap<QString, QString> queryParams;
+    return invokePutRequest(path, queryParams, data);
+}
+
+bool COSClient::putLocalObject(const QString &path, const QString &localpath)
+{
+    QFile file(localpath);
+    if (!file.open(QIODevice::ReadOnly))
+    {
+        return false;
+    }
+    QByteArray data = file.readAll();
+    file.close();
+    return putObject(path, data);
 }
 
 QString COSClient::invokeGetRequest(const QString &path, const QMap<QString, QString> queryParams)
