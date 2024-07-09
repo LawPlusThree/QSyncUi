@@ -123,7 +123,10 @@ void signinwin::on_signinBtn_clicked()
             else
                 result=enrolluser.enroll();
             if(result)
+            {
+                emit on_signin_complete(enrolluser);
                 QMessageBox::information(this, "成功","注册成功");
+            }
             else
                 QMessageBox::critical(this, "失败","注册失败");
             emit goback();

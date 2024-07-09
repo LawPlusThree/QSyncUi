@@ -150,6 +150,7 @@ MainWindow::MainWindow(QWidget *parent)
     // 拦截默认关闭事件
     this->setIsDefaultClosed(false);
     connect(this, &MainWindow::closeButtonClicked, this, &MainWindow::onCloseButtonClicked);
+    connect(CurrentUser,&User::loginResponse,this,&MainWindow::onLoginResponse);
 }
 
 MainWindow::~MainWindow() {}
@@ -166,6 +167,27 @@ void MainWindow::onNeedPassword(const QString &account)
 {
     QString password = db->getUserPassword(account).second;
     emit dbPassword(password);
+}
+
+void MainWindow::insertUserToDatabase(User user)
+{
+    db->insertUser(user.getEmail(),user.gethashedPassword());
+}
+
+void MainWindow::onLoginResponse(const int &code, const QJsonObject &data, const QString &message)
+{
+    QString url=data.value("avatar_url").toString();
+    QNetworkAccessManager *manager = new QNetworkAccessManager();
+    QNetworkRequest request;
+    request.setUrl(QUrl(url));
+    QNetworkReply *reply = manager->get(request);
+    QEventLoop loop;
+    connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+    loop.exec();
+    QByteArray picdata = reply->readAll();
+    QPixmap pixmap;
+    pixmap.loadFromData(picdata);
+    setUserInfoCardPixmap(pixmap);
 }
 
 void MainWindow::onCloseButtonClicked()

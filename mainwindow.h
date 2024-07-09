@@ -8,7 +8,7 @@
 #include"loginwin.h"
 #include"ElaCheckBox.h"
 #include"userinfopage.h"
-
+#include"databasemanager.h"
 #include "user.h"
 class HomePage;
 class SyncingPage;
@@ -34,6 +34,8 @@ public:
 public slots:
     void onUserLoggedIn(User user);
     void onNeedPassword(const QString& account);
+    void insertUserToDatabase(User user);
+    void onLoginResponse(const int &code,const QJsonObject &data,const QString &message);
 
 signals:
     void dbPassword(const QString &);

@@ -11,7 +11,6 @@
 #include<QPalette>
 #include<QColor>
 #include<QMessageBox>
-#include "databasemanager.h"
 #include"ElaPushButton.h"
 #include"ElaLineEdit.h"
 #include"ElaText.h"
