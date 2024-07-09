@@ -5,7 +5,7 @@
 #include"resetwin.h"
 #include"signinwin.h"
 #include "mycore.h"
-
+#include "messagechannel.h"
 class ElaPushButton;
 class loginwin:public ElaWidget
 {
@@ -19,6 +19,7 @@ public:
     ElaLineEdit*accountLine;
     ElaLineEdit*passwordLine;
     ElaPushButton*loginBtn;
+    MessageChannel *channel;
 
 signals:
     void on_login_complete(User user);

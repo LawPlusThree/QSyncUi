@@ -17,6 +17,7 @@ int main(int argc, char *argv[])
     User loginuser("enrolluser@example.com","123456");
     loginuser.enroll();
     loginuser.login();
+    /*
     loginuser.addTask("E:/","home/",1,22,22);
     TaskToken tt=loginuser.getTaskTokenByRemote("home/");
     //request: https://qsync-1320107701.cos.ap-nanjing.myqcloud.com/?prefix=home
@@ -44,6 +45,7 @@ int main(int argc, char *argv[])
     //sc.addTask(&mytask);
     //stm.addTask(mytask);
     //qDebug()<<stm.queryTask(mytask);
+*/
     ElaApplication::getInstance()->init();
     MainWindow w;
     w.show();

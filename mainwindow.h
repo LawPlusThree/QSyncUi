@@ -11,6 +11,7 @@
 #include"databasemanager.h"
 #include "user.h"
 #include"signinwin.h"
+#include <QQueue>
 class HomePage;
 class SyncingPage;
 class FileManagePage;
@@ -38,7 +39,7 @@ public slots:
     void onNeedPassword(const QString& account);
     void insertUserToDatabase(User user);
     void onLoginResponse(const int &code,const QJsonObject &data,const QString &message);
-
+    void onMessage( QString message,QString type);
 signals:
     void dbPassword(const QString &);
 
@@ -56,7 +57,6 @@ private:
     QString _elaDxgiKey{""};
     QString _aboutKey{""};
     QString _settingKey{""};
-
     ElaCheckBox* _checkBox{nullptr};
     UserInfoPage* _userinfopage{nullptr};
 

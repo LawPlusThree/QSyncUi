@@ -10,6 +10,7 @@
 #include "ElaGraphicsItem.h"
 #include "ElaGraphicsScene.h"
 #include "ElaGraphicsView.h"
+#include "ElaMessageBar.h"
 #include "ElaWidget.h"
 #include "homeView.h"
 #include "DirCard.h"
@@ -50,7 +51,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(this,&MainWindow::dbPassword,login,&loginwin::on_db_response);
     connect(login,&loginwin::needPassword,this,&MainWindow::onNeedPassword);
     connect(signin, &signinwin::on_signin_complete, this, &MainWindow::insertUserToDatabase);
-
+    qDebug()<<connect(login->channel,&MessageChannel::message,this,&MainWindow::onMessage);
     // GraphicsView
     ElaGraphicsScene *scene = new ElaGraphicsScene(this);
     scene->setSceneRect(0, 0, 1500, 1500);
@@ -208,6 +209,31 @@ void MainWindow::onLoginResponse(const int &code, const QJsonObject &data, const
     QPixmap pixmap;
     pixmap.loadFromData(picdata);
     setUserInfoCardPixmap(pixmap);
+}
+
+void MainWindow::onMessage( QString message, QString type)
+{
+    /* static void success(ElaMessageBarType::PositionPolicy policy, QString title, QString text, int displayMsec, QWidget* parent = nullptr);
+    static void warning(ElaMessageBarType::PositionPolicy policy, QString title, QString text, int displayMsec, QWidget* parent = nullptr);
+    static void information(ElaMessageBarType::PositionPolicy policy, QString title, QString text, int displayMsec, QWidget* parent = nullptr);
+    static void error(ElaMessageBarType::PositionPolicy policy, QString title, QString text, int displayMsec, QWidget* parent = nullptr);*/
+    QString title;
+    if (type=="Info")
+    {
+        ElaMessageBar::information( ElaMessageBarType::TopRight,QString("消息"),message,2000,this);
+    }
+    else if (type=="Error")
+    {
+        ElaMessageBar::error(ElaMessageBarType::TopRight,QString("错误"),message,2000,this);
+    }
+    else if (type=="Warning")
+    {
+        ElaMessageBar::warning(ElaMessageBarType::TopRight,QString("警告"),message,2000,this);
+    }
+    else if (type=="Success")
+    {
+        ElaMessageBar::success(ElaMessageBarType::TopRight,QString("成功"),message,2000,this);
+    }
 }
 
 void MainWindow::onCloseButtonClicked()

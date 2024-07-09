@@ -34,7 +34,7 @@ loginwin::loginwin(QWidget* parent):ElaWidget(parent,400,500)
     this->hide();
     //this->setFixedSize(250,700);
     this->setWindowFlags(Qt::WindowMinimizeButtonHint);
-
+    channel=new MessageChannel();
     QImage image;
     ElaImageCard*avatar=new ElaImageCard();
     avatar->setCardImage(image);
@@ -132,7 +132,8 @@ void loginwin::on_loginBtn_clicked()
         //User loginuser("newuser@example.com","123456");
         User loginuser(accountLine->text(),passwordLine->text());
         if(loginuser.login()){
-            QMessageBox::information(this, "成功","登录成功");
+            emit channel->message("欢迎你"+loginuser.getUsername(),"Success");
+            //QMessageBox::information(this, "成功","登录成功");
             emit on_login_complete(loginuser);
             //db->insertUser(accountLine->text(),passwordLine->text());
             this->close();
