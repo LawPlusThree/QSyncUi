@@ -10,6 +10,7 @@
 #include"userinfopage.h"
 #include"databasemanager.h"
 #include "user.h"
+#include"signinwin.h"
 class HomePage;
 class SyncingPage;
 class FileManagePage;
@@ -26,6 +27,7 @@ class MainWindow : public ElaWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    signinwin* signin = new signinwin();
     loginwin* login=new loginwin();
     Q_SLOT void onCloseButtonClicked();
     User*CurrentUser=nullptr;

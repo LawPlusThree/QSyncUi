@@ -49,6 +49,7 @@ MainWindow::MainWindow(QWidget *parent)
     });
     connect(this,&MainWindow::dbPassword,login,&loginwin::on_db_response);
     connect(login,&loginwin::needPassword,this,&MainWindow::onNeedPassword);
+    connect(signin, &signinwin::on_signin_complete, this, &MainWindow::insertUserToDatabase);
 
     // GraphicsView
     ElaGraphicsScene *scene = new ElaGraphicsScene(this);
@@ -150,7 +151,6 @@ MainWindow::MainWindow(QWidget *parent)
     // 拦截默认关闭事件
     this->setIsDefaultClosed(false);
     connect(this, &MainWindow::closeButtonClicked, this, &MainWindow::onCloseButtonClicked);
-    connect(CurrentUser,&User::loginResponse,this,&MainWindow::onLoginResponse);
 }
 
 MainWindow::~MainWindow() {}
@@ -158,6 +158,7 @@ void MainWindow::onUserLoggedIn(User user)
 {
     CurrentUser=new User(user);
     _userinfopage->currentUser=CurrentUser;
+    qDebug()<<user.getEmail()<<" "<<user.gethashedPassword();
     db->insertUser(user.getEmail(),user.gethashedPassword());
     setUserInfoCardTitle(user.getUsername());
     setUserInfoCardSubTitle(user.getEmail());
