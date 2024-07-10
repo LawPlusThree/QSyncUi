@@ -321,8 +321,8 @@ void MainWindow::onModifyInfo(User user)
     //CurrentUser=new User(user);
     _modifyInfor_win->currentUser=CurrentUser;
     qDebug() << user.getEmail() << " " << user.gethashedPassword();
-    db->updateUserInfo(user.getEmail(),_modifyInfor_win->newPasswordEdit_->text());
-    qDebug() << user.getEmail() << " " << db->getUserPassword(user.getEmail());
+    db->updateUserInfo(user.getEmail(),user.gethashedPassword());
+    qDebug() << user.getEmail() << " " << user.gethashedPassword() <<" " << db->getUserPassword(user.getEmail());
     setUserInfoCardTitle(_modifyInfor_win->newIdEdit_->text());
     setUserInfoCardSubTitle(user.getEmail());
 
