@@ -1,0 +1,24 @@
+#ifndef DIRCARDPROXY_H
+#define DIRCARDPROXY_H
+
+#include <QMap>
+#include <QWidget>
+
+class DirCard;
+class QVBoxLayout;
+class DirCardProxy : public QWidget {
+    Q_OBJECT
+public:
+    explicit DirCardProxy(QWidget *parent = nullptr);
+    ~DirCardProxy() override;
+
+    void addDirCard(DirCard *card, const QString &id);
+    void removeDirCard(const QString &id);
+    QVBoxLayout*filesLayout;
+
+private:
+    QMap<QString, DirCard*> cardMap;
+    QWidget *parentWidget;
+};
+
+#endif // DIRCARDPROXY_H

@@ -10,14 +10,15 @@ class ElaToggleButton;
 class ElaPushButton;
 class DirCard;
 class QVBoxLayout;
+class DirCardProxy;
 class FileManagePage:public ElaScrollPage
 {
 public:
     FileManagePage(QWidget* parent = nullptr);
     ~FileManagePage();
     void addDirCard(QString filename,QString datasize,QString bingtime);
-    void removeDirCard();
-    QVBoxLayout*filesLayout;
+    void removeDirCard(QString id);
+    DirCardProxy*_dircardProxy;
 
 private:
     ElaProgressBar* _progressBar{nullptr};
