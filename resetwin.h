@@ -4,12 +4,16 @@
 #include"ElaWidget.h"
 #include"ElaLineEdit.h"
 
+class ElaInteractiveCard;
+class QHBoxLayout;
 class resetwin:public ElaWidget
 {
     Q_OBJECT
 public:
     explicit resetwin(QWidget *parent = nullptr);
     ~resetwin();
+    ElaInteractiveCard*avatar;
+    QHBoxLayout*avatarArea;
 
 signals:
     void goback();
