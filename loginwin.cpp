@@ -130,11 +130,14 @@ void loginwin::on_loginBtn_clicked()
     {
         //测试用户
         //User loginuser("newuser@example.com","123456");
-        User loginuser(accountLine->text(),passwordLine->text());
-        if(loginuser.login()){
-            emit channel->message("欢迎你"+loginuser.getUsername(),"Success");
+        User* loginuser=new User(accountLine->text(),passwordLine->text());
+        connect(loginuser->channel,&MessageChannel::message,this,[=](QString message,QString type){
+            emit channel->message(message,type);
+        });
+        if(loginuser->login()){
+            emit channel->message("欢迎你"+loginuser->getUsername(),"Success");
             //QMessageBox::information(this, "成功","登录成功");
-            emit on_login_complete(loginuser);
+            emit on_login_complete(*loginuser);
             //db->insertUser(accountLine->text(),passwordLine->text());
             this->close();
         }

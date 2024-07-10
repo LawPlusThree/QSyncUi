@@ -144,7 +144,7 @@ bool COSClient::save2Local(const QString &path, const QString &localpath, const 
     return true;
 }
 
-preResponse COSClient::headObject(const QString &path, const QString &localpath,const QString &versionId, headHeader &reqHeader)
+QMap<QString,QString> COSClient::headObject(const QString &path, const QString &localpath,const QString &versionId, headHeader &reqHeader)
 {
     preRequest request;
     if(!versionId.isEmpty()) {
@@ -163,7 +163,7 @@ preResponse COSClient::headObject(const QString &path, const QString &localpath,
         request.customHeaders.insert("If-None-Match", reqHeader.ifNoneMatch);
     }
     preResponse response = invokeHeadRequest(path, request);
-    return response;
+    return response.headers;
 }
 
 bool COSClient::deleteObject(const QString &path, const QString &versionId)
@@ -535,7 +535,11 @@ QNetworkRequest COSClient::buildGetRequest(const QString &path, const QMap<QStri
     }
     QUrl url;
     QUrlQuery query;
-    url=QUrl(generalApiUrl+path);
+    QString realPath=path;
+    if(!path.startsWith("/")){
+        realPath.prepend("/");
+    }
+    url=QUrl(generalApiUrl+realPath);
     for(auto it=queryParams.begin();it!=queryParams.end();it++)
     {
         query.addQueryItem(it.key(),it.value());
@@ -566,7 +570,11 @@ QNetworkRequest COSClient::buildPutRequest(const QString &path, const QMap<QStri
     }
     QUrl url;
     QUrlQuery query;
-    url=QUrl(generalApiUrl+path);
+    QString realPath=path;
+    if(!path.startsWith("/")){
+        realPath.prepend("/");
+    }
+    url=QUrl(generalApiUrl+realPath);
     for(auto it=queryParams.begin();it!=queryParams.end();it++)
     {
         query.addQueryItem(it.key(),it.value());
@@ -593,7 +601,11 @@ QNetworkRequest COSClient::buildHeadRequest(const QString &path, const QMap<QStr
     }
     QUrl url;
     QUrlQuery query;
-    url=QUrl(generalApiUrl+path);
+    QString realPath=path;
+    if(!path.startsWith("/")){
+        realPath.prepend("/");
+    }
+    url=QUrl(generalApiUrl+realPath);
     for(auto it=queryParams.begin();it!=queryParams.end();it++)
     {
         query.addQueryItem(it.key(),it.value());
@@ -620,7 +632,11 @@ QNetworkRequest COSClient::buildDeleteRequest(const QString &path, const QMap<QS
     }
     QUrl url;
     QUrlQuery query;
-    url=QUrl(generalApiUrl+path);
+    QString realPath=path;
+    if(!path.startsWith("/")){
+        realPath.prepend("/");
+    }
+    url=QUrl(generalApiUrl+realPath);
     for(auto it=queryParams.begin();it!=queryParams.end();it++)
     {
         query.addQueryItem(it.key(),it.value());
@@ -648,7 +664,11 @@ QNetworkRequest COSClient::buildPostRequest(const QString &path, const QMap<QStr
     QUrl url;
     qDebug()<<queryParams;
     QUrlQuery query;
-    url=QUrl(generalApiUrl+path);
+    QString realPath=path;
+    if(!path.startsWith("/")){
+        realPath.prepend("/");
+    }
+    url=QUrl(generalApiUrl+realPath);
     for(auto it=queryParams.begin();it!=queryParams.end();it++)
     {
         query.addQueryItem(it.key(),it.value());
