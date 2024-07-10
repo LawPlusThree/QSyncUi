@@ -29,7 +29,6 @@ public:
     }
     bool isSuccess();
 
-private:
     void processJsonObject(const QJsonObject &jsonObject); //处理json内容
     int code;
     QString message;
