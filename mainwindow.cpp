@@ -15,6 +15,7 @@
 #include "homeView.h"
 #include "linknewfolder_window.h"
 #include "DirCard.h"
+#include "dircardproxy.h"
 #include "loginwin.h"
 #include "syncing_view.h"
 #include"filemange_view.h"
@@ -52,7 +53,7 @@ MainWindow::MainWindow(QWidget *parent)
     });
     connect(this,&MainWindow::dbPassword,login,&loginwin::on_db_response);
     connect(login,&loginwin::needPassword,this,&MainWindow::onNeedPassword);
-    connect(signin, &signinwin::on_signin_complete, this, &MainWindow::insertUserToDatabase);
+    connect(login->signinWin, &signinwin::on_signin_complete, this, &MainWindow::insertUserToDatabase);
     qDebug()<<connect(login->channel,&MessageChannel::message,this,&MainWindow::onMessage);
     connect(_filemanagePage->linknewfolderwindow,&linkNewFolder_window::onNewTask,this,&MainWindow::onUserAddNewTask);
     // GraphicsView
@@ -121,7 +122,22 @@ MainWindow::MainWindow(QWidget *parent)
                 }
                 else if(logoutKey==nodeKey)
                 {
-                    //
+                    QWidget* _logoutWidget = new QWidget(this);
+                    QVBoxLayout* logoutVLayout = new QVBoxLayout(_logoutWidget);
+                    logoutVLayout->setContentsMargins(9, 15, 9, 20);
+                    ElaText* logoutTitle = new ElaText("退出登录", this);
+                    logoutTitle->setTextStyle(ElaTextType::Title);
+                    ElaText* logoutSubTitle = new ElaText("确定要退出登录吗", this);
+                    logoutSubTitle->setTextStyle(ElaTextType::Body);
+                    logoutVLayout->addWidget(logoutTitle);
+                    logoutVLayout->addWidget(logoutSubTitle);
+                    logoutVLayout->addStretch();
+                    ElaContentDialog *logoutdialag = new ElaContentDialog(this,false);
+                    logoutdialag->setCentralWidget(_logoutWidget);
+                    logoutdialag->setLeftButtonText("取消");
+                    logoutdialag->setRightButtonText("确认");
+                    //connect(logoutdialag, &ElaContentDialog::rightButtonClicked, this, &MainWindow::closeWindow);
+                    logoutdialag->show();
                 }
     });
 
@@ -223,6 +239,10 @@ void MainWindow::onUserLoggedIn(User user)
     QString filename=QDir::toNativeSeparators(file.fileName());
     QPixmap pix(filename);
     setUserInfoCardPixmap(pix);
+    for (auto const &x:_syncTaskDatabaseManager->getTasks()){
+        //获取文件夹大小
+        this->_filemanagePage->_dircardProxy->addDirCard(x.getLocalPath(),"xx.mb","xx",QString::number(x.getId()));
+    }
 }
 
 void MainWindow::onNeedPassword(const QString &account)
@@ -233,7 +253,9 @@ void MainWindow::onNeedPassword(const QString &account)
 
 void MainWindow::insertUserToDatabase(User user)
 {
+    qDebug()<<user.getEmail()<<" "<<user.gethashedPassword();
     db->insertUser(user.getEmail(),user.gethashedPassword());
+    qDebug()<<db->getUserPassword(user.getEmail());
 }
 
 
@@ -322,7 +344,4 @@ void MainWindow::onModifyInfo(User user)
     QString filename=QDir::toNativeSeparators(file.fileName());
     QPixmap pix(filename);
     setUserInfoCardPixmap(pix);
-    for (auto const &x:_syncTaskDatabaseManager->getTasks()){
-
-    }
 }

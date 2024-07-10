@@ -10,6 +10,7 @@ void SyncTaskDatabaseManager::addTask(const SyncTask &task) {
     query.bindValue(":localPath", task.localPath.absolutePath());
     query.bindValue(":remotePath", task.remotePath);
     query.bindValue(":syncStatus", task.syncStatus);
+    query.exec();
 }
 
 bool SyncTaskDatabaseManager::deleteTask(int id) {

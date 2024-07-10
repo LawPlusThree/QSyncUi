@@ -75,8 +75,14 @@ public:
     QString multiUpload(const QString &path, const QString &localpath, QMap<QString,QString> metaDatas=QMap<QString,QString>());
     bool isExist(preResponse &response);//和headobject一起使用，判断文件是否存在
 public slots:
-    void onNewLocalPutRequest(const QString &path, const QString &localpath, int & task_id);
-    void onDownloadProgress(qint64 bytesReceived, qint64 bytesTotal);
+    void onNewLocalPutRequest(const QString &path, const QString &localpath, int & task_id)
+    {
+
+    }
+    void onDownloadProgress(qint64 bytesReceived, qint64 bytesTotal)
+    {
+
+    }
 signals:
     void PutRequestFinished(int task_id, bool success);
     void TaskProgress(int task_id, int progress);
@@ -106,7 +112,7 @@ private:
     preResponse invokeHeadRequest(const QString& path, const preRequest& request);
     preResponse invokeDeleteRequest(const QString& path, const preRequest& request);
     preResponse invokePostRequest(const QString& path, const preRequest& request);
-    preResponse COSClient::invokeGetFileRequestWithProgress(const QString& path, const preRequest& request);
+    preResponse invokeGetFileRequestWithProgress(const QString& path, const preRequest& request);
     // 构建XML字符串
 
     QString buildTagXmlFromMap(const QMap<QString, QString> &map);
