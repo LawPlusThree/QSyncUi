@@ -136,7 +136,7 @@ MainWindow::MainWindow(QWidget *parent)
                     logoutdialag->setCentralWidget(_logoutWidget);
                     logoutdialag->setLeftButtonText("取消");
                     logoutdialag->setRightButtonText("确认");
-                    //connect(logoutdialag, &ElaContentDialog::rightButtonClicked, this, &MainWindow::closeWindow);
+                    connect(logoutdialag, &ElaContentDialog::rightButtonClicked, this, &MainWindow::exitLogin);
                     logoutdialag->show();
                 }
     });
@@ -250,6 +250,14 @@ void MainWindow::onUserLoggedIn(User user)
             this->_filemanagePage->addDirCard(x.getLocalPath(),"xx.mb",timeDelta,QString::number(x.getId()));
         }
     }
+}
+
+void MainWindow::exitLogin()
+{
+    setUserInfoCardTitle("未登录");
+    setUserInfoCardSubTitle("");
+    setUserInfoCardPixmap(QPixmap(":/include/Image/Cirno.jpg"));
+    CurrentUser=nullptr;
 }
 
 void MainWindow::onNeedPassword(const QString &account)

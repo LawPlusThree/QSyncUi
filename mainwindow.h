@@ -42,6 +42,7 @@ public slots:
     void onMessage( QString message,QString type);
     void onUserAddNewTask(const SyncTask &task);
     void onModifyInfo(User user);
+    void exitLogin();
 signals:
     void dbPassword(const QString &);
 

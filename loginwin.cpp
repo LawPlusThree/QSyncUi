@@ -140,7 +140,7 @@ void loginwin::on_loginBtn_clicked()
             //QMessageBox::information(this, "成功","登录成功");
             emit on_login_complete(*loginuser);
             //db->insertUser(accountLine->text(),passwordLine->text());
-            this->close();
+            this->hide();
         }
         else
             QMessageBox::critical(this, "失败","登录失败");
