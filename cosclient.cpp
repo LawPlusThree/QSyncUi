@@ -3,6 +3,7 @@
 #include <QUrlQuery>
 #include <QNetworkReply>
 #include <QFile>
+#include <QDir>
 #include <QFileInfo>
 #include <QIODevice>
 COSClient::COSClient(QObject *parent)
@@ -29,7 +30,7 @@ QString COSClient::listObjects(const QString &prefix, const QString &marker)
 {
     preRequest request;
     request.queryParams.insert("prefix", prefix);
-    request.customHeaders.insert("marker", marker);
+    request.queryParams.insert("marker", marker);
     preResponse response = invokeGetFileRequest("/", request);
     return QString::fromUtf8(response.data);
 }
@@ -124,6 +125,14 @@ bool COSClient::save2Local(const QString &path, const QString &localpath, const 
     QByteArray data = getObject(path, versionId, tempHeaders);
     qDebug()<<data.size();
     QFile file(localpath);
+    //获取文件的父文件夹，如果不存在，循环创建
+    QFileInfo fileInfo(localpath);
+    QDir dir = fileInfo.dir();
+    if (!dir.exists())
+    {
+        dir.mkpath(dir.absolutePath());
+    }
+
     if (!file.open(QIODevice::WriteOnly))
     {
         qDebug() << "无法创建文件：" << localpath;

@@ -4,7 +4,6 @@
 #include"ElaWidget.h"
 #include"resetwin.h"
 #include"signinwin.h"
-#include "mycore.h"
 #include "messagechannel.h"
 class ElaPushButton;
 class ElaInteractiveCard;
@@ -37,8 +36,6 @@ private slots:
     void on_loginBtn_clicked();
     void on_accountLine_editingFinished();
 
-private:
-    Core *core;
 
 };
 

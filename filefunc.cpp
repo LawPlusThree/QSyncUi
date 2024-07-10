@@ -1,9 +1,10 @@
 #include "filefunc.h"
-
+#include "crc64util.h"
 //用多线程遍历本地文件夹
 void Filefunc::run()
 {
-    readDirectory(path);
+    crc64_init();
+    //readDirectory(path);
     readCLoudDirectory(task->getRemotePath());
     emit this->localTotalSize(totalSize);
     emit this->upTotalSize(upFileSize);
@@ -43,15 +44,41 @@ void Filefunc::readCLoudDirectory(const QString &cloudpath)
     do{
         xml=cosclient->listObjects(cloudpath,bucket.nextMarker);
         bucket=processer.processXml(xml);
-        //输出bucket中的所有content
         for(auto ct:bucket.contents){
             qDebug()<<"云文件:"<<ct.key;
-            //如果本地没有这个文件，就下载
             QString localPath=task->getLocalPath()+"/"+ct.key.mid(task->getRemotePath().length());
-            QMap<QString,QString> metaDatas;
-            cosclient->save2Local(ct.key,localPath,"",metaDatas);
-        }
+            QFileInfo info(localPath);
+            if(!info.exists()){
+                QMap<QString,QString> metaDatas;
+                cosclient->save2Local(ct.key,localPath,"",metaDatas);
+            }
+            else if(info.isDir()){
+                //如果是文件夹，直接跳过
+                continue;
+            }
+            else{
+                headHeader tmpHeaders;
+                preResponse response=cosclient->headObject(ct.key,"",tmpHeaders);
+                //read local file
+                QFile file(localPath);
+                file.open(QIODevice::ReadOnly);
+                QByteArray data=file.readAll();
+                file.close();
+                uint64_t crc64_data=0;
+                crc64_data=crc64(crc64_data,data.data(),data.size());
+                uint64_t cloudCRC=response.headers["x-cos-hash-crc64ecma"].toULongLong();
+                if(crc64_data!=cloudCRC){
+                    qDebug()<<"文件不一致:"<<localPath<<" "<<ct.key;
+                    qDebug()<<"本地crc64:"<<crc64_data;
+                    qDebug()<<"云crc64:"<<cloudCRC;
+                    //更新文件
+                    QMap<QString,QString> metaDatas;
+                    cosclient->save2Local(ct.key,localPath,"",metaDatas);
+                }
+            }
 
+
+        }
     }while(bucket.isTruncated);
 
 }

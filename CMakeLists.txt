@@ -46,7 +46,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(QSyncUi
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
-        mycore.h mycore.cpp
+
         user.h user.cpp
         synctask.h synctask.cpp
         mainwindow.h mainwindow.cpp
@@ -65,7 +65,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         historysync_view.h historysync_view.cpp
         avatarImage.qrc
         filequeue.h filequeue.cpp
-        storage.h storage.cpp
+
         linknewfolder_window.h linknewfolder_window.cpp
         tasktoken.h tasktoken.cpp
         filecard.h filecard.cpp
@@ -81,6 +81,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         dircardproxy.h dircardproxy.cpp
 
         modifyinfor_win.h modifyinfor_win.cpp
+        crc64util.h crc64util.cpp
 
 
     )
