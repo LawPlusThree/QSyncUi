@@ -7,6 +7,7 @@
 #include "tasktoken.h"
 #include "cosclient.h"
 #include "xmlprocesser.h"
+#include "filefunc.h"
 
 int main(int argc, char *argv[])
 {
@@ -32,8 +33,12 @@ int main(int argc, char *argv[])
     QString token=tt.sessionToken;
     QDateTime expiredTime=tt.expiredTime;
     COSClient cosclient(bucketName,appId,region,secretId,secretKey,token,expiredTime);
-    QMap<QString, QString> myMap;
-    headHeader hh;
+    //QMap<QString, QString> myMap;
+    //headHeader hh;
+    //SyncTask mytask("D:/cloud_code/test","home/",1);
+    //Filefunc ff("D:/cloud_code/test",&cosclient,&mytask);
+    //ff.start();
+
     //qDebug()<<"save to local:"<<cosclient.save2Local("home/1.txt","C:/Users/work123/Desktop/1.txt","",myMap);
     /*QMap<QString,QString> metaDatas;
     QMap<QString,QString> headers=cosclient.headObject("home/1.txt","C:/Users/work123/Desktop/1.txt","",hh);

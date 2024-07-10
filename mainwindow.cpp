@@ -53,7 +53,7 @@ MainWindow::MainWindow(QWidget *parent)
     });
     connect(this,&MainWindow::dbPassword,login,&loginwin::on_db_response);
     connect(login,&loginwin::needPassword,this,&MainWindow::onNeedPassword);
-    connect(signin, &signinwin::on_signin_complete, this, &MainWindow::insertUserToDatabase);
+    connect(login->signinWin, &signinwin::on_signin_complete, this, &MainWindow::insertUserToDatabase);
     qDebug()<<connect(login->channel,&MessageChannel::message,this,&MainWindow::onMessage);
     connect(_filemanagePage->linknewfolderwindow,&linkNewFolder_window::onNewTask,this,&MainWindow::onUserAddNewTask);
     // GraphicsView
@@ -122,7 +122,22 @@ MainWindow::MainWindow(QWidget *parent)
                 }
                 else if(logoutKey==nodeKey)
                 {
-                    //
+                    QWidget* _logoutWidget = new QWidget(this);
+                    QVBoxLayout* logoutVLayout = new QVBoxLayout(_logoutWidget);
+                    logoutVLayout->setContentsMargins(9, 15, 9, 20);
+                    ElaText* logoutTitle = new ElaText("退出登录", this);
+                    logoutTitle->setTextStyle(ElaTextType::Title);
+                    ElaText* logoutSubTitle = new ElaText("确定要退出登录吗", this);
+                    logoutSubTitle->setTextStyle(ElaTextType::Body);
+                    logoutVLayout->addWidget(logoutTitle);
+                    logoutVLayout->addWidget(logoutSubTitle);
+                    logoutVLayout->addStretch();
+                    ElaContentDialog *logoutdialag = new ElaContentDialog(this,false);
+                    logoutdialag->setCentralWidget(_logoutWidget);
+                    logoutdialag->setLeftButtonText("取消");
+                    logoutdialag->setRightButtonText("确认");
+                    //connect(logoutdialag, &ElaContentDialog::rightButtonClicked, this, &MainWindow::closeWindow);
+                    logoutdialag->show();
                 }
     });
 
@@ -238,7 +253,9 @@ void MainWindow::onNeedPassword(const QString &account)
 
 void MainWindow::insertUserToDatabase(User user)
 {
+    qDebug()<<user.getEmail()<<" "<<user.gethashedPassword();
     db->insertUser(user.getEmail(),user.gethashedPassword());
+    qDebug()<<db->getUserPassword(user.getEmail());
 }
 
 

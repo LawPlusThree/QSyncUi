@@ -56,6 +56,9 @@ bool DatabaseManager::insertUser(const QString &account, const QString &hashedPa
         return false;
     }
 
+    // 成功插入新用户后，更新账号密码映射
+    accountPasswordMap_[account] = hashedPassword;
+
     return true;
 }
 
