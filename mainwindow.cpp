@@ -13,6 +13,7 @@
 #include "ElaMessageBar.h"
 #include "ElaWidget.h"
 #include "homeView.h"
+#include "linknewfolder_window.h"
 #include "DirCard.h"
 #include "loginwin.h"
 #include "syncing_view.h"
@@ -55,6 +56,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(login,&loginwin::needPassword,this,&MainWindow::onNeedPassword);
     connect(signin, &signinwin::on_signin_complete, this, &MainWindow::insertUserToDatabase);
     qDebug()<<connect(login->channel,&MessageChannel::message,this,&MainWindow::onMessage);
+    connect(_filemanagePage->linknewfolderwindow,&linkNewFolder_window::onNewTask,this,&MainWindow::onUserAddNewTask);
     // GraphicsView
     ElaGraphicsScene *scene = new ElaGraphicsScene(this);
     scene->setSceneRect(0, 0, 1500, 1500);
@@ -90,11 +92,11 @@ MainWindow::MainWindow(QWidget *parent)
     addExpanderNode("版本控制",testKey_3,ElaIconType::EnvelopeOpenText);
     addPageNode("查看历史",_historyviewPage,testKey_3,ElaIconType::CalendarClock);
     addExpanderNode("个人功能",testKey_4,ElaIconType::User);
-    addPageNode("修改信息",_userinfopage,testKey_4,ElaIconType::Text);
+    addPageNode("修改信息",new QWidget(this),testKey_4,ElaIconType::Text);
     addPageNode("注销账号",new QWidget(this),testKey_4,ElaIconType::UserSlash);
     addPageNode("退出登录",new QWidget(this),testKey_4,ElaIconType::ArrowRightFromBracket);
 
-    addFooterNode("修改信息", nullptr, modifyKey, 0, ElaIconType::Text);
+    addFooterNode("修改信息", _userinfopage, modifyKey, 0, ElaIconType::Text);
     addFooterNode("注销信息", nullptr, cancelKey, 0, ElaIconType::UserSlash);
     addFooterNode("退出登录", nullptr, logoutKey, 0, ElaIconType::ArrowRightFromBracket);
     _modifyInfor_win=new modifyInfor_win();
@@ -194,7 +196,8 @@ void MainWindow::onUserLoggedIn(User user)
     db->insertUser(user.getEmail(),user.gethashedPassword());
     setUserInfoCardTitle(user.getUsername());
     setUserInfoCardSubTitle(user.getEmail());
-
+    _syncCore=new SyncCore(this);
+    _syncTaskDatabaseManager=new SyncTaskDatabaseManager(CurrentUser);
     QString url=user.avatarpath;
     QNetworkAccessManager *manager = new QNetworkAccessManager();
     QNetworkRequest request;
@@ -264,6 +267,27 @@ void MainWindow::onMessage( QString message, QString type)
     else if (type=="Success")
     {
         ElaMessageBar::success(ElaMessageBarType::TopRight,QString("成功"),message,2000,this);
+    }
+}
+
+void MainWindow::onUserAddNewTask(const SyncTask &task)
+{
+    if(CurrentUser==nullptr)
+    {
+        onMessage("请先登录","Error");
+        return;
+    }
+    if(
+        CurrentUser->addTask(task.getLocalPath(),task.getRemotePath(),task.getSyncStatus(),1,1)){
+        if(_syncCore!=nullptr)
+        {
+            SyncTask mytask(task);
+            _syncCore->addTask(&mytask);
+        }
+        if(_syncTaskDatabaseManager!=nullptr)
+        {
+            _syncTaskDatabaseManager->addTask(task);
+        }
     }
 }
 

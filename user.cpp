@@ -23,8 +23,8 @@ User::User(const User &user)
     hashedPassword = user.hashedPassword;
     avatarpath = user.avatarpath;
     isLogin = user.isLogin;
-    apiRequest = new ApiRequest(this);
-    apiRequest->setBaseUrl("https://syncapi.snakekiss.com");
+    apiRequest = user.apiRequest;
+    //apiRequest->setBaseUrl("https://syncapi.snakekiss.com");
     channel = new MessageChannel(this);
 }
 

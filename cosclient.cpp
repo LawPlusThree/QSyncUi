@@ -533,6 +533,7 @@ QString COSClient::_getContentMD5(const QByteArray &data)
     return base64;
 }
 
+
 QNetworkRequest COSClient::buildGetRequest(const QString &path, const QMap<QString, QString> queryParams)
 {
     if (!preCheckSession())
