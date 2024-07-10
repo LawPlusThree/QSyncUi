@@ -533,10 +533,10 @@ QString COSClient::_getContentMD5(const QByteArray &data)
     return base64;
 }
 
-QString COSClient::_getContentCRC64(const QString &path)
+/*QString COSClient::_getContentCRC64(const QString &path)
 {
 
-}
+}*/
 
 QNetworkRequest COSClient::buildGetRequest(const QString &path, const QMap<QString, QString> queryParams)
 {

@@ -90,11 +90,11 @@ MainWindow::MainWindow(QWidget *parent)
     addExpanderNode("版本控制",testKey_3,ElaIconType::EnvelopeOpenText);
     addPageNode("查看历史",_historyviewPage,testKey_3,ElaIconType::CalendarClock);
     addExpanderNode("个人功能",testKey_4,ElaIconType::User);
-    addPageNode("修改信息",_userinfopage,testKey_4,ElaIconType::Text);
+    addPageNode("修改信息",new QWidget(this),testKey_4,ElaIconType::Text);
     addPageNode("注销账号",new QWidget(this),testKey_4,ElaIconType::UserSlash);
     addPageNode("退出登录",new QWidget(this),testKey_4,ElaIconType::ArrowRightFromBracket);
 
-    addFooterNode("修改信息", nullptr, modifyKey, 0, ElaIconType::Text);
+    addFooterNode("修改信息", _userinfopage, modifyKey, 0, ElaIconType::Text);
     addFooterNode("注销信息", nullptr, cancelKey, 0, ElaIconType::UserSlash);
     addFooterNode("退出登录", nullptr, logoutKey, 0, ElaIconType::ArrowRightFromBracket);
     _modifyInfor_win=new modifyInfor_win();

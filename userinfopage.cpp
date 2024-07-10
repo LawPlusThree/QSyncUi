@@ -3,7 +3,7 @@
 #include <QMessageBox>
 #include"ElaInteractiveCard.h"
 
-UserInfoPage::UserInfoPage(QWidget *parent) : QWidget(parent)
+UserInfoPage::UserInfoPage(QWidget *parent) : QDialog(parent)
 {
     // 创建控件
     ElaInteractiveCard*avatar=new ElaInteractiveCard();
@@ -52,6 +52,10 @@ UserInfoPage::UserInfoPage(QWidget *parent) : QWidget(parent)
     layout->addLayout(ConfirmArea);
     layout->addLayout(confirmBtnArea);
 
+    // 设置弹窗的样式和属性
+    setWindowTitle("修改用户信息");
+    setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint); // 移除帮助按钮
+    setModal(true); // 设置为模态窗口
 
     // 获取当前登录的用户信息
     //QString userEmail = currentUser->getEmail();

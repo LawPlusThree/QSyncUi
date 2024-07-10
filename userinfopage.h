@@ -3,6 +3,7 @@
 #ifndef USERINFOPAGE_H
 #define USERINFOPAGE_H
 
+#include<QDialog>
 #include <QWidget>
 #include <QLineEdit>
 #include <QPushButton>
@@ -12,7 +13,7 @@
 
 class ElaInteractiveCard;
 class QHBoxLayout;
-class UserInfoPage : public QWidget
+class UserInfoPage : public QDialog
 {
     Q_OBJECT
 public:
