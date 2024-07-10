@@ -209,8 +209,8 @@ MainWindow::~MainWindow() {}
 void MainWindow::onUserLoggedIn(User user)
 {
     CurrentUser=new User(user);
+    connect(CurrentUser->channel,&MessageChannel::message,this,&MainWindow::onMessage);
     _userinfopage->currentUser=CurrentUser;
-    qDebug()<<user.getEmail()<<" "<<user.gethashedPassword();
     db->insertUser(user.getEmail(),user.gethashedPassword());
     setUserInfoCardTitle(user.getUsername());
     setUserInfoCardSubTitle(user.getEmail());
@@ -247,21 +247,6 @@ void MainWindow::insertUserToDatabase(User user)
     db->insertUser(user.getEmail(),user.gethashedPassword());
 }
 
-void MainWindow::onLoginResponse(const int &code, const QJsonObject &data, const QString &message)
-{
-    QString url=data.value("avatar_url").toString();
-    QNetworkAccessManager *manager = new QNetworkAccessManager();
-    QNetworkRequest request;
-    request.setUrl(QUrl(url));
-    QNetworkReply *reply = manager->get(request);
-    QEventLoop loop;
-    connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
-    loop.exec();
-    QByteArray picdata = reply->readAll();
-    QPixmap pixmap;
-    pixmap.loadFromData(picdata);
-    setUserInfoCardPixmap(pixmap);
-}
 
 void MainWindow::onMessage( QString message, QString type)
 {
