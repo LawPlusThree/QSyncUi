@@ -219,6 +219,12 @@ bool COSClient::isExist(preResponse &response)
     return response.statusCode!=404;
 }
 
+bool COSClient::setManage(QNetworkAccessManager *submanager)
+{
+    manager=submanager;
+    return true;
+}
+
 // 修改后的函数实现
 
 preResponse COSClient::invokeGetFileRequest(const QString& path, const preRequest& request) {

@@ -25,7 +25,10 @@ public:
     Filefunc(QString pathi,COSClient* cosclienti,SyncTask* taski):path(pathi),cosclient(cosclienti),task(taski){};
     void run() override
     {
+        QNetworkAccessManager* submanager=new QNetworkAccessManager;
+        cosclient->setManage(submanager);
         readDirectory(path);
+        readCLoudDirectory(task->getRemotePath());
     }
     void readDirectory(const QString &path);
     void recursiveRead(const QString &path);

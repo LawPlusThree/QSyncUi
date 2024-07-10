@@ -20,6 +20,7 @@ void Filefunc::recursiveRead(const QString &path)
             recursiveRead(info.filePath());
         } else {
             // 如果是文件，添加到文件信息列表
+            qDebug()<<info.fileName();
             totalSize+=info.size();
             addSynctask(info);
         }
@@ -36,6 +37,11 @@ void Filefunc::readCLoudDirectory(const QString &cloudpath)
     do{
         xml=cosclient->listObjects(cloudpath,bucket.nextMarker);
         bucket=processer.processXml(xml);
+        //输出bucket中的所有content
+        for(auto ct:bucket.contents){
+            qDebug()<<"云文件:"<<ct.key;
+        }
+
     }while(!bucket.isTruncated);
 
 }
