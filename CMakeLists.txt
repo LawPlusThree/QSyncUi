@@ -78,6 +78,8 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         xmlprocesser.h xmlprocesser.cpp
         bucket.h bucket.cpp
         messagechannel.h messagechannel.cpp
+        dircardproxy.h dircardproxy.cpp
+
         modifyinfor_win.h modifyinfor_win.cpp
         cancelaccount_win.h cancelaccount_win.cpp
 

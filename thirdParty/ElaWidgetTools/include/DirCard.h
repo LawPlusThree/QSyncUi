@@ -23,10 +23,14 @@ public:
     ElaText *bindtime;
     ElaPushButton*relieveBtn;
 
+    QString id;
+
 private slots:
     void on_relieveBtn_clicked();
 signals:
-    void relieve();
+    void relieve(QString id);
+
+    friend class DirCardProxy;
 };
 
 #endif // ELAREMINDERCARD_H

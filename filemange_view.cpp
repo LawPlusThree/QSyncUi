@@ -8,6 +8,7 @@
 #include"ElaScrollArea.h"
 
 #include"DirCard.h"
+#include"dircardproxy.h"
 
 FileManagePage::FileManagePage(QWidget* parent):ElaScrollPage(parent)
 {
@@ -44,7 +45,6 @@ FileManagePage::FileManagePage(QWidget* parent):ElaScrollPage(parent)
     // 将进度条文本标签和进度条控件添加到布局中
     progressBarLayout->addWidget(progressBarText);
     progressBarLayout->addWidget(_progressBar);
-
     // 创建一个 ElaToggleButton 对象，设置其标签为 "Head" 并指定其父对象
     _pushButton1 = new ElaPushButton("解除绑定", this);
     _pushButton1->setFixedSize(100, 40); // 设置按钮的固定大小
@@ -102,44 +102,20 @@ FileManagePage::FileManagePage(QWidget* parent):ElaScrollPage(parent)
     // 创建QScrollArea用于包裹files
     ElaScrollArea* scrollArea = new ElaScrollArea();
     scrollArea->viewport()->setStyleSheet("background:transparent;");//设置背景透明
-    DirCard*DirCardArea1=new DirCard("文件1","1.0GB","2024.7.1");
-    DirCard*DirCardArea2=new DirCard("文件2","2.0GB","2024.7.2");
-    DirCard*DirCardArea3=new DirCard("文件3","3.0GB","2024.7.3");
-    DirCard*DirCardArea4=new DirCard("文件4","4.0GB","2024.7.4");
-    DirCard*DirCardArea5=new DirCard("文件5","5.0GB","2024.7.5");
-    DirCard*DirCardArea6=new DirCard("文件6","6.0GB","2024.7.6");
-    DirCard*DirCardArea7=new DirCard("文件7","7.0GB","2024.7.7");
-    DirCard*DirCardArea8=new DirCard("文件8","8.0GB","2024.7.8");
-    DirCard*DirCardArea9=new DirCard("文件9","9.0GB","2024.7.9");
-    DirCard*DirCardArea10=new DirCard("文件10","10.0GB","2024.7.10");
 
-    connect(DirCardArea1,&DirCard::relieve,this,&FileManagePage::removeDirCard);
-    connect(DirCardArea2,&DirCard::relieve,this,&FileManagePage::removeDirCard);
-    connect(DirCardArea3,&DirCard::relieve,this,&FileManagePage::removeDirCard);
-    connect(DirCardArea4,&DirCard::relieve,this,&FileManagePage::removeDirCard);
-    connect(DirCardArea5,&DirCard::relieve,this,&FileManagePage::removeDirCard);
-    connect(DirCardArea6,&DirCard::relieve,this,&FileManagePage::removeDirCard);
-    connect(DirCardArea7,&DirCard::relieve,this,&FileManagePage::removeDirCard);
-    connect(DirCardArea8,&DirCard::relieve,this,&FileManagePage::removeDirCard);
-    connect(DirCardArea9,&DirCard::relieve,this,&FileManagePage::removeDirCard);
-    connect(DirCardArea10,&DirCard::relieve,this,&FileManagePage::removeDirCard);
+    _dircardProxy=new DirCardProxy(this);
+    addDirCard("文件1","1.0GB","2024.7.1");
+    addDirCard("文件2","2.0GB","2024.7.2");
+    addDirCard("文件3","3.0GB","2024.7.3");
+    addDirCard("文件4","4.0GB","2024.7.4");
+    addDirCard("文件5","5.0GB","2024.7.5");
+    addDirCard("文件6","6.0GB","2024.7.6");
+    addDirCard("文件7","7.0GB","2024.7.7");
+    addDirCard("文件8","8.0GB","2024.7.8");
+    addDirCard("文件9","9.0GB","2024.7.9");
+    addDirCard("文件10","10.0GB","2024.7.10");
 
-
-    QWidget* filesWidget=new QWidget();
-    filesLayout=new QVBoxLayout(filesWidget);
-    filesLayout->addWidget(DirCardArea1);
-    filesLayout->addWidget(DirCardArea2);
-    filesLayout->addWidget(DirCardArea3);
-    filesLayout->addWidget(DirCardArea4);
-    filesLayout->addWidget(DirCardArea5);
-    filesLayout->addWidget(DirCardArea6);
-    filesLayout->addWidget(DirCardArea7);
-    filesLayout->addWidget(DirCardArea8);
-    filesLayout->addWidget(DirCardArea9);
-    filesLayout->addWidget(DirCardArea10);
-    filesLayout->setAlignment(Qt::AlignTop);
-
-    scrollArea->setWidget(filesWidget); // 设置scrollArea的内容部件
+    scrollArea->setWidget(_dircardProxy);
     scrollArea->setWidgetResizable(true); // 允许scrollArea根据内容自动调整大小
 
     centerVLayout->addWidget(progressBarArea); // 将上方固定区域添加到布局中
@@ -158,16 +134,11 @@ FileManagePage::~FileManagePage()
 void FileManagePage::addDirCard(QString filename,QString datasize,QString bingtime)
 {
     DirCard*newDir=new DirCard(filename,datasize,bingtime);
-    connect(newDir,&DirCard::relieve,this,&FileManagePage::removeDirCard);
-    filesLayout->addWidget(newDir);
+    qDebug()<<connect(newDir,&DirCard::relieve,this,&FileManagePage::removeDirCard);
+    _dircardProxy->addDirCard(newDir,filename+datasize+bingtime);
 }
 
-void FileManagePage::removeDirCard()
+void FileManagePage::removeDirCard(QString id)
 {
-    DirCard *card = qobject_cast<DirCard*>(sender());
-    if (card)
-    {
-        layout()->removeWidget(card);
-        card->setVisible(false);
-    }
+    _dircardProxy->removeDirCard(id);
 }

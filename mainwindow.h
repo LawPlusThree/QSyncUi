@@ -12,6 +12,8 @@
 #include "user.h"
 #include"signinwin.h"
 #include <QQueue>
+#include "synctask.h"
+#include "synccore.h"
 class HomePage;
 class SyncingPage;
 class FileManagePage;
@@ -42,6 +44,7 @@ public slots:
     void insertUserToDatabase(User user);
     void onLoginResponse(const int &code,const QJsonObject &data,const QString &message);
     void onMessage( QString message,QString type);
+    void onUserAddNewTask(const SyncTask &task);
     void onModifyInfo(User user);
 signals:
     void dbPassword(const QString &);
@@ -64,6 +67,8 @@ private:
     UserInfoPage* _userinfopage{nullptr};
     modifyInfor_win* _modifyInfor_win{nullptr};
     cancelaccount_win* _cancelaccount_win{nullptr};
+    SyncCore* _syncCore{nullptr};
+    SyncTaskDatabaseManager* _syncTaskDatabaseManager{nullptr};
 
 };
 #endif // MAINWINDOW_H
