@@ -10,12 +10,12 @@
 #include"ElaPushButton.h"
 #include"ElaToggleButton.h"
 
-DirCard::DirCard(QString f, QString d,QString b)
+DirCard::DirCard(QString f, QString d,QString b,QString Id)
 {
     filename=new ElaText(f);
     datasize=new ElaText(d);
     bindtime=new ElaText(b);
-    id=filename->text()+datasize->text()+bindtime->text();
+    id=Id;
 
     _checkBox = new ElaCheckBox(filename->text(), this);
     QVBoxLayout*checkBoxArea=new QVBoxLayout();

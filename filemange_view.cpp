@@ -107,16 +107,16 @@ FileManagePage::FileManagePage(QWidget* parent):ElaScrollPage(parent)
     scrollArea->viewport()->setStyleSheet("background:transparent;");//设置背景透明
 
     _dircardProxy=new DirCardProxy(this);
-    addDirCard("文件1","1.0GB","2024.7.1");
-    addDirCard("文件2","2.0GB","2024.7.2");
-    addDirCard("文件3","3.0GB","2024.7.3");
-    addDirCard("文件4","4.0GB","2024.7.4");
-    addDirCard("文件5","5.0GB","2024.7.5");
-    addDirCard("文件6","6.0GB","2024.7.6");
-    addDirCard("文件7","7.0GB","2024.7.7");
-    addDirCard("文件8","8.0GB","2024.7.8");
-    addDirCard("文件9","9.0GB","2024.7.9");
-    addDirCard("文件10","10.0GB","2024.7.10");
+    addDirCard("文件1","1.0GB","2024.7.1","1");
+    addDirCard("文件2","2.0GB","2024.7.2","2");
+    addDirCard("文件3","3.0GB","2024.7.3","3");
+    addDirCard("文件4","4.0GB","2024.7.4","4");
+    addDirCard("文件5","5.0GB","2024.7.5","5");
+    addDirCard("文件6","6.0GB","2024.7.6","6");
+    addDirCard("文件7","7.0GB","2024.7.7","7");
+    addDirCard("文件8","8.0GB","2024.7.8","8");
+    addDirCard("文件9","9.0GB","2024.7.9","9");
+    addDirCard("文件10","10.0GB","2024.7.10","10");
 
     scrollArea->setWidget(_dircardProxy);
     scrollArea->setWidgetResizable(true); // 允许scrollArea根据内容自动调整大小
@@ -134,11 +134,11 @@ FileManagePage::~FileManagePage()
 
 }
 
-void FileManagePage::addDirCard(QString filename,QString datasize,QString bingtime)
+void FileManagePage::addDirCard(QString filename,QString datasize,QString bindtime,QString id)
 {
-    DirCard*newDir=new DirCard(filename,datasize,bingtime);
-    qDebug()<<connect(newDir,&DirCard::relieve,this,&FileManagePage::removeDirCard);
-    _dircardProxy->addDirCard(newDir,filename+datasize+bingtime);
+    DirCard*newDir=new DirCard(filename,datasize,bindtime,id);
+    connect(newDir,&DirCard::relieve,this,&FileManagePage::removeDirCard);
+    _dircardProxy->addDirCard(newDir,id);
 }
 
 void FileManagePage::removeDirCard(QString id)

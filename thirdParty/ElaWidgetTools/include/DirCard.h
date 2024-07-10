@@ -14,7 +14,7 @@ class ELA_EXPORT DirCard : public ElaScrollPageArea
 {
     Q_OBJECT
 public:
-    explicit DirCard(QString f, QString d,QString b);
+    explicit DirCard(QString f, QString d,QString b,QString Id);
 
     ElaCheckBox* _checkBox{nullptr};
     ElaToggleButton*pauseBtn;

@@ -23,7 +23,6 @@
 #include "filefunc.h"
 #include "qthread.h"
 #include "modifyinfor_win.h"
-#include "cancelaccount_win.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : ElaWindow(parent)
@@ -45,7 +44,6 @@ MainWindow::MainWindow(QWidget *parent)
     _syncingPage = new SyncingPage(this);
     _filemanagePage=new FileManagePage(this);
     _historysyncPage = new HistorysyncPage(this);
-    _userinfopage = new UserInfoPage(this);
     _historyviewPage = new HistoryViewPage(this);
 
     connect(this, &ElaWindow::userInfoCardClicked, [=]() {
@@ -91,17 +89,11 @@ MainWindow::MainWindow(QWidget *parent)
     addPageNode("同步文件夹管理",_filemanagePage,testKey_2,ElaIconType::FolderClosed);
     addExpanderNode("版本控制",testKey_3,ElaIconType::EnvelopeOpenText);
     addPageNode("查看历史",_historyviewPage,testKey_3,ElaIconType::CalendarClock);
-    addExpanderNode("个人功能",testKey_4,ElaIconType::User);
-    addPageNode("修改信息",_userinfopage,testKey_4,ElaIconType::Text);
-    addPageNode("注销账号",new QWidget(this),testKey_4,ElaIconType::UserSlash);
-    addPageNode("退出登录",new QWidget(this),testKey_4,ElaIconType::ArrowRightFromBracket);
 
     addFooterNode("修改信息", nullptr, modifyKey, 0, ElaIconType::Text);
     addFooterNode("注销账号", nullptr, cancelKey, 0, ElaIconType::UserSlash);
     addFooterNode("退出登录", nullptr, logoutKey, 0, ElaIconType::ArrowRightFromBracket);
     _modifyInfor_win=new modifyInfor_win();
-    _cancelaccount_win=new cancelaccount_win();
-    //
     connect(this, &ElaWindow::navigationNodeClicked, this, [=](ElaNavigationType::NavigationNodeType nodeType, QString nodeKey)
             {
                 if (modifyKey == nodeKey)
@@ -110,7 +102,6 @@ MainWindow::MainWindow(QWidget *parent)
                 }
                 else if(cancelKey==nodeKey)
                 {
-                    //_cancelaccount_win->show();
                     QWidget* _centralWidget = new QWidget(this);
                     QVBoxLayout* centralVLayout = new QVBoxLayout(_centralWidget);
                     centralVLayout->setContentsMargins(9, 15, 9, 20);
@@ -124,10 +115,8 @@ MainWindow::MainWindow(QWidget *parent)
                     ElaContentDialog *dialag = new ElaContentDialog(this,false);
                     dialag->setCentralWidget(_centralWidget);
                     dialag->setLeftButtonText("取消");
-                    dialag->setMiddleButtonText("最小化");
-                    dialag->setRightButtonText("退出");
-                    connect(dialag, &ElaContentDialog::rightButtonClicked, this, &MainWindow::closeWindow);
-                    connect(dialag, &ElaContentDialog::middleButtonClicked, this, &MainWindow::showMinimized);
+                    dialag->setRightButtonText("确认");
+                    //connect(dialag, &ElaContentDialog::rightButtonClicked, this, &MainWindow::closeWindow);
                     dialag->show();
                 }
                 else if(logoutKey==nodeKey)
@@ -210,9 +199,8 @@ void MainWindow::onUserLoggedIn(User user)
 {
     CurrentUser=new User(user);
     connect(CurrentUser->channel,&MessageChannel::message,this,&MainWindow::onMessage);
-    _userinfopage->currentUser=CurrentUser;
     _modifyInfor_win->currentUser=CurrentUser;
-    db->insertUser(user.getEmail(),user.gethashedPassword());
+    //db->insertUser(user.getEmail(),user.gethashedPassword());
     setUserInfoCardTitle(user.getUsername());
     setUserInfoCardSubTitle(user.getEmail());
     _syncCore=new SyncCore(this);
@@ -334,4 +322,7 @@ void MainWindow::onModifyInfo(User user)
     QString filename=QDir::toNativeSeparators(file.fileName());
     QPixmap pix(filename);
     setUserInfoCardPixmap(pix);
+    for (auto const &x:_syncTaskDatabaseManager->getTasks()){
+
+    }
 }
