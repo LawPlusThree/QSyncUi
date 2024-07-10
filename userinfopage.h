@@ -2,18 +2,14 @@
 
 #ifndef USERINFOPAGE_H
 #define USERINFOPAGE_H
-
-#include<QDialog>
 #include <QWidget>
-#include <QLineEdit>
-#include <QPushButton>
 #include"user.h"
 #include"ElaLineEdit.h"
 #include"ElaPushButton.h"
 
 class ElaInteractiveCard;
 class QHBoxLayout;
-class UserInfoPage : public QDialog
+class UserInfoPage : public QWidget
 {
     Q_OBJECT
 public:
@@ -21,8 +17,6 @@ public:
     User* currentUser;
     ElaInteractiveCard*avatar;
     QHBoxLayout*avatarArea;
-
-private:
     ElaLineEdit *newIdEdit_;
     ElaLineEdit *newPasswordEdit_;
     ElaLineEdit *confirmNewPasswordEdit_;

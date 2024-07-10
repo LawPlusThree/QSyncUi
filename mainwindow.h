@@ -42,6 +42,7 @@ public slots:
     void insertUserToDatabase(User user);
     void onLoginResponse(const int &code,const QJsonObject &data,const QString &message);
     void onMessage( QString message,QString type);
+    void onModifyInfo(User user);
 signals:
     void dbPassword(const QString &);
 
