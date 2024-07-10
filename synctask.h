@@ -35,6 +35,7 @@ public:
     }
     QString getLocalPath() const { return localPath.absolutePath(); }
     QString getRemotePath() const { return remotePath; }
+    int getId() const { return id; }
     int getSyncStatus() const { return syncStatus; }
     friend class SyncTaskDatabaseManager;
     friend class SyncCore;

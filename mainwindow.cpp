@@ -15,6 +15,7 @@
 #include "homeView.h"
 #include "linknewfolder_window.h"
 #include "DirCard.h"
+#include "dircardproxy.h"
 #include "loginwin.h"
 #include "syncing_view.h"
 #include"filemange_view.h"
@@ -223,6 +224,10 @@ void MainWindow::onUserLoggedIn(User user)
     QString filename=QDir::toNativeSeparators(file.fileName());
     QPixmap pix(filename);
     setUserInfoCardPixmap(pix);
+    for (auto const &x:_syncTaskDatabaseManager->getTasks()){
+        //获取文件夹大小
+        this->_filemanagePage->_dircardProxy->addDirCard(x.getLocalPath(),"xx.mb","xx",QString::number(x.getId()));
+    }
 }
 
 void MainWindow::onNeedPassword(const QString &account)
@@ -322,7 +327,4 @@ void MainWindow::onModifyInfo(User user)
     QString filename=QDir::toNativeSeparators(file.fileName());
     QPixmap pix(filename);
     setUserInfoCardPixmap(pix);
-    for (auto const &x:_syncTaskDatabaseManager->getTasks()){
-
-    }
 }
