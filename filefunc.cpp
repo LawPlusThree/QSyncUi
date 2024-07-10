@@ -4,6 +4,7 @@
 void Filefunc::run()
 {
     readDirectory(path);
+    readCLoudDirectory(task->getRemotePath());
     emit this->localTotalSize(totalSize);
     emit this->upTotalSize(upFileSize);
 }
@@ -47,7 +48,7 @@ void Filefunc::readCLoudDirectory(const QString &cloudpath)
             qDebug()<<"云文件:"<<ct.key;
         }
 
-    }while(!bucket.isTruncated);
+    }while(bucket.isTruncated);
 
 }
 

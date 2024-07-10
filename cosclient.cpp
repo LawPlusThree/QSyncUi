@@ -22,7 +22,7 @@ COSClient::COSClient(QString bucketName, QString appId, QString region, QString 
     this->endpoint = bucketName + "-" + appId + ".cos." + region + ".myqcloud.com";
     this->generalApiUrl = "https://" + endpoint;
     this->signHelper = new SignHelper(appId, secretId, secretKey);
-    manager = new QNetworkAccessManager(this);
+    manager = new QNetworkAccessManager();
 }
 
 QString COSClient::listObjects(const QString &prefix, const QString &marker)
