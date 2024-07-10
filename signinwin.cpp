@@ -18,6 +18,7 @@
 signinwin::signinwin(QWidget* parent):ElaWidget(parent,400,500)
 {
     this->setWindowButtonFlag(ElaAppBarType::MaximizeButtonHint,false);
+    this->setWindowButtonFlag(ElaAppBarType::StayTopButtonHint,false);
     setWindowTitle("珞珈云");
     QWidget*area=new QWidget();
     this->setWindowModality(Qt::ApplicationModal);

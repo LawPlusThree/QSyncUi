@@ -73,7 +73,7 @@ public:
     preResponse headObject(const QString &path, const QString &localpath,const QString &versionId, headHeader &reqHeader);
     preResponse deleteObject(const QString &path, const QString &versionId);
     QString multiUpload(const QString &path, const QString &localpath, QMap<QString,QString> metaDatas=QMap<QString,QString>());
-    bool isExist(preResponse &response);
+    bool isExist(preResponse &response);//和headobject一起使用，判断文件是否存在
 
 private:
     QString bucketName;
@@ -90,7 +90,7 @@ private:
     bool preCheckSession();
     QString _getContentTypeByPath(const QString &path);
     QString _getContentMD5(const QByteArray &data);
-    QString _getContentCRC64(const QString &path);//获取本地文件crc64
+    //QString _getContentCRC64(const QString &path);//获取本地文件crc64
     QNetworkRequest buildGetRequest(const QString& path,const QMap<QString, QString> queryParams);
     QNetworkRequest buildPutRequest(const QString& path,const QMap<QString, QString> queryParams, const QByteArray& data);
     QNetworkRequest buildHeadRequest(const QString& path,const QMap<QString, QString> queryParams);
