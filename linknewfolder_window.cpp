@@ -10,6 +10,7 @@
 #include "ElaText.h"
 #include "ElaComboBox.h"
 #include "ElaMessageBar.h"
+#include "synctask.h"
 
 linkNewFolder_window::linkNewFolder_window(QWidget *parent)
     : ElaWidget(parent,900,400)
@@ -104,9 +105,9 @@ linkNewFolder_window::linkNewFolder_window(QWidget *parent)
     _comboBox->setFixedWidth(140);
     // 创建一个映射，将文本选项映射到数字
     QMap<QString, int> comboOptionToNumber;
-    comboOptionToNumber["仅上传"] = 0;
-    comboOptionToNumber["仅下载"] = 1;
-    comboOptionToNumber["同步上传与下载"] = 2;
+    comboOptionToNumber["仅上传"] = 2;
+    comboOptionToNumber["仅下载"] = 3;
+    comboOptionToNumber["同步上传与下载"] = 1;
 
     QWidget* buttonArea = new QWidget();
     buttonArea->setWindowFlags(Qt::FramelessWindowHint); // 去除窗口边框
@@ -137,7 +138,9 @@ linkNewFolder_window::linkNewFolder_window(QWidget *parent)
             qDebug() << "本地文件夹地址：" << folderName1->text();
             qDebug() << "云端文件夹地址：" << folderName2->text();
             int syncOption = comboOptionToNumber[_comboBox->currentText()];
-            qDebug() << "同步方式：" << syncOption;//["仅上传"] = 0;["仅下载"] = 1;["同步上传与下载"] = 2;
+            qDebug() << "同步方式：" << syncOption;//["仅上传"] = 2;["仅下载"] = 3;["同步上传与下载"] = 1;
+            SyncTask task(folderName1->text(), folderName2->text(), syncOption);
+            emit onNewTask(task);
         }
     });
 

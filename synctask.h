@@ -33,6 +33,9 @@ public:
         syncStatus = task.syncStatus;
         lastSyncTime = task.lastSyncTime;
     }
+    QString getLocalPath() const { return localPath.absolutePath(); }
+    QString getRemotePath() const { return remotePath; }
+    int getSyncStatus() const { return syncStatus; }
     friend class SyncTaskDatabaseManager;
     friend class SyncCore;
 };
