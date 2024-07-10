@@ -35,8 +35,8 @@ public:
     void deleteSynctask(const QString &path);//删除同步任务，把本地已上传文件删除任务
     void updateSynctask(const QString &path);//更新同步任务，把本地已上传文件更新任务
 signals:
-    void localTotalSize(qint64 totalSize);//本地文件总大小
-    void upTotalSize(qint64 upFileSize);//上传文件总大小
+    void localTotalSize(qint64);//本地文件总大小
+    void upTotalSize(qint64);//上传文件总大小
 };
 
 

@@ -5,8 +5,8 @@ void Filefunc::readDirectory(const QString &path)
 {
     // 递归读取文件夹和子文件夹
     recursiveRead(path);
-    emit localTotalSize(totalSize);
-    emit upTotalSize(upFileSize);
+    //emit localTotalSize(totalSize);
+    //emit upTotalSize(upFileSize);
 }
 
 void Filefunc::recursiveRead(const QString &path)
