@@ -35,8 +35,8 @@ int main(int argc, char *argv[])
     COSClient cosclient(bucketName,appId,region,secretId,secretKey,token,expiredTime);
     //QMap<QString, QString> myMap;
     //headHeader hh;
-    SyncTask mytask("D:/cloud_code/test","home/",1);
-    Filefunc ff("D:/cloud_code/test",&cosclient,&mytask);
+    SyncTask mytask("F:/回访母校专题结项提交材料","home/",1);
+    Filefunc ff("F:/回访母校专题结项提交材料",&cosclient,&mytask);
     ff.start();
 
     //qDebug()<<"save to local:"<<cosclient.save2Local("home/1.txt","C:/Users/work123/Desktop/1.txt","",myMap);

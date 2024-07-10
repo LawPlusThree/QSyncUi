@@ -46,6 +46,10 @@ void Filefunc::readCLoudDirectory(const QString &cloudpath)
         //输出bucket中的所有content
         for(auto ct:bucket.contents){
             qDebug()<<"云文件:"<<ct.key;
+            //如果本地没有这个文件，就下载
+            QString localPath=task->getLocalPath()+"/"+ct.key.mid(task->getRemotePath().length());
+            QMap<QString,QString> metaDatas;
+            cosclient->save2Local(ct.key,localPath,"",metaDatas);
         }
 
     }while(bucket.isTruncated);
