@@ -241,7 +241,7 @@ void MainWindow::onUserLoggedIn(User user)
     setUserInfoCardPixmap(pix);
     for (auto const &x:_syncTaskDatabaseManager->getTasks()){
         //获取文件夹大小
-        this->_filemanagePage->_dircardProxy->addDirCard(x.getLocalPath(),"xx.mb","xx",QString::number(x.getId()));
+        this->_filemanagePage->addDirCard(x.getLocalPath(),"xx.mb","xx",QString::number(x.getId()));
     }
 }
 
