@@ -34,15 +34,15 @@ int main(int argc, char *argv[])
     COSClient cosclient(bucketName,appId,region,secretId,secretKey,token,expiredTime);
     QMap<QString, QString> myMap;
     headHeader hh;
-    qDebug()<<"save to local:"<<cosclient.save2Local("home/2.mp4","C:/Users/work123/Desktop/2.mp4","",myMap);
-    QMap<QString,QString> metaDatas;
-    QMap<QString,QString> headers=cosclient.headObject("home/2.mp4","C:/Users/work123/Desktop/2.mp4","",hh);
+    //qDebug()<<"save to local:"<<cosclient.save2Local("home/1.txt","C:/Users/work123/Desktop/1.txt","",myMap);
+    /*QMap<QString,QString> metaDatas;
+    QMap<QString,QString> headers=cosclient.headObject("home/1.txt","C:/Users/work123/Desktop/1.txt","",hh);
     for(auto it=headers.begin();it!=headers.end();it++){
         if(it.key().startsWith("x-cos-meta-")){
             metaDatas[it.key().mid(11)]=it.value();
         }
     }
-    qDebug()<<"metaDatas:"<<metaDatas;
+    qDebug()<<"metaDatas:"<<metaDatas;*/
     //qDebug()<<cosclient.deleteObject("/home/1.jpg","");
 
 

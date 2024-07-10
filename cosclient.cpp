@@ -122,9 +122,9 @@ bool COSClient::save2Local(const QString &path, const QString &localpath, const 
 {
     QMap<QString, QString> tempHeaders;
     QByteArray data = getObject(path, versionId, tempHeaders);
-
+    qDebug()<<data.size();
     QFile file(localpath);
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+    if (!file.open(QIODevice::WriteOnly))
     {
         qDebug() << "无法创建文件：" << localpath;
         return false;
