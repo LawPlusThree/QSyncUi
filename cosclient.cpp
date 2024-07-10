@@ -535,7 +535,11 @@ QNetworkRequest COSClient::buildGetRequest(const QString &path, const QMap<QStri
     }
     QUrl url;
     QUrlQuery query;
-    url=QUrl(generalApiUrl+path);
+    QString realPath=path;
+    if(!path.startsWith("/")){
+        realPath.prepend("/");
+    }
+    url=QUrl(generalApiUrl+realPath);
     for(auto it=queryParams.begin();it!=queryParams.end();it++)
     {
         query.addQueryItem(it.key(),it.value());
@@ -566,7 +570,11 @@ QNetworkRequest COSClient::buildPutRequest(const QString &path, const QMap<QStri
     }
     QUrl url;
     QUrlQuery query;
-    url=QUrl(generalApiUrl+path);
+    QString realPath=path;
+    if(!path.startsWith("/")){
+        realPath.prepend("/");
+    }
+    url=QUrl(generalApiUrl+realPath);
     for(auto it=queryParams.begin();it!=queryParams.end();it++)
     {
         query.addQueryItem(it.key(),it.value());
@@ -593,7 +601,11 @@ QNetworkRequest COSClient::buildHeadRequest(const QString &path, const QMap<QStr
     }
     QUrl url;
     QUrlQuery query;
-    url=QUrl(generalApiUrl+path);
+    QString realPath=path;
+    if(!path.startsWith("/")){
+        realPath.prepend("/");
+    }
+    url=QUrl(generalApiUrl+realPath);
     for(auto it=queryParams.begin();it!=queryParams.end();it++)
     {
         query.addQueryItem(it.key(),it.value());
@@ -620,7 +632,11 @@ QNetworkRequest COSClient::buildDeleteRequest(const QString &path, const QMap<QS
     }
     QUrl url;
     QUrlQuery query;
-    url=QUrl(generalApiUrl+path);
+    QString realPath=path;
+    if(!path.startsWith("/")){
+        realPath.prepend("/");
+    }
+    url=QUrl(generalApiUrl+realPath);
     for(auto it=queryParams.begin();it!=queryParams.end();it++)
     {
         query.addQueryItem(it.key(),it.value());
@@ -648,7 +664,11 @@ QNetworkRequest COSClient::buildPostRequest(const QString &path, const QMap<QStr
     QUrl url;
     qDebug()<<queryParams;
     QUrlQuery query;
-    url=QUrl(generalApiUrl+path);
+    QString realPath=path;
+    if(!path.startsWith("/")){
+        realPath.prepend("/");
+    }
+    url=QUrl(generalApiUrl+realPath);
     for(auto it=queryParams.begin();it!=queryParams.end();it++)
     {
         query.addQueryItem(it.key(),it.value());
