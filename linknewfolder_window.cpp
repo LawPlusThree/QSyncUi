@@ -102,6 +102,11 @@ linkNewFolder_window::linkNewFolder_window(QWidget *parent)
     QStringList comboList{"仅上传", "仅下载", "同步上传与下载"};
     _comboBox->addItems(comboList);
     _comboBox->setFixedWidth(140);
+    // 创建一个映射，将文本选项映射到数字
+    QMap<QString, int> comboOptionToNumber;
+    comboOptionToNumber["仅上传"] = 0;
+    comboOptionToNumber["仅下载"] = 1;
+    comboOptionToNumber["同步上传与下载"] = 2;
 
     QWidget* buttonArea = new QWidget();
     buttonArea->setWindowFlags(Qt::FramelessWindowHint); // 去除窗口边框
@@ -129,6 +134,10 @@ linkNewFolder_window::linkNewFolder_window(QWidget *parent)
             // 如果输入符合要求，执行后续操作
             this->hide();
             ElaMessageBar::success(ElaMessageBarType::TopRight,"链接成功", "新文件夹链接成功。", 2000);
+            qDebug() << "本地文件夹地址：" << folderName1->text();
+            qDebug() << "云端文件夹地址：" << folderName2->text();
+            int syncOption = comboOptionToNumber[_comboBox->currentText()];
+            qDebug() << "同步方式：" << syncOption;//["仅上传"] = 0;["仅下载"] = 1;["同步上传与下载"] = 2;
         }
     });
 
