@@ -73,7 +73,7 @@ public:
     preResponse headObject(const QString &path, const QString &localpath,const QString &versionId, headHeader &reqHeader);
     preResponse deleteObject(const QString &path, const QString &versionId);
     QString multiUpload(const QString &path, const QString &localpath, QMap<QString,QString> metaDatas=QMap<QString,QString>());
-    bool isExist(preResponse &response);
+    bool isExist(preResponse &response);//和headobject一起使用，判断文件是否存在
 
 private:
     QString bucketName;
