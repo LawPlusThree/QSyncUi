@@ -31,7 +31,9 @@ void Filefunc::addSynctask(const QString &path)
     QString cloudPath=task->getRemotePath()+relativePath;
     headHeader tmpHeaders;
     preResponse response=cosclient->headObject(cloudPath,"",tmpHeaders);
-    response.getMetaDatas().isEmpty();
+    if(!cosclient->isExist(response)){
+        cosclient->putLocalObject(cloudPath,path);
+    }
 }
 
 
