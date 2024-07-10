@@ -70,7 +70,7 @@ public:
     QString completeMultipartUpload(QString path, QString uploadId, QMap<int, QString> partEtagMap);
     QByteArray getObject(const QString &path,const QString &versionId, QMap<QString,QString> &respHeaders);
     bool save2Local(const QString &path, const QString &localpath,const QString &versionId, QMap<QString,QString> &respMetaDatas);
-    preResponse headObject(const QString &path, const QString &localpath,const QString &versionId, headHeader &reqHeader);
+    preResponse headObject(const QString &path,const QString &versionId, headHeader &reqHeader);
     preResponse deleteObject(const QString &path, const QString &versionId);
     QString multiUpload(const QString &path, const QString &localpath, QMap<QString,QString> metaDatas=QMap<QString,QString>());
     bool isExist(preResponse &response);//和headobject一起使用，判断文件是否存在

@@ -20,14 +20,18 @@ void Filefunc::recursiveRead(const QString &path)
         } else {
             // 如果是文件，添加到文件信息列表
             addSynctask(info.absoluteFilePath());
-            qDebug()<<info.fileName();
         }
     }
 }
 
 void Filefunc::addSynctask(const QString &path)
 {
-
+    //把path前面和task->getLocalPath()相同的部分去掉
+    QString relativePath=path.mid(task->getLocalPath().length()+1);
+    QString cloudPath=task->getRemotePath()+relativePath;
+    headHeader tmpHeaders;
+    preResponse response=cosclient->headObject(cloudPath,"",tmpHeaders);
+    response.getMetaDatas().isEmpty();
 }
 
 
