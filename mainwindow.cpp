@@ -136,7 +136,7 @@ MainWindow::MainWindow(QWidget *parent)
                     logoutdialag->setCentralWidget(_logoutWidget);
                     logoutdialag->setLeftButtonText("取消");
                     logoutdialag->setRightButtonText("确认");
-                    //connect(logoutdialag, &ElaContentDialog::rightButtonClicked, this, &MainWindow::closeWindow);
+                    connect(logoutdialag, &ElaContentDialog::rightButtonClicked, this, &MainWindow::exitLogin);
                     logoutdialag->show();
                 }
     });
@@ -240,9 +240,24 @@ void MainWindow::onUserLoggedIn(User user)
     QPixmap pix(filename);
     setUserInfoCardPixmap(pix);
     for (auto const &x:_syncTaskDatabaseManager->getTasks()){
-        //获取文件夹大小
-        this->_filemanagePage->_dircardProxy->addDirCard(x.getLocalPath(),"xx.mb","xx",QString::number(x.getId()));
+        if (x.getLastSyncTime()==QDateTime::fromString("2000-01-01 00:00:00","yyyy-MM-dd hh:mm:ss"))
+        {
+            QString timeDelta="从未同步";
+            this->_filemanagePage->addDirCard(x.getLocalPath(),"xx.mb",timeDelta,QString::number(x.getId()));
+            continue;
+        }else{
+            QString timeDelta=QString::number(x.getLastSyncTime().daysTo(QDateTime::currentDateTime()))+"天前";
+            this->_filemanagePage->addDirCard(x.getLocalPath(),"xx.mb",timeDelta,QString::number(x.getId()));
+        }
     }
+}
+
+void MainWindow::exitLogin()
+{
+    setUserInfoCardTitle("未登录");
+    setUserInfoCardSubTitle("");
+    setUserInfoCardPixmap(QPixmap(":/include/Image/Cirno.jpg"));
+    CurrentUser=nullptr;
 }
 
 void MainWindow::onNeedPassword(const QString &account)

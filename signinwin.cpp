@@ -28,7 +28,7 @@ signinwin::signinwin(QWidget* parent):ElaWidget(parent,400,500)
     this->setWindowFlags(Qt::WindowMinimizeButtonHint);
 
     ElaText*text=new ElaText("注册账号");
-    text->setTextSize(16);
+    text->setTextSize(20);
     QHBoxLayout*textArea=new QHBoxLayout();
     textArea->addWidget(text,0,Qt::AlignCenter);
 

@@ -23,7 +23,7 @@ private:
     QString remotePath;
     int syncStatus; //1 for upload/download,2 for only upload,3 for only download. -1 for paused
     //lastSyncTime, use Qt::currentDateTime() to get the current time
-    QDateTime lastSyncTime;
+    QDateTime lastSyncTime=QDateTime::fromString("2000-01-01 00:00:00","yyyy-MM-dd hh:mm:ss");
 
 public:
     SyncTask(QString localPath, QString remotePath, int syncStatus, int id=-1);
@@ -37,6 +37,8 @@ public:
     QString getRemotePath() const { return remotePath; }
     int getId() const { return id; }
     int getSyncStatus() const { return syncStatus; }
+    QDateTime getLastSyncTime() const { return lastSyncTime; }
+    void setLastSyncTime(QDateTime time) { lastSyncTime = time; }
     friend class SyncTaskDatabaseManager;
     friend class SyncCore;
 };

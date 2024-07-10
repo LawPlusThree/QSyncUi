@@ -74,6 +74,7 @@ public:
     preResponse deleteObject(const QString &path, const QString &versionId);
     QString multiUpload(const QString &path, const QString &localpath, QMap<QString,QString> metaDatas=QMap<QString,QString>());
     bool isExist(preResponse &response);//和headobject一起使用，判断文件是否存在
+    bool setManager(QNetworkAccessManager* submanager);
 public slots:
     void onNewLocalPutRequest(const QString &path, const QString &localpath, int & task_id)
     {

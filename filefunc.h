@@ -14,7 +14,7 @@
 
 class Filefunc : public QThread
 {
-
+Q_OBJECT
 public:
     QString path;
     COSClient* cosclient;
@@ -23,10 +23,7 @@ public:
     qint64 upFileSize=0;
     qint64 downFileSize=0;
     Filefunc(QString pathi,COSClient* cosclienti,SyncTask* taski):path(pathi),cosclient(cosclienti),task(taski){};
-    void run() override
-    {
-        readDirectory(path);
-    }
+    void run() override;
     void readDirectory(const QString &path);
     void recursiveRead(const QString &path);
     void readCLoudDirectory(const QString &cloudpath);
