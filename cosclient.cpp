@@ -25,11 +25,11 @@ COSClient::COSClient(QString bucketName, QString appId, QString region, QString 
     manager = new QNetworkAccessManager(this);
 }
 
-QString COSClient::listObjects(const QString &prefix, const QString &delimiter)
+QString COSClient::listObjects(const QString &prefix, const QString &marker)
 {
     preRequest request;
-    request.customHeaders.insert("prefix", prefix);
-    request.customHeaders.insert("delimiter", delimiter);
+    request.queryParams.insert("prefix", prefix);
+    request.customHeaders.insert("marker", marker);
     preResponse response = invokeGetFileRequest("/", request);
     return QString::fromUtf8(response.data);
 }
@@ -227,6 +227,29 @@ preResponse COSClient::invokeGetFileRequest(const QString& path, const preReques
     QNetworkRequest networkRequest = buildGetRequest(path, request.customHeaders); // 假设已经有一个构建GET请求的函数
     // 发送请求并等待响应
     QNetworkReply* reply = manager->get(networkRequest);
+    // 等待响应完成
+    QEventLoop loop;
+    connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+    loop.exec();
+    // 处理响应
+    response.data = reply->readAll();
+    response.statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+    const QList<QByteArray> rawHeaderList = reply->rawHeaderList();
+    for (const QByteArray& header : rawHeaderList) {
+        response.headers.insert(QString(header), QString(reply->rawHeader(header)));
+    }
+    reply->deleteLater();
+    return response;
+}
+
+preResponse COSClient::invokeGetFileRequestWithProgress(const QString& path, const preRequest& request) {
+    preResponse response;
+    // 构建请求
+    QNetworkRequest networkRequest = buildGetRequest(path, request.customHeaders);
+    // 发送请求并等待响应
+    QNetworkReply* reply = manager->get(networkRequest);
+    // 连接进度信号
+    connect(reply, &QNetworkReply::downloadProgress, this, &COSClient::onDownloadProgress);
     // 等待响应完成
     QEventLoop loop;
     connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);

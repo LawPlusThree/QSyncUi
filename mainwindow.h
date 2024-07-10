@@ -9,7 +9,6 @@
 #include"ElaCheckBox.h"
 #include"databasemanager.h"
 #include "user.h"
-#include"signinwin.h"
 #include <QQueue>
 #include "synctask.h"
 #include "synccore.h"
@@ -31,7 +30,6 @@ class MainWindow : public ElaWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-    signinwin* signin = new signinwin();
     loginwin* login=new loginwin();
     Q_SLOT void onCloseButtonClicked();
     User*CurrentUser=nullptr;

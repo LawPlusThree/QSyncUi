@@ -52,7 +52,7 @@ MainWindow::MainWindow(QWidget *parent)
     });
     connect(this,&MainWindow::dbPassword,login,&loginwin::on_db_response);
     connect(login,&loginwin::needPassword,this,&MainWindow::onNeedPassword);
-    connect(signin, &signinwin::on_signin_complete, this, &MainWindow::insertUserToDatabase);
+    connect(login->signinWin, &signinwin::on_signin_complete, this, &MainWindow::insertUserToDatabase);
     qDebug()<<connect(login->channel,&MessageChannel::message,this,&MainWindow::onMessage);
     connect(_filemanagePage->linknewfolderwindow,&linkNewFolder_window::onNewTask,this,&MainWindow::onUserAddNewTask);
     // GraphicsView
@@ -248,7 +248,9 @@ void MainWindow::onNeedPassword(const QString &account)
 
 void MainWindow::insertUserToDatabase(User user)
 {
+    qDebug()<<user.getEmail()<<" "<<user.gethashedPassword();
     db->insertUser(user.getEmail(),user.gethashedPassword());
+    qDebug()<<db->getUserPassword(user.getEmail());
 }
 
 
@@ -337,4 +339,7 @@ void MainWindow::onModifyInfo(User user)
     QString filename=QDir::toNativeSeparators(file.fileName());
     QPixmap pix(filename);
     setUserInfoCardPixmap(pix);
+    for (auto const &x:_syncTaskDatabaseManager->getTasks()){
+
+    }
 }
