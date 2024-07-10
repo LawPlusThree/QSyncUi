@@ -4,6 +4,8 @@
 void Filefunc::run()
 {
     readDirectory(path);
+    QNetworkAccessManager* submanager=new QNetworkAccessManager;
+    cosclient->setManager(submanager);
     emit this->localTotalSize(totalSize);
     emit this->upTotalSize(upFileSize);
 }

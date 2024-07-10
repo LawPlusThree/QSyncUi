@@ -219,7 +219,7 @@ bool COSClient::isExist(preResponse &response)
     return response.statusCode!=404;
 }
 
-bool COSClient::setManage(QNetworkAccessManager *submanager)
+bool COSClient::setManager(QNetworkAccessManager *submanager)
 {
     manager=submanager;
     return true;
