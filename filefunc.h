@@ -25,6 +25,8 @@ public:
     }
     void readDirectory(const QString &path);
     void recursiveRead(const QString &path);
+    void readCLoudDirectory(const QString &cloudpath);
+    void recursiveReadCloud(const QString &cloudpath);
 
     void addSynctask(const QString &path);//添加同步任务，把本地未上传文件添加入任务
     void deleteSynctask(const QString &path);//删除同步任务，把本地已上传文件删除任务
