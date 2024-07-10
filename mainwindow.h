@@ -7,7 +7,6 @@
 #include "ElaWindow.h"
 #include"loginwin.h"
 #include"ElaCheckBox.h"
-#include"userinfopage.h"
 #include"databasemanager.h"
 #include "user.h"
 #include"signinwin.h"
@@ -63,7 +62,6 @@ private:
     QString _aboutKey{""};
     QString _settingKey{""};
     ElaCheckBox* _checkBox{nullptr};
-    UserInfoPage* _userinfopage{nullptr};
     modifyInfor_win* _modifyInfor_win{nullptr};
     cancelaccount_win* _cancelaccount_win{nullptr};
     SyncCore* _syncCore{nullptr};
