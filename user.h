@@ -13,6 +13,7 @@
 #include "apirequest.h"
 #include "synctask.h"
 #include "tasktoken.h"
+#include "messagechannel.h"
 class User : public QObject
 {
     Q_OBJECT
@@ -54,6 +55,7 @@ public:
     QString gethashedPassword();
     QString getAvatarPath();//获取头像路径
     bool getisLogin(); //返回用户登陆状态
+    MessageChannel *channel;
 
 signals:
     void enrollResponse(const int &code,const QJsonObject &data,const QString &message); //注册的信号

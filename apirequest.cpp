@@ -6,7 +6,8 @@ ApiResponse ApiRequest::get(const QString &path) {
     QEventLoop loop;
     connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
     loop.exec();
-    if (reply->error() == QNetworkReply::NoError||reply->error()>=401) {
+    qDebug()<<reply->error();
+    if (reply->error() == QNetworkReply::NoError||reply->error()>200&&reply->error()<300) {
         QByteArray responseData = reply->readAll();
         ApiResponse response(responseData);
         return response;
@@ -28,7 +29,8 @@ ApiResponse ApiRequest::post(const QString &path, const QByteArray &data) {
     QEventLoop loop;
     connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
     loop.exec();
-    if (reply->error() == QNetworkReply::NoError||reply->error()>=401) {
+    qDebug()<<reply->error();
+    if (reply->error() == QNetworkReply::NoError||reply->error()>200&&reply->error()<300 ){
         QByteArray responseData = reply->readAll();
         ApiResponse response(responseData);
         return response;
