@@ -44,7 +44,6 @@ MainWindow::MainWindow(QWidget *parent)
     _syncingPage = new SyncingPage(this);
     _filemanagePage=new FileManagePage(this);
     _historysyncPage = new HistorysyncPage(this);
-    _userinfopage = new UserInfoPage(this);
     _historyviewPage = new HistoryViewPage(this);
 
     connect(this, &ElaWindow::userInfoCardClicked, [=]() {
@@ -90,10 +89,6 @@ MainWindow::MainWindow(QWidget *parent)
     addPageNode("同步文件夹管理",_filemanagePage,testKey_2,ElaIconType::FolderClosed);
     addExpanderNode("版本控制",testKey_3,ElaIconType::EnvelopeOpenText);
     addPageNode("查看历史",_historyviewPage,testKey_3,ElaIconType::CalendarClock);
-    addExpanderNode("个人功能",testKey_4,ElaIconType::User);
-    addPageNode("修改信息",_userinfopage,testKey_4,ElaIconType::Text);
-    addPageNode("注销账号",new QWidget(this),testKey_4,ElaIconType::UserSlash);
-    addPageNode("退出登录",new QWidget(this),testKey_4,ElaIconType::ArrowRightFromBracket);
 
     addFooterNode("修改信息", nullptr, modifyKey, 0, ElaIconType::Text);
     addFooterNode("注销账号", nullptr, cancelKey, 0, ElaIconType::UserSlash);
@@ -204,9 +199,8 @@ void MainWindow::onUserLoggedIn(User user)
 {
     CurrentUser=new User(user);
     connect(CurrentUser->channel,&MessageChannel::message,this,&MainWindow::onMessage);
-    _userinfopage->currentUser=CurrentUser;
     _modifyInfor_win->currentUser=CurrentUser;
-    db->insertUser(user.getEmail(),user.gethashedPassword());
+    //db->insertUser(user.getEmail(),user.gethashedPassword());
     setUserInfoCardTitle(user.getUsername());
     setUserInfoCardSubTitle(user.getEmail());
     _syncCore=new SyncCore(this);
