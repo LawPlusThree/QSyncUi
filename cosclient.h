@@ -90,7 +90,7 @@ private:
     bool preCheckSession();
     QString _getContentTypeByPath(const QString &path);
     QString _getContentMD5(const QByteArray &data);
-    QString _getContentCRC64(const QString &path);//获取本地文件crc64
+    //QString _getContentCRC64(const QString &path);//获取本地文件crc64
     QNetworkRequest buildGetRequest(const QString& path,const QMap<QString, QString> queryParams);
     QNetworkRequest buildPutRequest(const QString& path,const QMap<QString, QString> queryParams, const QByteArray& data);
     QNetworkRequest buildHeadRequest(const QString& path,const QMap<QString, QString> queryParams);
