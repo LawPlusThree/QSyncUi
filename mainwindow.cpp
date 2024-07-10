@@ -243,11 +243,11 @@ void MainWindow::onUserLoggedIn(User user)
         if (x.getLastSyncTime()==QDateTime::fromString("2000-01-01 00:00:00","yyyy-MM-dd hh:mm:ss"))
         {
             QString timeDelta="从未同步";
-            this->_filemanagePage->_dircardProxy->addDirCard(x.getLocalPath(),"xx.mb",timeDelta,QString::number(x.getId()));
+            this->_filemanagePage->addDirCard(x.getLocalPath(),"xx.mb",timeDelta,QString::number(x.getId()));
             continue;
         }else{
             QString timeDelta=QString::number(x.getLastSyncTime().daysTo(QDateTime::currentDateTime()))+"天前";
-            this->_filemanagePage->_dircardProxy->addDirCard(x.getLocalPath(),"xx.mb",timeDelta,QString::number(x.getId()));
+            this->_filemanagePage->addDirCard(x.getLocalPath(),"xx.mb",timeDelta,QString::number(x.getId()));
         }
     }
 }
