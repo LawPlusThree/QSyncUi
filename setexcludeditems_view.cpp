@@ -13,6 +13,8 @@ setExcludedItems_view::setExcludedItems_view(QWidget *parent)
     this->setWindowModality(Qt::ApplicationModal); // 设置窗口模态
     this->hide(); // 初始隐藏当前窗口
     this->setWindowButtonFlag(ElaAppBarType::StayTopButtonHint,false);
+    this->setWindowButtonFlag(ElaAppBarType::MinimizeButtonHint,false);
+    this->setWindowButtonFlag(ElaAppBarType::MaximizeButtonHint,false);
     QWidget*centerarea=new QWidget(); // 创建一个新的QWidget对象作为主区域
     QVBoxLayout* centerVLayout = new QVBoxLayout(centerarea); // 为中心部件设置垂直布局
     centerVLayout->setContentsMargins(60, 15, 60, 30); // 设置布局边距
