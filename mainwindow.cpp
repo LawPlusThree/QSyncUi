@@ -310,9 +310,9 @@ void MainWindow::onModifyInfo(User user)
 {
     //CurrentUser=new User(user);
     _userinfopage->currentUser=CurrentUser;
-    qDebug() << user.getEmail() << " " << user.gethashedPassword();
+
     db->updateUserInfo(user.getEmail(),_userinfopage->newPasswordEdit_->text());
-    qDebug() << user.getEmail() << " " << db->getUserPassword(user.getEmail());
+
     setUserInfoCardTitle(_userinfopage->newIdEdit_->text());
     setUserInfoCardSubTitle(user.getEmail());
 
