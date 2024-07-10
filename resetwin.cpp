@@ -13,6 +13,7 @@
 #include"ElaPushButton.h"
 #include"ElaText.h"
 #include"ElaImageCard.h"
+#include"ElaInteractiveCard.h"
 
 resetwin::resetwin(QWidget* parent):ElaWidget(parent,400,500)
 {
@@ -27,15 +28,17 @@ resetwin::resetwin(QWidget* parent):ElaWidget(parent,400,500)
     this->setWindowFlags(Qt::WindowMinimizeButtonHint);
 
     ElaText*text=new ElaText("重置密码");
-    text->setTextSize(16);
+    text->setTextSize(20);
     QHBoxLayout*textArea=new QHBoxLayout();
     textArea->addWidget(text,0,Qt::AlignCenter);
 
-    QImage image;
-    ElaImageCard*avatar=new ElaImageCard();
-    avatar->setCardImage(image);
+    ElaInteractiveCard*avatar=new ElaInteractiveCard();
     avatar->setFixedSize(150,150);
-    QHBoxLayout*avatarArea=new QHBoxLayout();
+    avatar->setCardPixmapSize(140,140);
+    avatar->setCardPixmapBorderRadius(70);
+    QPixmap image(":/include/Image/Cirno.jpg");
+    avatar->setCardPixmap(image);
+    avatarArea=new QHBoxLayout();
     avatarArea->addWidget(avatar,0,Qt::AlignCenter);
 
     passwordLine=new ElaLineEdit();

@@ -6,10 +6,11 @@ SyncTaskDatabaseManager::SyncTaskDatabaseManager(User *u) { initializeDatabase(u
 
 void SyncTaskDatabaseManager::addTask(const SyncTask &task) {
     QSqlQuery query;
-    query.prepare("INSERT INTO SyncTasks (localPath, remotePath, syncStatus) VALUES (:localPath, :remotePath, :syncStatus)");
+    query.prepare("INSERT INTO SyncTasks (localPath, remotePath, syncStatus, lastSyncTime) VALUES (:localPath, :remotePath, :syncStatus, :lastSyncTime)");
     query.bindValue(":localPath", task.localPath.absolutePath());
     query.bindValue(":remotePath", task.remotePath);
     query.bindValue(":syncStatus", task.syncStatus);
+    query.bindValue(":lastSyncTime", task.lastSyncTime.toString("yyyy-MM-dd hh:mm:ss"));
     query.exec();
 }
 
@@ -24,10 +25,11 @@ bool SyncTaskDatabaseManager::updateTask(const SyncTask &task) {
     QSqlQuery query;
     // Update the task with the same id
     //CREATE TABLE IF NOT EXISTS SyncTasks (id INTEGER PRIMARY KEY AUTOINCREMENT, localPath TEXT, remotePath TEXT, syncStatus INTEGER)
-    query.prepare("UPDATE SyncTasks SET localPath = :localPath, remotePath = :remotePath, syncStatus = :syncStatus WHERE id = :id");
+    query.prepare("UPDATE SyncTasks SET localPath = :localPath, remotePath = :remotePath, syncStatus = :syncStatus, lastSyncTime = :lastSyncTime WHERE id = :id");
     query.bindValue(":localPath", task.localPath.absolutePath());
     query.bindValue(":remotePath", task.remotePath);
     query.bindValue(":syncStatus", task.syncStatus);
+    query.bindValue(":lastSyncTime", task.lastSyncTime.toString("yyyy-MM-dd hh:mm:ss"));
     query.bindValue(":id", task.id);
     return query.exec();
 }
@@ -57,6 +59,7 @@ QList<SyncTask> SyncTaskDatabaseManager::getTasks() {
         QString remotePath = query.value("remotePath").toString();
         int syncStatus = query.value("syncStatus").toInt();
         SyncTask task(localPath, remotePath, syncStatus, id);
+        task.lastSyncTime = QDateTime::fromString(query.value("lastSyncTime").toString(), "yyyy-MM-dd hh:mm:ss");
         tasks.append(task);
     }
     return tasks;
@@ -73,12 +76,11 @@ void SyncTaskDatabaseManager::initializeDatabase(QString name) {
     }
 
     QSqlQuery query;
-    if (!query.exec("CREATE TABLE IF NOT EXISTS SyncTasks (id INTEGER PRIMARY KEY AUTOINCREMENT, localPath TEXT, remotePath TEXT, syncStatus INTEGER)")) {
+    if (!query.exec("CREATE TABLE IF NOT EXISTS SyncTasks (id INTEGER PRIMARY KEY AUTOINCREMENT, localPath TEXT, remotePath TEXT, syncStatus INTEGER, lastSyncTime TEXT)")) {
         qDebug() << "Failed to create table:" << query.lastError();
     }
 }
 
-// 修改后的SyncTask构造函数
 SyncTask::SyncTask(QString localPath, QString remotePath, int syncStatus, int id /* = -1 */) {
     this->id = id; // 如果id是-1，表示这是一个新的任务，id将由数据库自动生成
     QDir dir(localPath);
@@ -87,4 +89,4 @@ SyncTask::SyncTask(QString localPath, QString remotePath, int syncStatus, int id
     this->syncStatus = syncStatus;
 }
 
-// addTask方法不变，因为它不需要知道id，数据库会自动处理
+

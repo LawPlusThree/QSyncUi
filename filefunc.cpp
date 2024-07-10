@@ -1,12 +1,18 @@
 #include "filefunc.h"
 
 //用多线程遍历本地文件夹
+void Filefunc::run()
+{
+    readDirectory(path);
+    readCLoudDirectory(task->getRemotePath());
+    emit this->localTotalSize(totalSize);
+    emit this->upTotalSize(upFileSize);
+}
+
 void Filefunc::readDirectory(const QString &path)
 {
     // 递归读取文件夹和子文件夹
     recursiveRead(path);
-    //emit localTotalSize(totalSize);
-    //emit upTotalSize(upFileSize);
 }
 
 void Filefunc::recursiveRead(const QString &path)
@@ -20,6 +26,7 @@ void Filefunc::recursiveRead(const QString &path)
             recursiveRead(info.filePath());
         } else {
             // 如果是文件，添加到文件信息列表
+            qDebug()<<info.fileName();
             totalSize+=info.size();
             addSynctask(info);
         }
@@ -36,7 +43,16 @@ void Filefunc::readCLoudDirectory(const QString &cloudpath)
     do{
         xml=cosclient->listObjects(cloudpath,bucket.nextMarker);
         bucket=processer.processXml(xml);
-    }while(!bucket.isTruncated);
+        //输出bucket中的所有content
+        for(auto ct:bucket.contents){
+            qDebug()<<"云文件:"<<ct.key;
+            //如果本地没有这个文件，就下载
+            QString localPath=task->getLocalPath()+"/"+ct.key.mid(task->getRemotePath().length());
+            QMap<QString,QString> metaDatas;
+            cosclient->save2Local(ct.key,localPath,"",metaDatas);
+        }
+
+    }while(bucket.isTruncated);
 
 }
 

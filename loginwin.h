@@ -7,6 +7,8 @@
 #include "mycore.h"
 #include "messagechannel.h"
 class ElaPushButton;
+class ElaInteractiveCard;
+class QHBoxLayout;
 class loginwin:public ElaWidget
 {
     Q_OBJECT
@@ -20,6 +22,8 @@ public:
     ElaLineEdit*passwordLine;
     ElaPushButton*loginBtn;
     MessageChannel *channel;
+    ElaInteractiveCard*avatar;
+    QHBoxLayout*avatarArea;
 
 signals:
     void on_login_complete(User user);
