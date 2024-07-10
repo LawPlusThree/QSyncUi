@@ -211,6 +211,7 @@ void MainWindow::onUserLoggedIn(User user)
     CurrentUser=new User(user);
     connect(CurrentUser->channel,&MessageChannel::message,this,&MainWindow::onMessage);
     _userinfopage->currentUser=CurrentUser;
+    _modifyInfor_win->currentUser=CurrentUser;
     db->insertUser(user.getEmail(),user.gethashedPassword());
     setUserInfoCardTitle(user.getUsername());
     setUserInfoCardSubTitle(user.getEmail());

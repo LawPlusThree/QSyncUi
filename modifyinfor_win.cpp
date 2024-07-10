@@ -107,7 +107,9 @@ void modifyInfor_win::onConfirmButtonClicked()
         QMessageBox::warning(this, "错误", "两次输入的密码不一致。");
         return;
     }
-
+    currentUser->username = newId;
+    currentUser->hashedPassword = newPassword;
+    currentUser->updateUser();
     // 更新数据库
     emit changexinxi(User(*currentUser));
     currentUser->username = newId;
