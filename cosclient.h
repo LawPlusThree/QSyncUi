@@ -61,7 +61,7 @@ public:
         this->token = token;
         this->expiredTime = expiredTime;
     }
-    QString listObjects(const QString &prefix, const QString &delimiter);
+    QString listObjects(const QString &prefix, const QString &marker);
     bool putObject(const QString &path, const QByteArray &data,const QString &contentType="application/octet-stream");
     bool putLocalObject(const QString &path, const QString &localpath);
     QString initMultiUpload(const QString &path,const QMap<QString,QString> metaDatas=QMap<QString,QString>(),const  QString &contentType="application/octet-stream");
@@ -74,7 +74,12 @@ public:
     preResponse deleteObject(const QString &path, const QString &versionId);
     QString multiUpload(const QString &path, const QString &localpath, QMap<QString,QString> metaDatas=QMap<QString,QString>());
     bool isExist(preResponse &response);//和headobject一起使用，判断文件是否存在
-
+public slots:
+    void onNewLocalPutRequest(const QString &path, const QString &localpath, int & task_id);
+    void onDownloadProgress(qint64 bytesReceived, qint64 bytesTotal);
+signals:
+    void PutRequestFinished(int task_id, bool success);
+    void TaskProgress(int task_id, int progress);
 private:
     QString bucketName;
     QString appId;
@@ -101,7 +106,9 @@ private:
     preResponse invokeHeadRequest(const QString& path, const preRequest& request);
     preResponse invokeDeleteRequest(const QString& path, const preRequest& request);
     preResponse invokePostRequest(const QString& path, const preRequest& request);
+    preResponse COSClient::invokeGetFileRequestWithProgress(const QString& path, const preRequest& request);
     // 构建XML字符串
+
     QString buildTagXmlFromMap(const QMap<QString, QString> &map);
 
     // 从XML字符串解析为QMap

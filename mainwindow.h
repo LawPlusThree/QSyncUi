@@ -61,7 +61,6 @@ private:
     QString _settingKey{""};
     ElaCheckBox* _checkBox{nullptr};
     modifyInfor_win* _modifyInfor_win{nullptr};
-    cancelaccount_win* _cancelaccount_win{nullptr};
     SyncCore* _syncCore{nullptr};
     SyncTaskDatabaseManager* _syncTaskDatabaseManager{nullptr};
 
