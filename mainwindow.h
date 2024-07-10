@@ -21,6 +21,8 @@ class T_ElaScreen;
 class T_BaseComponents;
 class T_TabWidget;
 class HistoryViewPage;
+class modifyInfor_win;
+class cancelaccount_win;
 class MainWindow : public ElaWindow
 {
     Q_OBJECT
@@ -59,6 +61,8 @@ private:
     QString _settingKey{""};
     ElaCheckBox* _checkBox{nullptr};
     UserInfoPage* _userinfopage{nullptr};
+    modifyInfor_win* _modifyInfor_win{nullptr};
+    cancelaccount_win* _cancelaccount_win{nullptr};
 
 };
 #endif // MAINWINDOW_H
