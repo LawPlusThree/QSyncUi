@@ -144,7 +144,7 @@ bool COSClient::save2Local(const QString &path, const QString &localpath, const 
     return true;
 }
 
-preResponse COSClient::headObject(const QString &path, const QString &localpath,const QString &versionId, headHeader &reqHeader)
+preResponse COSClient::headObject(const QString &path,const QString &versionId, headHeader &reqHeader)
 {
     preRequest request;
     if(!versionId.isEmpty()) {

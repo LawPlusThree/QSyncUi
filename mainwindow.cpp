@@ -92,11 +92,11 @@ MainWindow::MainWindow(QWidget *parent)
     addExpanderNode("版本控制",testKey_3,ElaIconType::EnvelopeOpenText);
     addPageNode("查看历史",_historyviewPage,testKey_3,ElaIconType::CalendarClock);
     addExpanderNode("个人功能",testKey_4,ElaIconType::User);
-    addPageNode("修改信息",new QWidget(this),testKey_4,ElaIconType::Text);
+    addPageNode("修改信息",_userinfopage,testKey_4,ElaIconType::Text);
     addPageNode("注销账号",new QWidget(this),testKey_4,ElaIconType::UserSlash);
     addPageNode("退出登录",new QWidget(this),testKey_4,ElaIconType::ArrowRightFromBracket);
 
-    addFooterNode("修改信息", _userinfopage, modifyKey, 0, ElaIconType::Text);
+    addFooterNode("修改信息", nullptr, modifyKey, 0, ElaIconType::Text);
     addFooterNode("注销账号", nullptr, cancelKey, 0, ElaIconType::UserSlash);
     addFooterNode("退出登录", nullptr, logoutKey, 0, ElaIconType::ArrowRightFromBracket);
     _modifyInfor_win=new modifyInfor_win();
@@ -199,7 +199,7 @@ MainWindow::MainWindow(QWidget *parent)
 */
     qDebug() << ElaEventBus::getInstance()->getRegisteredEventsName();
     QObject::connect(login, &loginwin::on_login_complete, this, &MainWindow::onUserLoggedIn);
-    QObject::connect(_userinfopage, &UserInfoPage::changexinxi, this, &MainWindow::onUserLoggedIn);
+    QObject::connect(_userinfopage, &UserInfoPage::changexinxi, this, &MainWindow::onModifyInfo);
     // 拦截默认关闭事件
     this->setIsDefaultClosed(false);
     connect(this, &MainWindow::closeButtonClicked, this, &MainWindow::onCloseButtonClicked);
@@ -318,4 +318,34 @@ void MainWindow::onCloseButtonClicked()
     connect(dialag, &ElaContentDialog::rightButtonClicked, this, &MainWindow::closeWindow);
     connect(dialag, &ElaContentDialog::middleButtonClicked, this, &MainWindow::showMinimized);
     dialag->show();
+}
+
+void MainWindow::onModifyInfo(User user)
+{
+    //CurrentUser=new User(user);
+    _userinfopage->currentUser=CurrentUser;
+    qDebug() << user.getEmail() << " " << user.gethashedPassword();
+    db->updateUserInfo(user.getEmail(),_userinfopage->newPasswordEdit_->text());
+    qDebug() << user.getEmail() << " " << db->getUserPassword(user.getEmail());
+    setUserInfoCardTitle(_userinfopage->newIdEdit_->text());
+    setUserInfoCardSubTitle(user.getEmail());
+
+    QString url=user.avatarpath;
+    QNetworkAccessManager *manager = new QNetworkAccessManager();
+    QNetworkRequest request;
+    request.setUrl(QUrl(url));
+    QNetworkReply *reply = manager->get(request);
+    QEventLoop loop;
+    connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+    loop.exec();
+    QFile file("downloaded_image.jpg");
+    if (file.open(QIODevice::WriteOnly))
+    {
+        file.write(reply->readAll());
+        file.close();
+    }
+    delete reply;
+    QString filename=QDir::toNativeSeparators(file.fileName());
+    QPixmap pix(filename);
+    setUserInfoCardPixmap(pix);
 }

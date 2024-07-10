@@ -3,7 +3,7 @@
 #include <QMessageBox>
 #include"ElaInteractiveCard.h"
 
-UserInfoPage::UserInfoPage(QWidget *parent) : QDialog(parent)
+UserInfoPage::UserInfoPage(QWidget *parent) : QWidget(parent)
 {
     // 创建控件
     ElaInteractiveCard*avatar=new ElaInteractiveCard();
@@ -52,10 +52,6 @@ UserInfoPage::UserInfoPage(QWidget *parent) : QDialog(parent)
     layout->addLayout(ConfirmArea);
     layout->addLayout(confirmBtnArea);
 
-    // 设置弹窗的样式和属性
-    setWindowTitle("修改用户信息");
-    setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint); // 移除帮助按钮
-    setModal(true); // 设置为模态窗口
 
     // 获取当前登录的用户信息
     //QString userEmail = currentUser->getEmail();
@@ -88,13 +84,14 @@ void UserInfoPage::onConfirmButtonClicked()
         QMessageBox::warning(this, "错误", "请填写完所有信息。");
         return;
     }
-
     if (newPassword != confirmNewPassword) {
         QMessageBox::warning(this, "错误", "两次输入的密码不一致。");
         return;
     }
-
     // 更新数据库
+    currentUser->username = newId;
+    currentUser->hashedPassword = newPassword;
+
     emit changexinxi(User(*currentUser));
 
     QMessageBox::information(this, "成功","修改成功");

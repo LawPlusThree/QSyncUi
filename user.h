@@ -19,16 +19,16 @@ class User : public QObject
     Q_OBJECT
 
 private:
-    QString username; //username
     QString account;  //email
     QString data;
-    QString hashedPassword; //password
     bool isLogin=false;
     ApiRequest *apiRequest;
 public:
     QString avatarpath;
 
 public:
+    QString username; //username
+    QString hashedPassword; //password
     User(const QString &username,
          const QString &account,
          const QString &password,

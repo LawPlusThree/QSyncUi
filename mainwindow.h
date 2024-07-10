@@ -45,6 +45,7 @@ public slots:
     void onLoginResponse(const int &code,const QJsonObject &data,const QString &message);
     void onMessage( QString message,QString type);
     void onUserAddNewTask(const SyncTask &task);
+    void onModifyInfo(User user);
 signals:
     void dbPassword(const QString &);
 

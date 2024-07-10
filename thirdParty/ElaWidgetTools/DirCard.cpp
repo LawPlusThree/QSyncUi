@@ -12,10 +12,10 @@
 
 DirCard::DirCard(QString f, QString d,QString b)
 {
-
     filename=new ElaText(f);
     datasize=new ElaText(d);
     bindtime=new ElaText(b);
+    id=filename->text()+datasize->text()+bindtime->text();
 
     _checkBox = new ElaCheckBox(filename->text(), this);
     QVBoxLayout*checkBoxArea=new QVBoxLayout();
@@ -57,5 +57,6 @@ DirCard::DirCard(QString f, QString d,QString b)
 
 void DirCard::on_relieveBtn_clicked()
 {
-    emit relieve();
+    qDebug()<<"发出前的id"<<id;
+    emit relieve(id);
 }
