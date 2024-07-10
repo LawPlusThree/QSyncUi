@@ -306,7 +306,17 @@ bool User::getisLogin()
    // return session;
 }*/
 
-bool User::updateUser(User &user)
+bool User::updateUser()
 {
-    return true;
+    QString postData = QString("username=%1&password=%2").arg(this->username).arg(this->hashedPassword);
+    ApiResponse response = apiRequest->post("/updateInfo", postData.toUtf8());
+    if (response.isSuccess())
+    {
+        return true;
+    }
+    else
+    {
+        emit channel->message(response.message, "Error");
+        return false;
+    }
 }

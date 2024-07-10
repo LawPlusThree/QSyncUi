@@ -47,7 +47,7 @@ public:
     TaskToken getTaskToken(int id);//获取tasktoken
     TaskToken getTaskTokenByRemote(QString s3Dir);
     bool logout();//登出
-    bool updateUser(User &user);
+    bool updateUser();
     QString getS3Location();//获取云端容器地址
     QString getUsername();//获取用户名
     QString getEmail();//获取用户邮箱
