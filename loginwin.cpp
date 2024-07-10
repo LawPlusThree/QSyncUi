@@ -15,6 +15,7 @@
 #include"ElaLineEdit.h"
 #include"ElaText.h"
 #include"ElaImageCard.h"
+#include"ElaInteractiveCard.h"
 
 loginwin::loginwin(QWidget* parent):ElaWidget(parent,400,500)
 {
@@ -36,11 +37,14 @@ loginwin::loginwin(QWidget* parent):ElaWidget(parent,400,500)
     //this->setFixedSize(250,700);
     this->setWindowFlags(Qt::WindowMinimizeButtonHint);
     channel=new MessageChannel();
-    QImage image;
-    ElaImageCard*avatar=new ElaImageCard();
-    avatar->setCardImage(image);
+
+    ElaInteractiveCard*avatar=new ElaInteractiveCard();
     avatar->setFixedSize(150,150);
-    QHBoxLayout*avatarArea=new QHBoxLayout();
+    avatar->setCardPixmapSize(140,140);
+    avatar->setCardPixmapBorderRadius(70);
+    QPixmap image(":/include/Image/Cirno.jpg");
+    avatar->setCardPixmap(image);
+    avatarArea=new QHBoxLayout();
     avatarArea->addWidget(avatar,0,Qt::AlignCenter);
 
     ElaText*ID=new ElaText("用户名");
