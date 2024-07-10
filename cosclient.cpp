@@ -122,9 +122,9 @@ bool COSClient::save2Local(const QString &path, const QString &localpath, const 
 {
     QMap<QString, QString> tempHeaders;
     QByteArray data = getObject(path, versionId, tempHeaders);
-
+    qDebug()<<data.size();
     QFile file(localpath);
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+    if (!file.open(QIODevice::WriteOnly))
     {
         qDebug() << "无法创建文件：" << localpath;
         return false;
@@ -163,10 +163,11 @@ preResponse COSClient::headObject(const QString &path, const QString &localpath,
         request.customHeaders.insert("If-None-Match", reqHeader.ifNoneMatch);
     }
     preResponse response = invokeHeadRequest(path, request);
+
     return response;
 }
 
-bool COSClient::deleteObject(const QString &path, const QString &versionId)
+preResponse COSClient::deleteObject(const QString &path, const QString &versionId)
 {
     preRequest request;
     bool haveId=!versionId.isEmpty();
@@ -184,7 +185,7 @@ bool COSClient::deleteObject(const QString &path, const QString &versionId)
     else if(!haveId && deleteMarker){
         qDebug()<<"创建了一个删除标记作为"<<path<<"的最新版本";
     }
-    return deleteMarker;
+    return response;
 }
 
 QString COSClient::multiUpload(const QString &path, const QString &localpath, QMap<QString, QString> metaDatas)
@@ -211,6 +212,11 @@ QString COSClient::multiUpload(const QString &path, const QString &localpath, QM
     QString result = completeMultipartUpload(path, uploadId, partEtagMap);
     file.close();
     return result;
+}
+
+bool COSClient::isExist(preResponse &response)
+{
+    return response.statusCode!=404;
 }
 
 // 修改后的函数实现
@@ -527,6 +533,7 @@ QString COSClient::_getContentMD5(const QByteArray &data)
     return base64;
 }
 
+
 QNetworkRequest COSClient::buildGetRequest(const QString &path, const QMap<QString, QString> queryParams)
 {
     if (!preCheckSession())
@@ -535,7 +542,11 @@ QNetworkRequest COSClient::buildGetRequest(const QString &path, const QMap<QStri
     }
     QUrl url;
     QUrlQuery query;
-    url=QUrl(generalApiUrl+path);
+    QString realPath=path;
+    if(!path.startsWith("/")){
+        realPath.prepend("/");
+    }
+    url=QUrl(generalApiUrl+realPath);
     for(auto it=queryParams.begin();it!=queryParams.end();it++)
     {
         query.addQueryItem(it.key(),it.value());
@@ -566,7 +577,11 @@ QNetworkRequest COSClient::buildPutRequest(const QString &path, const QMap<QStri
     }
     QUrl url;
     QUrlQuery query;
-    url=QUrl(generalApiUrl+path);
+    QString realPath=path;
+    if(!path.startsWith("/")){
+        realPath.prepend("/");
+    }
+    url=QUrl(generalApiUrl+realPath);
     for(auto it=queryParams.begin();it!=queryParams.end();it++)
     {
         query.addQueryItem(it.key(),it.value());
@@ -593,7 +608,11 @@ QNetworkRequest COSClient::buildHeadRequest(const QString &path, const QMap<QStr
     }
     QUrl url;
     QUrlQuery query;
-    url=QUrl(generalApiUrl+path);
+    QString realPath=path;
+    if(!path.startsWith("/")){
+        realPath.prepend("/");
+    }
+    url=QUrl(generalApiUrl+realPath);
     for(auto it=queryParams.begin();it!=queryParams.end();it++)
     {
         query.addQueryItem(it.key(),it.value());
@@ -620,7 +639,11 @@ QNetworkRequest COSClient::buildDeleteRequest(const QString &path, const QMap<QS
     }
     QUrl url;
     QUrlQuery query;
-    url=QUrl(generalApiUrl+path);
+    QString realPath=path;
+    if(!path.startsWith("/")){
+        realPath.prepend("/");
+    }
+    url=QUrl(generalApiUrl+realPath);
     for(auto it=queryParams.begin();it!=queryParams.end();it++)
     {
         query.addQueryItem(it.key(),it.value());
@@ -648,7 +671,11 @@ QNetworkRequest COSClient::buildPostRequest(const QString &path, const QMap<QStr
     QUrl url;
     qDebug()<<queryParams;
     QUrlQuery query;
-    url=QUrl(generalApiUrl+path);
+    QString realPath=path;
+    if(!path.startsWith("/")){
+        realPath.prepend("/");
+    }
+    url=QUrl(generalApiUrl+realPath);
     for(auto it=queryParams.begin();it!=queryParams.end();it++)
     {
         query.addQueryItem(it.key(),it.value());

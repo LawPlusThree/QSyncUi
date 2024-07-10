@@ -12,6 +12,8 @@
 #include "user.h"
 #include"signinwin.h"
 #include <QQueue>
+#include "synctask.h"
+#include "synccore.h"
 class HomePage;
 class SyncingPage;
 class FileManagePage;
@@ -21,6 +23,8 @@ class T_ElaScreen;
 class T_BaseComponents;
 class T_TabWidget;
 class HistoryViewPage;
+class modifyInfor_win;
+class cancelaccount_win;
 class MainWindow : public ElaWindow
 {
     Q_OBJECT
@@ -40,6 +44,7 @@ public slots:
     void insertUserToDatabase(User user);
     void onLoginResponse(const int &code,const QJsonObject &data,const QString &message);
     void onMessage( QString message,QString type);
+    void onUserAddNewTask(const SyncTask &task);
 signals:
     void dbPassword(const QString &);
 
@@ -59,6 +64,10 @@ private:
     QString _settingKey{""};
     ElaCheckBox* _checkBox{nullptr};
     UserInfoPage* _userinfopage{nullptr};
+    modifyInfor_win* _modifyInfor_win{nullptr};
+    cancelaccount_win* _cancelaccount_win{nullptr};
+    SyncCore* _syncCore{nullptr};
+    SyncTaskDatabaseManager* _syncTaskDatabaseManager{nullptr};
 
 };
 #endif // MAINWINDOW_H

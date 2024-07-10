@@ -45,7 +45,6 @@ FileManagePage::FileManagePage(QWidget* parent):ElaScrollPage(parent)
     // 将进度条文本标签和进度条控件添加到布局中
     progressBarLayout->addWidget(progressBarText);
     progressBarLayout->addWidget(_progressBar);
-
     // 创建一个 ElaToggleButton 对象，设置其标签为 "Head" 并指定其父对象
     _pushButton1 = new ElaPushButton("解除绑定", this);
     _pushButton1->setFixedSize(100, 40); // 设置按钮的固定大小

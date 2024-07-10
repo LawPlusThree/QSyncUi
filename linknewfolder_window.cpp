@@ -10,6 +10,7 @@
 #include "ElaText.h"
 #include "ElaComboBox.h"
 #include "ElaMessageBar.h"
+#include "synctask.h"
 
 linkNewFolder_window::linkNewFolder_window(QWidget *parent)
     : ElaWidget(parent,900,400)
@@ -60,10 +61,41 @@ linkNewFolder_window::linkNewFolder_window(QWidget *parent)
     _checkBox->setFixedSize(130, 20); // 设置按钮的固定大小
     lineEditLayout2->addWidget(folderName2, 1); // 将输入框添加到布局中
     lineEditLayout2->addWidget(_checkBox); // 将按钮添加到布局中
-    connect(_checkBox, &QCheckBox::stateChanged, [=](int state) {
+    // 首先，定义一个用于显示错误信息的标签
+    QLabel* errorLabel = new QLabel(lineEditArea2);
+    errorLabel->setText("输入格式错误：只能包含大小写字母、数字、'-'和'/'，且必须以'/'结尾");
+    errorLabel->setStyleSheet("QLabel { color : red; }"); // 设置错误信息为红色字体
+    //errorLabel->setAlignment(Qt::AlignCenter); // 设置文本居中显示
+    errorLabel->setFixedSize(500,20);
+    errorLabel->hide(); // 默认隐藏错误信息标签
+    // 然后，为folderName2添加失焦事件的处理
+    connect(folderName2, &ElaLineEdit::focusOut, [=]() {
+        QString inputText = folderName2->text();
+        QRegularExpression re("^[a-zA-Z0-9/-]+/$");
+        if (!re.match(inputText).hasMatch()) {
+            // 如果输入不符合要求，显示错误信息标签
+            errorLabel->show();
+        } else {
+            // 如果输入符合要求，隐藏错误信息标签
+            errorLabel->hide();
+        } 
+    });
+    // 为checkBox添加状态改变事件的处理
+    connect(_checkBox, &ElaCheckBox::stateChanged, [=](int state) {
         if (state == Qt::Checked) {
-            // 如果_checkBox被选中，复制folderName1的内容到folderName2
-            folderName2->setText(folderName1->text());
+            QString folderName1Text = folderName1->text();
+            int lastSlashIndex = folderName1Text.lastIndexOf('/');
+            // 如果找到了'/'，则复制其后的内容到folderName2
+            if (lastSlashIndex != -1) {
+                QString lastPart = folderName1Text.mid(lastSlashIndex + 1); // 包含最后一个'/'及其后的所有内容
+                folderName2->setText(lastPart + "/"); // 在folderName2中设置文本，并在末尾加上一个'/'
+                QString inputText = folderName2->text();
+                QRegularExpression re("^[a-zA-Z0-9/-]+/$");
+                if (!re.match(inputText).hasMatch())
+                    errorLabel->show();
+                else
+                    errorLabel->hide();
+            }
         }
     });
 
@@ -71,6 +103,11 @@ linkNewFolder_window::linkNewFolder_window(QWidget *parent)
     QStringList comboList{"仅上传", "仅下载", "同步上传与下载"};
     _comboBox->addItems(comboList);
     _comboBox->setFixedWidth(140);
+    // 创建一个映射，将文本选项映射到数字
+    QMap<QString, int> comboOptionToNumber;
+    comboOptionToNumber["仅上传"] = 2;
+    comboOptionToNumber["仅下载"] = 3;
+    comboOptionToNumber["同步上传与下载"] = 1;
 
     QWidget* buttonArea = new QWidget();
     buttonArea->setWindowFlags(Qt::FramelessWindowHint); // 去除窗口边框
@@ -98,12 +135,19 @@ linkNewFolder_window::linkNewFolder_window(QWidget *parent)
             // 如果输入符合要求，执行后续操作
             this->hide();
             ElaMessageBar::success(ElaMessageBarType::TopRight,"链接成功", "新文件夹链接成功。", 2000);
+            qDebug() << "本地文件夹地址：" << folderName1->text();
+            qDebug() << "云端文件夹地址：" << folderName2->text();
+            int syncOption = comboOptionToNumber[_comboBox->currentText()];
+            qDebug() << "同步方式：" << syncOption;//["仅上传"] = 2;["仅下载"] = 3;["同步上传与下载"] = 1;
+            SyncTask task(folderName1->text(), folderName2->text(), syncOption);
+            emit onNewTask(task);
         }
     });
 
 
     centerVLayout->addWidget(Title);
     centerVLayout->addWidget(lineEditArea1);
+    //centerVLayout->addWidget(errorLabel);
     centerVLayout->addWidget(lineEditArea2);
     centerVLayout->addWidget(_comboBox);
     centerVLayout->addWidget(buttonArea);
