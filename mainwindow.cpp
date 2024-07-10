@@ -334,4 +334,7 @@ void MainWindow::onModifyInfo(User user)
     QString filename=QDir::toNativeSeparators(file.fileName());
     QPixmap pix(filename);
     setUserInfoCardPixmap(pix);
+    for (auto const &x:_syncTaskDatabaseManager->getTasks()){
+
+    }
 }
