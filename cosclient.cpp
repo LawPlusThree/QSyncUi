@@ -144,7 +144,7 @@ bool COSClient::save2Local(const QString &path, const QString &localpath, const 
     return true;
 }
 
-preResponse COSClient::headObject(const QString &path, const QString &localpath,const QString &versionId, headHeader &reqHeader)
+QMap<QString,QString> COSClient::headObject(const QString &path, const QString &localpath,const QString &versionId, headHeader &reqHeader)
 {
     preRequest request;
     if(!versionId.isEmpty()) {
@@ -163,7 +163,7 @@ preResponse COSClient::headObject(const QString &path, const QString &localpath,
         request.customHeaders.insert("If-None-Match", reqHeader.ifNoneMatch);
     }
     preResponse response = invokeHeadRequest(path, request);
-    return response;
+    return response.headers;
 }
 
 bool COSClient::deleteObject(const QString &path, const QString &versionId)
