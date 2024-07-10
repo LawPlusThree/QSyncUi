@@ -144,7 +144,7 @@ bool COSClient::save2Local(const QString &path, const QString &localpath, const 
     return true;
 }
 
-QMap<QString,QString> COSClient::headObject(const QString &path, const QString &localpath,const QString &versionId, headHeader &reqHeader)
+preResponse COSClient::headObject(const QString &path, const QString &localpath,const QString &versionId, headHeader &reqHeader)
 {
     preRequest request;
     if(!versionId.isEmpty()) {
@@ -163,10 +163,11 @@ QMap<QString,QString> COSClient::headObject(const QString &path, const QString &
         request.customHeaders.insert("If-None-Match", reqHeader.ifNoneMatch);
     }
     preResponse response = invokeHeadRequest(path, request);
-    return response.headers;
+
+    return response;
 }
 
-bool COSClient::deleteObject(const QString &path, const QString &versionId)
+preResponse COSClient::deleteObject(const QString &path, const QString &versionId)
 {
     preRequest request;
     bool haveId=!versionId.isEmpty();
@@ -184,7 +185,7 @@ bool COSClient::deleteObject(const QString &path, const QString &versionId)
     else if(!haveId && deleteMarker){
         qDebug()<<"创建了一个删除标记作为"<<path<<"的最新版本";
     }
-    return deleteMarker;
+    return response;
 }
 
 QString COSClient::multiUpload(const QString &path, const QString &localpath, QMap<QString, QString> metaDatas)
@@ -211,6 +212,11 @@ QString COSClient::multiUpload(const QString &path, const QString &localpath, QM
     QString result = completeMultipartUpload(path, uploadId, partEtagMap);
     file.close();
     return result;
+}
+
+bool COSClient::isExist(preResponse &response)
+{
+    return response.statusCode!=404;
 }
 
 // 修改后的函数实现
@@ -526,6 +532,7 @@ QString COSClient::_getContentMD5(const QByteArray &data)
     QByteArray base64 = hash.toBase64();
     return base64;
 }
+
 
 QNetworkRequest COSClient::buildGetRequest(const QString &path, const QMap<QString, QString> queryParams)
 {

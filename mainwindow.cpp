@@ -22,6 +22,8 @@
 #include"historyview.h"
 #include "filefunc.h"
 #include "qthread.h"
+#include "modifyinfor_win.h"
+#include "cancelaccount_win.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : ElaWindow(parent)
@@ -79,6 +81,9 @@ MainWindow::MainWindow(QWidget *parent)
     QString testKey_2;
     QString testKey_3;
     QString testKey_4;
+    QString modifyKey;
+    QString cancelKey;
+    QString logoutKey;
 
     addExpanderNode("同步功能",testKey_2,ElaIconType::House);
     addPageNode("正在同步",_syncingPage,testKey_2,ElaIconType::Cloud);
@@ -87,9 +92,32 @@ MainWindow::MainWindow(QWidget *parent)
     addExpanderNode("版本控制",testKey_3,ElaIconType::EnvelopeOpenText);
     addPageNode("查看历史",_historyviewPage,testKey_3,ElaIconType::CalendarClock);
     addExpanderNode("个人功能",testKey_4,ElaIconType::User);
-    addPageNode("修改信息",_userinfopage,testKey_4,ElaIconType::Text);
+    addPageNode("修改信息",new QWidget(this),testKey_4,ElaIconType::Text);
     addPageNode("注销账号",new QWidget(this),testKey_4,ElaIconType::UserSlash);
     addPageNode("退出登录",new QWidget(this),testKey_4,ElaIconType::ArrowRightFromBracket);
+
+    addFooterNode("修改信息", _userinfopage, modifyKey, 0, ElaIconType::Text);
+    addFooterNode("注销信息", nullptr, cancelKey, 0, ElaIconType::UserSlash);
+    addFooterNode("退出登录", nullptr, logoutKey, 0, ElaIconType::ArrowRightFromBracket);
+    _modifyInfor_win=new modifyInfor_win();
+    _cancelaccount_win=new cancelaccount_win();
+    //
+    connect(this, &ElaWindow::navigationNodeClicked, this, [=](ElaNavigationType::NavigationNodeType nodeType, QString nodeKey)
+            {
+                if (modifyKey == nodeKey)
+                {
+                    _modifyInfor_win->show();
+                }
+                else if(cancelKey==nodeKey)
+                {
+                    _cancelaccount_win->show();
+                }
+                else if(logoutKey==nodeKey)
+                {
+                    //
+                }
+    });
+
 
 
     // 下拉菜单
@@ -118,6 +146,7 @@ MainWindow::MainWindow(QWidget *parent)
     addExpanderNode("TEST16", testKey_1, ElaIconType::Acorn);
     addExpanderNode("TEST17", testKey_1, ElaIconType::Acorn);
 */
+    /*
     addFooterNode("About", nullptr, _aboutKey, 0, ElaIconType::User);
     ElaWidget *widget = new ElaWidget();
     widget->setWindowModality(Qt::ApplicationModal);
@@ -130,7 +159,7 @@ MainWindow::MainWindow(QWidget *parent)
             widget->show();
         } });
     addFooterNode("Setting", new QWidget(this), _settingKey, 0, ElaIconType::GearComplex);
-    //connect(_filemanagePage,&FileManagePage::linkFolder,this,&MainWindow::onUserAddNewTask);
+    */
     /*
     connect(this, &MainWindow::userInfoCardClicked, this, [=]()
             { this->navigation(_homePage->property("ElaPageKey").toString()); });

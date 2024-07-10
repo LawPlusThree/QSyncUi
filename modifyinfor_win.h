@@ -1,10 +1,8 @@
-//根据databasemanager中的数据库设置的更改信息界面，可以稍加修改来应用
+#ifndef MODIFYINFOR_WIN_H
+#define MODIFYINFOR_WIN_H
 
-#ifndef USERINFOPAGE_H
-#define USERINFOPAGE_H
-
-#include<QDialog>
 #include <QWidget>
+#include"ElaWidget.h"
 #include <QLineEdit>
 #include <QPushButton>
 #include"user.h"
@@ -13,11 +11,12 @@
 
 class ElaInteractiveCard;
 class QHBoxLayout;
-class UserInfoPage : public QDialog
+class modifyInfor_win : public ElaWidget
 {
     Q_OBJECT
 public:
-    explicit UserInfoPage(QWidget *parent = nullptr);
+    modifyInfor_win(QWidget *parent = nullptr);
+    ~modifyInfor_win();
     User* currentUser;
     ElaInteractiveCard*avatar;
     QHBoxLayout*avatarArea;
@@ -35,4 +34,4 @@ private slots:
     void onConfirmButtonClicked();
 };
 
-#endif // USERINFOPAGE_H
+#endif // MODIFYINFOR_WIN_H
