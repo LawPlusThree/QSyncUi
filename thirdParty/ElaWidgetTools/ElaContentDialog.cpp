@@ -78,16 +78,19 @@ ElaContentDialog::ElaContentDialog(QWidget* parent,bool MiddleButton)
     d->_leftButton->setMaximumSize(QSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX));
     d->_leftButton->setFixedHeight(38);
     d->_leftButton->setBorderRadius(6);
-    d->_middleButton = new ElaPushButton("minimum", this);
-    connect(d->_middleButton, &ElaPushButton::clicked, this, [=]() {
-        Q_EMIT middleButtonClicked();
-        onMiddleButtonClicked();
-        close();
-    });
-    d->_middleButton->setMinimumSize(0, 0);
-    d->_middleButton->setMaximumSize(QSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX));
-    d->_middleButton->setFixedHeight(38);
-    d->_middleButton->setBorderRadius(6);
+    if(MiddleButton)
+    {
+        d->_middleButton = new ElaPushButton("minimum", this);
+        connect(d->_middleButton, &ElaPushButton::clicked, this, [=]() {
+            Q_EMIT middleButtonClicked();
+            onMiddleButtonClicked();
+            close();
+        });
+        d->_middleButton->setMinimumSize(0, 0);
+        d->_middleButton->setMaximumSize(QSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX));
+        d->_middleButton->setFixedHeight(38);
+        d->_middleButton->setBorderRadius(6);
+    }
     d->_rightButton = new ElaPushButton("exit", this);
     connect(d->_rightButton, &ElaPushButton::clicked, this, [=]() {
         Q_EMIT rightButtonClicked();

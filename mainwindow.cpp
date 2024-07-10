@@ -23,7 +23,6 @@
 #include "filefunc.h"
 #include "qthread.h"
 #include "modifyinfor_win.h"
-#include "cancelaccount_win.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : ElaWindow(parent)
@@ -100,8 +99,6 @@ MainWindow::MainWindow(QWidget *parent)
     addFooterNode("注销账号", nullptr, cancelKey, 0, ElaIconType::UserSlash);
     addFooterNode("退出登录", nullptr, logoutKey, 0, ElaIconType::ArrowRightFromBracket);
     _modifyInfor_win=new modifyInfor_win();
-    _cancelaccount_win=new cancelaccount_win();
-    //
     connect(this, &ElaWindow::navigationNodeClicked, this, [=](ElaNavigationType::NavigationNodeType nodeType, QString nodeKey)
             {
                 if (modifyKey == nodeKey)
@@ -110,7 +107,6 @@ MainWindow::MainWindow(QWidget *parent)
                 }
                 else if(cancelKey==nodeKey)
                 {
-                    //_cancelaccount_win->show();
                     QWidget* _centralWidget = new QWidget(this);
                     QVBoxLayout* centralVLayout = new QVBoxLayout(_centralWidget);
                     centralVLayout->setContentsMargins(9, 15, 9, 20);
@@ -124,10 +120,8 @@ MainWindow::MainWindow(QWidget *parent)
                     ElaContentDialog *dialag = new ElaContentDialog(this,false);
                     dialag->setCentralWidget(_centralWidget);
                     dialag->setLeftButtonText("取消");
-                    dialag->setMiddleButtonText("最小化");
-                    dialag->setRightButtonText("退出");
-                    connect(dialag, &ElaContentDialog::rightButtonClicked, this, &MainWindow::closeWindow);
-                    connect(dialag, &ElaContentDialog::middleButtonClicked, this, &MainWindow::showMinimized);
+                    dialag->setRightButtonText("确认");
+                    //connect(dialag, &ElaContentDialog::rightButtonClicked, this, &MainWindow::closeWindow);
                     dialag->show();
                 }
                 else if(logoutKey==nodeKey)
