@@ -1,12 +1,17 @@
 #include "filefunc.h"
 
 //用多线程遍历本地文件夹
+void Filefunc::run()
+{
+    readDirectory(path);
+    emit this->localTotalSize(totalSize);
+    emit this->upTotalSize(upFileSize);
+}
+
 void Filefunc::readDirectory(const QString &path)
 {
     // 递归读取文件夹和子文件夹
     recursiveRead(path);
-    //emit localTotalSize(totalSize);
-    //emit upTotalSize(upFileSize);
 }
 
 void Filefunc::recursiveRead(const QString &path)

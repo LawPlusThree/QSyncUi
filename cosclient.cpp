@@ -230,8 +230,11 @@ bool COSClient::setManage(QNetworkAccessManager *submanager)
 preResponse COSClient::invokeGetFileRequest(const QString& path, const preRequest& request) {
     preResponse response;
     // 构建请求
-    QNetworkRequest networkRequest = buildGetRequest(path, request.customHeaders); // 假设已经有一个构建GET请求的函数
+    QNetworkRequest networkRequest = buildGetRequest(path, request.queryParams); // 假设已经有一个构建GET请求的函数
     // 发送请求并等待响应
+    for (auto it = request.customHeaders.begin(); it != request.customHeaders.end(); it++) {
+        networkRequest.setRawHeader(it.key().toUtf8(), it.value().toUtf8());
+    }
     QNetworkReply* reply = manager->get(networkRequest);
     // 等待响应完成
     QEventLoop loop;
@@ -251,7 +254,10 @@ preResponse COSClient::invokeGetFileRequest(const QString& path, const preReques
 preResponse COSClient::invokeGetFileRequestWithProgress(const QString& path, const preRequest& request) {
     preResponse response;
     // 构建请求
-    QNetworkRequest networkRequest = buildGetRequest(path, request.customHeaders);
+    QNetworkRequest networkRequest = buildGetRequest(path, request.queryParams);
+    for (auto it = request.customHeaders.begin(); it != request.customHeaders.end(); it++) {
+        networkRequest.setRawHeader(it.key().toUtf8(), it.value().toUtf8());
+    }
     // 发送请求并等待响应
     QNetworkReply* reply = manager->get(networkRequest);
     // 连接进度信号
@@ -277,6 +283,9 @@ preResponse COSClient::invokePutRequest(const QString& path, const preRequest& r
     QNetworkRequest networkRequest = buildPutRequest(path, request.queryParams, request.data); // 使用提供的代码片段构建PUT请求
     networkRequest.setHeader(QNetworkRequest::ContentTypeHeader, request.contentType);
     networkRequest.setRawHeader("Content-MD5",_getContentMD5(request.data).toUtf8());
+    for (auto it = request.customHeaders.begin(); it != request.customHeaders.end(); it++) {
+        networkRequest.setRawHeader(it.key().toUtf8(), it.value().toUtf8());
+    }
     // 发送请求并等待响应
     QNetworkReply* reply = manager->put(networkRequest, request.data);
     // 等待响应完成
@@ -297,7 +306,10 @@ preResponse COSClient::invokePutRequest(const QString& path, const preRequest& r
 preResponse COSClient::invokeHeadRequest(const QString& path, const preRequest& request) {
     preResponse response;
     // 构建请求
-    QNetworkRequest networkRequest = buildHeadRequest(path, request.customHeaders); // 假设已经有一个构建HEAD请求的函数
+    QNetworkRequest networkRequest = buildHeadRequest(path, request.queryParams); // 假设已经有一个构建HEAD请求的函数
+    for (auto it = request.customHeaders.begin(); it != request.customHeaders.end(); it++) {
+        networkRequest.setRawHeader(it.key().toUtf8(), it.value().toUtf8());
+    }
     // 发送请求并等待响应
     QNetworkReply* reply = manager->head(networkRequest);
     // 等待响应完成
@@ -317,8 +329,10 @@ preResponse COSClient::invokeHeadRequest(const QString& path, const preRequest& 
 preResponse COSClient::invokeDeleteRequest(const QString& path, const preRequest& request) {
     preResponse response;
     // 构建请求
-    QNetworkRequest networkRequest = buildDeleteRequest(path, request.customHeaders); // 使用提供的代码片段构建DELETE请求
-    // 发送请求并等待响应
+    QNetworkRequest networkRequest = buildDeleteRequest(path, request.queryParams); // 使用提供的代码片段构建DELETE请求
+    for (auto it = request.customHeaders.begin(); it != request.customHeaders.end(); it++) {
+        networkRequest.setRawHeader(it.key().toUtf8(), it.value().toUtf8());
+    }
     QNetworkReply* reply = manager->deleteResource(networkRequest);
     // 等待响应完成
     QEventLoop loop;
