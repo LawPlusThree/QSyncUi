@@ -20,6 +20,16 @@ void DirCardProxy::addDirCard(DirCard *card, const QString &id) {
     }
 }
 
+void DirCardProxy::addDirCard(QString filename,QString datasize,QString bindtime,const QString &id)
+{
+    DirCard*card=new DirCard(filename,datasize,bindtime,id);
+    if (card && parentWidget && !cardMap.contains(id)) {
+        cardMap[id] = card;
+        filesLayout->addWidget(card);
+        filesLayout->setAlignment(Qt::AlignTop);
+    }
+}
+
 void DirCardProxy::removeDirCard(const QString &id) {
     if (cardMap.contains(id)) {
         DirCard *card = cardMap.take(id);

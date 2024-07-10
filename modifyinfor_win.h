@@ -20,8 +20,6 @@ public:
     User* currentUser;
     ElaInteractiveCard*avatar;
     QHBoxLayout*avatarArea;
-
-private:
     ElaLineEdit *newIdEdit_;
     ElaLineEdit *newPasswordEdit_;
     ElaLineEdit *confirmNewPasswordEdit_;
