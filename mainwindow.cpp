@@ -19,6 +19,8 @@
 #include"filemange_view.h"
 #include "historysync_view.h"
 #include"historyview.h"
+#include "filefunc.h"
+#include "qthread.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : ElaWindow(parent)
@@ -26,7 +28,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     db = new DatabaseManager(this); // 创建数据库管理器实例
     db->initializeDatabase(); // 初始化数据库
-
     // ElaApplication::getInstance()->setThemeMode(ElaApplicationType::Dark);
     // setIsNavigationBarEnable(false);
     // setNavigationBarDisplayMode(ElaNavigationType::Minimal);
