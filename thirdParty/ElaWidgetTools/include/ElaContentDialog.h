@@ -11,7 +11,7 @@ class ELA_EXPORT ElaContentDialog : public QDialog, QAbstractNativeEventFilter
     Q_OBJECT
     Q_Q_CREATE(ElaContentDialog)
 public:
-    explicit ElaContentDialog(QWidget* parent = nullptr);
+    explicit ElaContentDialog(QWidget* parent = nullptr,bool MiddleButton=true);
     ~ElaContentDialog();
     Q_SLOT virtual void onLeftButtonClicked();
     Q_SLOT virtual void onMiddleButtonClicked();

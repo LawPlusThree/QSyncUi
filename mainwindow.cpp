@@ -97,7 +97,7 @@ MainWindow::MainWindow(QWidget *parent)
     addPageNode("退出登录",new QWidget(this),testKey_4,ElaIconType::ArrowRightFromBracket);
 
     addFooterNode("修改信息", _userinfopage, modifyKey, 0, ElaIconType::Text);
-    addFooterNode("注销信息", nullptr, cancelKey, 0, ElaIconType::UserSlash);
+    addFooterNode("注销账号", nullptr, cancelKey, 0, ElaIconType::UserSlash);
     addFooterNode("退出登录", nullptr, logoutKey, 0, ElaIconType::ArrowRightFromBracket);
     _modifyInfor_win=new modifyInfor_win();
     _cancelaccount_win=new cancelaccount_win();
@@ -110,7 +110,25 @@ MainWindow::MainWindow(QWidget *parent)
                 }
                 else if(cancelKey==nodeKey)
                 {
-                    _cancelaccount_win->show();
+                    //_cancelaccount_win->show();
+                    QWidget* _centralWidget = new QWidget(this);
+                    QVBoxLayout* centralVLayout = new QVBoxLayout(_centralWidget);
+                    centralVLayout->setContentsMargins(9, 15, 9, 20);
+                    ElaText* title = new ElaText("注销账号", this);
+                    title->setTextStyle(ElaTextType::Title);
+                    ElaText* subTitle = new ElaText("确定要注销账号吗", this);
+                    subTitle->setTextStyle(ElaTextType::Body);
+                    centralVLayout->addWidget(title);
+                    centralVLayout->addWidget(subTitle);
+                    centralVLayout->addStretch();
+                    ElaContentDialog *dialag = new ElaContentDialog(this,false);
+                    dialag->setCentralWidget(_centralWidget);
+                    dialag->setLeftButtonText("取消");
+                    dialag->setMiddleButtonText("最小化");
+                    dialag->setRightButtonText("退出");
+                    connect(dialag, &ElaContentDialog::rightButtonClicked, this, &MainWindow::closeWindow);
+                    connect(dialag, &ElaContentDialog::middleButtonClicked, this, &MainWindow::showMinimized);
+                    dialag->show();
                 }
                 else if(logoutKey==nodeKey)
                 {

@@ -34,7 +34,7 @@
 }
 #endif
 
-ElaContentDialog::ElaContentDialog(QWidget* parent)
+ElaContentDialog::ElaContentDialog(QWidget* parent,bool MiddleButton)
     : QDialog{parent}, d_ptr(new ElaContentDialogPrivate())
 {
     Q_D(ElaContentDialog);
@@ -121,7 +121,11 @@ ElaContentDialog::ElaContentDialog(QWidget* parent)
     d->_mainLayout = new QVBoxLayout(this);
     d->_buttonLayout = new QHBoxLayout();
     d->_buttonLayout->addWidget(d->_leftButton);
-    d->_buttonLayout->addWidget(d->_middleButton);
+    if(MiddleButton)
+    {
+        d->_buttonLayout->addWidget(d->_middleButton);
+    }
+    //d->_buttonLayout->addWidget(d->_middleButton);
     d->_buttonLayout->addWidget(d->_rightButton);
     d->_mainLayout->addWidget(d->_centralWidget);
     d->_mainLayout->addLayout(d->_buttonLayout);
