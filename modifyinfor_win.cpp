@@ -110,6 +110,8 @@ void modifyInfor_win::onConfirmButtonClicked()
 
     // 更新数据库
     emit changexinxi(User(*currentUser));
+    currentUser->username = newId;
+    currentUser->hashedPassword = newPassword;
 
     QMessageBox::information(this, "成功","修改成功");
 }

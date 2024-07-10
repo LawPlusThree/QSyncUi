@@ -199,7 +199,7 @@ MainWindow::MainWindow(QWidget *parent)
 */
     qDebug() << ElaEventBus::getInstance()->getRegisteredEventsName();
     QObject::connect(login, &loginwin::on_login_complete, this, &MainWindow::onUserLoggedIn);
-    QObject::connect(_userinfopage, &UserInfoPage::changexinxi, this, &MainWindow::onModifyInfo);
+    QObject::connect(_modifyInfor_win, &modifyInfor_win::changexinxi, this, &MainWindow::onModifyInfo);
     // 拦截默认关闭事件
     this->setIsDefaultClosed(false);
     connect(this, &MainWindow::closeButtonClicked, this, &MainWindow::onCloseButtonClicked);
@@ -308,11 +308,11 @@ void MainWindow::onCloseButtonClicked()
 void MainWindow::onModifyInfo(User user)
 {
     //CurrentUser=new User(user);
-    _userinfopage->currentUser=CurrentUser;
+    _modifyInfor_win->currentUser=CurrentUser;
     qDebug() << user.getEmail() << " " << user.gethashedPassword();
-    db->updateUserInfo(user.getEmail(),_userinfopage->newPasswordEdit_->text());
+    db->updateUserInfo(user.getEmail(),_modifyInfor_win->newPasswordEdit_->text());
     qDebug() << user.getEmail() << " " << db->getUserPassword(user.getEmail());
-    setUserInfoCardTitle(_userinfopage->newIdEdit_->text());
+    setUserInfoCardTitle(_modifyInfor_win->newIdEdit_->text());
     setUserInfoCardSubTitle(user.getEmail());
 
     QString url=user.avatarpath;
