@@ -60,3 +60,8 @@ void DirCard::on_relieveBtn_clicked()
     qDebug()<<"发出前的id"<<id;
     emit relieve(id);
 }
+
+bool DirCard::ischecked()
+{
+    return _checkBox->isChecked();
+}

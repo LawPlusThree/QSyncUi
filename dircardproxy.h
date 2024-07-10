@@ -14,6 +14,7 @@ public:
 
     void addDirCard(DirCard *card, const QString &id);
     void removeDirCard(const QString &id);
+    void removeChecked();
     QVBoxLayout*filesLayout;
 
 private:

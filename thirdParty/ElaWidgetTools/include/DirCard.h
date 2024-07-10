@@ -24,6 +24,7 @@ public:
     ElaPushButton*relieveBtn;
 
     QString id;
+    bool ischecked();
 
 private slots:
     void on_relieveBtn_clicked();

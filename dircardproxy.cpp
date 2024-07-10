@@ -15,12 +15,6 @@ DirCardProxy::~DirCardProxy() {
 void DirCardProxy::addDirCard(DirCard *card, const QString &id) {
     if (card && parentWidget && !cardMap.contains(id)) {
         cardMap[id] = card;
-        // 在这里可以将card添加到UI中，例如使用布局管理器
-        /*QVBoxLayout *layout = qobject_cast<QVBoxLayout*>(parentWidget->layout());
-        layout->setAlignment(Qt::AlignTop);
-        if (layout) {
-            layout->addWidget(card);
-        }*/
         filesLayout->addWidget(card);
         filesLayout->setAlignment(Qt::AlignTop);
     }
@@ -33,5 +27,18 @@ void DirCardProxy::removeDirCard(const QString &id) {
         filesLayout->removeWidget(card);
         card->setParent(nullptr);
         card->deleteLater();
+    }
+}
+
+void DirCardProxy::removeChecked()
+{
+    QMapIterator<QString, DirCard*> i(cardMap);
+    while (i.hasNext())
+    {
+        i.next();
+        QString id = i.key();
+        DirCard *card = i.value();
+        if(card->ischecked())
+            removeDirCard(id);
     }
 }
