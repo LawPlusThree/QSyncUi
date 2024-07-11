@@ -124,7 +124,9 @@ void modifyInfor_win::onConfirmButtonClicked()
     currentUser->username = newId;
     currentUser->hashedPassword = newPassword;
     emit changexinxi(User(*currentUser));
-
+    confirmButton_->setEnabled(true);
+    confirmButton_->setText("确认修改");
+    confirmButton_->setStyleSheet("background-color:rgb(0,204,255)");
     QMessageBox::information(this, "成功","修改成功");
     this->hide();
 }
@@ -153,7 +155,4 @@ void modifyInfor_win::onAvatarClicked()
         avatarArea->addWidget(avatar,0,Qt::AlignCenter);
         update();
     }
-    confirmButton_->setEnabled(true);
-    confirmButton_->setText("确认修改");
-    confirmButton_->setStyleSheet("background-color:rgb(0,204,255)");
 }
