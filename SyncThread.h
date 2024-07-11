@@ -35,10 +35,10 @@ public:
 signals:
     void localTotalSize(qint64);//本地文件总大小
     void upTotalSize(qint64);//上传文件总大小
-    void newUploadTask(const QString &localPath, qint64 size);
-    void newDownloadTask(const QString &localPath, qint64 size);
-    void updateUploadTask(const QString &localPath, qint64 nowSize);
-    void updateDownloadTask(const QString &localPath, qint64 nowSize);
+    void newUploadTask(const QString &localPath, qint64 fileTaskId);
+    void newDownloadTask(const QString &localPath, qint64 fileTaskId);
+    void updateUploadTask(int fileTaskId, qint64 nowSize, qint64 totalSize);
+    void updateDownloadTask(int fileTaskId, qint64 nowSize, qint64 totalSize);
 };
 
 

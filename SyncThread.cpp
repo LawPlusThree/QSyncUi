@@ -5,8 +5,15 @@ int SyncThread::fileTaskId=0;
 void SyncThread::run()
 {
     crc64_init();
-    //readDirectory(path);
-    readCLoudDirectory(task->getRemotePath());
+    if(task->getSyncStatus()==1){
+    readDirectory(path);
+        readCLoudDirectory(task->getRemotePath());}
+    else if(task->getSyncStatus()==2){
+        readDirectory(path);
+    }
+    else if(task->getSyncStatus()==3){
+        readCLoudDirectory(task->getRemotePath());
+    }
     emit this->localTotalSize(totalSize);
     emit this->upTotalSize(upFileSize);
 }
@@ -49,9 +56,10 @@ void SyncThread::readCLoudDirectory(const QString &cloudpath)
             qDebug()<<"云文件:"<<ct.key;
             QString localPath=task->getLocalPath()+"/"+ct.key.mid(task->getRemotePath().length());
             QFileInfo info(localPath);
+            bool needDownload=false;
             if(!info.exists()){
-                QMap<QString,QString> metaDatas;
-                cosclient->save2Local(ct.key,localPath,"",metaDatas);
+                needDownload=true;
+
             }
             else if(info.isDir()){
                 //如果是文件夹，直接跳过
@@ -69,16 +77,23 @@ void SyncThread::readCLoudDirectory(const QString &cloudpath)
                 crc64_data=crc64(crc64_data,data.data(),data.size());
                 uint64_t cloudCRC=response.headers["x-cos-hash-crc64ecma"].toULongLong();
                 if(crc64_data!=cloudCRC){
+                    needDownload=true;
                     qDebug()<<"文件不一致:"<<localPath<<" "<<ct.key;
                     qDebug()<<"本地crc64:"<<crc64_data;
                     qDebug()<<"云crc64:"<<cloudCRC;
-                    //更新文件
-                    QMap<QString,QString> metaDatas;
-                    cosclient->save2Local(ct.key,localPath,"",metaDatas);
                 }
             }
-
-
+            if(needDownload){
+                downFileSize+=ct.size;
+                emit this->newDownloadTask(localPath,fileTaskId);
+                qDebug()<<connect(cosclient,&COSClient::DownloadProgress,[=](qint64 nowSize,qint64 total){
+                    emit this->updateDownloadTask(fileTaskId,nowSize,total);
+                });
+                QMap<QString,QString> respHeaders;
+                cosclient->save2Local(ct.key,localPath,"",respHeaders);
+                disconnect(cosclient,&COSClient::DownloadProgress,this,nullptr);
+                fileTaskId++;
+            }
         }
     }while(bucket.isTruncated);
 
@@ -94,11 +109,13 @@ void SyncThread::addSynctask(const QFileInfo &info)
     preResponse response=cosclient->headObject(cloudPath,"",tmpHeaders);
     if(!cosclient->isExist(response)){
         upFileSize+=info.size();
-        connect(cosclient,&COSClient::UploadProgress,[=](qint64 nowSize,qint64 total){
-            emit this->updateUploadTask(path,nowSize);
+        emit this->newUploadTask(path,fileTaskId);
+        qDebug()<<connect(cosclient,&COSClient::UploadProgress,[=](qint64 nowSize,qint64 total){
+            emit this->updateUploadTask(fileTaskId,nowSize,total);
         });
-
         cosclient->putLocalObject(cloudPath,path);
+        disconnect(cosclient,&COSClient::UploadProgress,this,nullptr);
+        fileTaskId++;
     }
 }
 

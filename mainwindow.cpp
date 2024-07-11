@@ -167,17 +167,38 @@ void MainWindow::onUserLoggedIn(User user)
     QString filename=QDir::toNativeSeparators(file.fileName());
     QPixmap pix(filename);
     setUserInfoCardPixmap(pix);
+    connect(_syncCore,&SyncCore::taskTotalSize,this,&MainWindow::onTaskTotalSize);
+    connect(_syncCore,&SyncCore::taskUploadSize,this,&MainWindow::onTaskUploadSize);
+    connect(_syncCore,&SyncCore::addFileUploadTask,this,&MainWindow::onFileUploadTaskCreated);
+    connect(_syncCore,&SyncCore::updateFileUploadTask,this,&MainWindow::onFileUploadTaskUpdated);
+    connect(_syncCore,&SyncCore::addFileDownloadTask,this,&MainWindow::onFileDownloadTaskCreated);
+    connect(_syncCore,&SyncCore::updateFileDownloadTask,this,&MainWindow::onFileDownloadTaskUpdated);
+    connect(_filemanagePage,&FileManagePage::deleteTask,[=](int taskId){
+       this->_syncTaskDatabaseManager->deleteTask(taskId);
+    });
     for (auto const &x:_syncTaskDatabaseManager->getTasks()){
+        SyncTask* task=new SyncTask(x);
+        TaskToken tt=CurrentUser->getTaskTokenByRemote(x.getRemotePath());
+        QString bucketName="qsync";
+        QString appId="1320107701";
+        QString region="ap-nanjing";
+        QString secretId=tt.tmpSecretId;
+        QString secretKey=tt.tmpSecretKey;
+        QString token=tt.sessionToken;
+        QDateTime expiredTime=tt.expiredTime;
+        COSClient *cosclient=new COSClient(bucketName,appId,region,secretId,secretKey,token,expiredTime);
+        task->cosclient=cosclient;
         if (x.getLastSyncTime()==QDateTime::fromString("2000-01-01 00:00:00","yyyy-MM-dd hh:mm:ss"))
         {
             QString timeDelta="从未同步";
             this->_filemanagePage->addDirCard(x.getLocalPath(),11,timeDelta,x.getId());
-            continue;
         }else{
             QString timeDelta=QString::number(x.getLastSyncTime().daysTo(QDateTime::currentDateTime()))+"天前";
             this->_filemanagePage->addDirCard(x.getLocalPath(),11,timeDelta,x.getId());
         }
+        _syncCore->addTask(task);
     }
+
 }
 
 void MainWindow::exitLogin()
@@ -236,23 +257,45 @@ void MainWindow::onUserAddNewTask(const SyncTask &task)
     }
     if(
         CurrentUser->addTask(task.getLocalPath(),task.getRemotePath(),task.getSyncStatus(),1,1)){
-        if(_syncCore!=nullptr)
-        {
-            SyncTask mytask(task);
-            _syncCore->addTask(&mytask);
-        }
+
         if(_syncTaskDatabaseManager!=nullptr)
         {
-            _syncTaskDatabaseManager->addTask(task);
+            int res=_syncTaskDatabaseManager->addTask(task);
+            bool isSuccess=false;
+            if(_syncCore!=nullptr)
+            {
+                SyncTask mytask(task);
+                SyncTask* task=new SyncTask(mytask);
+                task->setId(res);
+                TaskToken tt=CurrentUser->getTaskTokenByRemote(task->getRemotePath());
+                QString bucketName="qsync";
+                QString appId="1320107701";
+                QString region="ap-nanjing";
+                QString secretId=tt.tmpSecretId;
+                QString secretKey=tt.tmpSecretKey;
+                QString token=tt.sessionToken;
+                QDateTime expiredTime=tt.expiredTime;
+                COSClient *cosclient=new COSClient(bucketName,appId,region,secretId,secretKey,token,expiredTime);
+                task->cosclient=cosclient;
+                isSuccess=_syncCore->addTask(task);
+            }
+            if(isSuccess)
+            {
+                if (task.getLastSyncTime()==QDateTime::fromString("2000-01-01 00:00:00","yyyy-MM-dd hh:mm:ss"))
+                {
+                    QString timeDelta="从未同步";
+                    this->_filemanagePage->addDirCard(task.getLocalPath(),111,timeDelta,task.getId());
+                }else{
+                    QString timeDelta=QString::number(task.getLastSyncTime().daysTo(QDateTime::currentDateTime()))+"天前";
+                    this->_filemanagePage->addDirCard(task.getLocalPath(),1111,timeDelta,task.getId());
+                }
+            }
+            else
+            {
+                _syncTaskDatabaseManager->deleteTask(res);
+            }
         }
-        if (task.getLastSyncTime()==QDateTime::fromString("2000-01-01 00:00:00","yyyy-MM-dd hh:mm:ss"))
-        {
-            QString timeDelta="从未同步";
-            this->_filemanagePage->addDirCard(task.getLocalPath(),111,timeDelta,task.getId());
-        }else{
-            QString timeDelta=QString::number(task.getLastSyncTime().daysTo(QDateTime::currentDateTime()))+"天前";
-            this->_filemanagePage->addDirCard(task.getLocalPath(),1111,timeDelta,task.getId());
-        }
+
     }
 }
 
@@ -297,42 +340,34 @@ void MainWindow::onModifyInfo(User user)
     setUserInfoCardPixmap(pix);
 }
 
-void MainWindow::onFileUploadTaskCreated(const QString &localPath, qint64 size, int fileTaskId)
-{
-    // onFileUploadTaskCreated implementation
+void MainWindow::onFileUploadTaskCreated(const QString &localPath, int fileTaskId) {
+    qDebug()<<"File upload task created"<<localPath<<" "<<fileTaskId;
 }
 
-void MainWindow::onFileUploadTaskUpdated(const QString &localPath, qint64 nowSize, int fileTaskId)
-{
-    // onFileUploadTaskUpdated implementation
+void MainWindow::onFileUploadTaskUpdated(int fileTaskId, qint64 nowSize, qint64 totalSize) {
+    qDebug()<<"File upload task updated"<<fileTaskId<<" "<<nowSize<<"/"<<totalSize;
 }
 
-void MainWindow::onFileUploadTaskPaused(int fileTaskId)
-{
-    // onFileUploadTaskPaused implementation
+void MainWindow::onFileUploadTaskPaused(int fileTaskId) {
+    qDebug()<<"File upload task paused"<<fileTaskId;
 }
 
-void MainWindow::onFileDownloadTaskCreated(const QString &localPath, qint64 size, int fileTaskId)
-{
-    // onFileDownloadTaskCreated implementation
+void MainWindow::onFileDownloadTaskCreated(const QString &localPath, int fileTaskId) {
+    qDebug()<<"File download task created"<<localPath<<" "<<fileTaskId;
 }
 
-void MainWindow::onFileDownloadTaskUpdated(const QString &localPath, qint64 nowSize, int fileTaskId)
-{
-    // onFileDownloadTaskUpdated implementation
+void MainWindow::onFileDownloadTaskUpdated(int fileTaskId, qint64 nowSize, qint64 totalSize) {
+    qDebug()<<"File download task updated"<<fileTaskId<<" "<<nowSize<<"/"<<totalSize;
 }
 
-void MainWindow::onFileDownloadTaskPaused(int fileTaskId)
-{
-    // onFileDownloadTaskPaused implementation
+void MainWindow::onFileDownloadTaskPaused(int fileTaskId) {
+    qDebug()<<"File download task paused"<<fileTaskId;
 }
 
-void MainWindow::onTaskTotalSize(qint64 size, int taskid)
-{
-    // onTaskTotalSize implementation
+void MainWindow::onTaskTotalSize(qint64 size, int taskid) {
+    this->_filemanagePage->modifyDirCard(size,"Syncing",taskid);
 }
 
-void MainWindow::onTaskUploadSize(qint64 size, int taskid)
-    {
-        // onTaskUploadSize implementation
-    };
+void MainWindow::onTaskUploadSize(qint64 size, int taskid) {
+    // Empty implementation
+}

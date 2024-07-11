@@ -13,6 +13,7 @@ class QVBoxLayout;
 class DirCardProxy;
 class FileManagePage:public ElaScrollPage
 {
+    Q_OBJECT
 public:
     FileManagePage(QWidget* parent = nullptr);
     ~FileManagePage();
@@ -21,7 +22,6 @@ public:
     void modifyDirCard(int datasize,QString bindtime,int id);
     DirCardProxy*_dircardProxy;
     linkNewFolder_window* linknewfolderwindow=new linkNewFolder_window();
-
 private:
     ElaProgressBar* _progressBar{nullptr};
     ElaPushButton* _pushButton1{nullptr};
@@ -30,6 +30,8 @@ private:
     ElaToggleButton* _toggleButton{nullptr};
 
     setExcludedItems_view* setexcludeditemsview=new setExcludedItems_view();
+signals:
+    void deleteTask(int id);
 };
 
 #endif // FILEMANGE_VIEW_H

@@ -207,6 +207,7 @@ QString COSClient::multiUpload(const QString &path, const QString &localpath, QM
     }
     //初始化分片上传
     QString uploadId = initLocalMultiUpload(path, localpath, metaDatas);
+    emit UploadProgress(0, file.size());
     //分片上传
     int partNumber = 1;
     QMap<int, QString> partEtagMap;
@@ -214,6 +215,7 @@ QString COSClient::multiUpload(const QString &path, const QString &localpath, QM
     {
         QByteArray data = file.read(5 * 1024 * 1024); // Assuming 5MB parts
         QString etag = uploadPart(path, uploadId, partNumber, data);
+        emit UploadProgress(file.pos(), file.size());
         partEtagMap.insert(partNumber, etag);
         partNumber++;
     }
@@ -246,9 +248,15 @@ preResponse COSClient::invokeGetFileRequest(const QString& path, const preReques
     }
     QNetworkReply* reply = manager->get(networkRequest);
     // 等待响应完成
+    connect(reply, &QNetworkReply::downloadProgress, this, [this](qint64 bytesReceived, qint64 bytesTotal) {
+        emit DownloadProgress(bytesReceived, bytesTotal);
+    });
+
+    // 等待响应完成
     QEventLoop loop;
     connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
     loop.exec();
+
     // 处理响应
     response.data = reply->readAll();
     response.statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
