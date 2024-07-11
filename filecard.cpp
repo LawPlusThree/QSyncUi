@@ -10,27 +10,27 @@ FileCard::FileCard(QString f, qint64 d,double s,int p,int Id)
     filename = new ElaText(f, this);
 
     QString size;
-    QString str;
+    QString dataStr;
     double data=d;
     data/=1000;
     if(data<1000)
     {
-        str=QString::number(data,'f',1);
-        size=str+"KB";
+        dataStr=QString::number(data,'f',1);
+        size=dataStr+"KB";
     }
     else
     {
         data/=1000;
         if(data<1000)
         {
-            str=QString::number(data,'f',1);
-            size=str+"MB";
+            dataStr=QString::number(data,'f',1);
+            size=dataStr+"MB";
         }
         else
         {
             data/=1000;
-            str=QString::number(data,'f',1);
-            size=str+"GB";
+            dataStr=QString::number(data,'f',1);
+            size=dataStr+"GB";
         }
     }
     datasize = new ElaText(size, this);

@@ -13,8 +13,33 @@
 DirCard::DirCard(QString f, int d,QString b,int Id)
 {
     filename=new ElaText(f);
-    QString Size=QString("%1GB").arg(d);
-    datasize=new ElaText(Size);
+
+    QString size;
+    QString dataStr;
+    double data=d;
+    data/=1000;
+    if(data<1000)
+    {
+        dataStr=QString::number(data,'f',1);
+        size=dataStr+"KB";
+    }
+    else
+    {
+        data/=1000;
+        if(data<1000)
+        {
+            dataStr=QString::number(data,'f',1);
+            size=dataStr+"MB";
+        }
+        else
+        {
+            data/=1000;
+            dataStr=QString::number(data,'f',1);
+            size=dataStr+"GB";
+        }
+    }
+    datasize = new ElaText(size, this);
+
     bindtime=new ElaText(b);
     id=Id;
 
@@ -69,7 +94,30 @@ bool DirCard::ischecked()
 
 void DirCard::modify(int d,QString b)
 {
-    QString Size=QString("%1GB").arg(d);
-    datasize->setText(Size);
+    QString size;
+    QString dataStr;
+    double data=d;
+    data/=1000;
+    if(data<1000)
+    {
+        dataStr=QString::number(data,'f',1);
+        size=dataStr+"KB";
+    }
+    else
+    {
+        data/=1000;
+        if(data<1000)
+        {
+            dataStr=QString::number(data,'f',1);
+            size=dataStr+"MB";
+        }
+        else
+        {
+            data/=1000;
+            dataStr=QString::number(data,'f',1);
+            size=dataStr+"GB";
+        }
+    }
+    datasize->setText(size);
     bindtime->setText(b);
 }

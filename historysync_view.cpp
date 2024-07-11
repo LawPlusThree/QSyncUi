@@ -44,23 +44,56 @@ HistorysyncPage::HistorysyncPage(QWidget* parent)
     catalogueArea->setAttribute(Qt::WA_TranslucentBackground); // 设置背景透明
     //ElaScrollPageArea* catalogueArea = new ElaScrollPageArea(this);
     QHBoxLayout* catalogueLayout = new QHBoxLayout(catalogueArea);
-    catalogueLayout->setContentsMargins(10, 0, 15, 0);
+    catalogueLayout->setContentsMargins(18, 0, 20, 0);
+    ElaText* catalogueText0 = new ElaText("", this);
+    catalogueText0->setTextSize(16);
+    catalogueText0->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    catalogueText0->setFixedSize(25,20);
+    catalogueText0->setAlignment(Qt::AlignCenter); // 设置文本居中对齐
+    QVBoxLayout* catalogueArea0 = new QVBoxLayout();
+    catalogueArea0->addWidget(catalogueText0, 0, Qt::AlignCenter);
+
     ElaText* catalogueText1 = new ElaText("文件名", this);
-    catalogueText1->setTextSize(15);
-    catalogueText1->setAlignment(Qt::AlignCenter); // 设置文本居中对齐
+    catalogueText1->setTextSize(16);
+    catalogueText1->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    //QWidget* filenameWidget = new QWidget();
+    filenameWidget->setWindowFlags(Qt::FramelessWindowHint); // 去除窗口边框
+    filenameWidget->setAttribute(Qt::WA_TranslucentBackground); // 设置背景透明
+    filenameWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    QVBoxLayout* filenameArea = new QVBoxLayout(filenameWidget);
+    filenameArea->addWidget(catalogueText1, 0, Qt::AlignLeft);
+
     ElaText* catalogueText2 = new ElaText("数据大小", this);
-    catalogueText2->setTextSize(15);
+    catalogueText2->setTextSize(16);
+    catalogueText2->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    catalogueText2->setFixedSize(100,20);
     catalogueText2->setAlignment(Qt::AlignCenter); // 设置文本居中对齐
-    ElaText* catalogueText4 = new ElaText("同步状态", this);
-    catalogueText4->setTextSize(15);
+    QVBoxLayout* catalogueArea2 = new QVBoxLayout();
+    catalogueArea2->addWidget(catalogueText2, 0, Qt::AlignCenter);
+    ElaText* catalogueText4 = new ElaText("同步时间", this);
+    catalogueText4->setTextSize(16);
+    catalogueText4->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    catalogueText4->setFixedSize(140,20);
     catalogueText4->setAlignment(Qt::AlignCenter); // 设置文本居中对齐
-    ElaText* catalogueText5 = new ElaText("已完成", this);
-    catalogueText5->setTextSize(15);
+    QVBoxLayout* catalogueArea4 = new QVBoxLayout();
+    catalogueArea4->addWidget(catalogueText4, 0, Qt::AlignCenter);
+    ElaText* catalogueText5 = new ElaText("状态", this);
+    catalogueText5->setTextSize(16);
+    catalogueText5->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    catalogueText5->setFixedSize(60,20);
     catalogueText5->setAlignment(Qt::AlignCenter); // 设置文本居中对齐
-    catalogueLayout->addWidget(catalogueText1);
-    catalogueLayout->addWidget(catalogueText2);
-    catalogueLayout->addWidget(catalogueText4);
-    catalogueLayout->addWidget(catalogueText5);
+    QHBoxLayout* catalogueArea5 = new QHBoxLayout();
+    catalogueArea5->addWidget(catalogueText5, 0, Qt::AlignCenter);
+    catalogueLayout->addLayout(catalogueArea0);
+    catalogueLayout->addWidget(filenameWidget);
+    catalogueLayout->addLayout(catalogueArea2);
+    catalogueLayout->addLayout(catalogueArea4);
+    catalogueLayout->addLayout(catalogueArea5);
+    catalogueLayout->setStretchFactor(catalogueArea0, 25);
+    catalogueLayout->setStretchFactor(filenameWidget, 500);
+    catalogueLayout->setStretchFactor(catalogueArea2, 100);
+    catalogueLayout->setStretchFactor(catalogueArea4, 140);
+    catalogueLayout->setStretchFactor(catalogueArea5, 60);
 
     ElaScrollArea* scrollArea = new ElaScrollArea();
     scrollArea->viewport()->setStyleSheet("background:transparent;");//设置背景透明
