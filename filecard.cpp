@@ -130,8 +130,14 @@ void FileCard::modify(int totalSize,int currentSize)
     else
     {
         preTime=currentTime;
-        currentTime=QDateTime::currentDateTime();
-        int time=preTime.msecsTo(currentTime);
+        QDateTime _currentTime=QDateTime::currentDateTime();
+        int time=preTime.msecsTo(_currentTime);
+        if(time<=500){
+            return ;
+        }
+        else{
+            currentTime=_currentTime;
+        }
         qDebug()<<time;
         if(time==0)
         {
