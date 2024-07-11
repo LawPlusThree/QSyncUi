@@ -152,7 +152,7 @@ void SyncingPage::addFile(QString filename, int datasize,int speed,int progress,
     _filecardProxy->addFileCard(newFile,id);
     totalProgress();
     QFontMetrics metrics(newFile->filename->font());
-    QString elidedText = metrics.elidedText(newFile->fullText, Qt::ElideRight, filenameWidget->width()-20);
+    QString elidedText = metrics.elidedText(newFile->fullText, Qt::ElideMiddle, filenameWidget->width()-20);
     newFile->filename->setText(elidedText);
     newFile->filename->setToolTip(newFile->fullText);
 }
