@@ -179,6 +179,7 @@ bool User::updateAvatar(const QString &filePath)
     }
 }
 
+
 bool User::addTask(const QString &localDir, const QString &s3Dir, int syncType, int usedSize, int totalSize)
 {
     // 添加云端task
@@ -265,27 +266,6 @@ bool User::logout()
     }
 }
 
-QString User::getS3Location()
-{
-    if (isLogin)
-    {
-        ApiResponse response = apiRequest->get("/s3/Info");
-        if (response.isSuccess())
-        {
-            return response.getData().value("endpoint").toString();
-        }
-        else
-        {
-            emit channel->message(response.message, "Error");
-            return "";
-        }
-    }
-    else
-    {
-        qDebug() << "pls login before get s3 location!";
-        return "";
-    }
-}
 
 QString User::getUsername()
 {
@@ -332,4 +312,22 @@ bool User::updateUser()
         emit channel->message(response.message, "Error");
         return false;
     }
+}
+
+COSConfig User::getS3Config()
+{
+    ApiResponse response = apiRequest->get("/s3Config");
+    COSConfig config;
+    if (response.isSuccess())
+    {
+        config.bucketName=response.getData()["bucket"].toString();
+        config.region=response.getData()["region"].toString();
+        config.appId=response.getData()["appid"].toString();
+    }
+    else
+    {
+        emit channel->message(response.message, "Error");
+        return config;
+    }
+    return config;
 }

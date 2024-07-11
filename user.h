@@ -13,6 +13,7 @@
 #include "apirequest.h"
 #include "synctask.h"
 #include "tasktoken.h"
+#include "cosclient.h"
 #include "messagechannel.h"
 
 class User : public QObject
@@ -49,7 +50,7 @@ public:
     TaskToken getTaskTokenByRemote(QString s3Dir);
     bool logout();//登出
     bool updateUser();
-    QString getS3Location();//获取云端容器地址
+    COSConfig getS3Config();
     QString getUsername();//获取用户名
     QString getEmail();//获取用户邮箱
     QString getUserHash() const; //返回用户账户的哈希

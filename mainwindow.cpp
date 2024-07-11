@@ -140,6 +140,7 @@ void MainWindow::onUserLoggedIn(User user)
 {
     CurrentUser=new User(user);
     connect(CurrentUser->channel,&MessageChannel::message,this,&MainWindow::onMessage);
+    COSConfig cosConfig=CurrentUser->getS3Config();
     _modifyInfor_win->currentUser=CurrentUser;
     um->updateUserInfo(CurrentUser);
     setUserInfoCardTitle(user.getUsername());
@@ -182,9 +183,9 @@ void MainWindow::onUserLoggedIn(User user)
     for (auto const &x:_syncTaskDatabaseManager->getTasks()){
         SyncTask* task=new SyncTask(x);
         TaskToken tt=CurrentUser->getTaskTokenByRemote(x.getRemotePath());
-        QString bucketName="qsync";
-        QString appId="1320107701";
-        QString region="ap-nanjing";
+        QString bucketName=cosConfig.bucketName;
+        QString appId=cosConfig.appId;
+        QString region=cosConfig.region;
         QString secretId=tt.tmpSecretId;
         QString secretKey=tt.tmpSecretKey;
         QString token=tt.sessionToken;

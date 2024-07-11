@@ -9,6 +9,12 @@
 #include <QtNetwork/QNetworkReply>
 #include <QUrl>
 #include <QDomDocument>
+struct COSConfig
+{
+    QString bucketName;
+    QString appId;
+    QString region;
+};
 struct headHeader {
     QString ifModifiedSince;   // If-Modified-Since 请求头
     QString ifUnmodifiedSince; // If-Unmodified-Since 请求头
