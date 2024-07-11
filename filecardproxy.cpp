@@ -20,7 +20,7 @@ void FileCardProxy::addFileCard(FileCard *card, const int &id) {
     }
 }
 
-void FileCardProxy::addFileCard(QString filename,int datasize,int speed,int progress,const int &id)
+void FileCardProxy::addFileCard(QString filename,qint64 datasize,double speed,int progress,const int &id)
 {
     FileCard*card=new FileCard(filename,datasize,speed,progress,id);
     if (card && parentWidget && !cardMap.contains(id)) {
@@ -53,7 +53,7 @@ void FileCardProxy::removeFileCard(const int &id) {
     }
 }*/
 
-void FileCardProxy::modify(int totalsize,int currentsize,int Id)
+void FileCardProxy::modify(qint64 totalsize,qint64 currentsize,int Id)
 {
     QMapIterator<int,FileCard*> i(cardMap);
     while(i.hasNext())

@@ -32,6 +32,7 @@ signals:
 private slots:
     void onConfirmButtonClicked();
     void onAvatarClicked();
+    void showEvent(QShowEvent *event);
 };
 
 #endif // MODIFYINFOR_WIN_H

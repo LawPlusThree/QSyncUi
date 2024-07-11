@@ -17,11 +17,11 @@ class SyncingPage : public ElaScrollPage
 public:
     SyncingPage(QWidget* parent = nullptr);
     ~SyncingPage();
-    void addFile(QString filename, int datasize,int speed,int progress,int id);
+    void addFile(QString filename, qint64 datasize,double speed,int progress,int id);
     void removeFile(int id);
     //void modifyFile(int d,int s,int p,int id);
     //void modifyFile(int p,int id);
-    void modifyFile(int totalSize,int currentSize,int id);
+    void modifyFile(qint64 totalSize,qint64 currentSize,int id);
     void totalProgress();
     FileCardProxy* _filecardProxy;
     QDateTime preTime;
