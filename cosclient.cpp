@@ -123,7 +123,6 @@ bool COSClient::save2Local(const QString &path, const QString &localpath, const 
 {
     QMap<QString, QString> tempHeaders;
     QByteArray data = getObject(path, versionId, tempHeaders);
-    qDebug()<<data.size();
     QFile file(localpath);
     //获取文件的父文件夹，如果不存在，循环创建
     QFileInfo fileInfo(localpath);
@@ -135,7 +134,7 @@ bool COSClient::save2Local(const QString &path, const QString &localpath, const 
 
     if (!file.open(QIODevice::WriteOnly))
     {
-        qDebug() << "无法创建文件：" << localpath;
+        qDebug() << "Failed To create" << localpath;
         return false;
     }
     file.write(data);
@@ -189,10 +188,10 @@ preResponse COSClient::deleteObject(const QString &path, const QString &versionI
     // 获取 x-cos-delete-marker 响应头
     bool deleteMarker = response.headers.value("x-cos-delete-marker")=="true"?"true":"false";
     if(haveId&&deleteMarker){
-        qDebug()<<"标记"<<responseVersionId<<"为删除";
+        qDebug()<<"Mark "<<responseVersionId<<" to deleted";
     }
     else if(!haveId && deleteMarker){
-        qDebug()<<"创建了一个删除标记作为"<<path<<"的最新版本";
+        qDebug()<<"Delete "<<path<<" as latest version";
     }
     return response;
 }
@@ -207,6 +206,7 @@ QString COSClient::multiUpload(const QString &path, const QString &localpath, QM
     }
     //初始化分片上传
     QString uploadId = initLocalMultiUpload(path, localpath, metaDatas);
+    emit UploadProgress(0, file.size());
     //分片上传
     int partNumber = 1;
     QMap<int, QString> partEtagMap;
@@ -214,6 +214,7 @@ QString COSClient::multiUpload(const QString &path, const QString &localpath, QM
     {
         QByteArray data = file.read(5 * 1024 * 1024); // Assuming 5MB parts
         QString etag = uploadPart(path, uploadId, partNumber, data);
+        emit UploadProgress(file.pos(), file.size());
         partEtagMap.insert(partNumber, etag);
         partNumber++;
     }
@@ -246,9 +247,15 @@ preResponse COSClient::invokeGetFileRequest(const QString& path, const preReques
     }
     QNetworkReply* reply = manager->get(networkRequest);
     // 等待响应完成
+    connect(reply, &QNetworkReply::downloadProgress, this, [this](qint64 bytesReceived, qint64 bytesTotal) {
+        emit DownloadProgress(bytesReceived, bytesTotal);
+    });
+
+    // 等待响应完成
     QEventLoop loop;
     connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
     loop.exec();
+
     // 处理响应
     response.data = reply->readAll();
     response.statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
@@ -469,8 +476,6 @@ bool COSClient::preCheckSession()
     }
     if (expiredTime < QDateTime::currentDateTime())
     {
-        qDebug() << expiredTime;
-        qDebug() << QDateTime::currentDateTime();
         return false;
     }
     return true;
@@ -603,11 +608,8 @@ QNetworkRequest COSClient::buildGetRequest(const QString &path, const QMap<QStri
     {
         query.addQueryItem(it.key(),it.value());
     }
-    qDebug()<<url;
     url.setQuery(query);
-    qDebug()<<url;
     QNetworkRequest request(url);
-    qDebug()<<request.url();
     request.setRawHeader("Host",endpoint.toUtf8());
     //设置请求方法
     request.setAttribute(QNetworkRequest::CustomVerbAttribute,"GET");

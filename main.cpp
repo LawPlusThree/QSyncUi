@@ -7,13 +7,13 @@
 #include "tasktoken.h"
 #include "cosclient.h"
 #include "xmlprocesser.h"
-#include "filefunc.h"
+#include "SyncThread.h"
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-
+/*
     //测试用户
     User loginuser("enrolluser@example.com","123456");
     loginuser.enroll();
@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
 
 
     //loginuser.addTask("E:/","home/",1,22,22);
-    TaskToken tt=loginuser.getTaskTokenByRemote("home/");
+    /*TaskToken tt=loginuser.getTaskTokenByRemote("home/");
     //request: https://qsync-1320107701.cos.ap-nanjing.myqcloud.com/?prefix=home
     QNetworkRequest request(QUrl("https://qsync-1320107701.cos.ap-nanjing.myqcloud.com/?prefix=home"));
     request.setAttribute(QNetworkRequest::CustomVerbAttribute,"GET");
@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
     SyncTask mytask("F:/回访母校专题结项提交材料","home/",1);
     Filefunc ff("F:/回访母校专题结项提交材料",&cosclient,&mytask);
     ff.start();
-
+*/
     //qDebug()<<"save to local:"<<cosclient.save2Local("home/1.txt","C:/Users/work123/Desktop/1.txt","",myMap);
     /*QMap<QString,QString> metaDatas;
     QMap<QString,QString> headers=cosclient.headObject("home/1.txt","C:/Users/work123/Desktop/1.txt","",hh);
@@ -65,6 +65,7 @@ int main(int argc, char *argv[])
     //sc.addTask(&mytask);
     //stm.addTask(mytask);
     //qDebug()<<stm.queryTask(mytask);*/
+
 
     ElaApplication::getInstance()->init();
     MainWindow w;

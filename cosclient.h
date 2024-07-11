@@ -87,6 +87,8 @@ public slots:
 signals:
     void PutRequestFinished(int task_id, bool success);
     void TaskProgress(int task_id, int progress);
+    void UploadProgress(qint64 bytesReceived, qint64 bytesTotal);
+    void DownloadProgress(qint64 bytesReceived, qint64 bytesTotal);
 private:
     QString bucketName;
     QString appId;

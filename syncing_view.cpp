@@ -9,6 +9,7 @@
 #include <QApplication>
 #include <QTimer>
 #include <QObject>
+#include"filecardproxy.h"
 
 SyncingPage::SyncingPage(QWidget* parent)
     : ElaScrollPage(parent)
@@ -26,7 +27,8 @@ SyncingPage::SyncingPage(QWidget* parent)
     _progressBar->setMinimumSize(100, 20); // 调整最小宽度为100，最小高度20
     // 设置进度条的最小值和最大值
     _progressBar->setMinimum(0);
-    _progressBar->setMaximum(0); // 表示不确定的进度
+    _progressBar->setMaximum(100); // 表示不确定的进度
+    _progressBar->setValue(0);
     QWidget* progressBarArea = new QWidget();
     progressBarArea->setWindowFlags(Qt::FramelessWindowHint); // 去除窗口边框
     progressBarArea->setAttribute(Qt::WA_TranslucentBackground); // 设置背景透明
@@ -122,32 +124,12 @@ SyncingPage::SyncingPage(QWidget* parent)
     ElaScrollArea* scrollArea = new ElaScrollArea();
     scrollArea->viewport()->setStyleSheet("background:transparent;");//设置背景透明
 
-    connect(FileCardArea1,&FileCard::Relieve,this,&SyncingPage::removeFile);
-    connect(FileCardArea2,&FileCard::Relieve,this,&SyncingPage::removeFile);
-    connect(FileCardArea3,&FileCard::Relieve,this,&SyncingPage::removeFile);
-    connect(FileCardArea4,&FileCard::Relieve,this,&SyncingPage::removeFile);
-    connect(FileCardArea5,&FileCard::Relieve,this,&SyncingPage::removeFile);
-    connect(FileCardArea6,&FileCard::Relieve,this,&SyncingPage::removeFile);
-    connect(FileCardArea7,&FileCard::Relieve,this,&SyncingPage::removeFile);
-    connect(FileCardArea8,&FileCard::Relieve,this,&SyncingPage::removeFile);
-    connect(FileCardArea9,&FileCard::Relieve,this,&SyncingPage::removeFile);
-    connect(FileCardArea10,&FileCard::Relieve,this,&SyncingPage::removeFile);
+    _filecardProxy=new FileCardProxy(this);
+    addFile("文件1",3,1.3,0,1000);
 
-    QWidget* filesWidget=new QWidget();
-    filesLayout=new QVBoxLayout(filesWidget);
-    filesLayout->addWidget(FileCardArea1);
-    filesLayout->addWidget(FileCardArea2);
-    filesLayout->addWidget(FileCardArea3);
-    filesLayout->addWidget(FileCardArea4);
-    filesLayout->addWidget(FileCardArea5);
-    filesLayout->addWidget(FileCardArea6);
-    filesLayout->addWidget(FileCardArea7);
-    filesLayout->addWidget(FileCardArea8);
-    filesLayout->addWidget(FileCardArea9);
-    filesLayout->addWidget(FileCardArea10);
-    filesLayout->setAlignment(Qt::AlignTop);
 
-    scrollArea->setWidget(filesWidget); // 设置scrollArea的内容部件
+    scrollArea->setWidget(_filecardProxy);
+    //scrollArea->setWidget(filesWidget); // 设置scrollArea的内容部件
     scrollArea->setWidgetResizable(true); // 允许scrollArea根据内容自动调整大小
 
     centerVLayout->addWidget(progressBarArea); // 将上方固定区域添加到布局中
@@ -164,21 +146,79 @@ SyncingPage::~SyncingPage()
 
 }
 
-void SyncingPage::addFile(QString filename, QString datasize,QString speed,QString progress)
+void SyncingPage::addFile(QString filename, int datasize,int speed,int progress,int id)
 {
-    FileCard*firecard=new FileCard(filename,datasize,speed,progress);
-    connect(firecard,&FileCard::Relieve,this,&SyncingPage::removeFile);
-    filesLayout->addWidget(firecard);
+    FileCard*newFile=new FileCard(filename,datasize,speed,progress,id);
+    connect(newFile,&FileCard::Relieve,this,&SyncingPage::removeFile);
+    _filecardProxy->addFileCard(newFile,id);
+    totalProgress();
 }
 
-void SyncingPage::removeFile()
+void SyncingPage::removeFile(int id)
 {
-    FileCard *card = qobject_cast<FileCard*>(sender());
-    if (card)
+    _filecardProxy->removeFileCard(id);
+    totalProgress();
+}
+
+/*void SyncingPage::modifyFile(int d,int s,int p,int id)
+{
+    _filecardProxy->modify(d,s,p,id);
+    totalProgress();
+}
+
+void SyncingPage::modifyFile(int p,int id)
+{
+    _filecardProxy->processing(p,id);
+    totalProgress();
+}*/
+
+
+void SyncingPage::modifyFile(int totalSize,int currentSize,int id)
+{
+    int d=totalSize;
+    int p=currentSize/totalSize;
+    int s;
+    preSize=Size;
+    Size=currentSize;
+    if(currentTime.isValid())
     {
-        layout()->removeWidget(card);
-        delete card;
+        s=0;
+        currentTime=QDateTime::currentDateTime();
     }
+    else
+    {
+        preTime=currentTime;
+        currentTime=QDateTime::currentDateTime();
+        int time=currentTime.secsTo(preTime);
+        s=(Size-preSize)/time;
+    }
+    _filecardProxy->modify(d,s,p,id);
+    totalProgress();
+}
+
+void SyncingPage::totalProgress()
+{
+    int totalpro=_filecardProxy->totalprogress();
+    _progressBar->setValue(totalpro);
+}
+
+void SyncingPage::updateFilenameText() {
+    QFontMetrics metrics(FileCardArea3->filename->font());
+    QString elidedText = metrics.elidedText(FileCardArea3->fullText, Qt::ElideRight, filenameWidget->width()-20);
+    FileCardArea3->filename->setText(elidedText);
+    FileCardArea3->filename->setToolTip(FileCardArea3->fullText); // 设置工具提示为完整的文件名
+
+    metrics = QFontMetrics (FileCardArea4->filename->font());
+    elidedText = metrics.elidedText(FileCardArea4->fullText, Qt::ElideRight, filenameWidget->width()-20);
+    FileCardArea4->filename->setText(elidedText);
+    FileCardArea4->filename->setToolTip(FileCardArea4->fullText); // 设置工具提示为完整的文件名
+}
+
+// 重写resizeEvent
+void SyncingPage::resizeEvent(QResizeEvent* event) {
+    QWidget::resizeEvent(event);
+    //QTimer::singleShot(1, this, SLOT(updateFilenameText()));
+    updateFilenameText();
 }
 
 void SyncingPage::updateFilenameText() {

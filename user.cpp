@@ -1,5 +1,15 @@
 #include "user.h"
 
+QString User::encryptPassword()
+{
+    QString password=hashedPassword;
+    QString uuid=QUuid::createUuid().toString();
+    //以uuid为密钥rc4加密password
+    RC4 rc4(uuid.toUtf8());
+    QByteArray code = rc4.encrypt(password.toUtf8());
+    return QString::fromUtf8(code);
+}
+
 User::User(const QString &username, const QString &account, const QString &password, QObject *parent)
     : QObject(parent), username(username), account(account), hashedPassword(password)
 {

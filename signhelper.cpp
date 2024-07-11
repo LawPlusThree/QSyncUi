@@ -59,11 +59,11 @@ QString SignHelper::generateSignature(QNetworkRequest &request, int signDuration
 
     // 生成 HttpString
     QString httpString = QString("%1\n%2\n%3\n%4\n").arg(method, uriPath, httpParameters, httpHeaders);
-    qDebug() << httpString;
+    //qDebug() << httpString;
     // 生成 StringToSign
     QString httpStringSha1 = sha1(httpString);
     QString stringToSign = QString("sha1\n%1\n%2\n").arg(keyTime, httpStringSha1);
-    qDebug() << stringToSign;
+//qDebug() << stringToSign;
     // 生成 SignKey
     QString signKey = hmacSha1(secretKey, keyTime);
 

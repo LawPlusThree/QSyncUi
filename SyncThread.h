@@ -1,5 +1,5 @@
-#ifndef FILEFUNC_H
-#define FILEFUNC_H
+#ifndef SYNCTHREAD_H
+#define SYNCTHREAD_H
 
 #include "qthread.h"
 #include "synctask.h"
@@ -12,17 +12,18 @@
 #include <QDateTime>
 #include <QString>
 
-class Filefunc : public QThread
+class SyncThread : public QThread
 {
 Q_OBJECT
 public:
+    static int fileTaskId;
     QString path;
     COSClient* cosclient;
     SyncTask* task;
     qint64 totalSize=0;
     qint64 upFileSize=0;
     qint64 downFileSize=0;
-    Filefunc(QString pathi,COSClient* cosclienti,SyncTask* taski):path(pathi),cosclient(cosclienti),task(taski){};
+    SyncThread(QString pathi,COSClient* cosclienti,SyncTask* taski):path(pathi),cosclient(cosclienti),task(taski){};
     void run() override;
     void readDirectory(const QString &path);
     void recursiveRead(const QString &path);
@@ -34,6 +35,10 @@ public:
 signals:
     void localTotalSize(qint64);//本地文件总大小
     void upTotalSize(qint64);//上传文件总大小
+    void newUploadTask(const QString &localPath, qint64 fileTaskId);
+    void newDownloadTask(const QString &localPath, qint64 fileTaskId);
+    void updateUploadTask(int fileTaskId, qint64 nowSize, qint64 totalSize);
+    void updateDownloadTask(int fileTaskId, qint64 nowSize, qint64 totalSize);
 };
 
 
@@ -41,4 +46,4 @@ signals:
 
 
 
-#endif // FILEFUNC_H
+#endif // SYNCTHREAD_H

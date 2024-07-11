@@ -7,7 +7,7 @@
 #include "ElaWindow.h"
 #include"loginwin.h"
 #include"ElaCheckBox.h"
-#include"databasemanager.h"
+#include"usermanager.h"
 #include "user.h"
 #include <QQueue>
 #include "synctask.h"
@@ -33,16 +33,24 @@ public:
     loginwin* login=new loginwin();
     Q_SLOT void onCloseButtonClicked();
     User*CurrentUser=nullptr;
-    DatabaseManager*db;
-
+    UserManager *um;
 public slots:
     void onUserLoggedIn(User user);
     void onNeedPassword(const QString& account);
-    void insertUserToDatabase(User user);
+    //void insertUserToDatabase(User user);
     void onMessage( QString message,QString type);
     void onUserAddNewTask(const SyncTask &task);
     void onModifyInfo(User user);
     void exitLogin();
+    void onFileUploadTaskCreated(const QString &localPath, int fileTaskId);
+    void onFileUploadTaskUpdated(int fileTaskId, qint64 nowSize, qint64 totalSize);
+    void onFileUploadTaskPaused(int fileTaskId);
+    void onFileDownloadTaskCreated(const QString &localPath, int fileTaskId);
+    void onFileDownloadTaskUpdated(int fileTaskId, qint64 nowSize, qint64 totalSize);
+    void onFileDownloadTaskPaused(int fileTaskId);
+    void onTaskTotalSize(qint64 size, int taskid);
+    void onTaskUploadSize(qint64 size, int taskid);
+
 signals:
     void dbPassword(const QString &);
 
@@ -66,4 +74,5 @@ private:
     SyncTaskDatabaseManager* _syncTaskDatabaseManager{nullptr};
 
 };
+
 #endif // MAINWINDOW_H

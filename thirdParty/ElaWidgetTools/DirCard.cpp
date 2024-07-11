@@ -10,10 +10,11 @@
 #include"ElaPushButton.h"
 #include"ElaToggleButton.h"
 
-DirCard::DirCard(QString f, QString d,QString b,QString Id)
+DirCard::DirCard(QString f, int d,QString b,int Id)
 {
     filename=new ElaText(f);
-    datasize=new ElaText(d);
+    QString Size=QString("%1GB").arg(d);
+    datasize=new ElaText(Size);
     bindtime=new ElaText(b);
     id=Id;
 
@@ -64,4 +65,11 @@ void DirCard::on_relieveBtn_clicked()
 bool DirCard::ischecked()
 {
     return _checkBox->isChecked();
+}
+
+void DirCard::modify(int d,QString b)
+{
+    QString Size=QString("%1GB").arg(d);
+    datasize->setText(Size);
+    bindtime->setText(b);
 }

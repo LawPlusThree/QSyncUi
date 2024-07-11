@@ -21,7 +21,7 @@
 #include"filemange_view.h"
 #include "historysync_view.h"
 #include"historyview.h"
-#include "filefunc.h"
+#include "SyncThread.h"
 #include "qthread.h"
 #include "modifyinfor_win.h"
 
@@ -29,8 +29,7 @@ MainWindow::MainWindow(QWidget *parent)
     : ElaWindow(parent)
 {
 
-    db = new DatabaseManager(this); // 创建数据库管理器实例
-    db->initializeDatabase(); // 初始化数据库
+    um = new UserManager(this);
     setUserInfoCardPixmap(QPixmap(":/include/Image/Cirno.jpg"));
     setUserInfoCardTitle("未登录");
     setUserInfoCardSubTitle("");
@@ -46,7 +45,7 @@ MainWindow::MainWindow(QWidget *parent)
     });
     connect(this,&MainWindow::dbPassword,login,&loginwin::on_db_response);
     connect(login,&loginwin::needPassword,this,&MainWindow::onNeedPassword);
-    connect(login->signinWin, &signinwin::on_signin_complete, this, &MainWindow::insertUserToDatabase);
+    //connect(login->signinWin, &signinwin::on_signin_complete, this, &MainWindow::insertUserToDatabase);
     qDebug()<<connect(login->channel,&MessageChannel::message,this,&MainWindow::onMessage);
     connect(_filemanagePage->linknewfolderwindow,&linkNewFolder_window::onNewTask,this,&MainWindow::onUserAddNewTask);
     ElaGraphicsScene *scene = new ElaGraphicsScene(this);
@@ -142,12 +141,12 @@ void MainWindow::onUserLoggedIn(User user)
     CurrentUser=new User(user);
     connect(CurrentUser->channel,&MessageChannel::message,this,&MainWindow::onMessage);
     _modifyInfor_win->currentUser=CurrentUser;
-    //db->insertUser(user.getEmail(),user.gethashedPassword());
+    um->updateUserInfo(CurrentUser);
     setUserInfoCardTitle(user.getUsername());
     setUserInfoCardSubTitle(user.getEmail());
     _syncCore=new SyncCore(this);
     _syncTaskDatabaseManager=new SyncTaskDatabaseManager(CurrentUser);
-    QString url=user.avatarpath;
+    QString url=user.getAvatarPath();
     QNetworkAccessManager *manager = new QNetworkAccessManager();
     QNetworkRequest request;
     request.setUrl(QUrl(url));
@@ -165,17 +164,44 @@ void MainWindow::onUserLoggedIn(User user)
     QString filename=QDir::toNativeSeparators(file.fileName());
     QPixmap pix(filename);
     setUserInfoCardPixmap(pix);
+    qDebug() << "Connecting taskTotalSize signal";
+    connect(_syncCore,&SyncCore::taskTotalSize,this,&MainWindow::onTaskTotalSize);
+    qDebug() << "Connecting taskUploadSize signal";
+    connect(_syncCore,&SyncCore::taskUploadSize,this,&MainWindow::onTaskUploadSize);
+    qDebug() << "Connecting addFileUploadTask signal";
+    connect(_syncCore,&SyncCore::addFileUploadTask,this,&MainWindow::onFileUploadTaskCreated);
+    qDebug() << "Connecting updateFileUploadTask signal";
+    connect(_syncCore,&SyncCore::updateFileUploadTask,this,&MainWindow::onFileUploadTaskUpdated);
+    qDebug() << "Connecting addFileDownloadTask signal";
+    connect(_syncCore,&SyncCore::addFileDownloadTask,this,&MainWindow::onFileDownloadTaskCreated);
+    qDebug() << "Connecting updateFileDownloadTask signal";
+    connect(_syncCore,&SyncCore::updateFileDownloadTask,this,&MainWindow::onFileDownloadTaskUpdated);
+    connect(_filemanagePage,&FileManagePage::deleteTask,[=](int taskId){
+       this->_syncTaskDatabaseManager->deleteTask(taskId);
+    });
     for (auto const &x:_syncTaskDatabaseManager->getTasks()){
+        SyncTask* task=new SyncTask(x);
+        TaskToken tt=CurrentUser->getTaskTokenByRemote(x.getRemotePath());
+        QString bucketName="qsync";
+        QString appId="1320107701";
+        QString region="ap-nanjing";
+        QString secretId=tt.tmpSecretId;
+        QString secretKey=tt.tmpSecretKey;
+        QString token=tt.sessionToken;
+        QDateTime expiredTime=tt.expiredTime;
+        COSClient *cosclient=new COSClient(bucketName,appId,region,secretId,secretKey,token,expiredTime);
+        task->cosclient=cosclient;
         if (x.getLastSyncTime()==QDateTime::fromString("2000-01-01 00:00:00","yyyy-MM-dd hh:mm:ss"))
         {
             QString timeDelta="从未同步";
-            this->_filemanagePage->addDirCard(x.getLocalPath(),"xx.mb",timeDelta,QString::number(x.getId()));
-            continue;
+            this->_filemanagePage->addDirCard(x.getLocalPath(),11,timeDelta,x.getId());
         }else{
             QString timeDelta=QString::number(x.getLastSyncTime().daysTo(QDateTime::currentDateTime()))+"天前";
-            this->_filemanagePage->addDirCard(x.getLocalPath(),"xx.mb",timeDelta,QString::number(x.getId()));
+            this->_filemanagePage->addDirCard(x.getLocalPath(),11,timeDelta,x.getId());
         }
+        _syncCore->addTask(task);
     }
+
 }
 
 void MainWindow::exitLogin()
@@ -188,17 +214,17 @@ void MainWindow::exitLogin()
 
 void MainWindow::onNeedPassword(const QString &account)
 {
-    QString password = db->getUserPassword(account).second;
+    QString password = um->getUserPassWord(account);
     emit dbPassword(password);
 }
-
+/*
 void MainWindow::insertUserToDatabase(User user)
 {
     qDebug()<<user.getEmail()<<" "<<user.gethashedPassword();
     db->insertUser(user.getEmail(),user.gethashedPassword());
     qDebug()<<db->getUserPassword(user.getEmail());
 }
-
+*/
 
 void MainWindow::onMessage( QString message, QString type)
 {
@@ -234,15 +260,45 @@ void MainWindow::onUserAddNewTask(const SyncTask &task)
     }
     if(
         CurrentUser->addTask(task.getLocalPath(),task.getRemotePath(),task.getSyncStatus(),1,1)){
-        if(_syncCore!=nullptr)
-        {
-            SyncTask mytask(task);
-            _syncCore->addTask(&mytask);
-        }
+
         if(_syncTaskDatabaseManager!=nullptr)
         {
-            _syncTaskDatabaseManager->addTask(task);
+            int res=_syncTaskDatabaseManager->addTask(task);
+            bool isSuccess=false;
+            if(_syncCore!=nullptr)
+            {
+                SyncTask mytask(task);
+                SyncTask* task=new SyncTask(mytask);
+                task->setId(res);
+                TaskToken tt=CurrentUser->getTaskTokenByRemote(task->getRemotePath());
+                QString bucketName="qsync";
+                QString appId="1320107701";
+                QString region="ap-nanjing";
+                QString secretId=tt.tmpSecretId;
+                QString secretKey=tt.tmpSecretKey;
+                QString token=tt.sessionToken;
+                QDateTime expiredTime=tt.expiredTime;
+                COSClient *cosclient=new COSClient(bucketName,appId,region,secretId,secretKey,token,expiredTime);
+                task->cosclient=cosclient;
+                isSuccess=_syncCore->addTask(task);
+            }
+            if(isSuccess)
+            {
+                if (task.getLastSyncTime()==QDateTime::fromString("2000-01-01 00:00:00","yyyy-MM-dd hh:mm:ss"))
+                {
+                    QString timeDelta="从未同步";
+                    this->_filemanagePage->addDirCard(task.getLocalPath(),111,timeDelta,task.getId());
+                }else{
+                    QString timeDelta=QString::number(task.getLastSyncTime().daysTo(QDateTime::currentDateTime()))+"天前";
+                    this->_filemanagePage->addDirCard(task.getLocalPath(),1111,timeDelta,task.getId());
+                }
+            }
+            else
+            {
+                _syncTaskDatabaseManager->deleteTask(res);
+            }
         }
+
     }
 }
 
@@ -262,12 +318,12 @@ void MainWindow::onModifyInfo(User user)
     //CurrentUser=new User(user);
     _modifyInfor_win->currentUser=CurrentUser;
     qDebug() << user.getEmail() << " " << user.gethashedPassword();
-    db->updateUserInfo(user.getEmail(),user.gethashedPassword());
-    qDebug() << user.getEmail() << " " << user.gethashedPassword() <<" " << db->getUserPassword(user.getEmail());
+    um->updateUserInfo(CurrentUser);
+    qDebug() << user.getEmail() << " " << user.gethashedPassword() <<" " << um->getUserPassWord(user.getEmail());
     setUserInfoCardTitle(_modifyInfor_win->newIdEdit_->text());
     setUserInfoCardSubTitle(user.getEmail());
 
-    QString url=user.avatarpath;
+    QString url=user.getAvatarPath();
     QNetworkAccessManager *manager = new QNetworkAccessManager();
     QNetworkRequest request;
     request.setUrl(QUrl(url));
@@ -285,4 +341,39 @@ void MainWindow::onModifyInfo(User user)
     QString filename=QDir::toNativeSeparators(file.fileName());
     QPixmap pix(filename);
     setUserInfoCardPixmap(pix);
+}
+
+void MainWindow::onFileUploadTaskCreated(const QString &localPath, int fileTaskId) {
+
+    _syncingPage->addFile(localPath,0,0,0,fileTaskId);
+    qDebug()<<"File upload task created"<<localPath<<" "<<fileTaskId;
+}
+
+void MainWindow::onFileUploadTaskUpdated(int fileTaskId, qint64 nowSize, qint64 totalSize) {
+    qDebug()<<"File upload task updated"<<fileTaskId<<" "<<nowSize<<"/"<<totalSize;
+}
+
+void MainWindow::onFileUploadTaskPaused(int fileTaskId) {
+    qDebug()<<"File upload task paused"<<fileTaskId;
+}
+
+void MainWindow::onFileDownloadTaskCreated(const QString &localPath, int fileTaskId) {
+    _syncingPage->addFile(localPath,0,0,0,fileTaskId);
+    qDebug()<<"File download task created"<<localPath<<" "<<fileTaskId;
+}
+
+void MainWindow::onFileDownloadTaskUpdated(int fileTaskId, qint64 nowSize, qint64 totalSize) {
+    qDebug()<<"File download task updated"<<fileTaskId<<" "<<nowSize<<"/"<<totalSize;
+}
+
+void MainWindow::onFileDownloadTaskPaused(int fileTaskId) {
+    qDebug()<<"File download task paused"<<fileTaskId;
+}
+
+void MainWindow::onTaskTotalSize(qint64 size, int taskid) {
+    this->_filemanagePage->modifyDirCard(size,"Syncing",taskid);
+}
+
+void MainWindow::onTaskUploadSize(qint64 size, int taskid) {
+    // Empty implementation
 }
