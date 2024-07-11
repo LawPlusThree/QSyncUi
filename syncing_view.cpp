@@ -208,6 +208,7 @@ void SyncingPage::totalProgress()
     _progressBar->setValue(totalpro);
 }
 
+/*
 void SyncingPage::updateFilenameText() {
     QFontMetrics metrics(FileCardArea3->filename->font());
     QString elidedText = metrics.elidedText(FileCardArea3->fullText, Qt::ElideRight, filenameWidget->width()-20);
@@ -226,22 +227,4 @@ void SyncingPage::resizeEvent(QResizeEvent* event) {
     //QTimer::singleShot(1, this, SLOT(updateFilenameText()));
     updateFilenameText();
 }
-
-void SyncingPage::updateFilenameText() {
-    QFontMetrics metrics(FileCardArea3->filename->font());
-    QString elidedText = metrics.elidedText(FileCardArea3->fullText, Qt::ElideRight, filenameWidget->width()-20);
-    FileCardArea3->filename->setText(elidedText);
-    FileCardArea3->filename->setToolTip(FileCardArea3->fullText); // 设置工具提示为完整的文件名
-
-    metrics = QFontMetrics (FileCardArea4->filename->font());
-    elidedText = metrics.elidedText(FileCardArea4->fullText, Qt::ElideRight, filenameWidget->width()-20);
-    FileCardArea4->filename->setText(elidedText);
-    FileCardArea4->filename->setToolTip(FileCardArea4->fullText); // 设置工具提示为完整的文件名
-}
-
-// 重写resizeEvent
-void SyncingPage::resizeEvent(QResizeEvent* event) {
-    QWidget::resizeEvent(event);
-    //QTimer::singleShot(1, this, SLOT(updateFilenameText()));
-    updateFilenameText();
-}
+*/
