@@ -40,8 +40,6 @@ MainWindow::MainWindow(QWidget *parent)
     _historysyncPage = new HistorysyncPage(this);
     _historyviewPage = new HistoryViewPage(this);
 
-    _filemanagePage->modifyDirCard(119,"2024.8.20",6);
-
     connect(this, &ElaWindow::userInfoCardClicked, [=]() {
         if(CurrentUser==nullptr)
             login->show();
