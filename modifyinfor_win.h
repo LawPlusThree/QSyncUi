@@ -30,6 +30,7 @@ signals:
 
 private slots:
     void onConfirmButtonClicked();
+    void onAvatarClicked();
 };
 
 #endif // MODIFYINFOR_WIN_H
