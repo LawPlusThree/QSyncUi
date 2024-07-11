@@ -79,6 +79,10 @@ int FileCardProxy::totalprogress()
         total+=card->progress;
         x++;
     }
-    int progress=total/x;
+    int progress;
+    if(x!=0)
+        progress=total/x;
+    else
+        progress=0;
     return progress;
 }

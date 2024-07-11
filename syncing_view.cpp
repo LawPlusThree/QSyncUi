@@ -157,7 +157,7 @@ void SyncingPage::removeFile(int id)
     totalProgress();
 }
 
-void SyncingPage::modifyFile(int d,int s,int p,int id)
+/*void SyncingPage::modifyFile(int d,int s,int p,int id)
 {
     _filecardProxy->modify(d,s,p,id);
     totalProgress();
@@ -166,6 +166,30 @@ void SyncingPage::modifyFile(int d,int s,int p,int id)
 void SyncingPage::modifyFile(int p,int id)
 {
     _filecardProxy->processing(p,id);
+    totalProgress();
+}*/
+
+
+void SyncingPage::modifyFile(int totalSize,int currentSize,int id)
+{
+    int d=totalSize;
+    int p=currentSize/totalSize;
+    int s;
+    preSize=Size;
+    Size=currentSize;
+    if(currentTime.isValid())
+    {
+        s=0;
+        currentTime=QDateTime::currentDateTime();
+    }
+    else
+    {
+        preTime=currentTime;
+        currentTime=QDateTime::currentDateTime();
+        int time=currentTime.secsTo(preTime);
+        s=(Size-preSize)/time;
+    }
+    _filecardProxy->modify(d,s,p,id);
     totalProgress();
 }
 
