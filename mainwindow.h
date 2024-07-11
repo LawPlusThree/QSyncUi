@@ -43,6 +43,15 @@ public slots:
     void onUserAddNewTask(const SyncTask &task);
     void onModifyInfo(User user);
     void exitLogin();
+    void onFileUploadTaskCreated(const QString &localPath, qint64 size, int fileTaskId);
+    void onFileUploadTaskUpdated(const QString &localPath, qint64 nowSize, int fileTaskId);
+    void onFileUploadTaskPaused(int fileTaskId);
+    void onFileDownloadTaskCreated(const QString &localPath, qint64 size, int fileTaskId);
+    void onFileDownloadTaskUpdated(const QString &localPath, qint64 nowSize, int fileTaskId);
+    void onFileDownloadTaskPaused(int fileTaskId);
+    void onTaskTotalSize(qint64 size, int taskid);
+    void onTaskUploadSize(qint64 size, int taskid);
+
 signals:
     void dbPassword(const QString &);
 

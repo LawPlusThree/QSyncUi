@@ -1,7 +1,8 @@
-#include "filefunc.h"
+#include "SyncThread.h"
 #include "crc64util.h"
 //用多线程遍历本地文件夹
-void Filefunc::run()
+int SyncThread::fileTaskId=0;
+void SyncThread::run()
 {
     crc64_init();
     //readDirectory(path);
@@ -10,13 +11,13 @@ void Filefunc::run()
     emit this->upTotalSize(upFileSize);
 }
 
-void Filefunc::readDirectory(const QString &path)
+void SyncThread::readDirectory(const QString &path)
 {
     // 递归读取文件夹和子文件夹
     recursiveRead(path);
 }
 
-void Filefunc::recursiveRead(const QString &path)
+void SyncThread::recursiveRead(const QString &path)
 {
     QDir dir(path);
     QFileInfoList list = dir.entryInfoList(QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot);
@@ -34,7 +35,7 @@ void Filefunc::recursiveRead(const QString &path)
     }
 }
 
-void Filefunc::readCLoudDirectory(const QString &cloudpath)
+void SyncThread::readCLoudDirectory(const QString &cloudpath)
 {
     XmlProcesser processer;
     QString xml;
@@ -83,7 +84,7 @@ void Filefunc::readCLoudDirectory(const QString &cloudpath)
 
 }
 
-void Filefunc::addSynctask(const QFileInfo &info)
+void SyncThread::addSynctask(const QFileInfo &info)
 {
     //把path前面和task->getLocalPath()相同的部分去掉
     QString path=info.absoluteFilePath();
@@ -93,6 +94,10 @@ void Filefunc::addSynctask(const QFileInfo &info)
     preResponse response=cosclient->headObject(cloudPath,"",tmpHeaders);
     if(!cosclient->isExist(response)){
         upFileSize+=info.size();
+        connect(cosclient,&COSClient::UploadProgress,[=](qint64 nowSize,qint64 total){
+            emit this->updateUploadTask(path,nowSize);
+        });
+
         cosclient->putLocalObject(cloudPath,path);
     }
 }

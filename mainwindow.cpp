@@ -21,7 +21,7 @@
 #include"filemange_view.h"
 #include "historysync_view.h"
 #include"historyview.h"
-#include "filefunc.h"
+#include "SyncThread.h"
 #include "qthread.h"
 #include "modifyinfor_win.h"
 
@@ -316,6 +316,14 @@ void MainWindow::onUserAddNewTask(const SyncTask &task)
         if(_syncTaskDatabaseManager!=nullptr)
         {
             _syncTaskDatabaseManager->addTask(task);
+        }
+        if (task.getLastSyncTime()==QDateTime::fromString("2000-01-01 00:00:00","yyyy-MM-dd hh:mm:ss"))
+        {
+            QString timeDelta="从未同步";
+            this->_filemanagePage->addDirCard(task.getLocalPath(),"xx.mb",timeDelta,task.getId());
+        }else{
+            QString timeDelta=QString::number(task.getLastSyncTime().daysTo(QDateTime::currentDateTime()))+"天前";
+            this->_filemanagePage->addDirCard(task.getLocalPath(),"xx.mb",timeDelta,task.getId());
         }
     }
 }
