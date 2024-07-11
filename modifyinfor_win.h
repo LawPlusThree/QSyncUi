@@ -24,6 +24,7 @@ public:
     ElaLineEdit *newPasswordEdit_;
     ElaLineEdit *confirmNewPasswordEdit_;
     ElaPushButton *confirmButton_;
+    QString avatarPath;
 
 signals:
     void changexinxi(User user);

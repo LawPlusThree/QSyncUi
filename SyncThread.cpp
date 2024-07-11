@@ -88,6 +88,7 @@ void SyncThread::readCLoudDirectory(const QString &cloudpath)
                 QMap<QString,QString> respHeaders;
                 cosclient->save2Local(ct.key,localPath,"",respHeaders);
                 disconnect(cosclient,&COSClient::DownloadProgress,this,nullptr);
+                emit this->finishDownloadTask(fileTaskId);
                 fileTaskId++;
             }
         }
@@ -111,6 +112,7 @@ void SyncThread::addSynctask(const QFileInfo &info)
         });
         cosclient->multiUpload(cloudPath,path);
         disconnect(cosclient,&COSClient::UploadProgress,this,nullptr);
+        emit this->finishUploadTask(fileTaskId);
         fileTaskId++;
     }
 }

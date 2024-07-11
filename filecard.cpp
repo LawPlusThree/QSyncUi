@@ -126,6 +126,7 @@ FileCard::FileCard(QString f, qint64 d,double s,int p,int Id)
 
     connect(relieveBtn, &ElaIconButton::clicked, this, &FileCard::on_relieveBtn_clicked);
     connect(pauseBtn, &ElaIconButton::clicked, this, &FileCard::on_pauseBtn_clicked);
+    filenameWidget->setStyleSheet("QToolTip { color: #5C5C5C; background-color: #F9F9F9; border: 1px solid #808080; border-radius: 3px; }");
 }
 
 void FileCard::on_relieveBtn_clicked()

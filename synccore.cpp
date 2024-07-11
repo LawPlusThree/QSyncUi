@@ -124,6 +124,12 @@ void SyncCore::doTask(SyncTask *task)
     connect(thread,&SyncThread::updateDownloadTask,this,[=](int fileTaskId, qint64 nowSize, qint64 totalSize){
         emit updateFileDownloadTask(fileTaskId,nowSize,totalSize);
     });
+    connect(thread,&SyncThread::finishUploadTask,this,[=](int fileTaskId){
+        emit finishFileUploadTask(fileTaskId);
+    });
+    connect(thread,&SyncThread::finishDownloadTask,this,[=](int fileTaskId){
+        emit finishFileDownloadTask(fileTaskId);
+    });
     thread->start();
 }
 

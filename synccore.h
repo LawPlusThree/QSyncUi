@@ -24,6 +24,8 @@ signals:
     void addFileDownloadTask(const QString &localPath , int fileTaskId);
     void updateFileUploadTask(int fileTaskId, qint64 nowSize,qint64 totalSize);
     void updateFileDownloadTask(int fileTaskId, qint64 nowSize,qint64 totalSize);
+    void finishFileUploadTask(int fileTaskId);
+    void finishFileDownloadTask(int fileTaskId);
 public slots:
     void pauseTask(int taskid){};
     void pauseAllTask(){};

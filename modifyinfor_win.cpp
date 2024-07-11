@@ -126,7 +126,7 @@ void modifyInfor_win::onConfirmButtonClicked()
     emit changexinxi(User(*currentUser));
 
     QMessageBox::information(this, "成功","修改成功");
-    this->close();
+    this->hide();
 }
 
 void modifyInfor_win::onAvatarClicked()
@@ -152,7 +152,6 @@ void modifyInfor_win::onAvatarClicked()
         avatar->setCardPixmapBorderRadius(70);
         avatarArea->addWidget(avatar,0,Qt::AlignCenter);
         update();
-        currentUser->updateAvatar(fileName);
     }
     confirmButton_->setEnabled(true);
     confirmButton_->setText("确认修改");
