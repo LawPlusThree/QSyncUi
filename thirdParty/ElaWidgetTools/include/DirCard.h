@@ -14,7 +14,7 @@ class ELA_EXPORT DirCard : public ElaScrollPageArea
 {
     Q_OBJECT
 public:
-    explicit DirCard(QString f, QString d,QString b,QString Id);
+    explicit DirCard(QString f, int d,QString b,int Id);
 
     ElaCheckBox* _checkBox{nullptr};
     ElaToggleButton*pauseBtn;
@@ -22,14 +22,15 @@ public:
     ElaText *datasize;
     ElaText *bindtime;
     ElaPushButton*relieveBtn;
+    void modify(int d,QString b);
 
-    QString id;
+    int id;
     bool ischecked();
 
 private slots:
     void on_relieveBtn_clicked();
 signals:
-    void relieve(QString id);
+    void relieve(int id);
 
     friend class DirCardProxy;
 };
