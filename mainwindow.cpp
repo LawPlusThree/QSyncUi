@@ -164,11 +164,17 @@ void MainWindow::onUserLoggedIn(User user)
     QString filename=QDir::toNativeSeparators(file.fileName());
     QPixmap pix(filename);
     setUserInfoCardPixmap(pix);
+    qDebug() << "Connecting taskTotalSize signal";
     connect(_syncCore,&SyncCore::taskTotalSize,this,&MainWindow::onTaskTotalSize);
+    qDebug() << "Connecting taskUploadSize signal";
     connect(_syncCore,&SyncCore::taskUploadSize,this,&MainWindow::onTaskUploadSize);
+    qDebug() << "Connecting addFileUploadTask signal";
     connect(_syncCore,&SyncCore::addFileUploadTask,this,&MainWindow::onFileUploadTaskCreated);
+    qDebug() << "Connecting updateFileUploadTask signal";
     connect(_syncCore,&SyncCore::updateFileUploadTask,this,&MainWindow::onFileUploadTaskUpdated);
+    qDebug() << "Connecting addFileDownloadTask signal";
     connect(_syncCore,&SyncCore::addFileDownloadTask,this,&MainWindow::onFileDownloadTaskCreated);
+    qDebug() << "Connecting updateFileDownloadTask signal";
     connect(_syncCore,&SyncCore::updateFileDownloadTask,this,&MainWindow::onFileDownloadTaskUpdated);
     connect(_filemanagePage,&FileManagePage::deleteTask,[=](int taskId){
        this->_syncTaskDatabaseManager->deleteTask(taskId);
@@ -338,6 +344,8 @@ void MainWindow::onModifyInfo(User user)
 }
 
 void MainWindow::onFileUploadTaskCreated(const QString &localPath, int fileTaskId) {
+
+    _syncingPage->addFile(localPath,0,0,0,fileTaskId);
     qDebug()<<"File upload task created"<<localPath<<" "<<fileTaskId;
 }
 
@@ -350,6 +358,7 @@ void MainWindow::onFileUploadTaskPaused(int fileTaskId) {
 }
 
 void MainWindow::onFileDownloadTaskCreated(const QString &localPath, int fileTaskId) {
+    _syncingPage->addFile(localPath,0,0,0,fileTaskId);
     qDebug()<<"File download task created"<<localPath<<" "<<fileTaskId;
 }
 
