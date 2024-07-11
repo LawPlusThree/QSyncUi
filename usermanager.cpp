@@ -11,10 +11,10 @@
 UserManager::UserManager( QObject *parent) : QObject(parent){}
 
 //保存登陆成功后的用户信息
-bool UserManager::updateUserInfo(User &user)
+bool UserManager::updateUserInfo(User *user)
 {
     // 保存更改到文件
-    return saveToFile(user.getEmail(),user.encryptPassword());
+    return saveToFile(user->getEmail(),user->encryptPassword());
 }
 
 QString UserManager::getUserPassWord(const QString &account)

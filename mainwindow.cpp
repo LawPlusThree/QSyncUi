@@ -29,8 +29,7 @@ MainWindow::MainWindow(QWidget *parent)
     : ElaWindow(parent)
 {
 
-    db = new DatabaseManager(this); // 创建数据库管理器实例
-    db->initializeDatabase(); // 初始化数据库
+    um = new UserManager(this);
     setUserInfoCardPixmap(QPixmap(":/include/Image/Cirno.jpg"));
     setUserInfoCardTitle("未登录");
     setUserInfoCardSubTitle("");
@@ -46,7 +45,7 @@ MainWindow::MainWindow(QWidget *parent)
     });
     connect(this,&MainWindow::dbPassword,login,&loginwin::on_db_response);
     connect(login,&loginwin::needPassword,this,&MainWindow::onNeedPassword);
-    connect(login->signinWin, &signinwin::on_signin_complete, this, &MainWindow::insertUserToDatabase);
+    //connect(login->signinWin, &signinwin::on_signin_complete, this, &MainWindow::insertUserToDatabase);
     qDebug()<<connect(login->channel,&MessageChannel::message,this,&MainWindow::onMessage);
     connect(_filemanagePage->linknewfolderwindow,&linkNewFolder_window::onNewTask,this,&MainWindow::onUserAddNewTask);
     ElaGraphicsScene *scene = new ElaGraphicsScene(this);
@@ -142,7 +141,7 @@ void MainWindow::onUserLoggedIn(User user)
     CurrentUser=new User(user);
     connect(CurrentUser->channel,&MessageChannel::message,this,&MainWindow::onMessage);
     _modifyInfor_win->currentUser=CurrentUser;
-    //db->insertUser(user.getEmail(),user.gethashedPassword());
+    um->updateUserInfo(CurrentUser);
     setUserInfoCardTitle(user.getUsername());
     setUserInfoCardSubTitle(user.getEmail());
     _syncCore=new SyncCore(this);
@@ -188,17 +187,17 @@ void MainWindow::exitLogin()
 
 void MainWindow::onNeedPassword(const QString &account)
 {
-    QString password = db->getUserPassword(account).second;
+    QString password = um->getUserPassWord(account);
     emit dbPassword(password);
 }
-
+/*
 void MainWindow::insertUserToDatabase(User user)
 {
     qDebug()<<user.getEmail()<<" "<<user.gethashedPassword();
     db->insertUser(user.getEmail(),user.gethashedPassword());
     qDebug()<<db->getUserPassword(user.getEmail());
 }
-
+*/
 
 void MainWindow::onMessage( QString message, QString type)
 {
@@ -270,8 +269,8 @@ void MainWindow::onModifyInfo(User user)
     //CurrentUser=new User(user);
     _modifyInfor_win->currentUser=CurrentUser;
     qDebug() << user.getEmail() << " " << user.gethashedPassword();
-    db->updateUserInfo(user.getEmail(),user.gethashedPassword());
-    qDebug() << user.getEmail() << " " << user.gethashedPassword() <<" " << db->getUserPassword(user.getEmail());
+    um->updateUserInfo(CurrentUser);
+    qDebug() << user.getEmail() << " " << user.gethashedPassword() <<" " << um->getUserPassWord(user.getEmail());
     setUserInfoCardTitle(_modifyInfor_win->newIdEdit_->text());
     setUserInfoCardSubTitle(user.getEmail());
 

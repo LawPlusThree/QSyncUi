@@ -12,7 +12,7 @@ class UserManager : public QObject
     Q_OBJECT
 public:
     explicit UserManager(QObject *parent = nullptr);
-    bool updateUserInfo(User &user);//保存登陆成功后的用户信息
+    bool updateUserInfo(User *user);//保存登陆成功后的用户信息
     QString getUserPassWord(const QString&account);
 
 private:
