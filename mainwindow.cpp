@@ -351,6 +351,17 @@ void MainWindow::onFileUploadTaskCreated(const QString &localPath, int fileTaskI
 
 void MainWindow::onFileUploadTaskUpdated(int fileTaskId, qint64 nowSize, qint64 totalSize) {
     qDebug()<<"File upload task updated"<<fileTaskId<<" "<<nowSize<<"/"<<totalSize;
+    if(totalSize==nowSize){
+        _syncingPage->removeFile(
+            fileTaskId
+            );
+        return ;
+    }
+    _syncingPage->modifyFile(
+        totalSize,
+        nowSize,
+        fileTaskId
+        );
 }
 
 void MainWindow::onFileUploadTaskPaused(int fileTaskId) {
@@ -364,6 +375,17 @@ void MainWindow::onFileDownloadTaskCreated(const QString &localPath, int fileTas
 
 void MainWindow::onFileDownloadTaskUpdated(int fileTaskId, qint64 nowSize, qint64 totalSize) {
     qDebug()<<"File download task updated"<<fileTaskId<<" "<<nowSize<<"/"<<totalSize;
+    if(totalSize==nowSize){
+        _syncingPage->removeFile(
+            fileTaskId
+            );
+        return ;
+    }
+    _syncingPage->modifyFile(
+        totalSize,
+        nowSize,
+        fileTaskId
+        );
 }
 
 void MainWindow::onFileDownloadTaskPaused(int fileTaskId) {
@@ -371,9 +393,9 @@ void MainWindow::onFileDownloadTaskPaused(int fileTaskId) {
 }
 
 void MainWindow::onTaskTotalSize(qint64 size, int taskid) {
-    this->_filemanagePage->modifyDirCard(size,"Syncing",taskid);
+    this->_filemanagePage->modifyDirCard(size,"同步完成",taskid);
 }
 
 void MainWindow::onTaskUploadSize(qint64 size, int taskid) {
-    // Empty implementation
+    this->_filemanagePage->modifyDirCard(size,"正在同步",taskid);
 }
