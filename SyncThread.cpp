@@ -53,7 +53,6 @@ void SyncThread::readCLoudDirectory(const QString &cloudpath)
         xml=cosclient->listObjects(cloudpath,bucket.nextMarker);
         bucket=processer.processXml(xml);
         for(auto ct:bucket.contents){
-            qDebug()<<"云文件:"<<ct.key;
             QString localPath=task->getLocalPath()+"/"+ct.key.mid(task->getRemotePath().length());
             QFileInfo info(localPath);
             bool needDownload=false;
@@ -78,9 +77,6 @@ void SyncThread::readCLoudDirectory(const QString &cloudpath)
                 uint64_t cloudCRC=response.headers["x-cos-hash-crc64ecma"].toULongLong();
                 if(crc64_data!=cloudCRC){
                     needDownload=true;
-                    qDebug()<<"文件不一致:"<<localPath<<" "<<ct.key;
-                    qDebug()<<"本地crc64:"<<crc64_data;
-                    qDebug()<<"云crc64:"<<cloudCRC;
                 }
             }
             if(needDownload){
