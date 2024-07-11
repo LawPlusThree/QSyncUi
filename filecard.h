@@ -3,6 +3,7 @@
 
 #include"ElaScrollPageArea.h"
 #include"ElaText.h"
+#include<QDateTime>
 
 class ElaCheckBox;
 class ElaIconButton;
@@ -13,7 +14,8 @@ class FileCard : public ElaScrollPageArea
 public:
     //explicit FileCard(QString f, QString d,QString s,QString p);
     explicit FileCard(QString f, int d,int s,int p,int Id);
-    void modify(int d,int s,int p);
+    //void modify(int d,int s,int p);
+    void modify(int totalsize,int currentsize);
     void processing(int p);
 
     ElaCheckBox* _checkBox{nullptr};
@@ -27,6 +29,11 @@ public:
     ElaProgressBar*proBar;
     int id;
     int progress;
+
+    QDateTime preTime;
+    QDateTime currentTime;
+    int preSize;
+    int Size;
 
 private slots:
     void on_relieveBtn_clicked();

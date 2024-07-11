@@ -98,8 +98,45 @@ void FileCard::on_pauseBtn_clicked()
         pauseBtn->setAwesome(ElaIconType::CirclePause);
 }
 
-void FileCard::modify(int d,int s,int p)
+/*void FileCard::modify(int d,int s,int p)
 {
+    QString size=QString("%1GB").arg(d);
+    datasize->setText(size);
+    QString Speed=QString("%1mb/s").arg(s);
+    speed->setText(Speed);
+    progress = p;
+    proBar->setValue(progress);
+}*/
+
+void FileCard::modify(int totalSize,int currentSize)
+{
+
+    int d=totalSize;
+    int p=((double)currentSize/(double)totalSize)*100;
+    int s=0;
+    preSize=Size;
+    Size=currentSize;
+    qDebug()<<preSize<<"   "<<Size;
+    if(!currentTime.isValid())
+    {
+        s=0;
+        currentTime=QDateTime::currentDateTime();
+    }
+    else
+    {
+        preTime=currentTime;
+        currentTime=QDateTime::currentDateTime();
+        int time=preTime.msecsTo(currentTime);
+        qDebug()<<time;
+        if(time==0)
+        {
+            s=s;
+        }
+        else{
+            s=(Size-preSize)/time;
+        }
+    }
+
     QString size=QString("%1GB").arg(d);
     datasize->setText(size);
     QString Speed=QString("%1mb/s").arg(s);
