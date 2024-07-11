@@ -33,6 +33,8 @@ private:
     setExcludedItems_view* setexcludeditemsview=new setExcludedItems_view();
 signals:
     void deleteTask(int id);
+protected:
+    void resizeEvent(QResizeEvent* event) override;
 };
 
 #endif // FILEMANGE_VIEW_H

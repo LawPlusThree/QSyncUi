@@ -162,6 +162,10 @@ void FileManagePage::addDirCard(QString filename,int datasize,QString bindtime,i
     DirCard*newDir=new DirCard(filename,datasize,bindtime,id);
     connect(newDir,&DirCard::relieve,this,&FileManagePage::removeDirCard);
     _dircardProxy->addDirCard(newDir,id);
+    QFontMetrics metrics(newDir->filename->font());
+    QString elidedText = metrics.elidedText(newDir->fullText, Qt::ElideMiddle, filenameWidget->width()-20);
+    newDir->filename->setText(elidedText);
+    newDir->filename->setToolTip(newDir->fullText);
 }
 
 void FileManagePage::removeDirCard(int id)
@@ -173,4 +177,15 @@ void FileManagePage::removeDirCard(int id)
 void FileManagePage::modifyDirCard(int datasize,QString bindtime,int id)
 {
     _dircardProxy->modifyDirCard(datasize,bindtime,id);
+}
+
+void FileManagePage::resizeEvent(QResizeEvent* event) {
+    QWidget::resizeEvent(event);
+    auto thisMap=this->_dircardProxy->cardMap;
+    for (auto &x:thisMap){
+        QFontMetrics metrics(x->filename->font());
+        QString elidedText = metrics.elidedText(x->fullText, Qt::ElideMiddle, filenameWidget->width()-20);
+        x->filename->setText(elidedText);
+        x->filename->setToolTip(x->fullText);
+    }
 }

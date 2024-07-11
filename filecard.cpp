@@ -171,7 +171,7 @@ void FileCard::modify(qint64 totalSize,qint64 currentSize)
         preTime=currentTime;
         QDateTime _currentTime=QDateTime::currentDateTime();
         int time=preTime.msecsTo(_currentTime);
-        if(time<=500){
+        if(time<=500||currentSize<preSize){
             return ;
         }
         else{

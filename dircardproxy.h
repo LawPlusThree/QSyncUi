@@ -22,6 +22,7 @@ public:
 private:
     QMap<int, DirCard*> cardMap;
     QWidget *parentWidget;
+    friend class FileManagePage;
 };
 
 #endif // DIRCARDPROXY_H
