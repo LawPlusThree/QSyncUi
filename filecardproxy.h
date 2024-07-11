@@ -17,6 +17,7 @@ public:
     void removeFileCard(const int &id);
     void modify(int d,int s,int p,int Id);
     void processing(int p,int Id);
+    int totalprogress();
     QVBoxLayout*filesLayout;
 
 private:

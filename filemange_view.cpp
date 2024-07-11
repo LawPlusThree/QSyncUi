@@ -117,7 +117,6 @@ FileManagePage::FileManagePage(QWidget* parent):ElaScrollPage(parent)
     addDirCard("文件dd",8,"2024.7.8",8);
     addDirCard("文件9v",9,"2024.7.9",9);
     addDirCard("vv",1,"2024.7.10",10);
-    modifyDirCard(20,"2024.7.11",1);
 
     scrollArea->setWidget(_dircardProxy);
     scrollArea->setWidgetResizable(true); // 允许scrollArea根据内容自动调整大小
