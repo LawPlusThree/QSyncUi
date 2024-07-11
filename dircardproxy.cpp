@@ -12,7 +12,7 @@ DirCardProxy::~DirCardProxy() {
     cardMap.clear();
 }
 
-void DirCardProxy::addDirCard(DirCard *card, const QString &id) {
+void DirCardProxy::addDirCard(DirCard *card, const int &id) {
     if (card && parentWidget && !cardMap.contains(id)) {
         cardMap[id] = card;
         filesLayout->addWidget(card);
@@ -20,7 +20,7 @@ void DirCardProxy::addDirCard(DirCard *card, const QString &id) {
     }
 }
 
-void DirCardProxy::addDirCard(QString filename,QString datasize,QString bindtime,const QString &id)
+void DirCardProxy::addDirCard(QString filename,int datasize,QString bindtime,const int &id)
 {
     DirCard*card=new DirCard(filename,datasize,bindtime,id);
     if (card && parentWidget && !cardMap.contains(id)) {
@@ -30,7 +30,7 @@ void DirCardProxy::addDirCard(QString filename,QString datasize,QString bindtime
     }
 }
 
-void DirCardProxy::removeDirCard(const QString &id) {
+void DirCardProxy::removeDirCard(const int &id) {
     if (cardMap.contains(id)) {
         DirCard *card = cardMap.take(id);
         // 在这里可以从UI中移除card
@@ -42,13 +42,28 @@ void DirCardProxy::removeDirCard(const QString &id) {
 
 void DirCardProxy::removeChecked()
 {
-    QMapIterator<QString, DirCard*> i(cardMap);
+    QMapIterator<int, DirCard*> i(cardMap);
     while (i.hasNext())
     {
         i.next();
-        QString id = i.key();
+        int id = i.key();
         DirCard *card = i.value();
         if(card->ischecked())
             removeDirCard(id);
+    }
+}
+
+void DirCardProxy::modifyDirCard(int datasize,QString bindtime,int id)
+{
+    QMapIterator<int,DirCard*> i(cardMap);
+    while(i.hasNext())
+    {
+        i.next();
+        int Id=i.key();
+        DirCard*card=i.value();
+        if(Id==id)
+        {
+            card->modify(datasize,bindtime);
+        }
     }
 }

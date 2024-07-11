@@ -12,14 +12,15 @@ public:
     explicit DirCardProxy(QWidget *parent = nullptr);
     ~DirCardProxy() override;
 
-    void addDirCard(DirCard *card, const QString &id);
-    void addDirCard(QString filename,QString datasize,QString bindtime,const QString &id);
-    void removeDirCard(const QString &id);
+    void addDirCard(DirCard *card, const int &id);
+    void addDirCard(QString filename,int datasize,QString bindtime,const int &id);
+    void removeDirCard(const int &id);
     void removeChecked();
+    void modifyDirCard(int datasize,QString biindtime,int id);
     QVBoxLayout*filesLayout;
 
 private:
-    QMap<QString, DirCard*> cardMap;
+    QMap<int, DirCard*> cardMap;
     QWidget *parentWidget;
 };
 

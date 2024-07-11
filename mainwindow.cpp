@@ -31,21 +31,16 @@ MainWindow::MainWindow(QWidget *parent)
 
     db = new DatabaseManager(this); // 创建数据库管理器实例
     db->initializeDatabase(); // 初始化数据库
-    // ElaApplication::getInstance()->setThemeMode(ElaApplicationType::Dark);
-    // setIsNavigationBarEnable(false);
-    // setNavigationBarDisplayMode(ElaNavigationType::Minimal);
-    // setWindowButtonFlag(ElaAppBarType::MinimizeButtonHint, false);
     setUserInfoCardPixmap(QPixmap(":/include/Image/Cirno.jpg"));
     setUserInfoCardTitle("未登录");
     setUserInfoCardSubTitle("");
     setWindowTitle("珞珈云");
-    //setIsStayTop(true);
-    // setUserInfoCardVisible(false);
-    _homePage = new HomePage(this);
     _syncingPage = new SyncingPage(this);
     _filemanagePage=new FileManagePage(this);
     _historysyncPage = new HistorysyncPage(this);
     _historyviewPage = new HistoryViewPage(this);
+
+    _filemanagePage->modifyDirCard(119,"2024.8.20",6);
 
     connect(this, &ElaWindow::userInfoCardClicked, [=]() {
         if(CurrentUser==nullptr)
@@ -56,23 +51,17 @@ MainWindow::MainWindow(QWidget *parent)
     connect(login->signinWin, &signinwin::on_signin_complete, this, &MainWindow::insertUserToDatabase);
     qDebug()<<connect(login->channel,&MessageChannel::message,this,&MainWindow::onMessage);
     connect(_filemanagePage->linknewfolderwindow,&linkNewFolder_window::onNewTask,this,&MainWindow::onUserAddNewTask);
-    // GraphicsView
     ElaGraphicsScene *scene = new ElaGraphicsScene(this);
     scene->setSceneRect(0, 0, 1500, 1500);
-    // scene->setSceneRect(0, 0, 1000, 1000);
     ElaGraphicsItem *item1 = new ElaGraphicsItem();
     item1->setWidth(100);
     item1->setHeight(100);
     ElaGraphicsItem *item2 = new ElaGraphicsItem();
     item2->setWidth(100);
     item2->setHeight(100);
-    // ElaGraphicsItem* item3 = new ElaGraphicsItem();
-    // item3->setWidth(100);
-    // item3->setHeight(100);
-    // item3->setPos(10, 10);
+
     scene->addItem(item1);
     scene->addItem(item2);
-    // scene->addItem(item3);
     ElaGraphicsView *view = new ElaGraphicsView(scene);
     view->setScene(scene);
 
@@ -141,67 +130,6 @@ MainWindow::MainWindow(QWidget *parent)
                 }
     });
 
-
-
-    // 下拉菜单
-    addPageNode("HOME", _homePage, ElaIconType::House);
-    addExpanderNode("ElaDxgi", _elaDxgiKey, ElaIconType::TvMusic);
-    // addPageNode("ElaScreen", _elaScreenPage, _elaDxgiKey, 3, ElaIconType::ObjectGroup);
-    //  navigation(elaScreenWidget->property("ElaPageKey").toString());
-    // addPageNode("ElaBaseComponents", _baseComponentsPage, ElaIconType::CabinetFiling);
-    // addPageNode("ElaGraphics", view, 9, ElaIconType::KeySkeleton);
-    // addPageNode("ElaIcon", _iconPage, 99, ElaIconType::FontAwesome);
-    // addPageNode("ElaTabWidget", _tabWidgetPage, ElaIconType::Table);
-    /*
-    addExpanderNode("TEST4", testKey_2, ElaIconType::Acorn);
-    addExpanderNode("TEST5", testKey_1, testKey_2, ElaIconType::Acorn);
-    addPageNode("Third Level", new QWidget(this), testKey_1, ElaIconType::Acorn);
-    addExpanderNode("TEST6", testKey_1, testKey_2, ElaIconType::Acorn);
-    addExpanderNode("TEST7", testKey_1, testKey_2, ElaIconType::Acorn);
-    addExpanderNode("TEST8", testKey_1, testKey_2, ElaIconType::Acorn);
-    addExpanderNode("TEST9", testKey_1, testKey_2, ElaIconType::Acorn);
-    addExpanderNode("TEST10", testKey_1, testKey_2, ElaIconType::Acorn);
-    addExpanderNode("TEST11", testKey_1, testKey_2, ElaIconType::Acorn);
-    addExpanderNode("TEST12", testKey_1, testKey_2, ElaIconType::Acorn);
-    addExpanderNode("TEST13", testKey_1, testKey_2, ElaIconType::Acorn);
-    addExpanderNode("TEST14", testKey_1, testKey_2, ElaIconType::Acorn);
-    addExpanderNode("TEST15", testKey_1, ElaIconType::Acorn);
-    addExpanderNode("TEST16", testKey_1, ElaIconType::Acorn);
-    addExpanderNode("TEST17", testKey_1, ElaIconType::Acorn);
-*/
-    /*
-    addFooterNode("About", nullptr, _aboutKey, 0, ElaIconType::User);
-    ElaWidget *widget = new ElaWidget();
-    widget->setWindowModality(Qt::ApplicationModal);
-    widget->setCentralWidget(new QWidget());
-    widget->hide();
-    connect(this, &ElaWindow::navigationNodeClicked, this, [=](ElaNavigationType::NavigationNodeType nodeType, QString nodeKey)
-            {
-        if (_aboutKey == nodeKey)
-        {
-            widget->show();
-        } });
-    addFooterNode("Setting", new QWidget(this), _settingKey, 0, ElaIconType::GearComplex);
-    */
-    /*
-    connect(this, &MainWindow::userInfoCardClicked, this, [=]()
-            { this->navigation(_homePage->property("ElaPageKey").toString()); });
-            */
-    /*
-    connect(_homePage, &HomePage::elaScreenNavigation, this, [=]() {
-        this->navigation(_elaScreenPage->property("ElaPageKey").toString());
-    });
-    connect(_homePage, &HomePage::elaBaseComponentNavigation, this, [=]() {
-        this->navigation(_baseComponentsPage->property("ElaPageKey").toString());
-    });
-    connect(_homePage, &HomePage::elaSceneNavigation, this, [=]() {
-        this->navigation(view->property("ElaPageKey").toString());
-    });
-
-    connect(_homePage, &HomePage::elaIconNavigation, this, [=]() {
-        this->navigation(_iconPage->property("ElaPageKey").toString());
-    });
-*/
     qDebug() << ElaEventBus::getInstance()->getRegisteredEventsName();
     QObject::connect(login, &loginwin::on_login_complete, this, &MainWindow::onUserLoggedIn);
     QObject::connect(_modifyInfor_win, &modifyInfor_win::changexinxi, this, &MainWindow::onModifyInfo);
@@ -243,11 +171,11 @@ void MainWindow::onUserLoggedIn(User user)
         if (x.getLastSyncTime()==QDateTime::fromString("2000-01-01 00:00:00","yyyy-MM-dd hh:mm:ss"))
         {
             QString timeDelta="从未同步";
-            this->_filemanagePage->addDirCard(x.getLocalPath(),"xx.mb",timeDelta,QString::number(x.getId()));
+            this->_filemanagePage->addDirCard(x.getLocalPath(),11,timeDelta,x.getId());
             continue;
         }else{
             QString timeDelta=QString::number(x.getLastSyncTime().daysTo(QDateTime::currentDateTime()))+"天前";
-            this->_filemanagePage->addDirCard(x.getLocalPath(),"xx.mb",timeDelta,QString::number(x.getId()));
+            this->_filemanagePage->addDirCard(x.getLocalPath(),11,timeDelta,x.getId());
         }
     }
 }
