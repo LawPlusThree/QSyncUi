@@ -27,7 +27,7 @@ public:
     ElaLineEdit*accoutLine;
     ElaLineEdit*passwordLine;
     ElaLineEdit*passagainLine;
-    QString fileroad="";
+    QString avatarDir="";
 private slots:
     void on_signinBtn_clicked();
     void closeEvent(QCloseEvent*Event);

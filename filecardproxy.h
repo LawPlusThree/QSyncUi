@@ -24,6 +24,7 @@ public:
 private:
     QMap<int, FileCard*> cardMap;
     QWidget *parentWidget;
+    friend class SyncingPage;
 };
 
 

@@ -119,10 +119,10 @@ void signinwin::on_signinBtn_clicked()
             //User enrolluser("newuser@example.com","123456");
             User enrolluser(IDLine->text(),accoutLine->text(),passwordLine->text());
             bool result;
-            if(fileroad!="")
+            if(avatarDir!="")
             {
-                qDebug()<<fileroad;
-                result=enrolluser.enroll(fileroad);
+                qDebug()<<avatarDir;
+                result=enrolluser.enroll(avatarDir);
             }
             else
                 result=enrolluser.enroll();
@@ -173,7 +173,7 @@ void signinwin::on_image_clicked()
         avatarArea->addWidget(avatar,0,Qt::AlignCenter);
         connect(avatar,&ElaInteractiveCard::clicked,this,&signinwin::on_image_clicked);
         update();
-        fileroad=fileName;
+        avatarDir=fileName;
     }
 }
 

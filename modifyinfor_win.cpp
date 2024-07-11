@@ -1,6 +1,7 @@
 #include "modifyinfor_win.h"
 #include <QVBoxLayout>
 #include <QMessageBox>
+#include<QFileDialog>
 #include"ElaInteractiveCard.h"
 
 
@@ -83,7 +84,7 @@ modifyInfor_win::modifyInfor_win(QWidget *parent)
 
     // 连接信号与槽
     connect(confirmButton_, &ElaPushButton::clicked, this, &modifyInfor_win::onConfirmButtonClicked);
-
+    connect(avatar,&ElaInteractiveCard::clicked,this,&modifyInfor_win::onAvatarClicked);
     area->setLayout(layout);
 }
 
@@ -125,6 +126,34 @@ void modifyInfor_win::onConfirmButtonClicked()
     emit changexinxi(User(*currentUser));
 
     QMessageBox::information(this, "成功","修改成功");
+    this->close();
+}
+
+void modifyInfor_win::onAvatarClicked()
+{
+    QString fileName = QFileDialog::getOpenFileName(this, tr("选择图片"), "", tr("图像文件 (*.png *.jpg *.jpeg *.bmp)"));
+    fileName = QDir::toNativeSeparators(fileName);
+    qDebug() << "Selected file path: " << fileName;
+    if (!fileName.isEmpty())
+    {
+        QPixmap pix(fileName);
+        if (pix.isNull())
+        {
+            // 处理加载失败的情况
+            return;
+        }
+        while (QLayoutItem* item = avatarArea->takeAt(0)) {
+            delete item;
+        }
+        avatar=new ElaInteractiveCard();
+        avatar->setCardPixmap(pix);
+        avatar->setFixedSize(150,150);
+        avatar->setCardPixmapSize(140,140);
+        avatar->setCardPixmapBorderRadius(70);
+        avatarArea->addWidget(avatar,0,Qt::AlignCenter);
+        update();
+        currentUser->updateAvatar(fileName);
+    }
     confirmButton_->setEnabled(true);
     confirmButton_->setText("确认修改");
     confirmButton_->setStyleSheet("background-color:rgb(0,204,255)");
