@@ -137,33 +137,37 @@ bool User::forgetPassword()
 
 bool User::updateAvatar(const QString &filePath)
 {
-    QImageReader reader(filePath);
-    if (!reader.canRead())
+    QFile file(avatarpath);
+    if (!file.open(QIODevice::ReadOnly))
     {
-        qDebug() << "read picture failed!";
-        QString jsonString = R"({"code": 666, "message": "select picture error!", "data": "Nooo!"})";
-        QByteArray jsonData = jsonString.toUtf8();
-        QJsonDocument document = QJsonDocument::fromJson(jsonData);
-        QJsonObject jsonObject = document.object();
-        emit updateAvatarResponse(666, jsonObject, "select picture error!");
-        return false; // 图片读取失败
+        qDebug() << "open file failed!";
+        return false;
     }
-    QImage image = reader.read();
-    if (image.isNull())
+    QByteArray byteArray = file.readAll();
+    QString avatar = byteArray.toBase64();
+    QFileInfo fileInfo(avatarpath);
+    QString extension = fileInfo.suffix().toLower();
+
+    if (extension == "png")
     {
-        qDebug() << "read picture failed!";
-        QString jsonString = R"({"code": 666, "message": "select picture error!", "data": "Nooo!"})";
-        QByteArray jsonData = jsonString.toUtf8();
-        QJsonDocument document = QJsonDocument::fromJson(jsonData);
-        QJsonObject jsonObject = document.object();
-        emit updateAvatarResponse(666, jsonObject, "select picture error!");
-        return false; // 图片读取失败
+        avatar.prepend("data:image/png;base64,");
     }
-    QByteArray byteArray;
-    QBuffer buffer(&byteArray);
-    image.save(&buffer, reader.format()); // 使用图片的原始格式保存
-    // 将字节数据编码为Base64字符串
-    QString postData = byteArray.toBase64();
+    else if (extension == "jpg" || extension == "jpeg")
+    {
+        avatar.prepend("data:image/jpeg;base64,");
+    }
+    else if (extension == "gif")
+    {
+        avatar.prepend("data:image/gif;base64,");
+    }
+    else
+    {
+        return false; // 图片格式不支持
+    }
+    // post时保留字符串中的加号
+    // avatar.replace("+","%2B");
+    // qDebug()<<avatar;
+    QString postData = QString("avatar=%4").arg(avatar);
     ApiResponse response = apiRequest->post("/updateAvatar", postData.toUtf8());
     avatarpath = response.getData().value("avatar_url").toString();
     qDebug() << "update avatar:" << avatarpath;
