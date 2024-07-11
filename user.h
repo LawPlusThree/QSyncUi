@@ -69,7 +69,7 @@ private:
 public:
     QString username; //username
     QString hashedPassword; //password
-    QString encryptPassword(const QString &password); //加密密码
+    QString encryptPassword(); 
     User(const QString &username,
          const QString &account,
          const QString &password,

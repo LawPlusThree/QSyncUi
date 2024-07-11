@@ -23,7 +23,8 @@ SyncingPage::SyncingPage(QWidget* parent)
     _progressBar->setMinimumSize(100, 20); // 调整最小宽度为100，最小高度20
     // 设置进度条的最小值和最大值
     _progressBar->setMinimum(0);
-    _progressBar->setMaximum(0); // 表示不确定的进度
+    _progressBar->setMaximum(100); // 表示不确定的进度
+    _progressBar->setValue(0);
     QWidget* progressBarArea = new QWidget();
     progressBarArea->setWindowFlags(Qt::FramelessWindowHint); // 去除窗口边框
     progressBarArea->setAttribute(Qt::WA_TranslucentBackground); // 设置背景透明
@@ -147,19 +148,29 @@ void SyncingPage::addFile(QString filename, int datasize,int speed,int progress,
     FileCard*newFile=new FileCard(filename,datasize,speed,progress,id);
     connect(newFile,&FileCard::Relieve,this,&SyncingPage::removeFile);
     _filecardProxy->addFileCard(newFile,id);
+    totalProgress();
 }
 
 void SyncingPage::removeFile(int id)
 {
     _filecardProxy->removeFileCard(id);
+    totalProgress();
 }
 
 void SyncingPage::modifyFile(int d,int s,int p,int id)
 {
     _filecardProxy->modify(d,s,p,id);
+    totalProgress();
 }
 
 void SyncingPage::modifyFile(int p,int id)
 {
     _filecardProxy->processing(p,id);
+    totalProgress();
+}
+
+void SyncingPage::totalProgress()
+{
+    int totalpro=_filecardProxy->totalprogress();
+    _progressBar->setValue(totalpro);
 }

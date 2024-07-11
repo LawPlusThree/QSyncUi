@@ -1,7 +1,8 @@
 #include "user.h"
 
-QString User::encryptPassword(const QString &password)
+QString User::encryptPassword()
 {
+    QString password=hashedPassword;
     QString uuid=QUuid::createUuid().toString();
     //以uuid为密钥rc4加密password
     RC4 rc4(uuid.toUtf8());
