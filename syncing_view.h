@@ -13,6 +13,7 @@ class QVBoxLayout;
 class FileCardProxy;
 class SyncingPage : public ElaScrollPage
 {
+    Q_OBJECT
 public:
     SyncingPage(QWidget* parent = nullptr);
     ~SyncingPage();
@@ -28,13 +29,13 @@ public:
     int preSize=0;
     int Size=0;
     QWidget* filenameWidget = new QWidget();
-    void updateFilenameText();
+    void updateFilenameText(int id);
 private:
     ElaProgressBar* _progressBar{nullptr};
     ElaPushButton* _pushButton{nullptr};
     ElaToggleButton* _toggleButton{nullptr};
 protected:
-    //void resizeEvent(QResizeEvent* event) override;
+    void resizeEvent(QResizeEvent* event) override;
 };
 
 #endif // SYNCING_VIEW_H
