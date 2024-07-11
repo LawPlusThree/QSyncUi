@@ -60,7 +60,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         databasemanager.h databasemanager.cpp
         syncing_view.h syncing_view.cpp
 
-        filefunc.h filefunc.cpp
+        SyncThread.h SyncThread.cpp
         filemange_view.h filemange_view.cpp
         historysync_view.h historysync_view.cpp
         avatarImage.qrc

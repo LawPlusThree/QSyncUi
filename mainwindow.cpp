@@ -21,7 +21,7 @@
 #include"filemange_view.h"
 #include "historysync_view.h"
 #include"historyview.h"
-#include "filefunc.h"
+#include "SyncThread.h"
 #include "qthread.h"
 #include "modifyinfor_win.h"
 
@@ -243,6 +243,14 @@ void MainWindow::onUserAddNewTask(const SyncTask &task)
         {
             _syncTaskDatabaseManager->addTask(task);
         }
+        if (task.getLastSyncTime()==QDateTime::fromString("2000-01-01 00:00:00","yyyy-MM-dd hh:mm:ss"))
+        {
+            QString timeDelta="从未同步";
+            this->_filemanagePage->addDirCard(task.getLocalPath(),111,timeDelta,task.getId());
+        }else{
+            QString timeDelta=QString::number(task.getLastSyncTime().daysTo(QDateTime::currentDateTime()))+"天前";
+            this->_filemanagePage->addDirCard(task.getLocalPath(),1111,timeDelta,task.getId());
+        }
     }
 }
 
@@ -286,3 +294,43 @@ void MainWindow::onModifyInfo(User user)
     QPixmap pix(filename);
     setUserInfoCardPixmap(pix);
 }
+
+void MainWindow::onFileUploadTaskCreated(const QString &localPath, qint64 size, int fileTaskId)
+{
+    // onFileUploadTaskCreated implementation
+}
+
+void MainWindow::onFileUploadTaskUpdated(const QString &localPath, qint64 nowSize, int fileTaskId)
+{
+    // onFileUploadTaskUpdated implementation
+}
+
+void MainWindow::onFileUploadTaskPaused(int fileTaskId)
+{
+    // onFileUploadTaskPaused implementation
+}
+
+void MainWindow::onFileDownloadTaskCreated(const QString &localPath, qint64 size, int fileTaskId)
+{
+    // onFileDownloadTaskCreated implementation
+}
+
+void MainWindow::onFileDownloadTaskUpdated(const QString &localPath, qint64 nowSize, int fileTaskId)
+{
+    // onFileDownloadTaskUpdated implementation
+}
+
+void MainWindow::onFileDownloadTaskPaused(int fileTaskId)
+{
+    // onFileDownloadTaskPaused implementation
+}
+
+void MainWindow::onTaskTotalSize(qint64 size, int taskid)
+{
+    // onTaskTotalSize implementation
+}
+
+void MainWindow::onTaskUploadSize(qint64 size, int taskid)
+    {
+        // onTaskUploadSize implementation
+    };

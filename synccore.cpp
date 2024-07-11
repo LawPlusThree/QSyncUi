@@ -1,10 +1,17 @@
 #include "synccore.h"
-#include "filefunc.h"
+#include "SyncThread.h"
 #include <iostream>
 
 using namespace wtr;
 SyncCore::SyncCore(QObject *parent)
     : QObject{parent}
+{
+    //connect(&watcher, &QFileSystemWatcher::directoryChanged, this, &SyncCore::onDirectoryChanged);
+    //connect(&watcher, &QFileSystemWatcher::fileChanged, this, &SyncCore::onFileChanged);
+}
+
+SyncCore::SyncCore(COSClient *cosclient, QObject *parent)
+    : QObject{parent}, cosclient{cosclient}
 {
     //connect(&watcher, &QFileSystemWatcher::directoryChanged, this, &SyncCore::onDirectoryChanged);
     //connect(&watcher, &QFileSystemWatcher::fileChanged, this, &SyncCore::onFileChanged);
@@ -97,7 +104,13 @@ void SyncCore::addTask(SyncTask *task)
 
 void SyncCore::doTask(SyncTask *task)
 {
-    qDebug()<<"doTask";
+    SyncThread *thread=new SyncThread(task->localPath.absolutePath(),cosclient,task);
+    connect(thread,&SyncThread::localTotalSize,this,[=](qint64 size){
+        emit taskTotalSize(size,task->getId());
+    });
+    connect(thread,&SyncThread::upTotalSize,this,[=](qint64 size){
+        emit taskUploadSize(size,task->getId());
+    });
 }
 
 
@@ -112,8 +125,4 @@ void SyncCore::onFileChanged(const QString &path)
     qDebug() << "File changed: " << path;
 }
 
-void SyncCore::onFileListUpdated(const QString &path, const QFileInfoList &list)
-{
-    qDebug() << "File list updated: " << path;
-    doTask(findTaskByLocalPath(path));
-}
+
