@@ -11,10 +11,10 @@
 UserManager::UserManager( QObject *parent) : QObject(parent){}
 
 //保存登陆成功后的用户信息
-bool UserManager::updateUserInfo(User &user)
+bool UserManager::updateUserInfo(User *user)
 {
     // 保存更改到文件
-    return saveToFile(user.getEmail(),user.encryptPassword());
+    return saveToFile(user->getEmail(),user->encryptPassword());
 }
 
 QString UserManager::getUserPassWord(const QString &account)
@@ -22,7 +22,7 @@ QString UserManager::getUserPassWord(const QString &account)
     QFile file(filePath_);
     // 检查文件是否存在以及是否可以打开
     if (!file.exists() || !file.open(QIODevice::ReadOnly)) {
-        return true; // 文件不存在或无法打开不是错误条件
+        return ""; // 文件不存在或无法打开不是错误条件
     }
 
     QByteArray data = file.readAll();
@@ -33,13 +33,17 @@ QString UserManager::getUserPassWord(const QString &account)
     // 检查JSON解析是否成功
     if (error.error != QJsonParseError::NoError) {
         qWarning() << "Failed to parse JSON file:" << error.errorString();
-        return false;
+        return "";
     }
 
     QJsonObject json = doc.object();
+    if( json.value("act") == account )
+    {
+        return json.value("pws").toString();
+    }
+    else
+        return "";
 
-
-    return true;
 }
 
 // 将用户数据保存到文件
