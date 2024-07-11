@@ -4,14 +4,52 @@
 #include"ElaCheckBox.h"
 #include"ElaIconButton.h"
 #include"ElaProgressBar.h"
-FileCard::FileCard(QString f, int d,int s,int p,int Id)
+FileCard::FileCard(QString f, qint64 d,double s,int p,int Id)
 {
     // 创建ElaText对象来显示文件名，而不是直接在_checkBox中显示
     filename = new ElaText(f, this);
-    QString size=QString("%1GB").arg(d);
+
+    QString size;
+    QString str;
+    double data=d;
+    data/=1000;
+    if(data<1000)
+    {
+        str=QString::number(data,'f',1);
+        size=str+"KB";
+    }
+    else
+    {
+        data/=1000;
+        if(data<1000)
+        {
+            str=QString::number(data,'f',1);
+            size=str+"MB";
+        }
+        else
+        {
+            data/=1000;
+            str=QString::number(data,'f',1);
+            size=str+"GB";
+        }
+    }
     datasize = new ElaText(size, this);
-    QString Speed=QString("%1mb/s").arg(s);
+
+    QString speedStr;
+    QString Speed;
+    if(s>1000)
+    {
+        s/=1000;
+        QString speedStr=QString::number(s,'f',1);
+        Speed=speedStr+"MB/s";
+    }
+    else
+    {
+        QString speedStr=QString::number(s,'f',1);
+        Speed=speedStr+"KB/s";
+    }
     speed = new ElaText(Speed, this);
+
     progress = p;
     id=Id;
     fullText = f;
@@ -88,6 +126,7 @@ FileCard::FileCard(QString f, int d,int s,int p,int Id)
 
     connect(relieveBtn, &ElaIconButton::clicked, this, &FileCard::on_relieveBtn_clicked);
     connect(pauseBtn, &ElaIconButton::clicked, this, &FileCard::on_pauseBtn_clicked);
+    filenameWidget->setStyleSheet("QToolTip { color: #5C5C5C; background-color: #F9F9F9; border: 1px solid #808080; border-radius: 3px; }");
 }
 
 void FileCard::on_relieveBtn_clicked()
@@ -113,12 +152,12 @@ void FileCard::on_pauseBtn_clicked()
     proBar->setValue(progress);
 }*/
 
-void FileCard::modify(int totalSize,int currentSize)
+void FileCard::modify(qint64 totalSize,qint64 currentSize)
 {
 
-    int d=totalSize;
+    qint64 d=totalSize;
     int p=((double)currentSize/(double)totalSize)*100;
-    int s=0;
+    double s=0;
     preSize=Size;
     Size=currentSize;
     qDebug()<<preSize<<"   "<<Size;
@@ -144,13 +183,51 @@ void FileCard::modify(int totalSize,int currentSize)
             s=s;
         }
         else{
-            s=(Size-preSize)/time;
+            s=((double)(Size-preSize))/time;
         }
     }
 
-    QString size=QString("%1GB").arg(d);
+    QString size;
+    QString dataStr;
+    double data=d;
+    data/=1000;
+    if(data<1000)
+    {
+        dataStr=QString::number(data,'f',1);
+        size=dataStr+"KB";
+    }
+    else
+    {
+        data/=1000;
+        if(data<1000)
+        {
+            dataStr=QString::number(data,'f',1);
+            size=dataStr+"MB";
+        }
+        else
+        {
+            data/=1000;
+            dataStr=QString::number(data,'f',1);
+            size=dataStr+"GB";
+        }
+    }
+    datasize = new ElaText(size, this);
+
+    QString speedStr;
+    QString Speed;
+    if(s>1000)
+    {
+        s/=1000;
+        QString speedStr=QString::number(s,'f',1);
+        Speed=speedStr+"MB/s";
+    }
+    else
+    {
+        QString speedStr=QString::number(s,'f',1);
+        Speed=speedStr+"KB/s";
+    }
+
     datasize->setText(size);
-    QString Speed=QString("%1mb/s").arg(s);
     speed->setText(Speed);
     progress = p;
     proBar->setValue(progress);
