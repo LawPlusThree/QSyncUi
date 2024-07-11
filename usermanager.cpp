@@ -17,7 +17,7 @@ bool UserManager::updateUserInfo(User *user)
     return saveToFile(user->getEmail(),user->encryptPassword());
 }
 
-QString UserManager::getUserPassWord(User *user)
+QString UserManager::getUserPassWord(const QString &account)
 {
     QFile file(filePath_);
     // 检查文件是否存在以及是否可以打开
@@ -37,9 +37,9 @@ QString UserManager::getUserPassWord(User *user)
     }
 
     QJsonObject json = doc.object();
-    if( json.value("act") == user->getEmail() )
+    if( json.value("act") == account )
     {
-        return user->decodePassword(json.value("pws").toString());
+        return decodePassword(json.value("pws").toString());
     }
     else
         return "";

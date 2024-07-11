@@ -13,7 +13,7 @@ class UserManager : public QObject
 public:
     explicit UserManager(QObject *parent = nullptr);
     bool updateUserInfo(User *user);//保存登陆成功后的用户信息
-    QString getUserPassWord(User *user);
+    QString getUserPassWord(const QString &account);
 
 private:
     QString filePath_ = "usif.json";
