@@ -167,7 +167,7 @@ bool User::updateAvatar(const QString &filePath)
     // post时保留字符串中的加号
     // avatar.replace("+","%2B");
     // qDebug()<<avatar;
-    QString postData = QString("avatar=%4").arg(avatar);
+    QString postData = QString("avatar=%1").arg(avatar);
     ApiResponse response = apiRequest->post("/updateAvatar", postData.toUtf8());
     avatarpath = response.getData().value("avatar_url").toString();
     qDebug() << "update avatar:" << avatarpath;
