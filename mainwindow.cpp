@@ -144,6 +144,7 @@ MainWindow::MainWindow(QWidget *parent)
     // 拦截默认关闭事件
     this->setIsDefaultClosed(false);
     connect(this, &MainWindow::closeButtonClicked, this, &MainWindow::onCloseButtonClicked);
+    autologin();
 }
 
 MainWindow::~MainWindow() {}
@@ -218,6 +219,7 @@ void MainWindow::onUserLoggedIn(User user)
 void MainWindow::exitLogin()
 {
     if(CurrentUser->logout()){
+        um->setAutoLoginStaus(false);
         setUserInfoCardTitle("未登录");
         setUserInfoCardSubTitle("");
         setUserInfoCardPixmap(QPixmap(":/include/Image/Cirno.jpg"));
@@ -363,6 +365,7 @@ void MainWindow::onModifyInfo(User user)
 void MainWindow::onUserdelete()
 {
     if(CurrentUser->deleteAccount()){
+        um->setAutoLoginStaus(false);
         setUserInfoCardTitle("未登录");
         setUserInfoCardSubTitle("");
         setUserInfoCardPixmap(QPixmap(":/include/Image/Cirno.jpg"));
@@ -429,4 +432,19 @@ void MainWindow::onTaskTotalSize(qint64 size, int taskid) {
 
 void MainWindow::onTaskUploadSize(qint64 size, int taskid) {
     this->_filemanagePage->modifyDirCard(size,"正在同步",taskid);
+}
+
+void MainWindow::autologin()
+{
+    if(um->getAutoLoginStaus()){
+        QString account=um->getUserAccount();
+        QString password=um->getUserPassWord(account);
+        CurrentUser=new User(account,password);
+        if(CurrentUser->login()){
+            onUserLoggedIn(*CurrentUser);
+            onMessage("自动登录成功！","Success");
+        }else{
+            onMessage("自动登录失败！","Error");
+        }
+    }
 }
