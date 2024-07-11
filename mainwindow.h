@@ -73,6 +73,7 @@ private:
     modifyInfor_win* _modifyInfor_win{nullptr};
     SyncCore* _syncCore{nullptr};
     SyncTaskDatabaseManager* _syncTaskDatabaseManager{nullptr};
+    void autologin();
 
 };
 

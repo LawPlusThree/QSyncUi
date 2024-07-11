@@ -13,11 +13,14 @@ class UserManager : public QObject
 public:
     explicit UserManager(QObject *parent = nullptr);
     bool updateUserInfo(User *user);//保存登陆成功后的用户信息
+    QString getUserAccount();
     QString getUserPassWord(const QString &account);
+    bool saveToFile(const QString&,const QString&,const bool);
+    bool getAutoLoginStaus();
+    bool setAutoLoginStaus(bool autoLogin);
 
 private:
     QString filePath_ = "usif.json";
-    bool saveToFile(const QString&,const QString&);
-    QString decodePassword(const QString &uuid,const QString &password); 
+    QString decodePassword(const QString &uuid,const QString &password);
 };
 #endif // USERMANAGER_H

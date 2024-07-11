@@ -138,7 +138,6 @@ SyncingPage::SyncingPage(QWidget* parent)
     centerVLayout->addWidget(scrollArea);
 
     this->addCentralWidget(centralWidget); // 将中心部件添加到窗口中
-
 }
 
 SyncingPage::~SyncingPage()
@@ -152,6 +151,10 @@ void SyncingPage::addFile(QString filename, int datasize,int speed,int progress,
     connect(newFile,&FileCard::Relieve,this,&SyncingPage::removeFile);
     _filecardProxy->addFileCard(newFile,id);
     totalProgress();
+    QFontMetrics metrics(newFile->filename->font());
+    QString elidedText = metrics.elidedText(newFile->fullText, Qt::ElideRight, filenameWidget->width()-20);
+    newFile->filename->setText(elidedText);
+    newFile->filename->setToolTip(newFile->fullText);
 }
 
 void SyncingPage::removeFile(int id)
@@ -160,45 +163,9 @@ void SyncingPage::removeFile(int id)
     totalProgress();
 }
 
-/*void SyncingPage::modifyFile(int d,int s,int p,int id)
-{
-    _filecardProxy->modify(d,s,p,id);
-    totalProgress();
-}
-
-void SyncingPage::modifyFile(int p,int id)
-{
-    _filecardProxy->processing(p,id);
-    totalProgress();
-}*/
-
 
 void SyncingPage::modifyFile(int totalSize,int currentSize,int id)
 {
-    /*int d=totalSize;
-    int p=((double)currentSize/(double)totalSize)*100;
-    int s=0;
-    preSize=Size;
-    Size=currentSize;
-    if(!currentTime.isValid())
-    {
-        s=0;
-        currentTime=QDateTime::currentDateTime();
-    }
-    else
-    {
-        preTime=currentTime;
-        currentTime=QDateTime::currentDateTime();
-        int time=preTime.msecsTo(currentTime);
-        if(time==0)
-        {
-            s=s;
-        }
-        else{
-            s=(Size-preSize)/time;
-        }
-    }
-    _filecardProxy->modify(d,s,p,id);*/
     _filecardProxy->modify(totalSize,currentSize,id);
     totalProgress();
 }
@@ -209,23 +176,15 @@ void SyncingPage::totalProgress()
     _progressBar->setValue(totalpro);
 }
 
-/*
-void SyncingPage::updateFilenameText() {
-    QFontMetrics metrics(FileCardArea3->filename->font());
-    QString elidedText = metrics.elidedText(FileCardArea3->fullText, Qt::ElideRight, filenameWidget->width()-20);
-    FileCardArea3->filename->setText(elidedText);
-    FileCardArea3->filename->setToolTip(FileCardArea3->fullText); // 设置工具提示为完整的文件名
-
-    metrics = QFontMetrics (FileCardArea4->filename->font());
-    elidedText = metrics.elidedText(FileCardArea4->fullText, Qt::ElideRight, filenameWidget->width()-20);
-    FileCardArea4->filename->setText(elidedText);
-    FileCardArea4->filename->setToolTip(FileCardArea4->fullText); // 设置工具提示为完整的文件名
-}
-
 // 重写resizeEvent
 void SyncingPage::resizeEvent(QResizeEvent* event) {
     QWidget::resizeEvent(event);
-    //QTimer::singleShot(1, this, SLOT(updateFilenameText()));
-    updateFilenameText();
+    auto thisMap=this->_filecardProxy->cardMap;
+    for (auto &x:thisMap){
+        QFontMetrics metrics(x->filename->font());
+        QString elidedText = metrics.elidedText(x->fullText, Qt::ElideRight, filenameWidget->width()-20);
+        x->filename->setText(elidedText);
+        x->filename->setToolTip(x->fullText);
+    }
 }
-*/
+
