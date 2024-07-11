@@ -71,7 +71,6 @@ public:
     QString username; //username
     QString hashedPassword; //password
     QString encryptPassword(); 
-    QString decodePassword(const QString &password); 
     User(const QString &username,
          const QString &account,
          const QString &password,
