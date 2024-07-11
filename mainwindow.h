@@ -53,6 +53,7 @@ public slots:
     void onTaskUploadSize(qint64 size, int taskid);
     void onFileUploadTaskFinished(int fileTaskId);
     void onFileDownloadTaskFinished(int fileTaskId);
+    void onUserPausedFileTask(int fileTaskId);
 
 signals:
     void dbPassword(const QString &);

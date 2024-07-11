@@ -53,6 +53,60 @@ bool SyncTaskDatabaseManager::queryTask(const SyncTask &task) {
     return query.exec();
 }
 
+void SyncTaskDatabaseManager::updateTaskStatus(int id, int status)
+{
+    QSqlQuery query;
+    query.prepare("UPDATE SyncTasks SET syncStatus = :status WHERE id = :id");
+    query.bindValue(":status", status);
+    query.bindValue(":id", id);
+    query.exec();
+}
+
+
+void SyncTaskDatabaseManager::updateTaskTime(int id, QDateTime time)
+{
+    QSqlQuery query;
+    query.prepare("UPDATE SyncTasks SET lastSyncTime = :time WHERE id = :id");
+    query.bindValue(":time", time.toString("yyyy-MM-dd hh:mm:ss"));
+    query.bindValue(":id", id);
+    query.exec();
+}
+
+void SyncTaskDatabaseManager::updateTaskRemotePath(int id, QString remotePath)
+{
+    QSqlQuery query;
+    query.prepare("UPDATE SyncTasks SET remotePath = :remotePath WHERE id = :id");
+    query.bindValue(":remotePath", remotePath);
+    query.bindValue(":id", id);
+    query.exec();
+}
+
+void SyncTaskDatabaseManager::updateTaskLocalPath(int id, QString localPath)
+{
+    QSqlQuery query;
+    query.prepare("UPDATE SyncTasks SET localPath = :localPath WHERE id = :id");
+    query.bindValue(":localPath", localPath);
+    query.bindValue(":id", id);
+    query.exec();
+}
+
+SyncTask SyncTaskDatabaseManager::getTaskById(int id)
+{
+    QSqlQuery query;
+    query.prepare("SELECT * FROM SyncTasks WHERE id = :id");
+    query.bindValue(":id", id);
+    query.exec();
+    query.next();
+    QString localPath = query.value("localPath").toString();
+    QString remotePath = query.value("remotePath").toString();
+    int syncStatus = query.value("syncStatus").toInt();
+    SyncTask task(localPath, remotePath, syncStatus, id);
+    task.lastSyncTime = QDateTime::fromString(query.value("lastSyncTime").toString(), "yyyy-MM-dd hh:mm:ss");
+    return task;
+}
+
+
+
 QList<SyncTask> SyncTaskDatabaseManager::getTasks() {
     QList<SyncTask> tasks;
     QSqlQuery query("SELECT * FROM SyncTasks");

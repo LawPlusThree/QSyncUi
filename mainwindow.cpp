@@ -430,7 +430,9 @@ void MainWindow::onFileDownloadTaskPaused(int fileTaskId) {
 }
 
 void MainWindow::onTaskTotalSize(qint64 size, int taskid) {
-    this->_filemanagePage->modifyDirCard(size,"同步完成",taskid);
+    this->_syncTaskDatabaseManager->updateTaskTime(taskid,QDateTime::currentDateTime());
+    QString timeFinished=QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
+    this->_filemanagePage->modifyDirCard(size,timeFinished,taskid);
 }
 
 void MainWindow::onTaskUploadSize(qint64 size, int taskid) {
@@ -449,6 +451,11 @@ void MainWindow::onFileDownloadTaskFinished(int fileTaskId)
     _syncingPage->removeFile(
         fileTaskId
         );
+}
+
+void MainWindow::onUserPausedFileTask(int fileTaskId)
+{
+
 }
 
 void MainWindow::autologin()

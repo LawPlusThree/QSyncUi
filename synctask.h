@@ -62,6 +62,16 @@ public:
 
     bool queryTask(const SyncTask &task);
 
+    void updateTaskStatus(int id, int status);
+
+    void updateTaskTime(int id, QDateTime time);
+
+    void updateTaskRemotePath(int id, QString remotePath);
+
+    void updateTaskLocalPath(int id, QString localPath);
+
+    SyncTask getTaskById(int id);
+
     QList<SyncTask> getTasks();
 
     ~SyncTaskDatabaseManager() { db.close(); }

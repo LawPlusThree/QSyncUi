@@ -32,6 +32,8 @@ public:
     void addSynctask(const QFileInfo &info);//添加同步任务，把本地未上传文件添加入任务
     void deleteSynctask(const QString &path);//删除同步任务，把本地已上传文件删除任务
     void updateSynctask(const QString &path);//更新同步任务，把本地已上传文件更新任务
+public slots:
+    void onTaskCanceled(int fileTaskId);
 signals:
     void localTotalSize(qint64);//本地文件总大小
     void upTotalSize(qint64);//上传文件总大小
