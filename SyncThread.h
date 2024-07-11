@@ -39,6 +39,8 @@ signals:
     void newDownloadTask(const QString &localPath, qint64 fileTaskId);
     void updateUploadTask(int fileTaskId, qint64 nowSize, qint64 totalSize);
     void updateDownloadTask(int fileTaskId, qint64 nowSize, qint64 totalSize);
+    void finishUploadTask(int fileTaskId);
+    void finishDownloadTask(int fileTaskId);
 };
 
 

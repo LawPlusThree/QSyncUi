@@ -92,6 +92,14 @@ modifyInfor_win::~modifyInfor_win()
 {
 }
 
+//被展示的时候
+void modifyInfor_win::showEvent(QShowEvent *event)
+{
+    newIdEdit_->setText(currentUser->getUsername());
+    newPasswordEdit_->setText(currentUser->gethashedPassword());
+    confirmNewPasswordEdit_->setText(currentUser->gethashedPassword());
+}
+
 void modifyInfor_win::onConfirmButtonClicked()
 {
     QString newId = newIdEdit_->text();
@@ -120,12 +128,16 @@ void modifyInfor_win::onConfirmButtonClicked()
     currentUser->username = newId;
     currentUser->hashedPassword = newPassword;
     currentUser->updateUser();
+    currentUser->updateAvatar(avatarPath);
     // 更新数据库
     currentUser->username = newId;
     currentUser->hashedPassword = newPassword;
     emit changexinxi(User(*currentUser));
 
     QMessageBox::information(this, "成功","修改成功");
+    confirmButton_->setEnabled(true);
+    confirmButton_->setText("确认修改");
+    confirmButton_->setStyleSheet("background-color:rgb(0,204,255)");
     this->hide();
 }
 
@@ -152,8 +164,6 @@ void modifyInfor_win::onAvatarClicked()
         avatar->setCardPixmapBorderRadius(70);
         avatarArea->addWidget(avatar,0,Qt::AlignCenter);
         update();
+        avatarPath=fileName;
     }
-    confirmButton_->setEnabled(true);
-    confirmButton_->setText("确认修改");
-    confirmButton_->setStyleSheet("background-color:rgb(0,204,255)");
 }

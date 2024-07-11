@@ -139,8 +139,8 @@ MainWindow::MainWindow(QWidget *parent)
     });
 
     qDebug() << ElaEventBus::getInstance()->getRegisteredEventsName();
-    QObject::connect(login, &loginwin::on_login_complete, this, &MainWindow::onUserLoggedIn);
-    QObject::connect(_modifyInfor_win, &modifyInfor_win::changexinxi, this, &MainWindow::onModifyInfo);
+    connect(login, &loginwin::on_login_complete, this, &MainWindow::onUserLoggedIn);
+    connect(_modifyInfor_win, &modifyInfor_win::changexinxi, this, &MainWindow::onModifyInfo);
     // 拦截默认关闭事件
     this->setIsDefaultClosed(false);
     connect(this, &MainWindow::closeButtonClicked, this, &MainWindow::onCloseButtonClicked);
@@ -189,6 +189,8 @@ void MainWindow::onUserLoggedIn(User user)
     connect(_syncCore,&SyncCore::addFileDownloadTask,this,&MainWindow::onFileDownloadTaskCreated);
     qDebug() << "Connecting updateFileDownloadTask signal";
     connect(_syncCore,&SyncCore::updateFileDownloadTask,this,&MainWindow::onFileDownloadTaskUpdated);
+    connect(_syncCore,&SyncCore::finishFileDownloadTask,this,&MainWindow::onFileDownloadTaskFinished);
+    connect(_syncCore,&SyncCore::finishFileUploadTask,this,&MainWindow::onFileUploadTaskFinished);
     connect(_filemanagePage,&FileManagePage::deleteTask,[=](int taskId){
        this->_syncTaskDatabaseManager->deleteTask(taskId);
     });
@@ -433,6 +435,20 @@ void MainWindow::onTaskTotalSize(qint64 size, int taskid) {
 
 void MainWindow::onTaskUploadSize(qint64 size, int taskid) {
     this->_filemanagePage->modifyDirCard(size,"正在同步",taskid);
+}
+
+void MainWindow::onFileUploadTaskFinished(int fileTaskId)
+{
+    _syncingPage->removeFile(
+        fileTaskId
+        );
+}
+
+void MainWindow::onFileDownloadTaskFinished(int fileTaskId)
+{
+    _syncingPage->removeFile(
+        fileTaskId
+        );
 }
 
 void MainWindow::autologin()
