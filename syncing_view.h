@@ -18,6 +18,7 @@ public:
     void removeFile(int id);
     void modifyFile(int d,int s,int p,int id);
     void modifyFile(int p,int id);
+    void totalProgress();
     FileCardProxy* _filecardProxy;
 private:
     ElaProgressBar* _progressBar{nullptr};

@@ -65,3 +65,20 @@ void FileCardProxy::processing(int p,int Id)
             card->processing(p);
     }
 }
+
+int FileCardProxy::totalprogress()
+{
+    int total=0;
+    int x=0;
+    QMapIterator<int,FileCard*> i(cardMap);
+    while(i.hasNext())
+    {
+        i.next();
+        int id=i.key();
+        FileCard*card=i.value();
+        total+=card->progress;
+        x++;
+    }
+    int progress=total/x;
+    return progress;
+}
