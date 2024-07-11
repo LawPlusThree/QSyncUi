@@ -65,11 +65,11 @@ private:
     bool isLogin=false;
     ApiRequest *apiRequest;
     QString avatarpath;
-    QString encryptPassword(const QString &password); //加密密码
 
 public:
     QString username; //username
     QString hashedPassword; //password
+    QString encryptPassword(const QString &password); //加密密码
     User(const QString &username,
          const QString &account,
          const QString &password,
