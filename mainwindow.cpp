@@ -468,7 +468,7 @@ void MainWindow::autologin()
             onUserLoggedIn(*CurrentUser);
             onMessage("自动登录成功！","Success");
         }else{
-            onMessage("自动登录失败！","Error");
+            //onMessage("自动登录失败！","Error");
         }
     }
 }
