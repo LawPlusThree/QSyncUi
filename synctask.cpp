@@ -4,7 +4,7 @@
 
 SyncTaskDatabaseManager::SyncTaskDatabaseManager(User *u) { initializeDatabase(u->getUserHash()); }
 
-void SyncTaskDatabaseManager::addTask(const SyncTask &task) {
+int SyncTaskDatabaseManager::addTask(const SyncTask &task) {
     QSqlQuery query;
     query.prepare("INSERT INTO SyncTasks (localPath, remotePath, syncStatus, lastSyncTime) VALUES (:localPath, :remotePath, :syncStatus, :lastSyncTime)");
     query.bindValue(":localPath", task.localPath.absolutePath());
@@ -12,6 +12,9 @@ void SyncTaskDatabaseManager::addTask(const SyncTask &task) {
     query.bindValue(":syncStatus", task.syncStatus);
     query.bindValue(":lastSyncTime", task.lastSyncTime.toString("yyyy-MM-dd hh:mm:ss"));
     query.exec();
+    //返回ID
+    int result=query.lastInsertId().toInt();
+    return result;
 }
 
 bool SyncTaskDatabaseManager::deleteTask(int id) {

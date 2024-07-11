@@ -9,7 +9,7 @@
 #include <QStandardPaths>
 #include <QString>
 #include "qcontainerfwd.h"
-
+#include "cosclient.h"
 //声明友元类
 class SyncCore;
 class SyncTaskDatabaseManager;
@@ -32,11 +32,15 @@ public:
         remotePath = task.remotePath;
         syncStatus = task.syncStatus;
         lastSyncTime = task.lastSyncTime;
+        id = task.id;
     }
+    COSClient* cosclient;
     QString getLocalPath() const { return localPath.absolutePath(); }
     QString getRemotePath() const { return remotePath; }
     int getId() const { return id; }
     int getSyncStatus() const { return syncStatus; }
+    void setSyncStatus(int status) { syncStatus = status; }
+    void setId(int id) { this->id = id; }
     QDateTime getLastSyncTime() const { return lastSyncTime; }
     void setLastSyncTime(QDateTime time) { lastSyncTime = time; }
     friend class SyncTaskDatabaseManager;
@@ -48,7 +52,7 @@ class SyncTaskDatabaseManager
 public:
     SyncTaskDatabaseManager(User* u);
 
-    void addTask(const SyncTask &task);
+    int addTask(const SyncTask &task);
 
     bool deleteTask(int id);
 
