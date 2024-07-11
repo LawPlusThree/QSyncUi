@@ -69,7 +69,7 @@ SyncingPage::SyncingPage(QWidget* parent)
     catalogueArea->setAttribute(Qt::WA_TranslucentBackground); // 设置背景透明
     //ElaScrollPageArea* catalogueArea = new ElaScrollPageArea(this);
     QHBoxLayout* catalogueLayout = new QHBoxLayout(catalogueArea);
-    catalogueLayout->setContentsMargins(18, 0, 25, 0);
+    catalogueLayout->setContentsMargins(18, 0, 20, 0);
     ElaText* catalogueText0 = new ElaText("", this);
     catalogueText0->setTextSize(16);
     catalogueText0->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
@@ -182,7 +182,7 @@ void SyncingPage::resizeEvent(QResizeEvent* event) {
     auto thisMap=this->_filecardProxy->cardMap;
     for (auto &x:thisMap){
         QFontMetrics metrics(x->filename->font());
-        QString elidedText = metrics.elidedText(x->fullText, Qt::ElideRight, filenameWidget->width()-20);
+        QString elidedText = metrics.elidedText(x->fullText, Qt::ElideMiddle, filenameWidget->width()-20);
         x->filename->setText(elidedText);
         x->filename->setToolTip(x->fullText);
     }
