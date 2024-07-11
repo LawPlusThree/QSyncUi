@@ -24,7 +24,7 @@ bool DatabaseManager::initializeDatabase()
         qDebug() << "Failed to create table:" << query.lastError();
     }*/
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-    db.setDatabaseName("thxDatabase.db");
+    db.setDatabaseName("Database.db");
     if(!db.open())
     {
         qWarning() << "Database open failed:" << db.lastError();
@@ -33,12 +33,12 @@ bool DatabaseManager::initializeDatabase()
 
     QSqlQuery query;
 
-    if (!query.exec("CREATE TABLE IF NOT EXISTS Users (account TEXT PRIMARY KEY, hashedPassword TEXT);")) {
+    if (!query.exec("CREATE TABLE IF NOT EXISTS tmd (account TEXT PRIMARY KEY, hashedPassword TEXT);")) {
         qWarning() << "Failed to create table:" << query.lastError();
         return false;
     }
 
-    query.prepare("SELECT account, hashedPassword FROM Users");
+    query.prepare("SELECT account, hashedPassword FROM tmd");
     if(query.exec())
     {
         while (query.next()) {
@@ -57,11 +57,12 @@ bool DatabaseManager::initializeDatabase()
 bool DatabaseManager::insertUser(const QString &account, const QString &hashedPassword)
 {
     QSqlQuery query;
-    query.prepare("INSERT INTO Users (account, hashedPassword) VALUES (:account, :hashedPassword)");
+    /*query.prepare("INSERT INTO tmd (account, hashedPassword) VALUES (:account, :hashedPassword)");
     query.bindValue(":account", account);
-    query.bindValue(":hashedPassword", hashedPassword);
+    query.bindValue(":hashedPassword", hashedPassword);*/
+    QString strs=QString("INSERT INTO tmd VALUES('%1','%2')").arg(account).arg(hashedPassword);
 
-    if (!query.exec()) {
+    if (!query.exec(strs)) {
         qWarning() << "Failed to insert user:" << query.lastError();
         return false;
     }
@@ -82,13 +83,25 @@ bool DatabaseManager::updateUserInfo(const QString &account,const QString &newHa
         return false;
     }
 
+    if(!query.exec("SELECT name FROM sqlite_master WHERE type='table' AND name='tmd'")){
+        qDebug()<<"table not exist";
+    }
+
+
     // 开始一个事务
     if (QSqlDatabase::database().transaction()) {
         // 准备 SQL 语句
-        query.prepare("UPDATE Users SET hashedPassword = :newHashedPassword WHERE account = :account");
-        // 绑定参数
-        query.bindValue(":account", account);
-        query.bindValue(":newHashedPassword", newHashedPassword);
+        if (!query.prepare("UPDATE tmd SET hashedPassword = ? WHERE account = ?")) {
+            qDebug() << "Prepare failed:" << query.lastError();
+        }
+
+        query.addBindValue(newHashedPassword);
+        query.addBindValue(account);
+
+        if (!query.exec()) {
+            qDebug() << "Execution failed:" << query.lastError();
+        }
+
         // 执行查询
         if (!query.exec()) {
             // 如果执行失败，打印错误信息
@@ -105,6 +118,7 @@ bool DatabaseManager::updateUserInfo(const QString &account,const QString &newHa
                 qWarning() << "Failed to commit transaction:" << QSqlDatabase::database().lastError().text();
             }
         }
+
     } else {
         qWarning() << "Failed to start transaction:" << QSqlDatabase::database().lastError().text();
         return false;
@@ -118,7 +132,7 @@ QList<QString> DatabaseManager::getAllAccounts()
     QSqlQuery query;
     QList<QString> accounts;
 
-    query.prepare("SELECT account FROM Users");
+    query.prepare("SELECT account FROM tmd");
     if (query.exec()) {
 
         while (query.next()) {

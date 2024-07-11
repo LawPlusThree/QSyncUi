@@ -82,6 +82,8 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
 
         modifyinfor_win.h modifyinfor_win.cpp
         crc64util.h crc64util.cpp
+        filecardproxy.h filecardproxy.cpp
+        usermanager.h usermanager.cpp
 
 
     )

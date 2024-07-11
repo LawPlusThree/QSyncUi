@@ -108,7 +108,6 @@ FileManagePage::FileManagePage(QWidget* parent):ElaScrollPage(parent)
 
     _dircardProxy=new DirCardProxy(this);
 
-
     scrollArea->setWidget(_dircardProxy);
     scrollArea->setWidgetResizable(true); // 允许scrollArea根据内容自动调整大小
 

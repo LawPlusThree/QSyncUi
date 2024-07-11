@@ -8,14 +8,18 @@
 class ElaToggleButton;
 class ElaPushButton;
 class QVBoxLayout;
+class FileCardProxy;
 class SyncingPage : public ElaScrollPage
 {
 public:
     SyncingPage(QWidget* parent = nullptr);
     ~SyncingPage();
-    void addFile(QString filename, QString datasize,QString speed,QString progress);
-    void removeFile();
-    QVBoxLayout*filesLayout;
+    void addFile(QString filename, int datasize,int speed,int progress,int id);
+    void removeFile(int id);
+    void modifyFile(int d,int s,int p,int id);
+    void modifyFile(int p,int id);
+    void totalProgress();
+    FileCardProxy* _filecardProxy;
 private:
     ElaProgressBar* _progressBar{nullptr};
     ElaPushButton* _pushButton{nullptr};

@@ -5,6 +5,7 @@
 #include <QVBoxLayout>
 #include"filecard.h"
 #include"ElaScrollArea.h"
+#include"filecardproxy.h"
 
 SyncingPage::SyncingPage(QWidget* parent)
     : ElaScrollPage(parent)
@@ -22,7 +23,8 @@ SyncingPage::SyncingPage(QWidget* parent)
     _progressBar->setMinimumSize(100, 20); // 调整最小宽度为100，最小高度20
     // 设置进度条的最小值和最大值
     _progressBar->setMinimum(0);
-    _progressBar->setMaximum(0); // 表示不确定的进度
+    _progressBar->setMaximum(100); // 表示不确定的进度
+    _progressBar->setValue(0);
     QWidget* progressBarArea = new QWidget();
     progressBarArea->setWindowFlags(Qt::FramelessWindowHint); // 去除窗口边框
     progressBarArea->setAttribute(Qt::WA_TranslucentBackground); // 设置背景透明
@@ -111,43 +113,21 @@ SyncingPage::SyncingPage(QWidget* parent)
 
     ElaScrollArea* scrollArea = new ElaScrollArea();
     scrollArea->viewport()->setStyleSheet("background:transparent;");//设置背景透明
-    FileCard*FileCardArea1=new FileCard("文件1","3GB","1.3MB/s","0%");
-    FileCard*FileCardArea2=new FileCard("文件2","3.55GB","2MB/s","0%");
-    FileCard*FileCardArea3=new FileCard("文件3fsgfhgsgskhdjfskjfbskhbfsbkhebvsbvhisbhjevkhba","3.5GB","3MB/s","52%");
-    FileCard*FileCardArea4=new FileCard("文件vnjskbdkvsdjabjkvavshjajvnhsnvgdbdbsbsnjnsb","32GB","4MB/s","0%");
-    FileCard*FileCardArea5=new FileCard("文件bb","3.45GB","51MB/s","5%");
-    FileCard*FileCardArea6=new FileCard("文件6","256.2KB","65MB/s","10%");
-    FileCard*FileCardArea7=new FileCard("文件7vbhksfbvbfshvbkjsbvfb","21GB","7MB/s","0%");
-    FileCard*FileCardArea8=new FileCard("文件8","3.5GB","8MB/s","0%");
-    FileCard*FileCardArea9=new FileCard("文件9vsnjkdfbvsvb","3.5GB","9MB/s","0%");
-    FileCard*FileCardArea10=new FileCard("文件10v","3.5GB","10MB/s","0%");
 
-    connect(FileCardArea1,&FileCard::Relieve,this,&SyncingPage::removeFile);
-    connect(FileCardArea2,&FileCard::Relieve,this,&SyncingPage::removeFile);
-    connect(FileCardArea3,&FileCard::Relieve,this,&SyncingPage::removeFile);
-    connect(FileCardArea4,&FileCard::Relieve,this,&SyncingPage::removeFile);
-    connect(FileCardArea5,&FileCard::Relieve,this,&SyncingPage::removeFile);
-    connect(FileCardArea6,&FileCard::Relieve,this,&SyncingPage::removeFile);
-    connect(FileCardArea7,&FileCard::Relieve,this,&SyncingPage::removeFile);
-    connect(FileCardArea8,&FileCard::Relieve,this,&SyncingPage::removeFile);
-    connect(FileCardArea9,&FileCard::Relieve,this,&SyncingPage::removeFile);
-    connect(FileCardArea10,&FileCard::Relieve,this,&SyncingPage::removeFile);
+    _filecardProxy=new FileCardProxy(this);
+    addFile("文件1",3,1.3,0,1);
+    addFile("文件2",5,2,0,2);
+    addFile("文件3fsgfhgsgskhdjfskjfbskhbfsbkhebvsbvhisbhjevkhba",3.5,3,52,3);
+    addFile("文件vnjskbdkvsdjabjkvavshjajvnhsnvgdbdbsbsnjnsb",32,4,0,4);
+    addFile("文件bb",4,51,5,5);
+    addFile("文件6",256,65,10,6);
+    addFile("文件7vbhksfbvbfshvbkjsbvfb",21,7,0,7);
+    addFile("文件8",5,8,0,8);
+    addFile("文件9vsnjkdfbvsvb",3,9,0,9);
+    addFile("文件10v",3,10,100,10);
 
-    QWidget* filesWidget=new QWidget();
-    filesLayout=new QVBoxLayout(filesWidget);
-    filesLayout->addWidget(FileCardArea1);
-    filesLayout->addWidget(FileCardArea2);
-    filesLayout->addWidget(FileCardArea3);
-    filesLayout->addWidget(FileCardArea4);
-    filesLayout->addWidget(FileCardArea5);
-    filesLayout->addWidget(FileCardArea6);
-    filesLayout->addWidget(FileCardArea7);
-    filesLayout->addWidget(FileCardArea8);
-    filesLayout->addWidget(FileCardArea9);
-    filesLayout->addWidget(FileCardArea10);
-    filesLayout->setAlignment(Qt::AlignTop);
-
-    scrollArea->setWidget(filesWidget); // 设置scrollArea的内容部件
+    scrollArea->setWidget(_filecardProxy);
+    //scrollArea->setWidget(filesWidget); // 设置scrollArea的内容部件
     scrollArea->setWidgetResizable(true); // 允许scrollArea根据内容自动调整大小
 
     centerVLayout->addWidget(progressBarArea); // 将上方固定区域添加到布局中
@@ -163,19 +143,34 @@ SyncingPage::~SyncingPage()
 
 }
 
-void SyncingPage::addFile(QString filename, QString datasize,QString speed,QString progress)
+void SyncingPage::addFile(QString filename, int datasize,int speed,int progress,int id)
 {
-    FileCard*firecard=new FileCard(filename,datasize,speed,progress);
-    connect(firecard,&FileCard::Relieve,this,&SyncingPage::removeFile);
-    filesLayout->addWidget(firecard);
+    FileCard*newFile=new FileCard(filename,datasize,speed,progress,id);
+    connect(newFile,&FileCard::Relieve,this,&SyncingPage::removeFile);
+    _filecardProxy->addFileCard(newFile,id);
+    totalProgress();
 }
 
-void SyncingPage::removeFile()
+void SyncingPage::removeFile(int id)
 {
-    FileCard *card = qobject_cast<FileCard*>(sender());
-    if (card)
-    {
-        layout()->removeWidget(card);
-        delete card;
-    }
+    _filecardProxy->removeFileCard(id);
+    totalProgress();
+}
+
+void SyncingPage::modifyFile(int d,int s,int p,int id)
+{
+    _filecardProxy->modify(d,s,p,id);
+    totalProgress();
+}
+
+void SyncingPage::modifyFile(int p,int id)
+{
+    _filecardProxy->processing(p,id);
+    totalProgress();
+}
+
+void SyncingPage::totalProgress()
+{
+    int totalpro=_filecardProxy->totalprogress();
+    _progressBar->setValue(totalpro);
 }
