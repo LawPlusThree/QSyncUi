@@ -39,7 +39,7 @@ QString UserManager::getUserPassWord(const QString &account)
     QJsonObject json = doc.object();
     if( json.value("act") == account )
     {
-        return decodePassword(account,json.value("pws").toString());
+        return decodePassword(account,json.value("psw").toString());
     }
     else
         return "";
