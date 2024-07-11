@@ -125,7 +125,7 @@ SyncingPage::SyncingPage(QWidget* parent)
     scrollArea->viewport()->setStyleSheet("background:transparent;");//设置背景透明
 
     _filecardProxy=new FileCardProxy(this);
-    addFile("文件1",30060600000,130000,0,1000);
+    //addFile("文件1",30060600000,130000,0,1000);
 
 
     scrollArea->setWidget(_filecardProxy);

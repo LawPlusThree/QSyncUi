@@ -117,4 +117,9 @@ void SyncThread::addSynctask(const QFileInfo &info)
     }
 }
 
+void SyncThread::onTaskCanceled(int fileTaskId)
+{
+
+}
+
 
