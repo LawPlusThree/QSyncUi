@@ -22,6 +22,7 @@ public:
     void modifyDirCard(int datasize,QString bindtime,int id);
     DirCardProxy*_dircardProxy;
     linkNewFolder_window* linknewfolderwindow=new linkNewFolder_window();
+    QWidget* filenameWidget = new QWidget();
 private:
     ElaProgressBar* _progressBar{nullptr};
     ElaPushButton* _pushButton1{nullptr};

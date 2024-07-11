@@ -14,6 +14,7 @@ public:
     ~HistorysyncPage();
     QVBoxLayout*filesLayout;
     void addHistory(QString filename, QString datasize,QString time,bool upif);
+    QWidget* filenameWidget = new QWidget();
 private:
     ElaProgressBar* _progressBar{nullptr};
 };
