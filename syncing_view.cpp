@@ -175,7 +175,7 @@ void SyncingPage::modifyFile(int p,int id)
 
 void SyncingPage::modifyFile(int totalSize,int currentSize,int id)
 {
-    int d=totalSize;
+    /*int d=totalSize;
     int p=((double)currentSize/(double)totalSize)*100;
     int s=0;
     preSize=Size;
@@ -198,7 +198,8 @@ void SyncingPage::modifyFile(int totalSize,int currentSize,int id)
             s=(Size-preSize)/time;
         }
     }
-    _filecardProxy->modify(d,s,p,id);
+    _filecardProxy->modify(d,s,p,id);*/
+    _filecardProxy->modify(totalSize,currentSize,id);
     totalProgress();
 }
 
