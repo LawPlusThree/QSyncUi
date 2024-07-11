@@ -5,21 +5,18 @@
 #include <QMap>
 #include <QString>
 #include <QPair>
+#include"user.h"
 
 class UserManager : public QObject
 {
     Q_OBJECT
 public:
-    explicit UserManager(const QString &filePath, QObject *parent = nullptr);
-    bool insertUser(const QString &account, const QString &hashedPassword);
-    bool updateUserInfo(const QString &account, const QString &newHashedPassword);
-    QList<QString> getAllAccounts();
-    QPair<QString, QString> getUserPassword(const QString &account);
+    explicit UserManager(QObject *parent = nullptr);
+    bool updateUserInfo(User &user);//保存登陆成功后的用户信息
+    QString getUserPassWord(const QString&account);
 
 private:
-    QString filePath_;
-    QMap<QString, QString> userMap_;
-    bool saveToFile();
-    bool loadFromFile();
+    QString filePath_ = "usif.json";
+    bool saveToFile(const QString&,const QString&);
 };
 #endif // USERMANAGER_H
