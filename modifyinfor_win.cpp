@@ -95,7 +95,7 @@ modifyInfor_win::~modifyInfor_win()
 //被展示的时候
 void modifyInfor_win::showEvent(QShowEvent *event)
 {
-    newIdEdit_->setText(currentUser->getEmail());
+    newIdEdit_->setText(currentUser->getUsername());
     newPasswordEdit_->setText(currentUser->gethashedPassword());
     confirmNewPasswordEdit_->setText(currentUser->gethashedPassword());
 }
