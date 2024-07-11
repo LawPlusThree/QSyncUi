@@ -67,3 +67,11 @@ bool UserManager::saveToFile(const QString&account,const QString&password)
     file.close();
     return true;
 }
+
+QString UserManager::decodePassword(const QString &password){
+    QString uuid=QUuid::createUuid().toString();
+    //以uuid为密钥rc4加密password
+    RC4 rc4(uuid.toUtf8());
+    QByteArray code = rc4.encrypt(password.toUtf8());
+    return QString::fromUtf8(code);
+}

@@ -18,5 +18,6 @@ public:
 private:
     QString filePath_ = "usif.json";
     bool saveToFile(const QString&,const QString&);
+    QString decodePassword(const QString &password); 
 };
 #endif // USERMANAGER_H
