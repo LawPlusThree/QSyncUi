@@ -22,6 +22,7 @@ public:
     ElaIconButton*pauseBtn;
     ElaIconButton*relieveBtn;
     ElaProgressBar*proBar;
+    QString fullText;
 
 private slots:
     void on_relieveBtn_clicked();

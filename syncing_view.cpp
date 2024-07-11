@@ -5,6 +5,10 @@
 #include <QVBoxLayout>
 #include"filecard.h"
 #include"ElaScrollArea.h"
+#include <QDebug>
+#include <QApplication>
+#include <QTimer>
+#include <QObject>
 
 SyncingPage::SyncingPage(QWidget* parent)
     : ElaScrollPage(parent)
@@ -69,26 +73,32 @@ SyncingPage::SyncingPage(QWidget* parent)
     catalogueText0->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     catalogueText0->setFixedSize(25,20);
     catalogueText0->setAlignment(Qt::AlignCenter); // 设置文本居中对齐
-    QHBoxLayout* catalogueArea0 = new QHBoxLayout();
+    QVBoxLayout* catalogueArea0 = new QVBoxLayout();
     catalogueArea0->addWidget(catalogueText0, 0, Qt::AlignCenter);
+
     ElaText* catalogueText1 = new ElaText("文件名", this);
     catalogueText1->setTextSize(16);
     catalogueText1->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-    QHBoxLayout* catalogueArea1 = new QHBoxLayout();
-    catalogueArea1->addWidget(catalogueText1, 0, Qt::AlignLeft);
+    //QWidget* filenameWidget = new QWidget();
+    filenameWidget->setWindowFlags(Qt::FramelessWindowHint); // 去除窗口边框
+    filenameWidget->setAttribute(Qt::WA_TranslucentBackground); // 设置背景透明
+    filenameWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    QVBoxLayout* filenameArea = new QVBoxLayout(filenameWidget);
+    filenameArea->addWidget(catalogueText1, 0, Qt::AlignLeft);
+
     ElaText* catalogueText2 = new ElaText("数据大小", this);
     catalogueText2->setTextSize(16);
     catalogueText2->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     catalogueText2->setFixedSize(100,20);
     catalogueText2->setAlignment(Qt::AlignCenter); // 设置文本居中对齐
-    QHBoxLayout* catalogueArea2 = new QHBoxLayout();
+    QVBoxLayout* catalogueArea2 = new QVBoxLayout();
     catalogueArea2->addWidget(catalogueText2, 0, Qt::AlignCenter);
     ElaText* catalogueText4 = new ElaText("同步状态", this);
     catalogueText4->setTextSize(16);
     catalogueText4->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     catalogueText4->setFixedSize(140,20);
     catalogueText4->setAlignment(Qt::AlignCenter); // 设置文本居中对齐
-    QHBoxLayout* catalogueArea4 = new QHBoxLayout();
+    QVBoxLayout* catalogueArea4 = new QVBoxLayout();
     catalogueArea4->addWidget(catalogueText4, 0, Qt::AlignCenter);
     ElaText* catalogueText5 = new ElaText("操作", this);
     catalogueText5->setTextSize(16);
@@ -98,12 +108,12 @@ SyncingPage::SyncingPage(QWidget* parent)
     QHBoxLayout* catalogueArea5 = new QHBoxLayout();
     catalogueArea5->addWidget(catalogueText5, 0, Qt::AlignCenter);
     catalogueLayout->addLayout(catalogueArea0);
-    catalogueLayout->addLayout(catalogueArea1);
+    catalogueLayout->addWidget(filenameWidget);
     catalogueLayout->addLayout(catalogueArea2);
     catalogueLayout->addLayout(catalogueArea4);
     catalogueLayout->addLayout(catalogueArea5);
     catalogueLayout->setStretchFactor(catalogueArea0, 25);
-    catalogueLayout->setStretchFactor(catalogueArea1, 500);
+    catalogueLayout->setStretchFactor(filenameWidget, 500);
     catalogueLayout->setStretchFactor(catalogueArea2, 100);
     catalogueLayout->setStretchFactor(catalogueArea4, 140);
     catalogueLayout->setStretchFactor(catalogueArea5, 60);
@@ -111,16 +121,6 @@ SyncingPage::SyncingPage(QWidget* parent)
 
     ElaScrollArea* scrollArea = new ElaScrollArea();
     scrollArea->viewport()->setStyleSheet("background:transparent;");//设置背景透明
-    FileCard*FileCardArea1=new FileCard("文件1","3GB","1.3MB/s","0%");
-    FileCard*FileCardArea2=new FileCard("文件2","3.55GB","2MB/s","0%");
-    FileCard*FileCardArea3=new FileCard("文件3fsgfhgsgskhdjfskjfbskhbfsbkhebvsbvhisbhjevkhba","3.5GB","3MB/s","52%");
-    FileCard*FileCardArea4=new FileCard("文件vnjskbdkvsdjabjkvavshjajvnhsnvgdbdbsbsnjnsb","32GB","4MB/s","0%");
-    FileCard*FileCardArea5=new FileCard("文件bb","3.45GB","51MB/s","5%");
-    FileCard*FileCardArea6=new FileCard("文件6","256.2KB","65MB/s","10%");
-    FileCard*FileCardArea7=new FileCard("文件7vbhksfbvbfshvbkjsbvfb","21GB","7MB/s","0%");
-    FileCard*FileCardArea8=new FileCard("文件8","3.5GB","8MB/s","0%");
-    FileCard*FileCardArea9=new FileCard("文件9vsnjkdfbvsvb","3.5GB","9MB/s","0%");
-    FileCard*FileCardArea10=new FileCard("文件10v","3.5GB","10MB/s","0%");
 
     connect(FileCardArea1,&FileCard::Relieve,this,&SyncingPage::removeFile);
     connect(FileCardArea2,&FileCard::Relieve,this,&SyncingPage::removeFile);
@@ -156,6 +156,7 @@ SyncingPage::SyncingPage(QWidget* parent)
     centerVLayout->addWidget(scrollArea);
 
     this->addCentralWidget(centralWidget); // 将中心部件添加到窗口中
+
 }
 
 SyncingPage::~SyncingPage()
@@ -178,4 +179,23 @@ void SyncingPage::removeFile()
         layout()->removeWidget(card);
         delete card;
     }
+}
+
+void SyncingPage::updateFilenameText() {
+    QFontMetrics metrics(FileCardArea3->filename->font());
+    QString elidedText = metrics.elidedText(FileCardArea3->fullText, Qt::ElideRight, filenameWidget->width()-20);
+    FileCardArea3->filename->setText(elidedText);
+    FileCardArea3->filename->setToolTip(FileCardArea3->fullText); // 设置工具提示为完整的文件名
+
+    metrics = QFontMetrics (FileCardArea4->filename->font());
+    elidedText = metrics.elidedText(FileCardArea4->fullText, Qt::ElideRight, filenameWidget->width()-20);
+    FileCardArea4->filename->setText(elidedText);
+    FileCardArea4->filename->setToolTip(FileCardArea4->fullText); // 设置工具提示为完整的文件名
+}
+
+// 重写resizeEvent
+void SyncingPage::resizeEvent(QResizeEvent* event) {
+    QWidget::resizeEvent(event);
+    //QTimer::singleShot(1, this, SLOT(updateFilenameText()));
+    updateFilenameText();
 }
