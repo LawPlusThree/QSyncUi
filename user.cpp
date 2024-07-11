@@ -57,10 +57,10 @@ bool User::enroll()
     }
 }
 
-bool User::enroll(const QString &avatarpath)
+bool User::enroll(const QString &filePath)
 {
     // 读取文件并转换为base64字符串
-    QFile file(avatarpath);
+    QFile file(filePath);
     if (!file.open(QIODevice::ReadOnly))
     {
         qDebug() << "open file failed!";
@@ -68,7 +68,7 @@ bool User::enroll(const QString &avatarpath)
     }
     QByteArray byteArray = file.readAll();
     QString avatar = byteArray.toBase64();
-    QFileInfo fileInfo(avatarpath);
+    QFileInfo fileInfo(filePath);
     QString extension = fileInfo.suffix().toLower();
 
     if (extension == "png")
@@ -137,7 +137,7 @@ bool User::forgetPassword()
 
 bool User::updateAvatar(const QString &filePath)
 {
-    QFile file(avatarpath);
+    QFile file(filePath);
     if (!file.open(QIODevice::ReadOnly))
     {
         qDebug() << "open file failed!";
@@ -145,7 +145,7 @@ bool User::updateAvatar(const QString &filePath)
     }
     QByteArray byteArray = file.readAll();
     QString avatar = byteArray.toBase64();
-    QFileInfo fileInfo(avatarpath);
+    QFileInfo fileInfo(filePath);
     QString extension = fileInfo.suffix().toLower();
 
     if (extension == "png")
