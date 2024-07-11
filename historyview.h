@@ -14,6 +14,7 @@ public:
     explicit HistoryViewPage(QWidget* parent);
     QVBoxLayout*filesLayout;
     void addHistoryViewCard(QString filename,QString datasize,QString bingtime);
+    QWidget* filenameWidget = new QWidget();
 
 private:
     ElaProgressBar* _progressBar{nullptr};
