@@ -125,7 +125,7 @@ SyncingPage::SyncingPage(QWidget* parent)
     scrollArea->viewport()->setStyleSheet("background:transparent;");//设置背景透明
 
     _filecardProxy=new FileCardProxy(this);
-    addFile("文件1",3,1.3,0,1000);
+    addFile("文件1",30060600000,130000,0,1000);
 
 
     scrollArea->setWidget(_filecardProxy);
@@ -145,7 +145,7 @@ SyncingPage::~SyncingPage()
 
 }
 
-void SyncingPage::addFile(QString filename, int datasize,int speed,int progress,int id)
+void SyncingPage::addFile(QString filename, qint64 datasize,double speed,int progress,int id)
 {
     FileCard*newFile=new FileCard(filename,datasize,speed,progress,id);
     connect(newFile,&FileCard::Relieve,this,&SyncingPage::removeFile);
@@ -164,7 +164,7 @@ void SyncingPage::removeFile(int id)
 }
 
 
-void SyncingPage::modifyFile(int totalSize,int currentSize,int id)
+void SyncingPage::modifyFile(qint64 totalSize,qint64 currentSize,int id)
 {
     _filecardProxy->modify(totalSize,currentSize,id);
     totalProgress();
