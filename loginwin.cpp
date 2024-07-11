@@ -122,6 +122,8 @@ void loginwin::on_signinBtn_clicked()
 void loginwin::on_loginBtn_clicked()
 {
     loginBtn->setEnabled(false);
+    loginBtn->setText("登录中......");
+    loginBtn->setStyleSheet("background-color:rgb(138,151,123)");
 
     if(accountLine->text()=="")
     {
@@ -150,6 +152,8 @@ void loginwin::on_loginBtn_clicked()
             QMessageBox::critical(this, "失败","登录失败");
     }
     loginBtn->setEnabled(true);
+    loginBtn->setStyleSheet("background-color:rgb(0,204,255)");
+    loginBtn->setText("登录");
 }
 
 void loginwin::on_accountLine_editingFinished()

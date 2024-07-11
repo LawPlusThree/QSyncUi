@@ -40,7 +40,7 @@ void FileCardProxy::removeFileCard(const int &id) {
     }
 }
 
-void FileCardProxy::modify(int d,int s,int p,int Id)
+/*void FileCardProxy::modify(int d,int s,int p,int Id)
 {
     QMapIterator<int,FileCard*> i(cardMap);
     while(i.hasNext())
@@ -50,6 +50,19 @@ void FileCardProxy::modify(int d,int s,int p,int Id)
         FileCard*card=i.value();
         if(id==Id)
             card->modify(d,s,p);
+    }
+}*/
+
+void FileCardProxy::modify(int totalsize,int currentsize,int Id)
+{
+    QMapIterator<int,FileCard*> i(cardMap);
+    while(i.hasNext())
+    {
+        i.next();
+        int id=i.key();
+        FileCard*card=i.value();
+        if(id==Id)
+            card->modify(totalsize,currentsize);
     }
 }
 

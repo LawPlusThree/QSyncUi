@@ -44,6 +44,7 @@ public:
     bool login();          //执行post请求，实现登录功能
     bool forgetPassword(); //执行post请求，实现找回密码功能
     bool updateAvatar(const QString &filePath);//更新头像
+    bool deleteAccount();//注销账号
     bool addTask(const QString& localDir, const QString& s3Dir, int syncType, int usedSize, int totalSize);//添加云端task
     QVector<SyncTask> getTask();//获取云端task
     TaskToken getTaskToken(int id);//获取tasktoken

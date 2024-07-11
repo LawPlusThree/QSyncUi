@@ -90,6 +90,9 @@ signinwin::signinwin(QWidget* parent):ElaWidget(parent,400,500)
 void signinwin::on_signinBtn_clicked()
 {
     signinBtn->setEnabled(false);
+    signinBtn->setText("注册中......");
+    signinBtn->setStyleSheet("background-color:rgb(138,151,123)");
+
     if(IDLine->text()=="")
     {
         QMessageBox::information(this, "错误","请输入用户ID！");
@@ -133,6 +136,8 @@ void signinwin::on_signinBtn_clicked()
             emit goback();
     }
     signinBtn->setEnabled(true);
+    signinBtn->setText("注册");
+    signinBtn->setStyleSheet("background-color:rgb(0,204,255)");
 }
 
 signinwin::~signinwin()

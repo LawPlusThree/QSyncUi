@@ -41,6 +41,7 @@ public slots:
     void onMessage( QString message,QString type);
     void onUserAddNewTask(const SyncTask &task);
     void onModifyInfo(User user);
+    void onUserdelete();
     void exitLogin();
     void onFileUploadTaskCreated(const QString &localPath, int fileTaskId);
     void onFileUploadTaskUpdated(int fileTaskId, qint64 nowSize, qint64 totalSize);
