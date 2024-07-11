@@ -5,6 +5,7 @@
 #include "ElaProgressBar.h"
 #include "ElaScrollPage.h"
 #include "ElaScrollPage.h"
+#include "filecard.h"
 
 class ElaToggleButton;
 class ElaPushButton;
@@ -26,10 +27,14 @@ public:
     QDateTime currentTime;
     int preSize=0;
     int Size=0;
+    QWidget* filenameWidget = new QWidget();
+    void updateFilenameText();
 private:
     ElaProgressBar* _progressBar{nullptr};
     ElaPushButton* _pushButton{nullptr};
     ElaToggleButton* _toggleButton{nullptr};
+protected:
+    //void resizeEvent(QResizeEvent* event) override;
 };
 
 #endif // SYNCING_VIEW_H

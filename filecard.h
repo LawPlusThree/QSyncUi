@@ -27,6 +27,7 @@ public:
     ElaIconButton*pauseBtn;
     ElaIconButton*relieveBtn;
     ElaProgressBar*proBar;
+    QString fullText;
     int id;
     int progress;
 
