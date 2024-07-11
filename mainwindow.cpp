@@ -42,6 +42,9 @@ MainWindow::MainWindow(QWidget *parent)
     connect(this, &ElaWindow::userInfoCardClicked, [=]() {
         if(CurrentUser==nullptr)
             login->show();
+        else{
+            onMessage("若要登录其他账号，请先退出当前账号！","Info");
+        }
     });
     connect(this,&MainWindow::dbPassword,login,&loginwin::on_db_response);
     connect(login,&loginwin::needPassword,this,&MainWindow::onNeedPassword);
@@ -206,10 +209,16 @@ void MainWindow::onUserLoggedIn(User user)
 
 void MainWindow::exitLogin()
 {
-    setUserInfoCardTitle("未登录");
-    setUserInfoCardSubTitle("");
-    setUserInfoCardPixmap(QPixmap(":/include/Image/Cirno.jpg"));
-    CurrentUser=nullptr;
+    if(CurrentUser->logout()){
+        setUserInfoCardTitle("未登录");
+        setUserInfoCardSubTitle("");
+        setUserInfoCardPixmap(QPixmap(":/include/Image/Cirno.jpg"));
+        onMessage("退出账号成功","Success");
+        CurrentUser=nullptr;
+    }
+    else{
+        onMessage("退出账号失败","Error");
+    }
 }
 
 void MainWindow::onNeedPassword(const QString &account)
