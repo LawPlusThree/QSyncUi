@@ -211,7 +211,6 @@ void FileCard::modify(qint64 totalSize,qint64 currentSize)
             size=dataStr+"GB";
         }
     }
-    datasize = new ElaText(size, this);
 
     QString speedStr;
     QString Speed;
