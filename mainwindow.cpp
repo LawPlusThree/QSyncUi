@@ -469,6 +469,7 @@ void MainWindow::autologin()
             onMessage("自动登录成功！","Success");
         }else{
             //onMessage("自动登录失败！","Error");
+            CurrentUser=nullptr;
         }
     }
 }
