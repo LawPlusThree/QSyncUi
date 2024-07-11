@@ -176,14 +176,6 @@ void SyncingPage::totalProgress()
     _progressBar->setValue(totalpro);
 }
 
-void SyncingPage::updateFilenameText(int id) {
-    FileCard*FileCardArea=_filecardProxy->returnThis(id);
-    QFontMetrics metrics(FileCardArea->filename->font());
-    QString elidedText = metrics.elidedText(FileCardArea->fullText, Qt::ElideRight, filenameWidget->width()-20);
-    FileCardArea->filename->setText(elidedText);
-    FileCardArea->filename->setToolTip(FileCardArea->fullText); // 设置工具提示为完整的文件名
-}
-
 // 重写resizeEvent
 void SyncingPage::resizeEvent(QResizeEvent* event) {
     QWidget::resizeEvent(event);

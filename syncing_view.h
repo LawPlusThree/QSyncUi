@@ -29,7 +29,6 @@ public:
     int preSize=0;
     int Size=0;
     QWidget* filenameWidget = new QWidget();
-    void updateFilenameText(int id);
 private:
     ElaProgressBar* _progressBar{nullptr};
     ElaPushButton* _pushButton{nullptr};
