@@ -24,8 +24,9 @@ public:
 
     QByteArray encrypt(QByteArray plaintext) {
         QByteArray ciphertext;
+        int j = 0;  // 在此处初始化 j
         for (int i = 0; i < plaintext.size(); ++i) {
-            int j = (j + 1) % 256;
+            j = (j + 1) % 256;
             swap(s[i], s[j]);
             int k = (s[i] + s[j]) % 256;
             int cipherByte = plaintext[i] ^ s[k];
