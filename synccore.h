@@ -25,9 +25,9 @@ signals:
     void updateFileUploadTask(const QString &localPath, qint64 nowSize , int fileTaskId);
     void updateFileDownloadTask(const QString &localPath, qint64 nowSize , int fileTaskId);
 public slots:
-    void pauseTask(int taskid);
-    void pauseAllTask();
-    void pauseFileTask(int fileTaskId);
+    void pauseTask(int taskid){};
+    void pauseAllTask(){};
+    void pauseFileTask(int fileTaskId){};
 private:
     COSClient *cosclient;
     QVector<watch*> watchers;

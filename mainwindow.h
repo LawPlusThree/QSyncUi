@@ -75,4 +75,5 @@ private:
     SyncTaskDatabaseManager* _syncTaskDatabaseManager{nullptr};
 
 };
+
 #endif // MAINWINDOW_H
