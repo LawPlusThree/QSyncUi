@@ -137,9 +137,8 @@ void modifyInfor_win::onConfirmButtonClicked()
     confirmButton_->setText("确认修改");
     confirmButton_->setStyleSheet("background-color:rgb(0,204,255)");
     QMessageBox::information(this, "成功","修改成功");
-    confirmButton_->setEnabled(true);
-    confirmButton_->setText("确认修改");
-    confirmButton_->setStyleSheet("background-color:rgb(0,204,255)");
+    QPixmap image(":\\avatarImage\\AvatarImage\\setAvatar.png");
+    avatar->setCardPixmap(image);
     this->hide();
 }
 
@@ -165,7 +164,9 @@ void modifyInfor_win::onAvatarClicked()
         avatar->setCardPixmapSize(140,140);
         avatar->setCardPixmapBorderRadius(70);
         avatarArea->addWidget(avatar,0,Qt::AlignCenter);
+        connect(avatar,&ElaInteractiveCard::clicked,this,&modifyInfor_win::onAvatarClicked);
         update();
         avatarPath=fileName;
+        fileName="";
     }
 }
