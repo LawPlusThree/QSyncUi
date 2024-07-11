@@ -14,6 +14,7 @@ FileCard::FileCard(QString f, int d,int s,int p,int Id)
     speed = new ElaText(Speed, this);
     progress = p;
     id=Id;
+    fullText = f;
 
     filename->setWordWrap(false);//禁止换行
     datasize->setWordWrap(false);
@@ -27,13 +28,17 @@ FileCard::FileCard(QString f, int d,int s,int p,int Id)
     // 创建一个没有文字的_checkBox
     _checkBox = new ElaCheckBox("", this);
     _checkBox->setFixedSize(25, 25);
-    QHBoxLayout* checkBoxArea = new QHBoxLayout();
+    QVBoxLayout* checkBoxArea = new QVBoxLayout();
     checkBoxArea->addWidget(_checkBox, 0, Qt::AlignCenter); // 将_checkBox放在布局的最左侧
 
     // 设置文件名文字的布局
     filename->setTextSize(16);
     filename->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-    QHBoxLayout* filenameArea = new QHBoxLayout();
+    QWidget* filenameWidget = new QWidget();
+    filenameWidget->setWindowFlags(Qt::FramelessWindowHint); // 去除窗口边框
+    filenameWidget->setAttribute(Qt::WA_TranslucentBackground); // 设置背景透明
+    filenameWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    QVBoxLayout* filenameArea = new QVBoxLayout(filenameWidget);
     filenameArea->addWidget(filename, 0, Qt::AlignLeft); // 将文件名放在左侧
 
     datasize->setTextSize(16);
@@ -71,12 +76,12 @@ FileCard::FileCard(QString f, int d,int s,int p,int Id)
 
     QHBoxLayout* FileCardArea = new QHBoxLayout(this);
     FileCardArea->addLayout(checkBoxArea); // 将_checkBox布局添加到卡片布局中
-    FileCardArea->addLayout(filenameArea); // 将文件名布局添加到卡片布局中，紧跟_checkBox
+    FileCardArea->addWidget(filenameWidget); // 将文件名布局添加到卡片布局中，紧跟_checkBox
     FileCardArea->addLayout(dataSizeArea);
     FileCardArea->addLayout(proBarArea);
     FileCardArea->addLayout(actionArea);
     FileCardArea->setStretchFactor(checkBoxArea, 25);
-    FileCardArea->setStretchFactor(filenameArea, 500);
+    FileCardArea->setStretchFactor(filenameWidget, 500);
     FileCardArea->setStretchFactor(dataSizeArea, 100);
     FileCardArea->setStretchFactor(proBarArea, 140);
     FileCardArea->setStretchFactor(actionArea, 60);
