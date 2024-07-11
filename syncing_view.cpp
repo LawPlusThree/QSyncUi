@@ -176,11 +176,11 @@ void SyncingPage::modifyFile(int p,int id)
 void SyncingPage::modifyFile(int totalSize,int currentSize,int id)
 {
     int d=totalSize;
-    int p=currentSize/totalSize;
-    int s;
+    int p=((double)currentSize/(double)totalSize)*100;
+    int s=0;
     preSize=Size;
     Size=currentSize;
-    if(currentTime.isValid())
+    if(!currentTime.isValid())
     {
         s=0;
         currentTime=QDateTime::currentDateTime();
@@ -189,8 +189,14 @@ void SyncingPage::modifyFile(int totalSize,int currentSize,int id)
     {
         preTime=currentTime;
         currentTime=QDateTime::currentDateTime();
-        int time=currentTime.secsTo(preTime);
-        s=(Size-preSize)/time;
+        int time=preTime.msecsTo(currentTime);
+        if(time==0)
+        {
+            s=s;
+        }
+        else{
+            s=(Size-preSize)/time;
+        }
     }
     _filecardProxy->modify(d,s,p,id);
     totalProgress();

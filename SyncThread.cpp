@@ -109,7 +109,7 @@ void SyncThread::addSynctask(const QFileInfo &info)
         qDebug()<<connect(cosclient,&COSClient::UploadProgress,[=](qint64 nowSize,qint64 total){
             emit this->updateUploadTask(fileTaskId,nowSize,total);
         });
-        cosclient->putLocalObject(cloudPath,path);
+        cosclient->multiUpload(cloudPath,path);
         disconnect(cosclient,&COSClient::UploadProgress,this,nullptr);
         fileTaskId++;
     }

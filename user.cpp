@@ -3,11 +3,14 @@
 QString User::encryptPassword()
 {
     QString password=hashedPassword;
-    QString uuid=QUuid::createUuid().toString();
+    QString uuid=account;
     //以uuid为密钥rc4加密password
-    RC4 rc4(uuid.toUtf8());
-    QByteArray code = rc4.encrypt(password.toUtf8());
-    return QString::fromUtf8(code);
+    QString result;
+    for (size_t i = 0; i < password.size(); ++i) {
+        ushort xor_result = static_cast<ushort>(password[i].unicode()) ^ static_cast<ushort>(uuid[i % uuid.size()].unicode());
+        result.append(QChar(xor_result));
+    }
+    return result;
 }
 
 User::User(const QString &username, const QString &account, const QString &password, QObject *parent)
