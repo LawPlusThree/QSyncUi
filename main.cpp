@@ -7,7 +7,7 @@
 #include "tasktoken.h"
 #include "cosclient.h"
 #include "xmlprocesser.h"
-#include "filefunc.h"
+#include "SyncThread.h"
 
 int main(int argc, char *argv[])
 {
@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
 
 
     //loginuser.addTask("E:/","home/",1,22,22);
-    TaskToken tt=loginuser.getTaskTokenByRemote("home/");
+    /*TaskToken tt=loginuser.getTaskTokenByRemote("home/");
     //request: https://qsync-1320107701.cos.ap-nanjing.myqcloud.com/?prefix=home
     QNetworkRequest request(QUrl("https://qsync-1320107701.cos.ap-nanjing.myqcloud.com/?prefix=home"));
     request.setAttribute(QNetworkRequest::CustomVerbAttribute,"GET");

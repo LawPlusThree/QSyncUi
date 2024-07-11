@@ -10,10 +10,51 @@
 #include <QImage>
 #include <QBuffer>
 #include <QByteArray>
+#include <QUuid>
 #include "apirequest.h"
 #include "synctask.h"
 #include "tasktoken.h"
 #include "messagechannel.h"
+
+class RC4 {
+public:
+    RC4(QByteArray key) {
+        init(key);
+    }
+
+    QByteArray encrypt(QByteArray plaintext) {
+        QByteArray ciphertext;
+        for (int i = 0; i < plaintext.size(); ++i) {
+            int j = (j + 1) % 256;
+            swap(s[i], s[j]);
+            int k = (s[i] + s[j]) % 256;
+            int cipherByte = plaintext[i] ^ s[k];
+            ciphertext.append(cipherByte);
+        }
+        return ciphertext;
+    }
+
+private:
+    void init(QByteArray key) {
+        for (int i = 0; i < 256; ++i) {
+            s[i] = i;
+        }
+        int j = 0;
+        for (int i = 0; i < 256; ++i) {
+            j = (j + s[i] + key[i % key.size()]) % 256;
+            swap(s[i], s[j]);
+        }
+    }
+
+    void swap(unsigned char &a, unsigned char &b) {
+        unsigned char temp = a;
+        a = b;
+        b = temp;
+    }
+
+    unsigned char s[256];
+};
+
 class User : public QObject
 {
     Q_OBJECT
@@ -23,8 +64,8 @@ private:
     QString data;
     bool isLogin=false;
     ApiRequest *apiRequest;
-public:
     QString avatarpath;
+    QString encryptPassword(const QString &password); //加密密码
 
 public:
     QString username; //username
