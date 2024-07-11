@@ -96,15 +96,24 @@ void modifyInfor_win::onConfirmButtonClicked()
     QString newId = newIdEdit_->text();
     QString newPassword = newPasswordEdit_->text();
     QString confirmNewPassword = confirmNewPasswordEdit_->text();
+    confirmButton_->setEnabled(false);
+    confirmButton_->setText("修改中......");
+    confirmButton_->setStyleSheet("background-color:rgb(138,151,123)");
 
     // 简单的验证
     if (newId.isEmpty() || newPassword.isEmpty() || confirmNewPassword.isEmpty()) {
         QMessageBox::warning(this, "错误", "请填写完所有信息。");
+        confirmButton_->setEnabled(true);
+        confirmButton_->setText("确认修改");
+        confirmButton_->setStyleSheet("background-color:rgb(0,204,255)");
         return;
     }
 
     if (newPassword != confirmNewPassword) {
         QMessageBox::warning(this, "错误", "两次输入的密码不一致。");
+        confirmButton_->setEnabled(true);
+        confirmButton_->setText("确认修改");
+        confirmButton_->setStyleSheet("background-color:rgb(0,204,255)");
         return;
     }
     currentUser->username = newId;
@@ -116,4 +125,7 @@ void modifyInfor_win::onConfirmButtonClicked()
     emit changexinxi(User(*currentUser));
 
     QMessageBox::information(this, "成功","修改成功");
+    confirmButton_->setEnabled(true);
+    confirmButton_->setText("确认修改");
+    confirmButton_->setStyleSheet("background-color:rgb(0,204,255)");
 }

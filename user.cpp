@@ -6,7 +6,7 @@ QString User::encryptPassword()
     QString uuid=account;
     //以uuid为密钥rc4加密password
     QString result;
-    for (size_t i = 0; i < password.size(); ++i) {
+    for (int i = 0; i < password.size(); ++i) {
         ushort xor_result = static_cast<ushort>(password[i].unicode()) ^ static_cast<ushort>(uuid[i % uuid.size()].unicode());
         result.append(QChar(xor_result));
     }
@@ -177,6 +177,12 @@ bool User::updateAvatar(const QString &filePath)
         emit channel->message(response.message, "Error");
         return false;
     }
+}
+
+bool User::deleteAccount()
+{
+    ApiResponse response = apiRequest->get("/deleteAccount");
+    return response.isSuccess();
 }
 
 bool User::addTask(const QString &localDir, const QString &s3Dir, int syncType, int usedSize, int totalSize)

@@ -92,6 +92,7 @@ MainWindow::MainWindow(QWidget *parent)
                 }
                 else if(cancelKey==nodeKey)
                 {
+                    if(CurrentUser!=nullptr){
                     QWidget* _centralWidget = new QWidget(this);
                     QVBoxLayout* centralVLayout = new QVBoxLayout(_centralWidget);
                     centralVLayout->setContentsMargins(9, 15, 9, 20);
@@ -106,11 +107,15 @@ MainWindow::MainWindow(QWidget *parent)
                     dialag->setCentralWidget(_centralWidget);
                     dialag->setLeftButtonText("取消");
                     dialag->setRightButtonText("确认");
-                    //connect(dialag, &ElaContentDialog::rightButtonClicked, this, &MainWindow::closeWindow);
-                    dialag->show();
+                    connect(dialag, &ElaContentDialog::rightButtonClicked, this, &MainWindow::onUserdelete);
+                    dialag->show();}
+                    else{
+                        onMessage("请先登录!","Error");
+                    }
                 }
                 else if(logoutKey==nodeKey)
                 {
+                    if(CurrentUser!=nullptr){
                     QWidget* _logoutWidget = new QWidget(this);
                     QVBoxLayout* logoutVLayout = new QVBoxLayout(_logoutWidget);
                     logoutVLayout->setContentsMargins(9, 15, 9, 20);
@@ -126,7 +131,10 @@ MainWindow::MainWindow(QWidget *parent)
                     logoutdialag->setLeftButtonText("取消");
                     logoutdialag->setRightButtonText("确认");
                     connect(logoutdialag, &ElaContentDialog::rightButtonClicked, this, &MainWindow::exitLogin);
-                    logoutdialag->show();
+                    logoutdialag->show();}
+                    else{
+                        onMessage("请先登录!","Error");
+                    }
                 }
     });
 
@@ -350,6 +358,20 @@ void MainWindow::onModifyInfo(User user)
     QString filename=QDir::toNativeSeparators(file.fileName());
     QPixmap pix(filename);
     setUserInfoCardPixmap(pix);
+}
+
+void MainWindow::onUserdelete()
+{
+    if(CurrentUser->deleteAccount()){
+        setUserInfoCardTitle("未登录");
+        setUserInfoCardSubTitle("");
+        setUserInfoCardPixmap(QPixmap(":/include/Image/Cirno.jpg"));
+        onMessage("注销账号成功","Success");
+        CurrentUser=nullptr;
+    }
+    else{
+        onMessage("注销账号失败","Error");
+    }
 }
 
 void MainWindow::onFileUploadTaskCreated(const QString &localPath, int fileTaskId) {
