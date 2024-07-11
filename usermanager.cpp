@@ -71,7 +71,7 @@ bool UserManager::saveToFile(const QString&account,const QString&password)
 QString UserManager::decodePassword(const QString &uuid,const QString &password){
     //以uuid为密钥rc4加密password
     QString result;
-    for (size_t i = 0; i < password.size(); ++i) {
+    for (int i = 0; i < password.size(); ++i) {
         ushort xor_result = static_cast<ushort>(password[i].unicode()) ^ static_cast<ushort>(uuid[i % uuid.size()].unicode());
         result.append(QChar(xor_result));
     }
