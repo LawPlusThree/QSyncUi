@@ -147,7 +147,7 @@ void MainWindow::onUserLoggedIn(User user)
     setUserInfoCardSubTitle(user.getEmail());
     _syncCore=new SyncCore(this);
     _syncTaskDatabaseManager=new SyncTaskDatabaseManager(CurrentUser);
-    QString url=user.avatarpath;
+    QString url=user.getAvatarPath();
     QNetworkAccessManager *manager = new QNetworkAccessManager();
     QNetworkRequest request;
     request.setUrl(QUrl(url));
@@ -267,7 +267,7 @@ void MainWindow::onModifyInfo(User user)
     setUserInfoCardTitle(_modifyInfor_win->newIdEdit_->text());
     setUserInfoCardSubTitle(user.getEmail());
 
-    QString url=user.avatarpath;
+    QString url=user.getAvatarPath();
     QNetworkAccessManager *manager = new QNetworkAccessManager();
     QNetworkRequest request;
     request.setUrl(QUrl(url));
