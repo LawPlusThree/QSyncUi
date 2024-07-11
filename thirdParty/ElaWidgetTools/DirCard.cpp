@@ -9,10 +9,12 @@
 #include "private/DirCardPrivate.h"
 #include"ElaPushButton.h"
 #include"ElaToggleButton.h"
+#include"ElaIconButton.h"
 
 DirCard::DirCard(QString f, int d,QString b,int Id)
 {
     filename=new ElaText(f);
+    fullText = f;
 
     QString size;
     QString dataStr;
@@ -39,46 +41,78 @@ DirCard::DirCard(QString f, int d,QString b,int Id)
         }
     }
     datasize = new ElaText(size, this);
-
     bindtime=new ElaText(b);
     id=Id;
 
-    _checkBox = new ElaCheckBox(filename->text(), this);
-    QVBoxLayout*checkBoxArea=new QVBoxLayout();
-    checkBoxArea->addWidget(_checkBox,0,Qt::AlignCenter);
+    filename->setWordWrap(false);//禁止换行
+    datasize->setWordWrap(false);
+    bindtime->setWordWrap(false);
+    //progress->setWordWrap(false);
+
+    datasize->setAlignment(Qt::AlignCenter);
+    bindtime->setAlignment(Qt::AlignCenter);
+    //progress->setAlignment(Qt::AlignCenter);
+
+    _checkBox = new ElaCheckBox("", this);
+    _checkBox->setFixedSize(25, 25);
+    QVBoxLayout* checkBoxArea = new QVBoxLayout();
+    checkBoxArea->addWidget(_checkBox, 0, Qt::AlignCenter); // 将_checkBox放在布局的最左侧
+
+    filename->setTextSize(16);
+    filename->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    QWidget* filenameWidget = new QWidget();
+    filenameWidget->setWindowFlags(Qt::FramelessWindowHint); // 去除窗口边框
+    filenameWidget->setAttribute(Qt::WA_TranslucentBackground); // 设置背景透明
+    filenameWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    QVBoxLayout* filenameArea = new QVBoxLayout(filenameWidget);
+    filenameArea->addWidget(filename, 0, Qt::AlignLeft); // 将文件名放在左侧
 
     datasize->setTextSize(16);
-    QVBoxLayout*dataSizeArea=new QVBoxLayout();
-    dataSizeArea->addWidget(datasize,0,Qt::AlignCenter);
+    datasize->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    datasize->setFixedSize(100,20);
+    QVBoxLayout* dataSizeArea = new QVBoxLayout();
+    dataSizeArea->addWidget(datasize, 0, Qt::AlignCenter);
 
     bindtime->setTextSize(16);
-    QVBoxLayout*bindTimeArea=new QVBoxLayout();
-    bindTimeArea->addWidget(bindtime,0,Qt::AlignCenter);
+    bindtime->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    bindtime->setFixedSize(140,20);
+    QVBoxLayout* bindTimeArea = new QVBoxLayout();
+    bindTimeArea->addWidget(bindtime, 0, Qt::AlignCenter);
 
     //QVBoxLayout*pauseArea=new QVBoxLayout();
-    pauseBtn=new ElaToggleButton("暂时停止");
-    pauseBtn->setFixedSize(80,30);
+    //pauseBtn=new ElaToggleButton("暂时停止");
+    //pauseBtn->setFixedSize(80,30);
     //pauseArea->addWidget(pauseBtn,0,Qt::AlignCenter);
 
     //QVBoxLayout*relieveArea=new QVBoxLayout();
-    relieveBtn=new ElaPushButton("解除绑定");
-    relieveBtn->setFixedSize(80,30);
+    //relieveBtn=new ElaPushButton("解除绑定");
+    //relieveBtn->setFixedSize(80,30);
     //relieveArea->addWidget(relieveBtn,0,Qt::AlignCenter);
 
-    QHBoxLayout*prArea=new QHBoxLayout();
-    //prArea->addLayout(pauseArea,Qt::AlignCenter);
-    //prArea->addLayout(relieveArea,Qt::AlignCenter);
-    prArea->addWidget(pauseBtn);
-    prArea->addWidget(relieveBtn);
-    prArea->setAlignment(Qt::AlignCenter);
+    pauseBtn = new ElaIconButton(ElaIconType::Pause, 20);
+    relieveBtn = new ElaIconButton(ElaIconType::LinkSlash, 20);
+    pauseBtn->setFixedSize(30, 30);
+    relieveBtn->setFixedSize(30, 30);
 
-    QHBoxLayout*DirCardArea=new QHBoxLayout(this);
-    DirCardArea->addLayout(checkBoxArea,Qt::AlignCenter);
-    DirCardArea->addLayout(dataSizeArea,Qt::AlignCenter);
-    DirCardArea->addLayout(bindTimeArea,Qt::AlignCenter);
-    DirCardArea->addLayout(prArea,Qt::AlignCenter);
+    QHBoxLayout* actionArea = new QHBoxLayout();
+    actionArea->addWidget(pauseBtn);
+    actionArea->addWidget(relieveBtn);
+    actionArea->setAlignment(Qt::AlignCenter);
+
+    QHBoxLayout* FileCardArea = new QHBoxLayout(this);
+    FileCardArea->addLayout(checkBoxArea); // 将_checkBox布局添加到卡片布局中
+    FileCardArea->addWidget(filenameWidget); // 将文件名布局添加到卡片布局中，紧跟_checkBox
+    FileCardArea->addLayout(dataSizeArea);
+    FileCardArea->addLayout(bindTimeArea);
+    FileCardArea->addLayout(actionArea);
+    FileCardArea->setStretchFactor(checkBoxArea, 25);
+    FileCardArea->setStretchFactor(filenameWidget, 500);
+    FileCardArea->setStretchFactor(dataSizeArea, 100);
+    FileCardArea->setStretchFactor(bindTimeArea, 140);
+    FileCardArea->setStretchFactor(actionArea, 60);
 
     connect(relieveBtn,&ElaPushButton::clicked,this,&DirCard::on_relieveBtn_clicked);
+    filenameWidget->setStyleSheet("QToolTip { color: #5C5C5C; background-color: #F9F9F9; border: 1px solid #808080; border-radius: 3px; }");
 }
 
 void DirCard::on_relieveBtn_clicked()

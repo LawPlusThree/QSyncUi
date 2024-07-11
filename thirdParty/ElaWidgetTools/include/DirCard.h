@@ -4,6 +4,7 @@
 #include <QPushButton>
 #include"ElaScrollPageArea.h"
 #include"ElaText.h"
+#include"ElaIconButton.h"
 
 #include "stdafx.h"
 class ElaCheckBox;
@@ -17,12 +18,13 @@ public:
     explicit DirCard(QString f, int d,QString b,int Id);
 
     ElaCheckBox* _checkBox{nullptr};
-    ElaToggleButton*pauseBtn;
+    ElaIconButton*pauseBtn;
     ElaText *filename;
     ElaText *datasize;
     ElaText *bindtime;
-    ElaPushButton*relieveBtn;
+    ElaIconButton*relieveBtn;
     void modify(int d,QString b);
+    QString fullText;
 
     int id;
     bool ischecked();
