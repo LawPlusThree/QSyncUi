@@ -4,7 +4,7 @@
 #include"ElaCheckBox.h"
 #include"ElaIconButton.h"
 #include"ElaProgressBar.h"
-FileCard::FileCard(QString f, qint64 d,double s,int p,int Id)
+FileCard::FileCard(QString f, quint64 d,double s,int p,int Id)
 {
     // 创建ElaText对象来显示文件名，而不是直接在_checkBox中显示
     filename = new ElaText(f, this);
@@ -152,10 +152,10 @@ void FileCard::on_pauseBtn_clicked()
     proBar->setValue(progress);
 }*/
 
-void FileCard::modify(qint64 totalSize,qint64 currentSize)
+void FileCard::modify(quint64 totalSize,quint64 currentSize)
 {
 
-    qint64 d=totalSize;
+    quint64 d=totalSize;
     int p=((double)currentSize/(double)totalSize)*100;
     double s=0;
     preSize=Size;

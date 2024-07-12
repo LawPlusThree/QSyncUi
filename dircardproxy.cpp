@@ -22,7 +22,7 @@ void DirCardProxy::addDirCard(DirCard *card, const int &id) {
     }
 }
 
-void DirCardProxy::addDirCard(QString filename,qint64 datasize,QString bindtime,const int &id)
+void DirCardProxy::addDirCard(QString filename,quint64 datasize,QString bindtime,const int &id)
 {
     DirCard*card=new DirCard(filename,datasize,bindtime,id);
     if (card && parentWidget && !cardMap.contains(id)) {
@@ -55,7 +55,7 @@ void DirCardProxy::removeChecked()
     }
 }
 
-void DirCardProxy::modifyDirCard(qint64 datasize,QString bindtime,int id)
+void DirCardProxy::modifyDirCard(quint64 datasize,QString bindtime,int id)
 {
     QMapIterator<int,DirCard*> i(cardMap);
     while(i.hasNext())

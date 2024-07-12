@@ -125,8 +125,6 @@ SyncingPage::SyncingPage(QWidget* parent)
     scrollArea->viewport()->setStyleSheet("background:transparent;");//设置背景透明
 
     _filecardProxy=new FileCardProxy(this);
-    //addFile("文件1",30060600000,130000,0,1000);
-
 
     scrollArea->setWidget(_filecardProxy);
     //scrollArea->setWidget(filesWidget); // 设置scrollArea的内容部件
@@ -145,7 +143,7 @@ SyncingPage::~SyncingPage()
 
 }
 
-void SyncingPage::addFile(QString filename, qint64 datasize,double speed,int progress,int id)
+void SyncingPage::addFile(QString filename, quint64 datasize,double speed,int progress,int id)
 {
     FileCard*newFile=new FileCard(filename,datasize,speed,progress,id);
     connect(newFile,&FileCard::Relieve,this,&SyncingPage::removeFile);
@@ -164,7 +162,7 @@ void SyncingPage::removeFile(int id)
 }
 
 
-void SyncingPage::modifyFile(qint64 totalSize,qint64 currentSize,int id)
+void SyncingPage::modifyFile(quint64 totalSize,quint64 currentSize,int id)
 {
     _filecardProxy->modify(totalSize,currentSize,id);
     totalProgress();
@@ -179,6 +177,17 @@ void SyncingPage::totalProgress()
 // 重写resizeEvent
 void SyncingPage::resizeEvent(QResizeEvent* event) {
     QWidget::resizeEvent(event);
+    auto thisMap=this->_filecardProxy->cardMap;
+    for (auto &x:thisMap){
+        QFontMetrics metrics(x->filename->font());
+        QString elidedText = metrics.elidedText(x->fullText, Qt::ElideMiddle, filenameWidget->width()-20);
+        x->filename->setText(elidedText);
+        x->filename->setToolTip(x->fullText);
+    }
+}
+
+void SyncingPage::showEvent(QShowEvent* event) {
+    QWidget::showEvent(event);
     auto thisMap=this->_filecardProxy->cardMap;
     for (auto &x:thisMap){
         QFontMetrics metrics(x->filename->font());

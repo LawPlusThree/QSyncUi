@@ -72,7 +72,7 @@ MainWindow::MainWindow(QWidget *parent)
     QString modifyKey;
     QString cancelKey;
     QString logoutKey;
-    //QString feedbackKey;
+    QString feedbackKey;
 
     addExpanderNode("同步功能",testKey_2,ElaIconType::House);
     addPageNode("正在同步",_syncingPage,testKey_2,ElaIconType::Cloud);
@@ -81,8 +81,7 @@ MainWindow::MainWindow(QWidget *parent)
     addExpanderNode("版本控制",testKey_3,ElaIconType::EnvelopeOpenText);
     addPageNode("查看历史",_historyviewPage,testKey_3,ElaIconType::CalendarClock);
 
-    //addPageNode("用户反馈",new QWidget(this),feedbackKey,ElaIconType::MessageArrowUp);
-
+    addFooterNode("用户反馈", nullptr, feedbackKey, 0, ElaIconType::MessageArrowUp);
     addFooterNode("修改信息", nullptr, modifyKey, 0, ElaIconType::Text);
     addFooterNode("注销账号", nullptr, cancelKey, 0, ElaIconType::UserSlash);
     addFooterNode("退出登录", nullptr, logoutKey, 0, ElaIconType::ArrowRightFromBracket);

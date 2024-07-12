@@ -103,9 +103,9 @@ HistoryViewPage::HistoryViewPage(QWidget* parent): ElaScrollPage(parent)
     scrollArea->viewport()->setStyleSheet("background:transparent;");//设置背景透明
 
     _historyviewcardPage=new HistoryviewCardProxy(this);
-    addHistoryViewCard("历史版本1","3.5G","2024.7.2");
-    addHistoryViewCard("历史版本2","3.5G","2024.5.3");
-    addHistoryViewCard("历史版本3","3.5G","2024.12.6");
+    addHistoryViewCard("原神须弥3.0版本“千朵玫瑰带来的黎明”全新开启","3.5G","2024.7.2");
+    addHistoryViewCard("原神稻妻2.0版本“不动鸣神，泡影破灭”全新开启","3.5G","2024.5.3");
+    addHistoryViewCard("原神枫丹4.0版本“仿若无因飘落的细雨”全新开启","3.5G","2024.12.6");
     addHistoryViewCard("历史版本4","3.5G","2024.1.6");
     addHistoryViewCard("历史版本5","3.5G","2024.1.26");
     addHistoryViewCard("历史版本6","3.5G","2024.7.9");
@@ -137,6 +137,17 @@ void HistoryViewPage::addHistoryViewCard(QString filename,QString datasize,QStri
 
 void HistoryViewPage::resizeEvent(QResizeEvent* event) {
     QWidget::resizeEvent(event);
+    auto thisMap=this->_historyviewcardPage->cardVector;
+    for (auto &x:thisMap){
+        QFontMetrics metrics(x->filename->font());
+        QString elidedText = metrics.elidedText(x->fullText, Qt::ElideMiddle, filenameWidget->width()-20);
+        x->filename->setText(elidedText);
+        x->filename->setToolTip(x->fullText);
+    }
+}
+
+void HistoryViewPage::showEvent(QShowEvent* event) {
+    QWidget::showEvent(event);
     auto thisMap=this->_historyviewcardPage->cardVector;
     for (auto &x:thisMap){
         QFontMetrics metrics(x->filename->font());

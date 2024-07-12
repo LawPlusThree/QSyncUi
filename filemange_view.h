@@ -17,9 +17,9 @@ class FileManagePage:public ElaScrollPage
 public:
     FileManagePage(QWidget* parent = nullptr);
     ~FileManagePage();
-    void addDirCard(QString filename,int datasize,QString bindtime,int id);
+    void addDirCard(QString filename,quint64 datasize,QString bindtime,int id);
     void removeDirCard(int id);
-    void modifyDirCard(int datasize,QString bindtime,int id);
+    void modifyDirCard(quint64 datasize,QString bindtime,int id);
     DirCardProxy*_dircardProxy;
     linkNewFolder_window* linknewfolderwindow=new linkNewFolder_window();
     QWidget* filenameWidget = new QWidget();
@@ -35,6 +35,7 @@ signals:
     void deleteTask(int id);
 protected:
     void resizeEvent(QResizeEvent* event) override;
+    void showEvent(QShowEvent* event) override;
 };
 
 #endif // FILEMANGE_VIEW_H
