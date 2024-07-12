@@ -31,6 +31,7 @@ public:
 
 private slots:
     void on_relieveBtn_clicked();
+    void on_pauseBtn_clicked();
 signals:
     void relieve(int id);
 
