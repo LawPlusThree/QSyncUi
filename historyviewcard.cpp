@@ -8,11 +8,16 @@ HistoryViewCard::HistoryViewCard(QString f, QString d,QString t)
     filename=new ElaText(f);
     datasize=new ElaText(d);
     time=new ElaText(t);
+    fullText=f;
+
+    filename->setWordWrap(false);
+    datasize->setWordWrap(false);
+    time->setWordWrap(false);
 
     datasize->setAlignment(Qt::AlignCenter);
     time->setAlignment(Qt::AlignCenter);
 
-    _checkBox = new ElaCheckBox(filename->text(), this);
+    _checkBox = new ElaCheckBox("", this);
     _checkBox->setFixedSize(25,25);
     QVBoxLayout*checkBoxArea=new QVBoxLayout();
     checkBoxArea->addWidget(_checkBox,0,Qt::AlignCenter);
@@ -35,7 +40,6 @@ HistoryViewCard::HistoryViewCard(QString f, QString d,QString t)
     time->setTextSize(16);
     time->setFixedWidth(160);
     QVBoxLayout*timeArea=new QVBoxLayout();
-
     timeArea->addWidget(time,0,Qt::AlignCenter);
 
     rollback = new ElaPushButton(this);
@@ -55,4 +59,7 @@ HistoryViewCard::HistoryViewCard(QString f, QString d,QString t)
     FileCardArea->setStretchFactor(dataSizeArea,100);
     FileCardArea->setStretchFactor(timeArea,160);
     FileCardArea->setStretchFactor(rollbackArea,100);
+
+    filenameWidget->setStyleSheet("QToolTip { color: #5C5C5C; background-color: #F9F9F9; border: 1px solid #808080; border-radius: 3px; }");
+
 }
