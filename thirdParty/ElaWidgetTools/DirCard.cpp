@@ -11,7 +11,7 @@
 #include"ElaToggleButton.h"
 #include"ElaIconButton.h"
 
-DirCard::DirCard(QString f, int d,QString b,int Id)
+DirCard::DirCard(QString f, quint64 d,QString b,int Id)
 {
     filename=new ElaText(f);
     fullText = f;
@@ -112,7 +112,13 @@ DirCard::DirCard(QString f, int d,QString b,int Id)
     FileCardArea->setStretchFactor(actionArea, 60);
 
     connect(relieveBtn,&ElaPushButton::clicked,this,&DirCard::on_relieveBtn_clicked);
+    connect(pauseBtn,&ElaIconButton::clicked,this,&DirCard::on_pauseBtn_clicked);
     filenameWidget->setStyleSheet("QToolTip { color: #5C5C5C; background-color: #F9F9F9; border: 1px solid #808080; border-radius: 3px; }");
+}
+
+ElaCheckBox* DirCard::getCheckBox() const
+{
+    return _checkBox;
 }
 
 void DirCard::on_relieveBtn_clicked()
@@ -121,12 +127,20 @@ void DirCard::on_relieveBtn_clicked()
     emit relieve(id);
 }
 
+void DirCard::on_pauseBtn_clicked()
+{
+    if(pauseBtn->getAwesome()==ElaIconType::Pause)
+        pauseBtn->setAwesome(ElaIconType::Play);
+    else
+        pauseBtn->setAwesome(ElaIconType::Pause);
+}
+
 bool DirCard::ischecked()
 {
     return _checkBox->isChecked();
 }
 
-void DirCard::modify(int d,QString b)
+void DirCard::modify(quint64 d,QString b)
 {
     QString size;
     QString dataStr;

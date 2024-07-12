@@ -1,12 +1,13 @@
 #include "SyncThread.h"
 #include "crc64util.h"
+#include "globalvalue.h"
 //用多线程遍历本地文件夹
 int SyncThread::fileTaskId=0;
 void SyncThread::run()
 {
     crc64_init();
     if(task->getSyncStatus()==1){
-    readDirectory(path);
+       readDirectory(path);
         readCLoudDirectory(task->getRemotePath());}
     else if(task->getSyncStatus()==2){
         readDirectory(path);
@@ -81,15 +82,9 @@ void SyncThread::readCLoudDirectory(const QString &cloudpath)
             }
             if(needDownload){
                 downFileSize+=ct.size;
+                int fileTaskId=getNextFileTaskId();
                 emit this->newDownloadTask(localPath,fileTaskId);
-                qDebug()<<connect(cosclient,&COSClient::DownloadProgress,[=](qint64 nowSize,qint64 total){
-                    emit this->updateDownloadTask(fileTaskId,nowSize,total);
-                });
-                QMap<QString,QString> respHeaders;
-                cosclient->save2Local(ct.key,localPath,"",respHeaders);
-                disconnect(cosclient,&COSClient::DownloadProgress,this,nullptr);
-                emit this->finishDownloadTask(fileTaskId);
-                fileTaskId++;
+                emit this->callDownloadTask(localPath,ct.key,fileTaskId);
             }
         }
     }while(bucket.isTruncated);
@@ -106,14 +101,9 @@ void SyncThread::addSynctask(const QFileInfo &info)
     preResponse response=cosclient->headObject(cloudPath,"",tmpHeaders);
     if(!cosclient->isExist(response)){
         upFileSize+=info.size();
+        int fileTaskId=getNextFileTaskId();
         emit this->newUploadTask(path,fileTaskId);
-        qDebug()<<connect(cosclient,&COSClient::UploadProgress,[=](qint64 nowSize,qint64 total){
-            emit this->updateUploadTask(fileTaskId,nowSize,total);
-        });
-        cosclient->multiUpload(cloudPath,path);
-        disconnect(cosclient,&COSClient::UploadProgress,this,nullptr);
-        emit this->finishUploadTask(fileTaskId);
-        fileTaskId++;
+        emit this->callUploadTask(path,cloudPath,fileTaskId);
     }
 }
 

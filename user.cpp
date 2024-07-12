@@ -261,6 +261,25 @@ TaskToken User::getTaskTokenByRemote(QString s3Dir)
     }
 }
 
+TaskToken User::getUnifiedTaskToken()
+{
+    ApiResponse response = apiRequest->get("/getTaskUnifiedToken");
+    if (response.isSuccess())
+    {
+        TaskToken tasktoken(response.getData());
+        return tasktoken;
+    }
+    else
+    {
+        QString jsonString = R"({"code": 666, "message": "get unified token error!", "data": "Nooo!"})";
+        QByteArray jsonData = jsonString.toUtf8();
+        QJsonDocument document = QJsonDocument::fromJson(jsonData);
+        QJsonObject jsonObject = document.object();
+        TaskToken errortasktoken(jsonObject);
+        return errortasktoken;
+    }
+}
+
 bool User::logout()
 {
     ApiResponse response = apiRequest->get("/logout");
@@ -332,6 +351,7 @@ COSConfig User::getS3Config()
         config.bucketName=response.getData()["bucket"].toString();
         config.region=response.getData()["region"].toString();
         config.appId=response.getData()["appid"].toString();
+        config.allowPrefix=response.getData()["allowPrefix"].toString();
     }
     else
     {

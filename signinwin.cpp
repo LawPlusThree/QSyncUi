@@ -10,6 +10,9 @@
 #include<QColor>
 #include<QMessageBox>
 #include<QFileDialog>
+#include<QRegularExpression>
+#include <QRegularExpressionValidator>
+#include <QValidator>
 
 #include"ElaPushButton.h"
 #include"ElaText.h"
@@ -117,6 +120,22 @@ void signinwin::on_signinBtn_clicked()
     {
             //测试用户
             //User enrolluser("newuser@example.com","123456");
+
+        // 邮箱格式校验
+        QRegularExpression emailRegex(R"([A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,})");
+        QRegularExpressionValidator validator(emailRegex, nullptr);
+        QString email = accoutLine->text();
+        int pos = 0;
+        QValidator::State state = validator.validate(email, pos);
+
+        if (state != QValidator::Acceptable) {
+            QMessageBox::information(this, "错误", "邮箱格式不正确，请重新输入！");
+            signinBtn->setEnabled(true);
+            signinBtn->setText("注册");
+            signinBtn->setStyleSheet("background-color:rgb(0,204,255)");
+            return; // 如果邮箱格式不正确，则直接返回，不执行注册流程
+        }
+
             User enrolluser(IDLine->text(),accoutLine->text(),passwordLine->text());
             bool result;
             if(avatarDir!="")
