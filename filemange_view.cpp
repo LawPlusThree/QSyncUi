@@ -140,6 +140,7 @@ FileManagePage::FileManagePage(QWidget* parent):ElaScrollPage(parent)
     scrollArea->viewport()->setStyleSheet("background:transparent;");//设置背景透明
 
     _dircardProxy=new DirCardProxy(this);
+    addDirCard("崩坏：星穹铁道",4300000000,"2024.7.12",710);
 
     scrollArea->setWidget(_dircardProxy);
     scrollArea->setWidgetResizable(true); // 允许scrollArea根据内容自动调整大小
@@ -157,7 +158,7 @@ FileManagePage::~FileManagePage()
 
 }
 
-void FileManagePage::addDirCard(QString filename,int datasize,QString bindtime,int id)
+void FileManagePage::addDirCard(QString filename,quint64 datasize,QString bindtime,int id)
 {
     DirCard*newDir=new DirCard(filename,datasize,bindtime,id);
     connect(newDir,&DirCard::relieve,this,&FileManagePage::removeDirCard);
@@ -174,7 +175,7 @@ void FileManagePage::removeDirCard(int id)
     emit deleteTask(id);
 }
 
-void FileManagePage::modifyDirCard(int datasize,QString bindtime,int id)
+void FileManagePage::modifyDirCard(quint64 datasize,QString bindtime,int id)
 {
     _dircardProxy->modifyDirCard(datasize,bindtime,id);
 }
