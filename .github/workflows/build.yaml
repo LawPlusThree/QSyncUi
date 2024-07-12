@@ -1,11 +1,9 @@
 name: Build
 
 on:
-  push:
-    branches:
-      - main
-  #可以手动触发
-  workflow_dispatch:
+  #每天早上，中午，下午触发
+  schedule:
+    - cron: '0 0,12,18 * * *'
 
 jobs:
   build:
