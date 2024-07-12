@@ -6,6 +6,7 @@
 #include "stdafx.h"
 
 class ElaContentDialogPrivate;
+class ElaPushButton;
 class ELA_EXPORT ElaContentDialog : public QDialog, QAbstractNativeEventFilter
 {
     Q_OBJECT
@@ -13,6 +14,7 @@ class ELA_EXPORT ElaContentDialog : public QDialog, QAbstractNativeEventFilter
 public:
     explicit ElaContentDialog(QWidget* parent = nullptr,bool MiddleButton=true);
     ~ElaContentDialog();
+    ElaPushButton* getButton(); // 假设的方法，返回内部的复选框
     Q_SLOT virtual void onLeftButtonClicked();
     Q_SLOT virtual void onMiddleButtonClicked();
     Q_SLOT virtual void onRightButtonClicked();
