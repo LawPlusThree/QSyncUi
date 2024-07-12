@@ -7,6 +7,7 @@
 #include"ElaToggleButton.h"
 #include"ElaScrollArea.h"
 #include"ElaCheckBox.h"
+#include"ElaComboBox.h"
 
 #include"DirCard.h"
 #include"dircardproxy.h"
@@ -55,6 +56,20 @@ FileManagePage::FileManagePage(QWidget* parent):ElaScrollPage(parent)
     _pushButton2->setFixedSize(100, 40); // 设置按钮的固定大小
     _pushButton3 = new ElaPushButton("链接新文件夹", this);
     _pushButton3->setFixedSize(100, 40); // 设置按钮的固定大小
+
+    _comboBox = new ElaComboBox(this);
+    QStringList comboList{"1", "2", "3", "4", "5", "6", "7"};
+    _comboBox->addItems(comboList);
+    _comboBox->setFixedSize(60,30);
+    QWidget* comboBoxArea = new QWidget(this);
+    comboBoxArea->setWindowFlags(Qt::FramelessWindowHint); // 去除窗口边框
+    comboBoxArea->setAttribute(Qt::WA_TranslucentBackground); // 设置背景透明
+    QHBoxLayout* comboBoxLayout = new QHBoxLayout(comboBoxArea);
+    ElaText* comboBoxText = new ElaText("线程数:", this);
+    comboBoxText->setTextSize(15);
+    comboBoxLayout->addWidget(comboBoxText);
+    comboBoxLayout->addWidget(_comboBox);
+
     QWidget* pushButtonArea = new QWidget();
     pushButtonArea->setWindowFlags(Qt::FramelessWindowHint); // 去除窗口边框
     pushButtonArea->setAttribute(Qt::WA_TranslucentBackground); // 设置背景透明
@@ -62,7 +77,7 @@ FileManagePage::FileManagePage(QWidget* parent):ElaScrollPage(parent)
     //ElaScrollPageArea* pushButtonArea = new ElaScrollPageArea(this);
     // 为切换按钮容器设置水平布局
     QHBoxLayout* pushButtonLayout = new QHBoxLayout(pushButtonArea);
-    pushButtonLayout->setContentsMargins(50, 0, 55, 0);
+    pushButtonLayout->setContentsMargins(45, 0, 45, 0);
     // 将切换按钮控件添加到布局中
     //pushButtonLayout->addWidget(_toggleButton);
     pushButtonLayout->addWidget(_pushButton2);
@@ -70,6 +85,8 @@ FileManagePage::FileManagePage(QWidget* parent):ElaScrollPage(parent)
     // 在布局中添加一个弹性空间，使得所有控件靠左对齐
     pushButtonLayout->addStretch();
     pushButtonLayout->addWidget(_pushButton1);
+    pushButtonLayout->addStretch();
+    pushButtonLayout->addWidget(comboBoxArea);
     connect(_pushButton1,&ElaPushButton::clicked,[=](){
         _dircardProxy->removeChecked();
     });
