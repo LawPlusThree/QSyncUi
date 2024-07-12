@@ -177,7 +177,20 @@ MainWindow::MainWindow(QWidget *parent)
     autologin();
 }
 
-MainWindow::~MainWindow() {}
+MainWindow::~MainWindow()
+{
+    delete um;
+    delete _syncingPage;
+    delete _filemanagePage;
+    delete _historysyncPage;
+    delete _historyviewPage;
+    delete _modifyInfor_win;
+    delete CurrentUser;
+    delete _syncCore;
+    delete _syncTaskDatabaseManager;
+    delete _taskManager;
+}
+
 void MainWindow::onUserLoggedIn(User user)
 {
     CurrentUser=new User(user);
