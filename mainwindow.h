@@ -12,6 +12,7 @@
 #include <QQueue>
 #include "synctask.h"
 #include "synccore.h"
+#include "taskmanager.h"
 class HomePage;
 class SyncingPage;
 class FileManagePage;
@@ -55,6 +56,7 @@ public slots:
     void onFileDownloadTaskFinished(int fileTaskId);
     void onUserPausedFileTask(int fileTaskId);
 
+
 signals:
     void dbPassword(const QString &);
 
@@ -76,8 +78,12 @@ private:
     modifyInfor_win* _modifyInfor_win{nullptr};
     SyncCore* _syncCore{nullptr};
     SyncTaskDatabaseManager* _syncTaskDatabaseManager{nullptr};
+    TaskManager* _taskManager{nullptr};
     ElaCheckBox* cancelcheckBox{nullptr};
     void autologin();
+    void ReadUpTask();//数据库读取上传任务
+    void ReadDownTask();//数据库读取下载任务
+    void ReadFinishTask();//数据库读取历史任务
 
 };
 
