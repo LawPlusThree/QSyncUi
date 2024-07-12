@@ -189,3 +189,14 @@ void FileManagePage::resizeEvent(QResizeEvent* event) {
         x->filename->setToolTip(x->fullText);
     }
 }
+
+void FileManagePage::showEvent(QShowEvent* event) {
+    QWidget::showEvent(event);
+    auto thisMap=this->_dircardProxy->cardMap;
+    for (auto &x:thisMap){
+        QFontMetrics metrics(x->filename->font());
+        QString elidedText = metrics.elidedText(x->fullText, Qt::ElideMiddle, filenameWidget->width()-20);
+        x->filename->setText(elidedText);
+        x->filename->setToolTip(x->fullText);
+    }
+}

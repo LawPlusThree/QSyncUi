@@ -35,6 +35,7 @@ private:
     ElaToggleButton* _toggleButton{nullptr};
 protected:
     void resizeEvent(QResizeEvent* event) override;
+    void showEvent(QShowEvent* event) override;
 };
 
 #endif // SYNCING_VIEW_H

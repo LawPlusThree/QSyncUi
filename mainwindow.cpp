@@ -100,7 +100,8 @@ MainWindow::MainWindow(QWidget *parent)
                 }
                 else if(cancelKey==nodeKey)
                 {
-                    if(CurrentUser!=nullptr){
+                    if(CurrentUser!=nullptr)
+                    {
                     QWidget* _centralWidget = new QWidget(this);
                     QVBoxLayout* centralVLayout = new QVBoxLayout(_centralWidget);
                     centralVLayout->setContentsMargins(9, 15, 9, 20);
@@ -108,15 +109,28 @@ MainWindow::MainWindow(QWidget *parent)
                     title->setTextStyle(ElaTextType::Title);
                     ElaText* subTitle = new ElaText("确定要注销账号吗?一旦注销账号无法恢复！", this);
                     subTitle->setTextStyle(ElaTextType::Body);
+                    cancelcheckBox = new ElaCheckBox("我已了解注销账号的后果，并确认继续。", this);
+                    cancelcheckBox->setStyleSheet("QCheckBox { font-size: 14px; }");
                     centralVLayout->addWidget(title);
                     centralVLayout->addWidget(subTitle);
+                    centralVLayout->addWidget(cancelcheckBox);
                     centralVLayout->addStretch();
                     ElaContentDialog *dialag = new ElaContentDialog(this,false);
                     dialag->setCentralWidget(_centralWidget);
                     dialag->setLeftButtonText("取消");
                     dialag->setRightButtonText("确认");
-                    connect(dialag, &ElaContentDialog::rightButtonClicked, this, &MainWindow::onUserdelete);
-                    dialag->show();}
+                    connect(dialag, &ElaContentDialog::rightButtonClicked, [=]() {
+                        if (cancelcheckBox->isChecked())
+                        {
+                            onUserdelete();
+                        }
+                        else
+                        {
+                            onMessage("确认框未勾选，若要注销账号请先勾选！","Warning");
+                        }
+                    });
+                    dialag->show();
+                    }
                     else{
                         onMessage("请先登录!","Error");
                     }
@@ -376,6 +390,7 @@ void MainWindow::onModifyInfo(User user)
 
 void MainWindow::onUserdelete()
 {
+
     if(CurrentUser->deleteAccount()){
         um->setAutoLoginStaus(false);
         setUserInfoCardTitle("未登录");
