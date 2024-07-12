@@ -84,6 +84,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         crc64util.h crc64util.cpp
         filecardproxy.h filecardproxy.cpp
         usermanager.h usermanager.cpp
+        historycardproxy.h historycardproxy.cpp
 
 
     )

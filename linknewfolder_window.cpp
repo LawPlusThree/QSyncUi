@@ -134,7 +134,6 @@ linkNewFolder_window::linkNewFolder_window(QWidget *parent)
         } else {
             // 如果输入符合要求，执行后续操作
             this->hide();
-            ElaMessageBar::success(ElaMessageBarType::TopRight,"链接成功", "新文件夹链接成功。", 2000);
             qDebug() << "本地文件夹地址：" << folderName1->text();
             qDebug() << "云端文件夹地址：" << folderName2->text();
             int syncOption = comboOptionToNumber[_comboBox->currentText()];

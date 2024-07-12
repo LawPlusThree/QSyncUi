@@ -17,6 +17,7 @@ public:
     ElaText *datasize;
     ElaText *time;
     bool upif;
+    QString fullText;
 };
 
 #endif // HISTORYCARD_H

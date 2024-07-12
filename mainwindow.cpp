@@ -88,7 +88,12 @@ MainWindow::MainWindow(QWidget *parent)
             {
                 if (modifyKey == nodeKey)
                 {
-                    _modifyInfor_win->show();
+                    if(CurrentUser!=nullptr){
+                        _modifyInfor_win->show();
+                    }
+                    else{
+                        onMessage("请先登录!","Error");
+                    }
                 }
                 else if(cancelKey==nodeKey)
                 {
@@ -314,6 +319,7 @@ void MainWindow::onUserAddNewTask(const SyncTask &task)
                     QString timeDelta=QString::number(task.getLastSyncTime().daysTo(QDateTime::currentDateTime()))+"天前";
                     this->_filemanagePage->addDirCard(task.getLocalPath(),1111,timeDelta,task.getId());
                 }
+                onMessage("新文件夹链接成功。","Success");
             }
             else
             {
