@@ -3,7 +3,7 @@
 //新建一个数据库用于存储任务信息并建表
 void TaskManager::createConnection(QString account)
 {
-    db = QSqlDatabase::addDatabase("QSQLITE","TaskManager");
+    db = QSqlDatabase::addDatabase("QSQLITE","taskManager");
     db.setDatabaseName(account+"_task.db");
     //如果数据库不存在则创建数据库
     if (!db.open())
