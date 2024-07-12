@@ -142,10 +142,10 @@ void SyncCore::doTask(SyncTask *task)
 
     connect(thread,&SyncThread::finishUploadTask,this,[=](int fileTaskId){
         emit finishFileUploadTask(fileTaskId);
-    },Qt::QueuedConnection);
+    },Qt::BlockingQueuedConnection);
     connect(thread,&SyncThread::finishDownloadTask,this,[=](int fileTaskId){
         emit finishFileDownloadTask(fileTaskId);
-    },Qt::QueuedConnection);
+    },Qt::BlockingQueuedConnection);
 
     connect(thread,&SyncThread::callUploadTask,this,[=](const QString &localPath, const QString &cloudPath, int fileTaskId){
         requestManager->addPutObjectRequest(localPath,cloudPath,fileTaskId,QMap<QString,QString>());

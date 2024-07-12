@@ -223,8 +223,8 @@ void MainWindow::onUserLoggedIn(User user)
     connect(_syncCore,&SyncCore::addFileDownloadTask,this,&MainWindow::onFileDownloadTaskCreated,Qt::QueuedConnection);
     qDebug() << "Connecting updateFileDownloadTask signal";
     connect(_syncCore,&SyncCore::updateFileDownloadTask,this,&MainWindow::onFileDownloadTaskUpdated,Qt::QueuedConnection);
-    connect(_syncCore,&SyncCore::finishFileDownloadTask,this,&MainWindow::onFileDownloadTaskFinished);
-    connect(_syncCore,&SyncCore::finishFileUploadTask,this,&MainWindow::onFileUploadTaskFinished);
+    connect(_syncCore,&SyncCore::finishFileDownloadTask,this,&MainWindow::onFileDownloadTaskFinished,Qt::QueuedConnection);
+    connect(_syncCore,&SyncCore::finishFileUploadTask,this,&MainWindow::onFileUploadTaskFinished,Qt::QueuedConnection);
     connect(_filemanagePage,&FileManagePage::deleteTask,[=](int taskId){
         this->_syncTaskDatabaseManager->deleteTask(taskId);
     });
