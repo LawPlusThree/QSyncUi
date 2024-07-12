@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
 
 
     //loginuser.addTask("E:/","home/",1,22,22);
-    /*TaskToken tt=loginuser.getTaskTokenByRemote("home/");
+    TaskToken tt=loginuser.getTaskTokenByRemote("home/");
     //request: https://qsync-1320107701.cos.ap-nanjing.myqcloud.com/?prefix=home
     QNetworkRequest request(QUrl("https://qsync-1320107701.cos.ap-nanjing.myqcloud.com/?prefix=home"));
     request.setAttribute(QNetworkRequest::CustomVerbAttribute,"GET");
@@ -38,16 +38,16 @@ int main(int argc, char *argv[])
     SyncTask mytask("F:/回访母校专题结项提交材料","home/",1);
     Filefunc ff("F:/回访母校专题结项提交材料",&cosclient,&mytask);
     ff.start();
-*/
+
     //qDebug()<<"save to local:"<<cosclient.save2Local("home/1.txt","C:/Users/work123/Desktop/1.txt","",myMap);
-    /*QMap<QString,QString> metaDatas;
+    QMap<QString,QString> metaDatas;
     QMap<QString,QString> headers=cosclient.headObject("home/1.txt","C:/Users/work123/Desktop/1.txt","",hh);
     for(auto it=headers.begin();it!=headers.end();it++){
         if(it.key().startsWith("x-cos-meta-")){
             metaDatas[it.key().mid(11)]=it.value();
         }
     }
-    qDebug()<<"metaDatas:"<<metaDatas;*/
+    qDebug()<<"metaDatas:"<<metaDatas;
     //qDebug()<<cosclient.deleteObject("/home/1.jpg","");
 
 
@@ -56,7 +56,7 @@ int main(int argc, char *argv[])
     //qDebug()<<cosclient.multiUpload("/home/2.mp4","E:\\Game Recording\\Yuan Shen 原神\\3.mp4");
     //XmlProcesser xp;
     //Bucket bucket=xp.processXml(xmlstr);
-/*
+
     //sh.generateSignature(request,60);
     //qDebug() <<"s3 location:"<< loginuser.getS3Location();
     SyncTaskDatabaseManager stm(&loginuser);

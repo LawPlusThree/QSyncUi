@@ -1,7 +1,7 @@
 #include "historyviewcard.h"
 #include<QVBoxLayout>
 #include"ElaCheckBox.h"
-
+#include"ElaIconButton.h"
 
 HistoryViewCard::HistoryViewCard(QString f, QString d,QString t)
 {
