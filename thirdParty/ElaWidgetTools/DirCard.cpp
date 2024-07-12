@@ -11,7 +11,7 @@
 #include"ElaToggleButton.h"
 #include"ElaIconButton.h"
 
-DirCard::DirCard(QString f, int d,QString b,int Id)
+DirCard::DirCard(QString f, quint64 d,QString b,int Id)
 {
     filename=new ElaText(f);
     fullText = f;
@@ -126,7 +126,7 @@ bool DirCard::ischecked()
     return _checkBox->isChecked();
 }
 
-void DirCard::modify(int d,QString b)
+void DirCard::modify(quint64 d,QString b)
 {
     QString size;
     QString dataStr;

@@ -15,7 +15,7 @@ class ELA_EXPORT DirCard : public ElaScrollPageArea
 {
     Q_OBJECT
 public:
-    explicit DirCard(QString f, int d,QString b,int Id);
+    explicit DirCard(QString f, quint64 d,QString b,int Id);
 
     ElaCheckBox* _checkBox{nullptr};
     ElaIconButton*pauseBtn;
@@ -23,7 +23,7 @@ public:
     ElaText *datasize;
     ElaText *bindtime;
     ElaIconButton*relieveBtn;
-    void modify(int d,QString b);
+    void modify(quint64 d,QString b);
     QString fullText;
 
     int id;
