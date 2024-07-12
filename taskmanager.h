@@ -102,7 +102,8 @@ public:
     ~TaskManager(){closeConnection();};
     QMap<int,QString> processJson(QString etags);//处理数据库中以json格式存储的etag
     QString processEtag(QMap<int,QString> etags);//把etag转化为json格式
-
+private:
+    QSqlDatabase db;
 };
 
 #endif // TASKMANAGER_H
