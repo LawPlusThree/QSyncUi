@@ -76,14 +76,14 @@ HistoryViewPage::HistoryViewPage(QWidget* parent): ElaScrollPage(parent)
     ElaText* catalogueText4 = new ElaText("同步时间", this);
     catalogueText4->setTextSize(16);
     catalogueText4->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    catalogueText4->setFixedSize(140,20);
+    catalogueText4->setFixedSize(160,20);
     catalogueText4->setAlignment(Qt::AlignCenter); // 设置文本居中对齐
     QVBoxLayout* catalogueArea4 = new QVBoxLayout();
     catalogueArea4->addWidget(catalogueText4, 0, Qt::AlignCenter);
     ElaText* catalogueText5 = new ElaText("操作", this);
     catalogueText5->setTextSize(16);
     catalogueText5->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    catalogueText5->setFixedSize(60,20);
+    catalogueText5->setFixedSize(100,20);
     catalogueText5->setAlignment(Qt::AlignCenter); // 设置文本居中对齐
     QHBoxLayout* catalogueArea5 = new QHBoxLayout();
     catalogueArea5->addWidget(catalogueText5, 0, Qt::AlignCenter);
@@ -95,8 +95,8 @@ HistoryViewPage::HistoryViewPage(QWidget* parent): ElaScrollPage(parent)
     catalogueLayout->setStretchFactor(catalogueArea0, 25);
     catalogueLayout->setStretchFactor(filenameWidget, 500);
     catalogueLayout->setStretchFactor(catalogueArea2, 100);
-    catalogueLayout->setStretchFactor(catalogueArea4, 140);
-    catalogueLayout->setStretchFactor(catalogueArea5, 60);
+    catalogueLayout->setStretchFactor(catalogueArea4, 160);
+    catalogueLayout->setStretchFactor(catalogueArea5, 100);
 
     ElaScrollArea* scrollArea = new ElaScrollArea();
     scrollArea->viewport()->setStyleSheet("background:transparent;");//设置背景透明
