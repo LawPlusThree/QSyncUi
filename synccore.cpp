@@ -20,6 +20,7 @@ SyncCore::SyncCore(COSConfig config, QObject *parent)
         if(error==QNetworkReply::NoError)
         {
             emit finishFileDownloadTask(fileTaskId);
+            emit finishFileUploadTask(fileTaskId);
             qDebug()<<"request finished";
         }
         else
@@ -31,6 +32,7 @@ SyncCore::SyncCore(COSConfig config, QObject *parent)
         //emit updateFileUploadTask(fileTaskId,bytesReceived,bytesTotal);
         qDebug()<<"request progress"<<bytesReceived<<" "<<bytesTotal;
         emit updateFileDownloadTask(fileTaskId,bytesReceived,bytesTotal);
+        emit updateFileUploadTask(fileTaskId,bytesReceived,bytesTotal);
     },Qt::QueuedConnection);
 }
 
@@ -144,7 +146,7 @@ void SyncCore::doTask(SyncTask *task)
     connect(thread,&SyncThread::finishDownloadTask,this,[=](int fileTaskId){
         emit finishFileDownloadTask(fileTaskId);
     },Qt::QueuedConnection);
-    
+
     connect(thread,&SyncThread::callUploadTask,this,[=](const QString &localPath, const QString &cloudPath, int fileTaskId){
         requestManager->addPutObjectRequest(localPath,cloudPath,fileTaskId,QMap<QString,QString>());
     },Qt::BlockingQueuedConnection);
