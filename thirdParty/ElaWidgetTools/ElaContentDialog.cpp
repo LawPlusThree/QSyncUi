@@ -150,6 +150,12 @@ ElaContentDialog::~ElaContentDialog()
     }
 }
 
+ElaPushButton* ElaContentDialog::getButton()
+{
+    Q_D(ElaContentDialog);
+    return d->_rightButton;
+}
+
 void ElaContentDialog::onLeftButtonClicked()
 {
 }

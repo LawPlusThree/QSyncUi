@@ -79,14 +79,12 @@ private:
 
         QThread *thread = QThread::create([=] {
             COSClient cosClient(cosConfig);
-            connect(this, &NetworkRequestManager::putObjectRequested, &cosClient, &COSClient::multiUpload);
-            connect(this, &NetworkRequestManager::save2LocalRequested, &cosClient, &COSClient::save2LocalWithoutVersion);
             connect(&cosClient, &COSClient::progress, this, [=](qint64 bytesReceived, qint64 bytesTotal) {
                 onRequestProgress(fileTaskId, bytesReceived, bytesTotal);
-            });
+            },Qt::BlockingQueuedConnection);
             connect(&cosClient, &COSClient::finished, this, [=](QNetworkReply::NetworkError error){
-                    onRequestFinished(fileTaskId, error);
-                });
+                onRequestFinished(fileTaskId, error);
+                },Qt::BlockingQueuedConnection);
 
             if (requestInfo.methodId == 0) {
                  cosClient.multiUpload(requestInfo.key, requestInfo.localPath, QMap<QString, QString>());

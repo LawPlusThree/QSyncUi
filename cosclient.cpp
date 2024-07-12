@@ -242,15 +242,13 @@ QString COSClient::multiUpload(const QString &path, const QString &localpath, QM
     }
     //初始化分片上传
     QString uploadId = initLocalMultiUpload(path, localpath, metaDatas);
-    emit UploadProgress(0, file.size());
     //分片上传
     int partNumber = 1;
     QMap<int, QString> partEtagMap;
     while (!file.atEnd())
     {
-        QByteArray data = file.read(5 * 1024 * 1024); // Assuming 5MB parts
+        QByteArray data = file.read(2 * 1024 * 1024); // Assuming 2MB parts
         QString etag = uploadPart(path, uploadId, partNumber, data);
-        emit UploadProgress(file.pos(), file.size());
         emit progress(file.pos(), file.size());
         partEtagMap.insert(partNumber, etag);
         partNumber++;

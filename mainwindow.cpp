@@ -118,15 +118,24 @@ MainWindow::MainWindow(QWidget *parent)
                     dialag->setCentralWidget(_centralWidget);
                     dialag->setLeftButtonText("取消");
                     dialag->setRightButtonText("确认");
-                    connect(dialag, &ElaContentDialog::rightButtonClicked, [=]() {
-                        if (cancelcheckBox->isChecked())
+                    dialag->getButton()->setEnabled(false);
+                    dialag->getButton()->setStyleSheet("QPushButton { background-color: #B58C8C; color: white; }");
+                    connect(cancelcheckBox, &ElaCheckBox::stateChanged, [=](int state) {
+                        if (state == Qt::Checked)
                         {
-                            onUserdelete();
+                            dialag->getButton()->setStyleSheet("QPushButton { background-color: #FF6B5D; }"
+                                                               "QPushButton:hover { background-color: red; }"
+                                                               "QPushButton:pressed { background-color: red; }");
+                            dialag->getButton()->setEnabled(true);
                         }
                         else
                         {
-                            onMessage("确认框未勾选，若要注销账号请先勾选！","Warning");
+                            dialag->getButton()->setStyleSheet("QPushButton { background-color: #B58C8C; }");
+                            dialag->getButton()->setEnabled(false);
                         }
+                    });
+                    connect(dialag, &ElaContentDialog::rightButtonClicked, [=]() {
+                        onUserdelete();
                     });
                     dialag->show();
                     }
@@ -209,15 +218,15 @@ void MainWindow::onUserLoggedIn(User user)
     qDebug() << "Connecting taskUploadSize signal";
     connect(_syncCore,&SyncCore::taskUploadSize,this,&MainWindow::onTaskUploadSize);
     qDebug() << "Connecting addFileUploadTask signal";
-    connect(_syncCore,&SyncCore::addFileUploadTask,this,&MainWindow::onFileUploadTaskCreated);
+    connect(_syncCore,&SyncCore::addFileUploadTask,this,&MainWindow::onFileUploadTaskCreated,Qt::QueuedConnection);
     qDebug() << "Connecting updateFileUploadTask signal";
-    connect(_syncCore,&SyncCore::updateFileUploadTask,this,&MainWindow::onFileUploadTaskUpdated);
+    connect(_syncCore,&SyncCore::updateFileUploadTask,this,&MainWindow::onFileUploadTaskUpdated,Qt::QueuedConnection);
     qDebug() << "Connecting addFileDownloadTask signal";
-    connect(_syncCore,&SyncCore::addFileDownloadTask,this,&MainWindow::onFileDownloadTaskCreated);
+    connect(_syncCore,&SyncCore::addFileDownloadTask,this,&MainWindow::onFileDownloadTaskCreated,Qt::QueuedConnection);
     qDebug() << "Connecting updateFileDownloadTask signal";
-    connect(_syncCore,&SyncCore::updateFileDownloadTask,this,&MainWindow::onFileDownloadTaskUpdated);
-    connect(_syncCore,&SyncCore::finishFileDownloadTask,this,&MainWindow::onFileDownloadTaskFinished);
-    connect(_syncCore,&SyncCore::finishFileUploadTask,this,&MainWindow::onFileUploadTaskFinished);
+    connect(_syncCore,&SyncCore::updateFileDownloadTask,this,&MainWindow::onFileDownloadTaskUpdated,Qt::QueuedConnection);
+    connect(_syncCore,&SyncCore::finishFileDownloadTask,this,&MainWindow::onFileDownloadTaskFinished,Qt::QueuedConnection);
+    connect(_syncCore,&SyncCore::finishFileUploadTask,this,&MainWindow::onFileUploadTaskFinished,Qt::QueuedConnection);
     connect(_filemanagePage,&FileManagePage::deleteTask,[=](int taskId){
         this->_syncTaskDatabaseManager->deleteTask(taskId);
     });

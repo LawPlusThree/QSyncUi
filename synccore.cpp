@@ -20,18 +20,20 @@ SyncCore::SyncCore(COSConfig config, QObject *parent)
         if(error==QNetworkReply::NoError)
         {
             emit finishFileDownloadTask(fileTaskId);
+            emit finishFileUploadTask(fileTaskId);
             qDebug()<<"request finished";
         }
         else
         {
             qDebug()<<"request error";
         }
-    });
+    },Qt::QueuedConnection);
     connect(requestManager,&NetworkRequestManager::requestProgress,this,[=](int fileTaskId, qint64 bytesReceived, qint64 bytesTotal){
         //emit updateFileUploadTask(fileTaskId,bytesReceived,bytesTotal);
         qDebug()<<"request progress"<<bytesReceived<<" "<<bytesTotal;
         emit updateFileDownloadTask(fileTaskId,bytesReceived,bytesTotal);
-    });
+        emit updateFileUploadTask(fileTaskId,bytesReceived,bytesTotal);
+    },Qt::QueuedConnection);
 }
 
 void SyncCore::filesystemChanged(struct event e)
@@ -133,22 +135,18 @@ void SyncCore::doTask(SyncTask *task)
     });
     connect(thread,&SyncThread::newUploadTask,this,[=](const QString &localPath, qint64 fileTaskId){
         emit addFileUploadTask(localPath,fileTaskId);
-    });
+    },Qt::BlockingQueuedConnection);
     connect(thread,&SyncThread::newDownloadTask,this,[=](const QString &localPath, qint64 fileTaskId){
         emit addFileDownloadTask(localPath,fileTaskId);
-    });
-    connect(thread,&SyncThread::updateUploadTask,this,[=](int fileTaskId, qint64 nowSize, qint64 totalSize){
-        emit updateFileUploadTask(fileTaskId,nowSize,totalSize);
-    });
-    connect(thread,&SyncThread::updateDownloadTask,this,[=](int fileTaskId, qint64 nowSize, qint64 totalSize){
-        emit updateFileDownloadTask(fileTaskId,nowSize,totalSize);
-    });
+        },Qt::BlockingQueuedConnection);
+
     connect(thread,&SyncThread::finishUploadTask,this,[=](int fileTaskId){
         emit finishFileUploadTask(fileTaskId);
-    });
+    },Qt::BlockingQueuedConnection);
     connect(thread,&SyncThread::finishDownloadTask,this,[=](int fileTaskId){
         emit finishFileDownloadTask(fileTaskId);
-    });
+    },Qt::BlockingQueuedConnection);
+
     connect(thread,&SyncThread::callUploadTask,this,[=](const QString &localPath, const QString &cloudPath, int fileTaskId){
         requestManager->addPutObjectRequest(localPath,cloudPath,fileTaskId,QMap<QString,QString>());
     },Qt::BlockingQueuedConnection);
