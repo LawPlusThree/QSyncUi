@@ -33,6 +33,7 @@ void FileCardProxy::addFileCard(QString filename,quint64 datasize,double speed,i
 void FileCardProxy::removeFileCard(const int &id) {
     if (cardMap.contains(id)) {
         FileCard *card = cardMap.take(id);
+        card->processing(100);
         // 在这里可以从UI中移除card
         filesLayout->removeWidget(card);
         card->setParent(nullptr);
@@ -55,15 +56,10 @@ void FileCardProxy::removeFileCard(const int &id) {
 
 void FileCardProxy::modify(quint64 totalsize,quint64 currentsize,int Id)
 {
-    QMapIterator<int,FileCard*> i(cardMap);
-    while(i.hasNext())
-    {
-        i.next();
-        int id=i.key();
-        FileCard*card=i.value();
-        if(id==Id)
-            card->modify(totalsize,currentsize);
-    }
+    if(cardMap.find(Id)==cardMap.end())
+        return;
+    auto thisCard=cardMap[Id];
+    thisCard->modify(totalsize,currentsize);
 }
 
 void FileCardProxy::processing(int p,int Id)

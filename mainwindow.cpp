@@ -488,6 +488,7 @@ void MainWindow::onFileUploadTaskFinished(int fileTaskId)
     _syncingPage->removeFile(
         fileTaskId
         );
+    onMessage("上传完成","Info");
 }
 
 void MainWindow::onFileDownloadTaskFinished(int fileTaskId)
@@ -495,6 +496,7 @@ void MainWindow::onFileDownloadTaskFinished(int fileTaskId)
     _syncingPage->removeFile(
         fileTaskId
         );
+    onMessage("下载完成","Info");
 }
 
 void MainWindow::onUserPausedFileTask(int fileTaskId)
@@ -504,13 +506,7 @@ void MainWindow::onUserPausedFileTask(int fileTaskId)
 
 void MainWindow::ReadUpTask()
 {
-    for (auto const &x:_taskManager->readUpTask()){
-        upTask* task=new upTask(x);
 
-
-        //this->_syncingPage->addFile();
-
-    }
 }
 
 void MainWindow::ReadDownTask()
@@ -520,7 +516,9 @@ void MainWindow::ReadDownTask()
 
 void MainWindow::ReadFinishTask()
 {
-
+    for (auto const &task:_taskManager->readFinishTask()){
+        this->_historysyncPage->addHistory(task.localPath,QString::number(task.dataSize),task.sycnTime.toString("yyyy-MM-dd"),task.status==1?true:false);
+    }
 }
 
 void MainWindow::autologin()

@@ -180,6 +180,7 @@ QList<finishTask> TaskManager::readFinishTask()
         task.dataSize = query.value(3).toULongLong();
         task.sycnTime = query.value(4).toDate();
         task.status = query.value(5).toInt();
+        tasks.append(task);
     }
     return tasks;
 }
