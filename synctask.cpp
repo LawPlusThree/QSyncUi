@@ -11,7 +11,11 @@ int SyncTaskDatabaseManager::addTask(const SyncTask &task) {
     query.bindValue(":remotePath", task.remotePath);
     query.bindValue(":syncStatus", task.syncStatus);
     query.bindValue(":lastSyncTime", task.lastSyncTime.toString("yyyy-MM-dd hh:mm:ss"));
-    query.exec();
+    if (query.exec()){
+        qDebug()<<"Insert success";
+    }else{
+        qDebug()<<"Insert failed"<<query.lastError();
+    }
     //返回ID
     int result=query.lastInsertId().toInt();
     return result;
@@ -123,9 +127,8 @@ QList<SyncTask> SyncTaskDatabaseManager::getTasks() {
 }
 
 void SyncTaskDatabaseManager::initializeDatabase(QString name) {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE","syncTasks");
     //存到userData文件夹
-
     db.setDatabaseName(name+"syncTasks.db");
     if (!db.open()) {
         qDebug() << "Database open failed:" << db.lastError();
