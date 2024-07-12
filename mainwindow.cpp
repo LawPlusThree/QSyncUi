@@ -489,13 +489,7 @@ void MainWindow::onUserPausedFileTask(int fileTaskId)
 
 void MainWindow::ReadUpTask()
 {
-    for (auto const &x:_taskManager->readUpTask()){
-        upTask* task=new upTask(x);
 
-
-        //this->_syncingPage->addFile();
-
-    }
 }
 
 void MainWindow::ReadDownTask()
@@ -505,7 +499,9 @@ void MainWindow::ReadDownTask()
 
 void MainWindow::ReadFinishTask()
 {
-
+    for (auto const &task:_taskManager->readFinishTask()){
+        this->_historysyncPage->addHistory(task.localPath,QString::number(task.dataSize),task.sycnTime.toString("yyyy-MM-dd"),task.status==1?true:false);
+    }
 }
 
 void MainWindow::autologin()

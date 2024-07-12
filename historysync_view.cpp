@@ -100,7 +100,7 @@ HistorysyncPage::HistorysyncPage(QWidget* parent)
     scrollArea->viewport()->setStyleSheet("background:transparent;");//设置背景透明
 
     _historycardPage=new HistoryCardProxy(this);
-    addHistory("文件1554524527252572752","3.5GB","2024.7.1",0);
+    /*addHistory("文件1554524527252572752","3.5GB","2024.7.1",0);
     addHistory("文件hadgiauyfgugfauwygfuygfuewedfcyufg","3.5GB","2024.7.2",0);
     addHistory("文件3","3.5GB","2024.7.3",1);
     addHistory("文件4","3.5GB","2024.7.4",0);
@@ -109,7 +109,7 @@ HistorysyncPage::HistorysyncPage(QWidget* parent)
     addHistory("文件7","3.5GB","2024.7.7",1);
     addHistory("文件8","3.5GB","2024.7.8",0);
     addHistory("文件9","3.5GB","2024.7.9",0);
-    addHistory("文件10","3.5GB","2024.7.10",1);
+    addHistory("文件10","3.5GB","2024.7.10",1);*/
 
     scrollArea->setWidget(_historycardPage);
     scrollArea->setWidgetResizable(true); // 允许scrollArea根据内容自动调整大小
