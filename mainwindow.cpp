@@ -103,7 +103,7 @@ MainWindow::MainWindow(QWidget *parent)
                     centralVLayout->setContentsMargins(9, 15, 9, 20);
                     ElaText* title = new ElaText("注销账号", this);
                     title->setTextStyle(ElaTextType::Title);
-                    ElaText* subTitle = new ElaText("确定要注销账号吗", this);
+                    ElaText* subTitle = new ElaText("确定要注销账号吗?一旦注销账号无法恢复！", this);
                     subTitle->setTextStyle(ElaTextType::Body);
                     centralVLayout->addWidget(title);
                     centralVLayout->addWidget(subTitle);
@@ -126,7 +126,7 @@ MainWindow::MainWindow(QWidget *parent)
                     logoutVLayout->setContentsMargins(9, 15, 9, 20);
                     ElaText* logoutTitle = new ElaText("退出登录", this);
                     logoutTitle->setTextStyle(ElaTextType::Title);
-                    ElaText* logoutSubTitle = new ElaText("确定要退出登录吗", this);
+                    ElaText* logoutSubTitle = new ElaText("确定要退出登录吗?", this);
                     logoutSubTitle->setTextStyle(ElaTextType::Body);
                     logoutVLayout->addWidget(logoutTitle);
                     logoutVLayout->addWidget(logoutSubTitle);
