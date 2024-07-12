@@ -17,11 +17,13 @@ struct COSConfig
         bucketName = other.bucketName;
         appId = other.appId;
         region = other.region;
+        allowPrefix = other.allowPrefix;
         taskToken = other.taskToken;
     };
     QString bucketName;
     QString appId;
     QString region;
+    QString allowPrefix;
     TaskToken taskToken;
 };
 struct headHeader {
@@ -57,7 +59,7 @@ class COSClient : public QObject
 public:
     COSClient(QObject *parent = nullptr);
     COSClient(COSConfig config,QObject *parent = nullptr);
-    COSClient(QString bucketName, QString appId, QString region, QString secretId, QString secretKey, QString token, QDateTime expiredTime,QObject *parent = nullptr);
+    COSClient(QString bucketName, QString appId, QString region, QString allowPrefix,QString secretId, QString secretKey, QString token, QDateTime expiredTime,QObject *parent = nullptr);
     QString getBucketName() const { return bucketName; }
     QString getAppId() const { return appId; }
     QString getRegion() const { return region; }
@@ -115,6 +117,7 @@ private:
     QString secretId;
     QString secretKey;
     QString endpoint;
+    QString allowPrefix;
     QString generalApiUrl;
     QString token;
     QDateTime expiredTime;
@@ -123,6 +126,7 @@ private:
     bool preCheckSession();
     QString _getContentTypeByPath(const QString &path);
     QString _getContentMD5(const QByteArray &data);
+    QString _prefixHandle(const QString &rawPath);
     //QString _getContentCRC64(const QString &path);//获取本地文件crc64
     QNetworkRequest buildGetRequest(const QString& path,const QMap<QString, QString> queryParams);
     QNetworkRequest buildPutRequest(const QString& path,const QMap<QString, QString> queryParams, const QByteArray& data);

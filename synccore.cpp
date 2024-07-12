@@ -19,7 +19,6 @@ SyncCore::SyncCore(COSConfig config, QObject *parent)
     connect(requestManager,&NetworkRequestManager::requestFinished,this,[=](int fileTaskId, QNetworkReply::NetworkError error){
         if(error==QNetworkReply::NoError)
         {
-            emit finishFileUploadTask(fileTaskId);
             emit finishFileDownloadTask(fileTaskId);
             qDebug()<<"request finished";
         }
@@ -29,7 +28,8 @@ SyncCore::SyncCore(COSConfig config, QObject *parent)
         }
     });
     connect(requestManager,&NetworkRequestManager::requestProgress,this,[=](int fileTaskId, qint64 bytesReceived, qint64 bytesTotal){
-        emit updateFileUploadTask(fileTaskId,bytesReceived,bytesTotal);
+        //emit updateFileUploadTask(fileTaskId,bytesReceived,bytesTotal);
+        qDebug()<<"request progress"<<bytesReceived<<" "<<bytesTotal;
         emit updateFileDownloadTask(fileTaskId,bytesReceived,bytesTotal);
     });
 }

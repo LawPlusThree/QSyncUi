@@ -105,9 +105,9 @@ linkNewFolder_window::linkNewFolder_window(QWidget *parent)
     _comboBox->setFixedWidth(140);
     // 创建一个映射，将文本选项映射到数字
     QMap<QString, int> comboOptionToNumber;
+    comboOptionToNumber["同步上传与下载"] = 1;
     comboOptionToNumber["仅上传"] = 2;
     comboOptionToNumber["仅下载"] = 3;
-    comboOptionToNumber["同步上传与下载"] = 1;
 
     QWidget* buttonArea = new QWidget();
     buttonArea->setWindowFlags(Qt::FramelessWindowHint); // 去除窗口边框

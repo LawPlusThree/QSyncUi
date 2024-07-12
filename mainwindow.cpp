@@ -178,6 +178,9 @@ void MainWindow::onUserLoggedIn(User user)
     QString filename=QDir::toNativeSeparators(file.fileName());
     QPixmap pix(filename);
     setUserInfoCardPixmap(pix);
+
+    cosConfig.taskToken=tt;
+    _syncCore=new SyncCore(cosConfig,this);
     qDebug() << "Connecting taskTotalSize signal";
     connect(_syncCore,&SyncCore::taskTotalSize,this,&MainWindow::onTaskTotalSize);
     qDebug() << "Connecting taskUploadSize signal";
@@ -193,10 +196,9 @@ void MainWindow::onUserLoggedIn(User user)
     connect(_syncCore,&SyncCore::finishFileDownloadTask,this,&MainWindow::onFileDownloadTaskFinished);
     connect(_syncCore,&SyncCore::finishFileUploadTask,this,&MainWindow::onFileUploadTaskFinished);
     connect(_filemanagePage,&FileManagePage::deleteTask,[=](int taskId){
-       this->_syncTaskDatabaseManager->deleteTask(taskId);
+        this->_syncTaskDatabaseManager->deleteTask(taskId);
     });
-    cosConfig.taskToken=tt;
-    _syncCore=new SyncCore(cosConfig,this);
+
     for (auto const &x:_syncTaskDatabaseManager->getTasks()){
         SyncTask* task=new SyncTask(x);
 
@@ -281,20 +283,16 @@ void MainWindow::onUserAddNewTask(const SyncTask &task)
         {
             int res=_syncTaskDatabaseManager->addTask(task);
             bool isSuccess=false;
+            TaskToken tt=CurrentUser->getUnifiedTaskToken();
+            COSConfig cosConfig=CurrentUser->getS3Config();
+            cosConfig.taskToken=tt;
             if(_syncCore!=nullptr)
             {
                 SyncTask mytask(task);
                 SyncTask* task=new SyncTask(mytask);
                 task->setId(res);
-                TaskToken tt=CurrentUser->getTaskTokenByRemote(task->getRemotePath());
-                QString bucketName="qsync";
-                QString appId="1320107701";
-                QString region="ap-nanjing";
-                QString secretId=tt.tmpSecretId;
-                QString secretKey=tt.tmpSecretKey;
-                QString token=tt.sessionToken;
                 QDateTime expiredTime=tt.expiredTime;
-                COSClient *cosclient=new COSClient(bucketName,appId,region,secretId,secretKey,token,expiredTime);
+                COSClient *cosclient=new COSClient(cosConfig, this);
                 task->cosclient=cosclient;
                 isSuccess=_syncCore->addTask(task);
             }

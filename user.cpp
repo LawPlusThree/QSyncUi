@@ -351,6 +351,7 @@ COSConfig User::getS3Config()
         config.bucketName=response.getData()["bucket"].toString();
         config.region=response.getData()["region"].toString();
         config.appId=response.getData()["appid"].toString();
+        config.allowPrefix=response.getData()["allowPrefix"].toString();
     }
     else
     {

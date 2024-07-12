@@ -13,11 +13,12 @@ COSClient::COSClient(QObject *parent)
 
 
 
-COSClient::COSClient(QString bucketName, QString appId, QString region, QString secretId, QString secretKey, QString token, QDateTime expiredTime, QObject *parent)
+COSClient::COSClient(QString bucketName, QString appId, QString region,QString allowPrefix, QString secretId, QString secretKey, QString token, QDateTime expiredTime, QObject *parent)
 {
     this->bucketName = bucketName;
     this->appId = appId;
     this->region = region;
+    this->allowPrefix = allowPrefix;
     this->secretId = secretId;
     this->secretKey = secretKey;
     this->token = token;
@@ -25,11 +26,11 @@ COSClient::COSClient(QString bucketName, QString appId, QString region, QString 
     this->endpoint = bucketName + "-" + appId + ".cos." + region + ".myqcloud.com";
     this->generalApiUrl = "https://" + endpoint;
     this->signHelper = new SignHelper(appId, secretId, secretKey);
-    manager = new QNetworkAccessManager();
+    manager = new QNetworkAccessManager(this);
 }
 
 COSClient::COSClient(COSConfig config, QObject *parent)
-    : COSClient(config.bucketName, config.appId, config.region,
+    : COSClient(config.bucketName, config.appId, config.region,config.allowPrefix,
                 config.taskToken.tmpSecretId, config.taskToken.tmpSecretKey,
                 config.taskToken.sessionToken, config.taskToken.expiredTime, parent)
 {
@@ -38,12 +39,32 @@ COSClient::COSClient(COSConfig config, QObject *parent)
 QString COSClient::listObjects(const QString &prefix, const QString &marker)
 {
     preRequest request;
-    request.queryParams.insert("prefix", prefix);
+    QString prefix_=_prefixHandle(prefix);
+    request.queryParams.insert("prefix", prefix_);
     request.queryParams.insert("marker", marker);
     preResponse response = invokeGetFileRequest("/", request);
     return QString::fromUtf8(response.data);
 }
-
+QString COSClient::_prefixHandle(const QString &rawPath)
+{
+    QString prefix = rawPath;
+    if(rawPath.contains(allowPrefix))
+    {
+        return rawPath;
+    }
+    if(rawPath.startsWith("/"))
+    {
+        prefix = rawPath.mid(1);
+    }
+    if(rawPath.endsWith("/"))
+    {
+        return allowPrefix + prefix;
+    }
+    else
+    {
+        return allowPrefix + prefix + "/";
+    }
+}
 bool COSClient::putObject(const QString &path, const QByteArray &data, const QString &contentType)
 {
     preRequest request;
@@ -280,6 +301,7 @@ preResponse COSClient::invokeGetFileRequest(const QString& path, const preReques
     for (const QByteArray& header : rawHeaderList) {
         response.headers.insert(QString(header), QString(reply->rawHeader(header)));
     }
+    finished(reply->error());
     reply->deleteLater();
     return response;
 }
@@ -306,6 +328,7 @@ preResponse COSClient::invokeGetFileRequestWithProgress(const QString& path, con
     for (const QByteArray& header : rawHeaderList) {
         response.headers.insert(QString(header), QString(reply->rawHeader(header)));
     }
+    finished(reply->error());
     reply->deleteLater();
     return response;
 }
@@ -332,6 +355,7 @@ preResponse COSClient::invokePutRequest(const QString& path, const preRequest& r
     for (const QByteArray& header : rawHeaderList) {
         response.headers.insert(QString(header), QString(reply->rawHeader(header)));
     }
+    emit finished(reply->error());
     reply->deleteLater();
     return response;
 }
@@ -400,6 +424,11 @@ preResponse COSClient::invokePostRequest(const QString &path, const preRequest &
     const QList<QByteArray> rawHeaderList = reply->rawHeaderList();
     for (const QByteArray& header : rawHeaderList) {
         response.headers.insert(QString(header), QString(reply->rawHeader(header)));
+    }
+    //if is cos mulit upload response, SEND signal
+    if(reply->url().toString().contains("uploadId"))
+    {
+       emit finished(reply->error());
     }
     reply->deleteLater();
     return response;
@@ -608,6 +637,8 @@ QString COSClient::_getContentMD5(const QByteArray &data)
 }
 
 
+
+
 QNetworkRequest COSClient::buildGetRequest(const QString &path, const QMap<QString, QString> queryParams)
 {
     if (!preCheckSession())
@@ -617,6 +648,7 @@ QNetworkRequest COSClient::buildGetRequest(const QString &path, const QMap<QStri
     QUrl url;
     QUrlQuery query;
     QString realPath=path;
+    realPath=_prefixHandle(realPath);
     if(!path.startsWith("/")){
         realPath.prepend("/");
     }
@@ -649,6 +681,7 @@ QNetworkRequest COSClient::buildPutRequest(const QString &path, const QMap<QStri
     QUrl url;
     QUrlQuery query;
     QString realPath=path;
+    realPath=_prefixHandle(realPath);
     if(!path.startsWith("/")){
         realPath.prepend("/");
     }
@@ -680,6 +713,7 @@ QNetworkRequest COSClient::buildHeadRequest(const QString &path, const QMap<QStr
     QUrl url;
     QUrlQuery query;
     QString realPath=path;
+    realPath=_prefixHandle(realPath);
     if(!path.startsWith("/")){
         realPath.prepend("/");
     }
@@ -711,6 +745,7 @@ QNetworkRequest COSClient::buildDeleteRequest(const QString &path, const QMap<QS
     QUrl url;
     QUrlQuery query;
     QString realPath=path;
+    realPath=_prefixHandle(realPath);
     if(!path.startsWith("/")){
         realPath.prepend("/");
     }
@@ -743,6 +778,7 @@ QNetworkRequest COSClient::buildPostRequest(const QString &path, const QMap<QStr
     qDebug()<<queryParams;
     QUrlQuery query;
     QString realPath=path;
+    realPath=_prefixHandle(realPath);
     if(!path.startsWith("/")){
         realPath.prepend("/");
     }

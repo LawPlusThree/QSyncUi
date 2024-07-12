@@ -7,7 +7,7 @@ void SyncThread::run()
 {
     crc64_init();
     if(task->getSyncStatus()==1){
-    readDirectory(path);
+       readDirectory(path);
         readCLoudDirectory(task->getRemotePath());}
     else if(task->getSyncStatus()==2){
         readDirectory(path);
