@@ -475,6 +475,7 @@ void MainWindow::onFileUploadTaskFinished(int fileTaskId)
     _syncingPage->removeFile(
         fileTaskId
         );
+    onMessage("上传完成","Info");
 }
 
 void MainWindow::onFileDownloadTaskFinished(int fileTaskId)
@@ -482,6 +483,7 @@ void MainWindow::onFileDownloadTaskFinished(int fileTaskId)
     _syncingPage->removeFile(
         fileTaskId
         );
+    onMessage("下载完成","Info");
 }
 
 void MainWindow::onUserPausedFileTask(int fileTaskId)
