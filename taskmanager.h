@@ -27,6 +27,7 @@ struct upTask
     int totalPiece;
     QMap<int,QString> etags;
     bool isPause;
+    upTask(){};//默认构造函数
     //复制构造函数
     upTask(const upTask &task)
     {
@@ -47,6 +48,7 @@ struct downTask
     int totalPiece;
     QMap<int,QString> etags;
     bool isPause;
+    downTask(){};//默认构造函数
     //复制构造函数
     downTask(const downTask &task)
     {
@@ -66,6 +68,7 @@ struct finishTask
     quint64 dataSize;
     QDate sycnTime;
     int status;//1表示上传，2表示下载
+    finishTask(){};//默认构造函数
     //复制构造函数
     finishTask(const finishTask &task)
     {
