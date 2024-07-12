@@ -29,6 +29,7 @@ private:
     ElaPushButton* _pushButton2{nullptr};
     ElaPushButton* _pushButton3{nullptr};
     ElaToggleButton* _toggleButton{nullptr};
+    ElaComboBox* _comboBox{nullptr};
 
     setExcludedItems_view* setexcludeditemsview=new setExcludedItems_view();
 signals:
