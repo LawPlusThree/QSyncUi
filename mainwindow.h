@@ -47,7 +47,7 @@ public slots:
     void onFileUploadTaskCreated(const QString &localPath, int fileTaskId);
     void onFileUploadTaskUpdated(int fileTaskId, qint64 nowSize, qint64 totalSize);
     void onFileUploadTaskPaused(int fileTaskId);
-    void onFileDownloadTaskCreated(const QString &localPath, int fileTaskId);
+    void onFileDownloadTaskCreated(const QString &localPath, int fileTaskId,quint64 totalSize=0);
     void onFileDownloadTaskUpdated(int fileTaskId, qint64 nowSize, qint64 totalSize);
     void onFileDownloadTaskPaused(int fileTaskId);
     void onTaskTotalSize(qint64 size, int taskid);

@@ -136,8 +136,8 @@ void SyncCore::doTask(SyncTask *task)
     connect(thread,&SyncThread::newUploadTask,this,[=](const QString &localPath, qint64 fileTaskId){
         emit addFileUploadTask(localPath,fileTaskId);
     },Qt::BlockingQueuedConnection);
-    connect(thread,&SyncThread::newDownloadTask,this,[=](const QString &localPath, qint64 fileTaskId){
-        emit addFileDownloadTask(localPath,fileTaskId);
+    connect(thread,&SyncThread::newDownloadTask,this,[=](const QString &localPath, qint64 fileTaskId,quint64 totalSize){
+        emit addFileDownloadTask(localPath,fileTaskId,totalSize);
         },Qt::BlockingQueuedConnection);
 
     connect(thread,&SyncThread::finishUploadTask,this,[=](int fileTaskId){

@@ -22,7 +22,7 @@ signals:
     void taskTotalSize(qint64 size,int taskid);
     void taskUploadSize(qint64 size,int taskid);
     void addFileUploadTask(const QString &localPath, int fileTaskId);
-    void addFileDownloadTask(const QString &localPath , int fileTaskId);
+    void addFileDownloadTask(const QString &localPath , int fileTaskId,quint64 totalSize=0);
     void updateFileUploadTask(int fileTaskId, qint64 nowSize,qint64 totalSize);
     void updateFileDownloadTask(int fileTaskId, qint64 nowSize,qint64 totalSize);
     void finishFileUploadTask(int fileTaskId);
