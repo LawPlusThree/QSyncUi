@@ -5,16 +5,35 @@ using namespace wtr;
 SyncCore::SyncCore(QObject *parent)
     : QObject{parent}
 {
+    qDebug()<<"sync core";
     //connect(&watcher, &QFileSystemWatcher::directoryChanged, this, &SyncCore::onDirectoryChanged);
     //connect(&watcher, &QFileSystemWatcher::fileChanged, this, &SyncCore::onFileChanged);
 }
 
-SyncCore::SyncCore(COSClient *cosclient, QObject *parent)
-    : QObject{parent}, cosclient{cosclient}
+SyncCore::SyncCore(COSConfig config, QObject *parent)
+    : QObject{parent}, config{config}
 {
     //connect(&watcher, &QFileSystemWatcher::directoryChanged, this, &SyncCore::onDirectoryChanged);
     //connect(&watcher, &QFileSystemWatcher::fileChanged, this, &SyncCore::onFileChanged);
+    requestManager=new NetworkRequestManager(config);
+    connect(requestManager,&NetworkRequestManager::requestFinished,this,[=](int fileTaskId, QNetworkReply::NetworkError error){
+        if(error==QNetworkReply::NoError)
+        {
+            emit finishFileUploadTask(fileTaskId);
+            emit finishFileDownloadTask(fileTaskId);
+            qDebug()<<"request finished";
+        }
+        else
+        {
+            qDebug()<<"request error";
+        }
+    });
+    connect(requestManager,&NetworkRequestManager::requestProgress,this,[=](int fileTaskId, qint64 bytesReceived, qint64 bytesTotal){
+        emit updateFileUploadTask(fileTaskId,bytesReceived,bytesTotal);
+        emit updateFileDownloadTask(fileTaskId,bytesReceived,bytesTotal);
+    });
 }
+
 void SyncCore::filesystemChanged(struct event e)
 {
     //e.associated;
@@ -105,7 +124,7 @@ bool SyncCore::addTask(SyncTask *task)
 void SyncCore::doTask(SyncTask *task)
 {
 
-    SyncThread *thread=new SyncThread(task->localPath.absolutePath(),task->cosclient,task);
+    SyncThread *thread=new SyncThread(task->localPath.absolutePath(),config,task);
     connect(thread,&SyncThread::localTotalSize,this,[=](qint64 size){
         emit taskTotalSize(size,task->getId());
     });
@@ -129,6 +148,12 @@ void SyncCore::doTask(SyncTask *task)
     });
     connect(thread,&SyncThread::finishDownloadTask,this,[=](int fileTaskId){
         emit finishFileDownloadTask(fileTaskId);
+    });
+    connect(thread,&SyncThread::callUploadTask,this,[=](const QString &localPath, const QString &cloudPath, int fileTaskId){
+        requestManager->addPutObjectRequest(localPath,cloudPath,fileTaskId,QMap<QString,QString>());
+    });
+    connect(thread,&SyncThread::callDownloadTask,this,[=](const QString &localPath, const QString &cloudPath, int fileTaskId){
+        requestManager->addSave2LocalRequest(cloudPath,localPath,fileTaskId);
     });
     thread->start();
 }

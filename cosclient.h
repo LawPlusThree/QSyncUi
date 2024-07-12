@@ -2,6 +2,7 @@
 #define COSCLIENT_H
 #include "qdatetime.h"
 #include "signhelper.h"
+#include "tasktoken.h"
 #include <QString>
 #include <QObject>
 #include <QtNetwork/QNetworkAccessManager>
@@ -11,9 +12,17 @@
 #include <QDomDocument>
 struct COSConfig
 {
+    COSConfig(){}
+    COSConfig(const COSConfig& other){
+        bucketName = other.bucketName;
+        appId = other.appId;
+        region = other.region;
+        taskToken = other.taskToken;
+    };
     QString bucketName;
     QString appId;
     QString region;
+    TaskToken taskToken;
 };
 struct headHeader {
     QString ifModifiedSince;   // If-Modified-Since 请求头
@@ -47,6 +56,7 @@ class COSClient : public QObject
     Q_OBJECT
 public:
     COSClient(QObject *parent = nullptr);
+    COSClient(COSConfig config,QObject *parent = nullptr);
     COSClient(QString bucketName, QString appId, QString region, QString secretId, QString secretKey, QString token, QDateTime expiredTime,QObject *parent = nullptr);
     QString getBucketName() const { return bucketName; }
     QString getAppId() const { return appId; }
@@ -75,13 +85,14 @@ public:
     QString uploadPart(const QString &path, const QString &uploadId, int partNumber, const QByteArray &data);
     QString completeMultipartUpload(QString path, QString uploadId, QMap<int, QString> partEtagMap);
     QByteArray getObject(const QString &path,const QString &versionId, QMap<QString,QString> &respHeaders);
-    bool save2Local(const QString &path, const QString &localpath,const QString &versionId, QMap<QString,QString> &respMetaDatas);
     preResponse headObject(const QString &path,const QString &versionId, headHeader &reqHeader);
     preResponse deleteObject(const QString &path, const QString &versionId);
-    QString multiUpload(const QString &path, const QString &localpath, QMap<QString,QString> metaDatas=QMap<QString,QString>());
     bool isExist(preResponse &response);//和headobject一起使用，判断文件是否存在
     bool setManager(QNetworkAccessManager* submanager);
 public slots:
+    bool save2LocalWithoutVersion(const QString &path, const QString &localpath);
+    QString multiUpload(const QString &path, const QString &localpath, QMap<QString,QString> metaDatas=QMap<QString,QString>());
+    bool save2Local(const QString &path, const QString &localpath,const QString &versionId, QMap<QString,QString> &respMetaDatas);
     void onNewLocalPutRequest(const QString &path, const QString &localpath, int & task_id)
     {
 
@@ -95,6 +106,8 @@ signals:
     void TaskProgress(int task_id, int progress);
     void UploadProgress(qint64 bytesReceived, qint64 bytesTotal);
     void DownloadProgress(qint64 bytesReceived, qint64 bytesTotal);
+    void progress(qint64 bytesReceived, qint64 bytesTotal);
+    void finished(QNetworkReply::NetworkError error);
 private:
     QString bucketName;
     QString appId;

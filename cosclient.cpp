@@ -11,6 +11,8 @@ COSClient::COSClient(QObject *parent)
     return ;
 }
 
+
+
 COSClient::COSClient(QString bucketName, QString appId, QString region, QString secretId, QString secretKey, QString token, QDateTime expiredTime, QObject *parent)
 {
     this->bucketName = bucketName;
@@ -26,6 +28,13 @@ COSClient::COSClient(QString bucketName, QString appId, QString region, QString 
     manager = new QNetworkAccessManager();
 }
 
+COSClient::COSClient(COSConfig config, QObject *parent)
+    : COSClient(config.bucketName, config.appId, config.region,
+                config.taskToken.tmpSecretId, config.taskToken.tmpSecretKey,
+                config.taskToken.sessionToken, config.taskToken.expiredTime, parent)
+{
+    // 其他初始化代码（如果有的话）
+}
 QString COSClient::listObjects(const QString &prefix, const QString &marker)
 {
     preRequest request;
@@ -152,6 +161,12 @@ bool COSClient::save2Local(const QString &path, const QString &localpath, const 
     return true;
 }
 
+bool COSClient::save2LocalWithoutVersion(const QString &path, const QString &localpath)
+{
+    QMap<QString, QString> tempMetaDatas;
+    return save2Local(path, localpath, "", tempMetaDatas);
+}
+
 preResponse COSClient::headObject(const QString &path,const QString &versionId, headHeader &reqHeader)
 {
     preRequest request;
@@ -215,6 +230,7 @@ QString COSClient::multiUpload(const QString &path, const QString &localpath, QM
         QByteArray data = file.read(5 * 1024 * 1024); // Assuming 5MB parts
         QString etag = uploadPart(path, uploadId, partNumber, data);
         emit UploadProgress(file.pos(), file.size());
+        emit progress(file.pos(), file.size());
         partEtagMap.insert(partNumber, etag);
         partNumber++;
     }
@@ -249,6 +265,7 @@ preResponse COSClient::invokeGetFileRequest(const QString& path, const preReques
     // 等待响应完成
     connect(reply, &QNetworkReply::downloadProgress, this, [this](qint64 bytesReceived, qint64 bytesTotal) {
         emit DownloadProgress(bytesReceived, bytesTotal);
+        emit progress(bytesReceived, bytesTotal);
     });
 
     // 等待响应完成

@@ -49,6 +49,7 @@ public:
     QVector<SyncTask> getTask();//获取云端task
     TaskToken getTaskToken(int id);//获取tasktoken
     TaskToken getTaskTokenByRemote(QString s3Dir);
+    TaskToken getUnifiedTaskToken();
     bool logout();//登出
     bool updateUser();
     COSConfig getS3Config();
