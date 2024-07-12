@@ -1,7 +1,7 @@
 #include "taskmanager.h"
 
 //新建一个数据库用于存储任务信息并建表
-void TaskManager::createConnection(QString &account)
+void TaskManager::createConnection(QString account)
 {
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
     db.setDatabaseName(account+"_task.db");
@@ -129,54 +129,59 @@ void TaskManager::updateFinishTask(int taskId, QString localPath, quint64 dataSi
     query.exec();
 }
 
-upTask TaskManager::readUpTask()
+QList<upTask> TaskManager::readUpTask()
 {
+    QList<upTask> tasks;
     QSqlQuery query;
     query.exec("SELECT * FROM uptask");
-    upTask task;
     while (query.next())
     {
+        upTask task;
         task.remotePath = query.value(1).toString();
         task.localPath = query.value(2).toString();
         task.dataSize = query.value(3).toULongLong();
         task.totalPiece = query.value(4).toInt();
         task.etags = processJson(query.value(5).toString());
         task.isPause = query.value(6).toBool();
+        tasks.append(task);
     }
-    return task;
+    return tasks;
 }
 
-downTask TaskManager::readDownTask()
+QList<downTask> TaskManager::readDownTask()
 {
+    QList<downTask> tasks;
     QSqlQuery query;
     query.exec("SELECT * FROM downtask");
-    downTask task;
     while (query.next())
     {
+        downTask task;
         task.remotePath = query.value(1).toString();
         task.localPath = query.value(2).toString();
         task.dataSize = query.value(3).toULongLong();
         task.totalPiece = query.value(4).toInt();
         task.etags = processJson(query.value(5).toString());
         task.isPause = query.value(6).toBool();
+        tasks.append(task);
     }
-    return task;
+    return tasks;
 }
 
-finishTask TaskManager::readFinishTask()
+QList<finishTask> TaskManager::readFinishTask()
 {
+    QList<finishTask> tasks;
     QSqlQuery query;
     query.exec("SELECT * FROM finishtask");
-    finishTask task;
     while (query.next())
     {
+        finishTask task;
         task.taskId = query.value(1).toInt();
         task.localPath = query.value(2).toString();
         task.dataSize = query.value(3).toULongLong();
         task.sycnTime = query.value(4).toDate();
         task.status = query.value(5).toInt();
     }
-    return task;
+    return tasks;
 }
 
 void TaskManager::closeConnection()

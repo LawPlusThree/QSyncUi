@@ -190,6 +190,8 @@ void MainWindow::onUserLoggedIn(User user)
     setUserInfoCardSubTitle(user.getEmail());
 
     _syncTaskDatabaseManager=new SyncTaskDatabaseManager(CurrentUser);
+    _taskManager=new TaskManager(CurrentUser->getEmail());
+
     QString url=user.getAvatarPath();
     QNetworkAccessManager *manager = new QNetworkAccessManager();
     QNetworkRequest request;
@@ -229,6 +231,9 @@ void MainWindow::onUserLoggedIn(User user)
         this->_syncTaskDatabaseManager->deleteTask(taskId);
     });
 
+    ReadUpTask();
+    ReadDownTask();
+    ReadFinishTask();
     for (auto const &x:_syncTaskDatabaseManager->getTasks()){
         SyncTask* task=new SyncTask(x);
 
@@ -478,6 +483,21 @@ void MainWindow::onFileDownloadTaskFinished(int fileTaskId)
 }
 
 void MainWindow::onUserPausedFileTask(int fileTaskId)
+{
+
+}
+
+void MainWindow::ReadUpTask()
+{
+
+}
+
+void MainWindow::ReadDownTask()
+{
+
+}
+
+void MainWindow::ReadFinishTask()
 {
 
 }
