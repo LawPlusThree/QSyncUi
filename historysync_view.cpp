@@ -5,6 +5,7 @@
 #include <QVBoxLayout>
 #include"historycard.h"
 #include"ElaScrollArea.h"
+#include"historycardproxy.h"
 
 HistorysyncPage::HistorysyncPage(QWidget* parent)
     : ElaScrollPage(parent)
@@ -97,7 +98,7 @@ HistorysyncPage::HistorysyncPage(QWidget* parent)
 
     ElaScrollArea* scrollArea = new ElaScrollArea();
     scrollArea->viewport()->setStyleSheet("background:transparent;");//设置背景透明
-    HistoryCard*HistoryCardArea1=new HistoryCard("文件1","3.5GB","2024.7.1",0);
+    /*HistoryCard*HistoryCardArea1=new HistoryCard("文件1","3.5GB","2024.7.1",0);
     HistoryCard*HistoryCardArea2=new HistoryCard("文件2","3.5GB","2024.7.2",0);
     HistoryCard*HistoryCardArea3=new HistoryCard("文件3","3.5GB","2024.7.3",1);
     HistoryCard*HistoryCardArea4=new HistoryCard("文件4","3.5GB","2024.7.4",0);
@@ -122,7 +123,20 @@ HistorysyncPage::HistorysyncPage(QWidget* parent)
     filesLayout->addWidget(HistoryCardArea10);
     filesLayout->setAlignment(Qt::AlignTop);
 
-    scrollArea->setWidget(filesWidget); // 设置scrollArea的内容部件
+    scrollArea->setWidget(filesWidget); // 设置scrollArea的内容部件*/
+    _historycardPage=new HistoryCardProxy(this);
+    addHistory("文件1554524527252572752","3.5GB","2024.7.1",0);
+    addHistory("文件hadgiauyfgugfauwygfuygfuewedfcyufg","3.5GB","2024.7.2",0);
+    addHistory("文件3","3.5GB","2024.7.3",1);
+    addHistory("文件4","3.5GB","2024.7.4",0);
+    addHistory("文件5","3.5GB","2024.7.5",1);
+    addHistory("文件6","3.5GB","2024.7.6",1);
+    addHistory("文件7","3.5GB","2024.7.7",1);
+    addHistory("文件8","3.5GB","2024.7.8",0);
+    addHistory("文件9","3.5GB","2024.7.9",0);
+    addHistory("文件10","3.5GB","2024.7.10",1);
+
+    scrollArea->setWidget(_historycardPage);
     scrollArea->setWidgetResizable(true); // 允许scrollArea根据内容自动调整大小
 
     centerVLayout->addWidget(progressBarArea); // 将上方固定区域添加到布局中
@@ -138,6 +152,23 @@ HistorysyncPage::~HistorysyncPage()
 
 void HistorysyncPage::addHistory(QString filename, QString datasize,QString time,bool upif)
 {
-    HistoryCard*historyCard=new HistoryCard(filename,datasize,time,upif);
-    filesLayout->addWidget(historyCard);
+    /*HistoryCard*historyCard=new HistoryCard(filename,datasize,time,upif);
+    filesLayout->addWidget(historyCard);*/
+    HistoryCard*newHistory=new HistoryCard(filename,datasize,time,upif);
+    _historycardPage->addHistoryCard(newHistory);
+    QFontMetrics metrics(newHistory->filename->font());
+    QString elidedText = metrics.elidedText(newHistory->fullText, Qt::ElideMiddle, filenameWidget->width()-20);
+    newHistory->filename->setText(elidedText);
+    newHistory->filename->setToolTip(newHistory->fullText);
+}
+
+void HistorysyncPage::resizeEvent(QResizeEvent* event) {
+    QWidget::resizeEvent(event);
+    auto thisMap=this->_historycardPage->cardVector;
+    for (auto &x:thisMap){
+        QFontMetrics metrics(x->filename->font());
+        QString elidedText = metrics.elidedText(x->fullText, Qt::ElideMiddle, filenameWidget->width()-20);
+        x->filename->setText(elidedText);
+        x->filename->setToolTip(x->fullText);
+    }
 }

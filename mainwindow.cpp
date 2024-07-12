@@ -88,7 +88,12 @@ MainWindow::MainWindow(QWidget *parent)
             {
                 if (modifyKey == nodeKey)
                 {
-                    _modifyInfor_win->show();
+                    if(CurrentUser!=nullptr){
+                        _modifyInfor_win->show();
+                    }
+                    else{
+                        onMessage("请先登录!","Error");
+                    }
                 }
                 else if(cancelKey==nodeKey)
                 {

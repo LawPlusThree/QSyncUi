@@ -7,6 +7,7 @@
 #include"ElaPushButton.h"
 
 class QVBoxLayout;
+class HistoryCardProxy;
 class HistorysyncPage : public ElaScrollPage
 {
 public:
@@ -15,8 +16,11 @@ public:
     QVBoxLayout*filesLayout;
     void addHistory(QString filename, QString datasize,QString time,bool upif);
     QWidget* filenameWidget = new QWidget();
+    HistoryCardProxy*_historycardPage;
 private:
     ElaProgressBar* _progressBar{nullptr};
+protected:
+    void resizeEvent(QResizeEvent* event) override;
 };
 
 #endif // HISTORYSYNC_VIEW_H
