@@ -137,8 +137,11 @@ void modifyInfor_win::onConfirmButtonClicked()
     confirmButton_->setText("确认修改");
     confirmButton_->setStyleSheet("background-color:rgb(0,204,255)");
     QMessageBox::information(this, "成功","修改成功");
+    if (currentUser -> updateAvatar(avatarPath))
+    {
     QPixmap image(":\\avatarImage\\AvatarImage\\setAvatar.png");
     avatar->setCardPixmap(image);
+    }
     this->hide();
 }
 
