@@ -216,13 +216,13 @@ void MainWindow::onUserLoggedIn(User user)
     qDebug() << "Connecting taskUploadSize signal";
     connect(_syncCore,&SyncCore::taskUploadSize,this,&MainWindow::onTaskUploadSize);
     qDebug() << "Connecting addFileUploadTask signal";
-    connect(_syncCore,&SyncCore::addFileUploadTask,this,&MainWindow::onFileUploadTaskCreated);
+    connect(_syncCore,&SyncCore::addFileUploadTask,this,&MainWindow::onFileUploadTaskCreated,Qt::QueuedConnection);
     qDebug() << "Connecting updateFileUploadTask signal";
-    connect(_syncCore,&SyncCore::updateFileUploadTask,this,&MainWindow::onFileUploadTaskUpdated);
+    connect(_syncCore,&SyncCore::updateFileUploadTask,this,&MainWindow::onFileUploadTaskUpdated,Qt::QueuedConnection);
     qDebug() << "Connecting addFileDownloadTask signal";
-    connect(_syncCore,&SyncCore::addFileDownloadTask,this,&MainWindow::onFileDownloadTaskCreated);
+    connect(_syncCore,&SyncCore::addFileDownloadTask,this,&MainWindow::onFileDownloadTaskCreated,Qt::QueuedConnection);
     qDebug() << "Connecting updateFileDownloadTask signal";
-    connect(_syncCore,&SyncCore::updateFileDownloadTask,this,&MainWindow::onFileDownloadTaskUpdated);
+    connect(_syncCore,&SyncCore::updateFileDownloadTask,this,&MainWindow::onFileDownloadTaskUpdated,Qt::QueuedConnection);
     connect(_syncCore,&SyncCore::finishFileDownloadTask,this,&MainWindow::onFileDownloadTaskFinished);
     connect(_syncCore,&SyncCore::finishFileUploadTask,this,&MainWindow::onFileUploadTaskFinished);
     connect(_filemanagePage,&FileManagePage::deleteTask,[=](int taskId){
