@@ -52,8 +52,8 @@ class TaskManager: public QObject
 {
     Q_OBJECT
 public:
-    TaskManager(QString &account,QWidget *parent = nullptr){createConnection(account);};
-    void createConnection(QString &account);
+    TaskManager(QString account){createConnection(account);};
+    void createConnection(QString account);
     void insertUpTask(QString remotePath, QString localPath, quint64 dataSize,int totalPiece,QMap<int,QString> etags, bool isPause);
     void insertDownTask(QString remotePath, QString localPath, quint64 dataSize,int totalPiece,QMap<int,QString> etags, bool isPause);
     void insertFinishTask(int taskId, QString localPath, quint64 dataSize, QDate sycnTime, int status);
@@ -63,13 +63,14 @@ public:
     void updateUpTask(QString remotePath, QString localPath, quint64 dataSize,int totalPiece,QMap<int,QString> etags, bool isPause);
     void updateDownTask(QString remotePath, QString localPath, quint64 dataSize,int totalPiece,QMap<int,QString> etags, bool isPause);
     void updateFinishTask(int taskId, QString localPath, quint64 dataSize, QDate sycnTime, int status);
-    upTask readUpTask();
-    downTask readDownTask();
-    finishTask readFinishTask();
+    QList<upTask> readUpTask();
+    QList<downTask> readDownTask();
+    QList<finishTask> readFinishTask();
     void closeConnection();
     ~TaskManager(){closeConnection();};
     QMap<int,QString> processJson(QString etags);//处理数据库中以json格式存储的etag
     QString processEtag(QMap<int,QString> etags);//把etag转化为json格式
+
 };
 
 #endif // TASKMANAGER_H
