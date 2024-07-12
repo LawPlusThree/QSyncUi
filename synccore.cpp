@@ -151,10 +151,10 @@ void SyncCore::doTask(SyncTask *task)
     });
     connect(thread,&SyncThread::callUploadTask,this,[=](const QString &localPath, const QString &cloudPath, int fileTaskId){
         requestManager->addPutObjectRequest(localPath,cloudPath,fileTaskId,QMap<QString,QString>());
-    });
+    },Qt::BlockingQueuedConnection);
     connect(thread,&SyncThread::callDownloadTask,this,[=](const QString &localPath, const QString &cloudPath, int fileTaskId){
         requestManager->addSave2LocalRequest(cloudPath,localPath,fileTaskId);
-    });
+    },Qt::BlockingQueuedConnection);
     thread->start();
 }
 
