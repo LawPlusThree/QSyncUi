@@ -16,6 +16,7 @@ public:
     ElaText *datasize;
     ElaText *time;
     ElaPushButton *rollback;
+    QString fullText;
 };
 
 #endif // HISTORYVIEWCARD_H

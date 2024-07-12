@@ -85,6 +85,9 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         filecardproxy.h filecardproxy.cpp
         usermanager.h usermanager.cpp
         historycardproxy.h historycardproxy.cpp
+        historyviewcardproxy.h historyviewcardproxy.cpp
+
+
 
 
     )
