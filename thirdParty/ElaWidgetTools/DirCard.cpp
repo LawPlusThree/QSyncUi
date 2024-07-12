@@ -112,7 +112,13 @@ DirCard::DirCard(QString f, int d,QString b,int Id)
     FileCardArea->setStretchFactor(actionArea, 60);
 
     connect(relieveBtn,&ElaPushButton::clicked,this,&DirCard::on_relieveBtn_clicked);
+
     filenameWidget->setStyleSheet("QToolTip { color: #5C5C5C; background-color: #F9F9F9; border: 1px solid #808080; border-radius: 3px; }");
+}
+
+ElaCheckBox* DirCard::getCheckBox() const
+{
+    return _checkBox;
 }
 
 void DirCard::on_relieveBtn_clicked()

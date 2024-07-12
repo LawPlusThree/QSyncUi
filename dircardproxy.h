@@ -18,11 +18,18 @@ public:
     void removeChecked();
     void modifyDirCard(qint64 datasize,QString biindtime,int id);
     QVBoxLayout*filesLayout;
+    friend class DirCard;
 
 private:
     QMap<int, DirCard*> cardMap;
     QWidget *parentWidget;
     friend class FileManagePage;
+
+signals:
+    void checkBoxToggled(bool checked); // 当DirCard中的复选框被勾选时发出的信号
+
+private slots:
+    void onCheckBoxStateChanged(int state); // 处理复选框状态变化的槽
 };
 
 #endif // DIRCARDPROXY_H

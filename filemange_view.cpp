@@ -6,6 +6,7 @@
 #include"ElaPushButton.h"
 #include"ElaToggleButton.h"
 #include"ElaScrollArea.h"
+#include"ElaCheckBox.h"
 
 #include"DirCard.h"
 #include"dircardproxy.h"
@@ -48,8 +49,8 @@ FileManagePage::FileManagePage(QWidget* parent):ElaScrollPage(parent)
     // 创建一个 ElaToggleButton 对象，设置其标签为 "Head" 并指定其父对象
     _pushButton1 = new ElaPushButton("解除绑定", this);
     _pushButton1->setFixedSize(100, 40); // 设置按钮的固定大小
-    _toggleButton = new ElaToggleButton("暂时停止", this);
-    _toggleButton->setFixedSize(100, 40); // 设置按钮的固定大小
+    //_toggleButton = new ElaToggleButton("暂时停止", this);
+    //_toggleButton->setFixedSize(100, 40); // 设置按钮的固定大小
     _pushButton2 = new ElaPushButton("设置排除项目", this);
     _pushButton2->setFixedSize(100, 40); // 设置按钮的固定大小
     _pushButton3 = new ElaPushButton("链接新文件夹", this);
@@ -63,12 +64,12 @@ FileManagePage::FileManagePage(QWidget* parent):ElaScrollPage(parent)
     QHBoxLayout* pushButtonLayout = new QHBoxLayout(pushButtonArea);
     pushButtonLayout->setContentsMargins(50, 0, 55, 0);
     // 将切换按钮控件添加到布局中
-    pushButtonLayout->addWidget(_toggleButton);
-    pushButtonLayout->addWidget(_pushButton1);
+    //pushButtonLayout->addWidget(_toggleButton);
     pushButtonLayout->addWidget(_pushButton2);
     pushButtonLayout->addWidget(_pushButton3);
     // 在布局中添加一个弹性空间，使得所有控件靠左对齐
     pushButtonLayout->addStretch();
+    pushButtonLayout->addWidget(_pushButton1);
     connect(_pushButton1,&ElaPushButton::clicked,[=](){
         _dircardProxy->removeChecked();
     });
@@ -78,6 +79,7 @@ FileManagePage::FileManagePage(QWidget* parent):ElaScrollPage(parent)
     connect(_pushButton3,&ElaPushButton::clicked,[=](){
         linknewfolderwindow->show();
     });
+    _pushButton1->hide();
 
     QWidget* catalogueArea = new QWidget();
     catalogueArea->setWindowFlags(Qt::FramelessWindowHint); // 去除窗口边框
@@ -144,12 +146,21 @@ FileManagePage::FileManagePage(QWidget* parent):ElaScrollPage(parent)
     scrollArea->setWidget(_dircardProxy);
     scrollArea->setWidgetResizable(true); // 允许scrollArea根据内容自动调整大小
 
+    connect(_dircardProxy, &DirCardProxy::checkBoxToggled, [this](bool checked) {
+        if(checked) {
+            _pushButton1->show(); // 如果复选框被勾选，显示按钮
+        } else {
+            _pushButton1->hide(); // 如果复选框未被勾选，隐藏按钮
+        }
+    });
+
     centerVLayout->addWidget(progressBarArea); // 将上方固定区域添加到布局中
     centerVLayout->addWidget(pushButtonArea); // 将切换按钮容器添加到布局中
     centerVLayout->addWidget(catalogueArea); // 将目录文本添加到布局中
     centerVLayout->addWidget(scrollArea); // 将scrollArea添加到布局中
 
     this->addCentralWidget(centralWidget); // 将中心部件添加到窗口
+
 }
 
 FileManagePage::~FileManagePage()

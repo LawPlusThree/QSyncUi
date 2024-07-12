@@ -2,6 +2,7 @@
 
 #include"DirCard.h"
 #include<QVBoxLayout>
+#include"ElaCheckBox.h"
 
 DirCardProxy::DirCardProxy(QWidget *parent) : QWidget(parent) {
     parentWidget = qobject_cast<QWidget*>(parent);
@@ -17,6 +18,7 @@ void DirCardProxy::addDirCard(DirCard *card, const int &id) {
         cardMap[id] = card;
         filesLayout->addWidget(card);
         filesLayout->setAlignment(Qt::AlignTop);
+        connect(card->getCheckBox(), &ElaCheckBox::stateChanged, this, &DirCardProxy::onCheckBoxStateChanged);
     }
 }
 
@@ -66,4 +68,8 @@ void DirCardProxy::modifyDirCard(qint64 datasize,QString bindtime,int id)
             card->modify(datasize,bindtime);
         }
     }
+}
+
+void DirCardProxy::onCheckBoxStateChanged(int state) {
+    emit checkBoxToggled(state == Qt::Checked); // 发出信号，参数为复选框是否被勾选
 }
