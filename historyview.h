@@ -19,6 +19,7 @@ private:
     ElaProgressBar* _progressBar{nullptr};
 protected:
     void resizeEvent(QResizeEvent* event) override;
+    void showEvent(QShowEvent* event) override;
 };
 
 #endif // HISTORYVIEW_H

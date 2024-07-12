@@ -147,3 +147,14 @@ void HistorysyncPage::resizeEvent(QResizeEvent* event) {
         x->filename->setToolTip(x->fullText);
     }
 }
+
+void HistorysyncPage::showEvent(QShowEvent* event) {
+    QWidget::showEvent(event);
+    auto thisMap=this->_historycardPage->cardVector;
+    for (auto &x:thisMap){
+        QFontMetrics metrics(x->filename->font());
+        QString elidedText = metrics.elidedText(x->fullText, Qt::ElideMiddle, filenameWidget->width()-20);
+        x->filename->setText(elidedText);
+        x->filename->setToolTip(x->fullText);
+    }
+}

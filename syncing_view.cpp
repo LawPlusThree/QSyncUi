@@ -188,3 +188,14 @@ void SyncingPage::resizeEvent(QResizeEvent* event) {
     }
 }
 
+void SyncingPage::showEvent(QShowEvent* event) {
+    QWidget::showEvent(event);
+    auto thisMap=this->_filecardProxy->cardMap;
+    for (auto &x:thisMap){
+        QFontMetrics metrics(x->filename->font());
+        QString elidedText = metrics.elidedText(x->fullText, Qt::ElideMiddle, filenameWidget->width()-20);
+        x->filename->setText(elidedText);
+        x->filename->setToolTip(x->fullText);
+    }
+}
+
