@@ -4,10 +4,17 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 
-class TaskToken
+struct TaskToken
 {
 public:
+    TaskToken(){}
     TaskToken(const QJsonObject &data);
+    TaskToken(const TaskToken &other){
+        sessionToken = other.sessionToken;
+        tmpSecretId = other.tmpSecretId;
+        tmpSecretKey = other.tmpSecretKey;
+        expiredTime = other.expiredTime;
+    }
     QString sessionToken;
     QString tmpSecretId;
     QString tmpSecretKey;

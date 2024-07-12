@@ -19,11 +19,14 @@ public:
     static int fileTaskId;
     QString path;
     COSClient* cosclient;
+    COSConfig config;
     SyncTask* task;
     qint64 totalSize=0;
     qint64 upFileSize=0;
     qint64 downFileSize=0;
-    SyncThread(QString pathi,COSClient* cosclienti,SyncTask* taski):path(pathi),cosclient(cosclienti),task(taski){};
+    SyncThread(QString pathi,COSConfig configi,SyncTask* taski):path(pathi),config(configi),task(taski){
+              cosclient=new COSClient(config);
+          };
     void run() override;
     void readDirectory(const QString &path);
     void recursiveRead(const QString &path);
@@ -43,6 +46,8 @@ signals:
     void updateDownloadTask(int fileTaskId, qint64 nowSize, qint64 totalSize);
     void finishUploadTask(int fileTaskId);
     void finishDownloadTask(int fileTaskId);
+    void callUploadTask(const QString &localPath, const QString &cloudPath, int fileTaskId);
+    void callDownloadTask(const QString &localPath, const QString &cloudPath, int fileTaskId);
 };
 
 
