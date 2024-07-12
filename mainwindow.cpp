@@ -411,7 +411,9 @@ void MainWindow::onUserdelete()
 
 void MainWindow::onFileUploadTaskCreated(const QString &localPath, int fileTaskId) {
 
-    _syncingPage->addFile(localPath,0,0,0,fileTaskId);
+    QFile file(localPath);
+    quint64 size=file.size();
+    _syncingPage->addFile(localPath,size,0,0,fileTaskId);
     qDebug()<<"File upload task created"<<localPath<<" "<<fileTaskId;
 }
 
@@ -434,8 +436,8 @@ void MainWindow::onFileUploadTaskPaused(int fileTaskId) {
     qDebug()<<"File upload task paused"<<fileTaskId;
 }
 
-void MainWindow::onFileDownloadTaskCreated(const QString &localPath, int fileTaskId) {
-    _syncingPage->addFile(localPath,0,0,0,fileTaskId);
+void MainWindow::onFileDownloadTaskCreated(const QString &localPath, int fileTaskId,quint64 totalSize) {
+    _syncingPage->addFile(localPath,totalSize,0,0,fileTaskId);
     qDebug()<<"File download task created"<<localPath<<" "<<fileTaskId;
 }
 

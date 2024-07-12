@@ -83,7 +83,7 @@ void SyncThread::readCLoudDirectory(const QString &cloudpath)
             if(needDownload){
                 downFileSize+=ct.size;
                 int fileTaskId=getNextFileTaskId();
-                emit this->newDownloadTask(localPath,fileTaskId);
+                emit this->newDownloadTask(localPath,fileTaskId,ct.size);
                 emit this->callDownloadTask(localPath,ct.key,fileTaskId);
             }
         }
