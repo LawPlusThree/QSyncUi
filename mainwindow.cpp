@@ -489,7 +489,13 @@ void MainWindow::onUserPausedFileTask(int fileTaskId)
 
 void MainWindow::ReadUpTask()
 {
+    for (auto const &x:_taskManager->readUpTask()){
+        upTask* task=new upTask(x);
 
+
+        //this->_syncingPage->addFile();
+
+    }
 }
 
 void MainWindow::ReadDownTask()
