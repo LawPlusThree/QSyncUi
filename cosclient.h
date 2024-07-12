@@ -69,6 +69,8 @@ public:
     QString getGeneralApiUrl() const { return generalApiUrl; }
     QString getToken() const { return token; }
     QDateTime getExpiredTime() const { return expiredTime; }
+    bool blockingPutFinishSignal=false;
+    bool blockingGetFinishSignal=false;
     void setBucketName(const QString &value) { bucketName = value; }
     void setAppId(const QString &value) { appId = value; }
     void setRegion(const QString &value) { region = value; }

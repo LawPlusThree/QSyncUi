@@ -353,7 +353,9 @@ preResponse COSClient::invokePutRequest(const QString& path, const preRequest& r
     for (const QByteArray& header : rawHeaderList) {
         response.headers.insert(QString(header), QString(reply->rawHeader(header)));
     }
+    if(!blockingPutFinishSignal){
     emit finished(reply->error());
+    }
     reply->deleteLater();
     return response;
 }
