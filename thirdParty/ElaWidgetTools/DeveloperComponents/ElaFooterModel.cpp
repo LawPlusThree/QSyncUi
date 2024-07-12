@@ -33,7 +33,7 @@ QVariant ElaFooterModel::data(const QModelIndex& index, int role) const
 
 ElaNavigationType::NodeOperateReturnType ElaFooterModel::addFooterNode(QString footerTitle, QString& footerKey, bool isHasFooterPage, int keyPoints, ElaIconType awesome)
 {
-    if (_footerNodeList.count() >= 3)
+    if (_footerNodeList.count() >= 4)
     {
         return ElaNavigationType::FooterUpperLimit;
     }
