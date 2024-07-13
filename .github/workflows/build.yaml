@@ -35,7 +35,6 @@ jobs:
       - uses: lukka/get-cmake@latest
 
 
-
       - name: Run CMake
         run: |
           #set DCMAKE_PREFIX_PATH to environment variable %QTDIR%
@@ -43,6 +42,10 @@ jobs:
           cd build
           ls
           mingw32-make -j16 
+          #copy libgcc_s_seh-1.dll from QT_ROOT_DIR/bin
+          copy $env:QTDIR\bin\libgcc_s_seh-1.dll .
+          copy $env:QTDIR\bin\libstdc++-6.dll .
+          copy $env:QTDIR\bin\libwinpthread-1.dll .
           cd ..
           ls
 
