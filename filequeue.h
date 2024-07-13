@@ -53,7 +53,12 @@ signals:
     void save2LocalRequested(const QString &key, const QString &localPath);
     void requestProgress(int fileTaskId, qint64 bytesReceived, qint64 bytesTotal);
     void requestFinished(int fileTaskId, QNetworkReply::NetworkError error);
-
+public slots:
+    void setMaxConcurrentRequests(int max) {
+        qDebug() << "setMaxConcurrentRequests: " << max;
+        QMutexLocker locker(&mutex);
+        maxConcurrentRequests = max;
+    }
 private slots:
     void onRequestFinished(int fileTaskId, QNetworkReply::NetworkError error) {
         emit requestFinished(fileTaskId, error);
