@@ -8,13 +8,39 @@
 #include"ElaCheckBox.h"
 #include "private/DirCardPrivate.h"
 #include"ElaPushButton.h"
-#include"ElaToggleButton.h"
 #include"ElaIconButton.h"
 
-DirCard::DirCard(QString f, quint64 d,QString b,int Id)
+DirCard::DirCard(QString f, QString c,quint64 d,QString b,int syncStatus,int Id)
 {
     filename=new ElaText(f);
     fullText = f;
+    cloudname=new ElaText(c);
+    cfullText=c;
+
+    if(syncStatus==1)//双向
+    {
+        syncBtn=new ElaIconButton(ElaIconType::ArrowRightArrowLeft,20);
+        syncBtn->setEnabled(true);
+    }
+    else if(syncStatus==2)//上传
+    {
+        syncBtn=new ElaIconButton(ElaIconType::ArrowRight,20);
+        syncBtn->setEnabled(true);
+    }
+    else if(syncStatus==3)//下载
+    {
+        syncBtn=new ElaIconButton(ElaIconType::ArrowLeft,20);
+        syncBtn->setEnabled(true);
+    }
+    else//禁用
+    {
+        syncBtn=new ElaIconButton(ElaIconType::ArrowRightArrowLeft,20);
+        syncBtn->setEnabled(false);
+    }
+    syncBtn->setFixedSize(30, 30);
+    QHBoxLayout*syncArea=new QHBoxLayout();
+    syncArea->addWidget(syncBtn);
+    syncArea->setAlignment(Qt::AlignCenter);
 
     QString size;
     QString dataStr;
@@ -45,6 +71,7 @@ DirCard::DirCard(QString f, quint64 d,QString b,int Id)
     id=Id;
 
     filename->setWordWrap(false);//禁止换行
+    cloudname->setWordWrap(false);
     datasize->setWordWrap(false);
     bindtime->setWordWrap(false);
     //progress->setWordWrap(false);
@@ -66,6 +93,15 @@ DirCard::DirCard(QString f, quint64 d,QString b,int Id)
     filenameWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     QVBoxLayout* filenameArea = new QVBoxLayout(filenameWidget);
     filenameArea->addWidget(filename, 0, Qt::AlignLeft); // 将文件名放在左侧
+
+    cloudname->setTextSize(16);
+    cloudname->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    QWidget* cloudnameWidget = new QWidget();
+    cloudnameWidget->setWindowFlags(Qt::FramelessWindowHint);
+    cloudnameWidget->setAttribute(Qt::WA_TranslucentBackground);
+    cloudnameWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    QVBoxLayout* cloudnameArea = new QVBoxLayout(cloudnameWidget);
+    cloudnameArea->addWidget(cloudname, 0, Qt::AlignLeft);
 
     datasize->setTextSize(16);
     datasize->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
@@ -102,17 +138,22 @@ DirCard::DirCard(QString f, quint64 d,QString b,int Id)
     QHBoxLayout* FileCardArea = new QHBoxLayout(this);
     FileCardArea->addLayout(checkBoxArea); // 将_checkBox布局添加到卡片布局中
     FileCardArea->addWidget(filenameWidget); // 将文件名布局添加到卡片布局中，紧跟_checkBox
+    FileCardArea->addLayout(syncArea);
+    FileCardArea->addWidget(cloudnameWidget);
     FileCardArea->addLayout(dataSizeArea);
     FileCardArea->addLayout(bindTimeArea);
     FileCardArea->addLayout(actionArea);
     FileCardArea->setStretchFactor(checkBoxArea, 25);
-    FileCardArea->setStretchFactor(filenameWidget, 500);
+    FileCardArea->setStretchFactor(filenameWidget, 235);
+    FileCardArea->setStretchFactor(syncArea, 30);
+    FileCardArea->setStretchFactor(cloudnameWidget, 235);
     FileCardArea->setStretchFactor(dataSizeArea, 100);
     FileCardArea->setStretchFactor(bindTimeArea, 140);
     FileCardArea->setStretchFactor(actionArea, 60);
 
     connect(relieveBtn,&ElaPushButton::clicked,this,&DirCard::on_relieveBtn_clicked);
     connect(pauseBtn,&ElaIconButton::clicked,this,&DirCard::on_pauseBtn_clicked);
+    cloudnameWidget->setStyleSheet("QToolTip { color: #5C5C5C; background-color: #F9F9F9; border: 1px solid #808080; border-radius: 3px; }");
     filenameWidget->setStyleSheet("QToolTip { color: #5C5C5C; background-color: #F9F9F9; border: 1px solid #808080; border-radius: 3px; }");
 }
 

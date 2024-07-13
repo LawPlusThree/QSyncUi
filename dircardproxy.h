@@ -13,10 +13,10 @@ public:
     ~DirCardProxy() override;
 
     void addDirCard(DirCard *card, const int &id);
-    void addDirCard(QString filename,quint64 datasize,QString bindtime,const int &id);
+    void addDirCard(QString filename,QString cloudname,quint64 datasize,QString bindtime,int syncStatus,const int &id);
     void removeDirCard(const int &id);
     void removeChecked();
-    void modifyDirCard(quint64 datasize,QString biindtime,int id);
+    void modifyDirCard(quint64 datasize,QString bindtime,int id);
     QVBoxLayout*filesLayout;
     friend class DirCard;
 

@@ -13,7 +13,7 @@ class FileCard : public ElaScrollPageArea
     Q_OBJECT
 public:
     //explicit FileCard(QString f, QString d,QString s,QString p);
-    explicit FileCard(QString f, quint64 d,double s,int p,int Id);
+    explicit FileCard(QString filename, quint64 datasize,double speed,int progress,int syncStatus,int Id);
     //void modify(int d,int s,int p);
     void modify(quint64 totalsize,quint64 currentsize);
     void processing(int p);
@@ -26,6 +26,7 @@ public:
     ElaIconButton*modifyBtn;
     ElaIconButton*pauseBtn;
     ElaIconButton*relieveBtn;
+    ElaIconButton*syncBtn;
     ElaProgressBar*proBar;
     QString fullText;
     int id;

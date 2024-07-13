@@ -72,6 +72,17 @@ bool COSClient::putObject(const QString &path, const QByteArray &data, const QSt
     return response.statusCode >= 200 && response.statusCode < 300; // Assuming success is 2xx status code
 }
 
+bool COSClient::putObjectCopy(const QString &path, const QString &sourcePath)
+{
+    //复制错误会返回200ok，响应体中错误判断没写，待完善
+    preRequest request;
+    QString sourcePath_=_prefixHandle(sourcePath);
+    QString rawPath=endpoint+"/"+sourcePath_;
+    request.customHeaders.insert("x-cos-copy-source", rawPath);
+    preResponse response = invokePutRequest(path, request);
+    return response.statusCode >= 200 && response.statusCode < 300; // Assuming success is 2xx status code
+}
+
 bool COSClient::putLocalObject(const QString &path, const QString &localpath)
 {
     QFile file(localpath);
@@ -99,7 +110,7 @@ QString COSClient::initMultiUpload(const QString &path, QMap<QString, QString> m
     request.contentType = contentType;
     request.queryParams.insert("uploads", "");
     preResponse response = invokePostRequest(path, request);
-    //解析xml：InitiateMultipartUploadResult-》UploadId
+    //解析xml：InitiateMultipartUploadResult->UploadId
     QDomDocument doc;
     doc.setContent(response.data);
     QDomElement root = doc.documentElement();

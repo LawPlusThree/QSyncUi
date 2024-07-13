@@ -37,7 +37,7 @@ MainWindow::MainWindow(QWidget *parent)
     setUserInfoCardSubTitle("");
     setWindowTitle("珞珈云");
     _syncingPage = new SyncingPage(this);
-    _filemanagePage=new FileManagePage(this);
+    _filemanagePage=new FileManagePage(this,this->um);
     _historysyncPage = new HistorysyncPage(this);
     _historyviewPage = new HistoryViewPage(this);
 
@@ -111,7 +111,7 @@ MainWindow::MainWindow(QWidget *parent)
                     ElaText* subTitle = new ElaText("确定要注销账号吗?一旦注销账号无法恢复！", this);
                     subTitle->setTextStyle(ElaTextType::Body);
                     cancelcheckBox = new ElaCheckBox("我已了解注销账号的后果，并确认继续。", this);
-                    cancelcheckBox->setStyleSheet("QCheckBox { font-size: 14px; }");
+                    //cancelcheckBox->setStyleSheet("ElaCheckBox { font-size: 14px; }");
                     centralVLayout->addWidget(title);
                     centralVLayout->addWidget(subTitle);
                     centralVLayout->addWidget(cancelcheckBox);
@@ -203,6 +203,8 @@ void MainWindow::onUserLoggedIn(User user)
     CurrentUser=new User(user);
     connect(CurrentUser->channel,&MessageChannel::message,this,&MainWindow::onMessage);
     _modifyInfor_win->currentUser=CurrentUser;
+    QList<QString>s3dirs = CurrentUser->getS3Dirs();
+    _filemanagePage->linknewfolderwindow->setItems(s3dirs);
     um->updateUserInfo(CurrentUser);
     setUserInfoCardTitle(user.getUsername());
     setUserInfoCardSubTitle(user.getEmail());
@@ -263,14 +265,18 @@ void MainWindow::onUserLoggedIn(User user)
         if (x.getLastSyncTime()==QDateTime::fromString("2000-01-01 00:00:00","yyyy-MM-dd hh:mm:ss"))
         {
             QString timeDelta="从未同步";
-            this->_filemanagePage->addDirCard(x.getLocalPath(),11,timeDelta,x.getId());
+            this->_filemanagePage->addDirCard(x.getLocalPath(),x.getRemotePath(),11,timeDelta,task->getSyncStatus(),x.getId());
         }else{
             QString timeDelta=QString::number(x.getLastSyncTime().daysTo(QDateTime::currentDateTime()))+"天前";
-            this->_filemanagePage->addDirCard(x.getLocalPath(),11,timeDelta,x.getId());
+            this->_filemanagePage->addDirCard(x.getLocalPath(),x.getRemotePath(),11,timeDelta,task->getSyncStatus(),x.getId());
         }
         _syncCore->addTask(task);
     }
-
+    QVector<QString> s3Dirs = CurrentUser->getS3Dirs();
+    qDebug() << "S3 Dirs:";
+    for (const QString& s3Dir : s3Dirs) {
+        qDebug() << s3Dir;
+    }
 }
 
 void MainWindow::exitLogin()
@@ -334,9 +340,7 @@ void MainWindow::onUserAddNewTask(const SyncTask &_task)
         onMessage("请先登录","Error");
         return;
     }
-    if(
-        CurrentUser->addTask(_task.getLocalPath(),_task.getRemotePath(),_task.getSyncStatus(),1,1)){
-
+    if(CurrentUser->addTask(_task.getLocalPath(),_task.getRemotePath(),_task.getSyncStatus(),1,1)){
         if(_syncTaskDatabaseManager!=nullptr)
         {
             int res=_syncTaskDatabaseManager->addTask(_task);
@@ -360,10 +364,10 @@ void MainWindow::onUserAddNewTask(const SyncTask &_task)
                 if (_task.getLastSyncTime()==QDateTime::fromString("2000-01-01 00:00:00","yyyy-MM-dd hh:mm:ss"))
                 {
                     QString timeDelta="从未同步";
-                    this->_filemanagePage->addDirCard(task->getLocalPath(),111,timeDelta,task->getId());
+                    this->_filemanagePage->addDirCard(task->getLocalPath(),task->getRemotePath(),111,timeDelta,task->getSyncStatus(),task->getId());
                 }else{
                     QString timeDelta=QString::number(task->getLastSyncTime().daysTo(QDateTime::currentDateTime()))+"天前";
-                    this->_filemanagePage->addDirCard(task->getLocalPath(),1111,timeDelta,task->getId());
+                    this->_filemanagePage->addDirCard(task->getLocalPath(),task->getRemotePath(),1111,timeDelta,task->getSyncStatus(),task->getId());
                 }
                 onMessage("新文件夹链接成功。","Success");
             }
@@ -437,7 +441,7 @@ void MainWindow::onFileUploadTaskCreated(const QString &localPath, int fileTaskI
 
     QFile file(localPath);
     quint64 size=file.size();
-    _syncingPage->addFile(localPath,size,0,0,fileTaskId);
+    _syncingPage->addFile(localPath,size,0,0,1,fileTaskId);
     qDebug()<<"File upload task created"<<localPath<<" "<<fileTaskId;
 }
 
@@ -461,7 +465,7 @@ void MainWindow::onFileUploadTaskPaused(int fileTaskId) {
 }
 
 void MainWindow::onFileDownloadTaskCreated(const QString &localPath, int fileTaskId,quint64 totalSize) {
-    _syncingPage->addFile(localPath,totalSize,0,0,fileTaskId);
+    _syncingPage->addFile(localPath,totalSize,0,0,2,fileTaskId);
     qDebug()<<"File download task created"<<localPath<<" "<<fileTaskId;
 }
 

@@ -22,9 +22,9 @@ void DirCardProxy::addDirCard(DirCard *card, const int &id) {
     }
 }
 
-void DirCardProxy::addDirCard(QString filename,quint64 datasize,QString bindtime,const int &id)
+void DirCardProxy::addDirCard(QString filename,QString cloudname,quint64 datasize,QString bindtime,int syncStatus,const int &id)
 {
-    DirCard*card=new DirCard(filename,datasize,bindtime,id);
+    DirCard*card=new DirCard(filename,cloudname,datasize,bindtime,syncStatus,id);
     if (card && parentWidget && !cardMap.contains(id)) {
         cardMap[id] = card;
         filesLayout->addWidget(card);
