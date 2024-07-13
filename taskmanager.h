@@ -21,6 +21,7 @@
 
 struct upTask
 {
+    int uploadId;
     QString remotePath;
     QString localPath;
     quint64 dataSize;
@@ -31,6 +32,7 @@ struct upTask
     //复制构造函数
     upTask(const upTask &task)
     {
+        uploadId=task.uploadId;
         remotePath=task.remotePath;
         localPath=task.localPath;
         dataSize=task.dataSize;
@@ -74,6 +76,7 @@ struct finishTask
     finishTask(const finishTask &task)
     {
         taskId=task.taskId;
+        remotePath=task.remotePath;
         localPath=task.localPath;
         dataSize=task.dataSize;
         sycnTime=task.sycnTime;
@@ -87,13 +90,13 @@ class TaskManager: public QObject
 public:
     TaskManager(QString account){createConnection(account);};
     void createConnection(QString account);
-    void insertUpTask(QString remotePath, QString localPath, quint64 dataSize,int totalPiece,QMap<int,QString> etags, bool isPause);
+    void insertUpTask(int uploadId,QString remotePath, QString localPath, quint64 dataSize,int totalPiece,QMap<int,QString> etags, bool isPause);
     void insertDownTask(QString remotePath, QString localPath, quint64 dataSize,int totalPiece,QMap<int,QString> etags, bool isPause);
     void insertFinishTask(int taskId,QString remotePath, QString localPath, quint64 dataSize, QDate sycnTime, int status);
     void deleteUpTask(QString localPath);
     void deleteDownTask(QString localPath);
     void deleteFinishTask(QString localPath);
-    void updateUpTask(QString remotePath, QString localPath, quint64 dataSize,int totalPiece,QMap<int,QString> etags, bool isPause);
+    void updateUpTask(int uploadId,QString remotePath, QString localPath, quint64 dataSize,int totalPiece,QMap<int,QString> etags, bool isPause);
     void updateDownTask(QString remotePath, QString localPath, quint64 dataSize,int totalPiece,QMap<int,QString> etags, bool isPause);
     void updateFinishTask(int taskId,QString remotePath, QString localPath, quint64 dataSize, QDate sycnTime, int status);
     QList<upTask> readUpTask();

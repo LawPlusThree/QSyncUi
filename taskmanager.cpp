@@ -16,7 +16,7 @@ void TaskManager::createConnection(QString account)
     query.exec("SELECT name FROM sqlite_master WHERE type='table' AND name='uptask'");
     if (!query.next()) {
         // 如果任务表不存在，则创建任务表
-        query.exec("CREATE TABLE uptask (id INTEGER PRIMARY KEY, remotePath VARCHAR, localPath VARCHAR, dataSize BIGINT, totalPiece INTEGER, etags TEXT, isPause INTEGER)");
+        query.exec("CREATE TABLE uptask (id INTEGER PRIMARY KEY,uploadId INTEGER, remotePath VARCHAR, localPath VARCHAR, dataSize BIGINT, totalPiece INTEGER, etags TEXT, isPause INTEGER)");
     }
     query.exec("SELECT name FROM sqlite_master WHERE type='table' AND name='downtask'");
     if (!query.next()) {
@@ -29,10 +29,11 @@ void TaskManager::createConnection(QString account)
 
 }
 
-void TaskManager::insertUpTask(QString remotePath, QString localPath, quint64 dataSize, int totalPiece, QMap<int,QString> etags, bool isPause)
+void TaskManager::insertUpTask(int uploadId,QString remotePath, QString localPath, quint64 dataSize, int totalPiece, QMap<int,QString> etags, bool isPause)
 {
     QSqlQuery query(db);
-    query.prepare("INSERT INTO uptask (remotePath, localPath, dataSize, totalPiece, etags, isPause) VALUES (:remotePath, :localPath, :dataSize, :totalPiece, :etags, :isPause)");
+    query.prepare("INSERT INTO uptask (uploadId,remotePath, localPath, dataSize, totalPiece, etags, isPause) VALUES (:uploadId,:remotePath, :localPath, :dataSize, :totalPiece, :etags, :isPause)");
+    query.bindValue(":uploadId", uploadId);
     query.bindValue(":remotePath", remotePath);
     query.bindValue(":localPath", localPath);
     query.bindValue(":dataSize", dataSize);
@@ -58,7 +59,7 @@ void TaskManager::insertDownTask(QString remotePath, QString localPath, quint64 
 void TaskManager::insertFinishTask(int taskId,QString remotePath, QString localPath, quint64 dataSize, QDate sycnTime, int status)
 {
     QSqlQuery query(db);
-    query.prepare("INSERT INTO finishtask (taskId,remotePath, localPath, dataSize, sycnTime, status) VALUES (:taskId, :localPath, :dataSize, :sycnTime, :status)");
+    query.prepare("INSERT INTO finishtask (taskId,remotePath, localPath, dataSize, sycnTime, status) VALUES (:taskId,:remotePath, :localPath, :dataSize, :sycnTime, :status)");
     query.bindValue(":taskId", taskId);
     query.bindValue(":remotePath", remotePath);
     query.bindValue(":localPath", localPath);
@@ -92,10 +93,11 @@ void TaskManager::deleteFinishTask(QString localPath)
     query.exec();
 }
 
-void TaskManager::updateUpTask(QString remotePath, QString localPath, quint64 dataSize, int totalPiece, QMap<int, QString> etags, bool isPause)
+void TaskManager::updateUpTask(int uploadId,QString remotePath, QString localPath, quint64 dataSize, int totalPiece, QMap<int, QString> etags, bool isPause)
 {
     QSqlQuery query(db);
-    query.prepare("UPDATE uptask SET remotePath = :remotePath, dataSize = :dataSize, totalPiece = :totalPiece, etags = :etags, isPause = :isPause WHERE localPath = :localPath");
+    query.prepare("UPDATE uptask SET uploadId = :uploadId,remotePath = :remotePath, dataSize = :dataSize, totalPiece = :totalPiece, etags = :etags, isPause = :isPause WHERE localPath = :localPath");
+    query.bindValue(":uploadId", uploadId);
     query.bindValue(":remotePath", remotePath);
     query.bindValue(":localPath", localPath);
     query.bindValue(":dataSize", dataSize);
@@ -139,12 +141,13 @@ QList<upTask> TaskManager::readUpTask()
     while (query.next())
     {
         upTask task;
-        task.remotePath = query.value(1).toString();
-        task.localPath = query.value(2).toString();
-        task.dataSize = query.value(3).toULongLong();
-        task.totalPiece = query.value(4).toInt();
-        task.etags = processJson(query.value(5).toString());
-        task.isPause = query.value(6).toBool();
+        task.uploadId = query.value(1).toInt();
+        task.remotePath = query.value(2).toString();
+        task.localPath = query.value(3).toString();
+        task.dataSize = query.value(4).toULongLong();
+        task.totalPiece = query.value(5).toInt();
+        task.etags = processJson(query.value(6).toString());
+        task.isPause = query.value(7).toBool();
         tasks.append(task);
     }
     return tasks;
