@@ -64,7 +64,7 @@ linkNewFolder_window::linkNewFolder_window(QWidget *parent)
     folderName2->setCompleter(new QCompleter(folderName2->model(), folderName2));// 为下拉菜单设置自动完成器，使用下拉菜单自身的模型作为数据源
     folderName2->completer()->setCompletionMode(QCompleter::PopupCompletion);// 设置自动完成器的完成模式为弹出补全，即输入时显示匹配的选项列表
     folderName2->completer()->setCaseSensitivity(Qt::CaseInsensitive);// 设置自动完成器的大小写敏感性为不敏感，即输入时忽略大小写差异
-    folderName2->setCurrentIndex(-1);
+    folderName2->setCurrentIndex(-1); // 设置当前选中项为-1，即不选中任何项
     _checkBox = new ElaCheckBox("使用原文件夹名", this);
     _checkBox->setFixedSize(130, 20); // 设置按钮的固定大小
     lineEditLayout2->addWidget(folderName2, 1); // 将输入框添加到布局中
@@ -160,6 +160,10 @@ linkNewFolder_window::linkNewFolder_window(QWidget *parent)
     centerVLayout->addWidget(buttonArea);
 
     this->setCentralWidget(centerarea);// 将中心部件添加到窗口
+
+    QPalette palette = folderName2->lineEdit()->palette();
+    palette.setColor(QPalette::Text, Qt::transparent); // 设置文本颜色为透明
+    folderName2->lineEdit()->setPalette(palette);
 }
 
 linkNewFolder_window::~linkNewFolder_window()
