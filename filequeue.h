@@ -14,6 +14,8 @@ struct RequestInfo{
     QString key;
     QString localPath;
     QString versionId;
+    QString RemotePath;
+    QString copyto;
     int methodId;
 };
 
@@ -48,9 +50,19 @@ public:
         }
     }
 
+    void addPutObjectCopyRequest(const QString &copyto, const QString &RemotePath, int fileTaskId) {
+        QMutexLocker locker(&mutex);
+        RequestInfo requestInfo;
+        requestInfo.copyto = copyto;
+        requestInfo.RemotePath = RemotePath;
+        requestInfo.methodId = 2;
+        requestQueue.enqueue({requestInfo, fileTaskId});
+        if (activeRequests < maxConcurrentRequests) {
+            startNextRequest();
+        }
+    }
+
 signals:
-    void putObjectRequested(const QString &key, const QString &localPath, QMap<QString, QString> metaData);
-    void save2LocalRequested(const QString &key, const QString &localPath);
     void requestProgress(int fileTaskId, qint64 bytesReceived, qint64 bytesTotal);
     void requestFinished(int fileTaskId, QNetworkReply::NetworkError error);
 public slots:
@@ -95,6 +107,8 @@ private:
                 cosClient.multiUpload(requestInfo.key, requestInfo.localPath, QMap<QString, QString>());
             } else if (requestInfo.methodId == 1) {
                 cosClient.save2LocalWithoutVersion(requestInfo.key, requestInfo.localPath);
+            }else if (requestInfo.methodId == 2) {
+                cosClient.putObjectCopy(requestInfo.copyto,requestInfo.RemotePath);
             }
             //requestFunc();
         });

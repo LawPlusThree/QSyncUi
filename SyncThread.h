@@ -48,6 +48,7 @@ signals:
     void finishDownloadTask(int fileTaskId);
     void callUploadTask(const QString &localPath, const QString &cloudPath, int fileTaskId);
     void callDownloadTask(const QString &localPath, const QString &cloudPath, int fileTaskId);
+    void callRenameFileTask(const QString &cloudPath, const QString &copyToPath, int fileTaskId);
 };
 
 

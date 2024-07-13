@@ -153,6 +153,9 @@ void SyncCore::doTask(SyncTask *task)
     connect(thread,&SyncThread::callDownloadTask,this,[=](const QString &localPath, const QString &cloudPath, int fileTaskId){
         requestManager->addSave2LocalRequest(cloudPath,localPath,fileTaskId);
     },Qt::BlockingQueuedConnection);
+    connect(thread,&SyncThread::callRenameFileTask,this,[=](const QString &cloudPath, const QString &copyToPath, int fileTaskId){
+            requestManager->addPutObjectCopyRequest(cloudPath,copyToPath,fileTaskId);
+    },Qt::BlockingQueuedConnection);
     thread->start();
 }
 
