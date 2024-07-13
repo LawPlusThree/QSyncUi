@@ -257,6 +257,32 @@ QString COSClient::multiUpload(const QString &path, const QString &localpath, QM
     return result;
 }
 
+QString COSClient::ResumeMultiUpload(const QString &path, const QString &localpath, QMap<QString, QString> metaDatas, QMap<int, QString> partEtagMap,QString uploadId)
+{
+    //判断文件存在且可读
+    QFile file(localpath);
+    if (!file.open(QIODevice::ReadOnly))
+    {
+        return "";
+    }
+    //分片上传
+    int partNumber = partEtagMap.size() + 1;
+    //从上次上传的地方开始读取
+    file.seek(file.pos() + 2 * 1024 * 1024 * (partNumber - 1));
+    while (!file.atEnd())
+    {
+        QByteArray data = file.read(2*1024*1024); // Assuming 2MB parts
+        QString etag = uploadPart(path, uploadId, partNumber, data);
+        emit progress(file.pos(), file.size());
+        partEtagMap.insert(partNumber, etag);
+        partNumber++;
+    }
+    //完成分片上传
+    QString result = completeMultipartUpload(path, uploadId, partEtagMap);
+    file.close();
+    return result;
+}
+
 bool COSClient::isExist(preResponse &response)
 {
     return response.statusCode!=404;
