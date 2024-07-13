@@ -76,7 +76,9 @@ bool COSClient::putObjectCopy(const QString &path, const QString &sourcePath)
 {
     //复制错误会返回200ok，响应体中错误判断没写，待完善
     preRequest request;
-    request.customHeaders.insert("x-cos-copy-source", sourcePath);
+    QString sourcePath_=_prefixHandle(sourcePath);
+    QString rawPath=endpoint+"/"+sourcePath_;
+    request.customHeaders.insert("x-cos-copy-source", rawPath);
     preResponse response = invokePutRequest(path, request);
     return response.statusCode >= 200 && response.statusCode < 300; // Assuming success is 2xx status code
 }
