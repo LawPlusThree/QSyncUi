@@ -70,6 +70,11 @@ FileManagePage::FileManagePage(QWidget* parent,UserManager *um):ElaScrollPage(pa
     comboBoxText->setTextSize(15);
     comboBoxLayout->addWidget(comboBoxText);
     comboBoxLayout->addWidget(_comboBox);
+    connect(_comboBox, &ElaComboBox::currentIndexChanged, [this](int index) {
+        qDebug() << "当前选中的索引为：" << index;
+        qDebug() << "当前选中的文本为：" << _comboBox->currentText();
+        emit setThreadNum(_comboBox->currentText().toInt());
+    });    
     connect(_comboBox, &ElaComboBox::currentIndexChanged, [=](int index) {
         um->setThread(index+1);
     });

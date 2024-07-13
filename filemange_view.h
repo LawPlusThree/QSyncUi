@@ -35,6 +35,10 @@ private:
     setExcludedItems_view* setexcludeditemsview=new setExcludedItems_view();
 signals:
     void deleteTask(int id);
+    void pauseTask(int id);
+    void resumeTask(int id);
+    void setExcludedItems(QVector<QString> items);
+    void setThreadNum(int num);
 protected:
     void resizeEvent(QResizeEvent* event) override;
     void showEvent(QShowEvent* event) override;

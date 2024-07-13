@@ -30,7 +30,7 @@ public:
     void run() override;
     void readDirectory(const QString &path);
     void recursiveRead(const QString &path);
-    void readCLoudDirectory(const QString &cloudpath);
+    void readCloudDirectory(const QString &cloudpath);
 
     void addSynctask(const QFileInfo &info);//添加同步任务，把本地未上传文件添加入任务
     void deleteSynctask(const QString &path);//删除同步任务，把本地已上传文件删除任务
@@ -48,6 +48,9 @@ signals:
     void finishDownloadTask(int fileTaskId);
     void callUploadTask(const QString &localPath, const QString &cloudPath, int fileTaskId);
     void callDownloadTask(const QString &localPath, const QString &cloudPath, int fileTaskId);
+    void callRenameFileTask(const QString &cloudPath, const QString &copyToPath, int fileTaskId);
+    void callDeleteFileTask(const QString &cloudPath,const QString &versionId, int fileTaskId);
+
 };
 
 

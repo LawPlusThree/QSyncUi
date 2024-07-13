@@ -360,3 +360,65 @@ COSConfig User::getS3Config()
     }
     return config;
 }
+
+QVector<QString> User::getS3Dirs()
+{
+    ApiResponse response = apiRequest->get("/tasks");
+    QVector<QString> s3Dirs;
+
+    // 检查API响应是否成功
+    if (!response.isSuccess())
+    {
+        qDebug() << "API request failed with message:" << response.message;
+        return s3Dirs; // 返回空的s3Dirs
+    }
+    if(!response.getDatav().isArray())
+    {
+        qDebug() << "'data' is not an array";
+        return s3Dirs; // 返回空的s3Dirs
+    }
+    // 提取data数组
+    QJsonArray tasksArray = response.getDatav().toArray();
+
+    // 检查数组是否为空
+    if (tasksArray.isEmpty())
+    {
+        qDebug() << "Tasks array is empty";
+        return s3Dirs; // 返回空的s3Dirs
+    }
+
+    // 遍历data数组中的每个任务对象
+    for (const QJsonValue& taskValue : tasksArray)
+    {
+        // 检查每个元素是否是对象
+        if (!taskValue.isObject())
+        {
+            qDebug() << "Task is not an object";
+            continue; // 跳过非对象元素
+        }
+
+        QJsonObject taskObject = taskValue.toObject();
+
+        // 检查是否存在"s3Dir"键
+        if (!taskObject.contains("s3Dir"))
+        {
+            qDebug() << "No 's3Dir' key in task object";
+            continue; // 跳过没有"s3Dir"键的对象
+        }
+
+        // 提取s3Dir键的值
+        QString s3Dir = taskObject["s3Dir"].toString();
+
+        // 检查提取的值是否为空
+        if (s3Dir.isEmpty())
+        {
+            qDebug() << "s3Dir is empty";
+            continue; // 跳过空的s3Dir
+        }
+
+        // 将提取的s3Dir路径添加到s3Dirs向量中
+        s3Dirs.append(s3Dir);
+    }
+
+    return s3Dirs;
+}

@@ -14,6 +14,8 @@ struct RequestInfo{
     QString key;
     QString localPath;
     QString versionId;
+    QString RemotePath;
+    QString copyto;
     int methodId;
 };
 
@@ -48,12 +50,39 @@ public:
         }
     }
 
+    void addPutObjectCopyRequest(const QString &copyto, const QString &RemotePath, int fileTaskId) {
+        QMutexLocker locker(&mutex);
+        RequestInfo requestInfo;
+        requestInfo.copyto = copyto;
+        requestInfo.RemotePath = RemotePath;
+        requestInfo.methodId = 2;
+        requestQueue.enqueue({requestInfo, fileTaskId});
+        if (activeRequests < maxConcurrentRequests) {
+            startNextRequest();
+        }
+    }
+
+    void addDeleteObjectRequest(const QString &RemotePath, const QString &versionId, int fileTaskId) {
+        QMutexLocker locker(&mutex);
+        RequestInfo requestInfo;
+        requestInfo.RemotePath = RemotePath;
+        requestInfo.versionId = versionId;
+        requestInfo.methodId = 3;
+        requestQueue.enqueue({requestInfo, fileTaskId});
+        if (activeRequests < maxConcurrentRequests) {
+            startNextRequest();
+        }
+    }
+
 signals:
-    void putObjectRequested(const QString &key, const QString &localPath, QMap<QString, QString> metaData);
-    void save2LocalRequested(const QString &key, const QString &localPath);
     void requestProgress(int fileTaskId, qint64 bytesReceived, qint64 bytesTotal);
     void requestFinished(int fileTaskId, QNetworkReply::NetworkError error);
-
+public slots:
+    void setMaxConcurrentRequests(int max) {
+        qDebug() << "setMaxConcurrentRequests: " << max;
+        QMutexLocker locker(&mutex);
+        maxConcurrentRequests.store(max);
+    }
 private slots:
     void onRequestFinished(int fileTaskId, QNetworkReply::NetworkError error) {
         emit requestFinished(fileTaskId, error);
@@ -90,6 +119,10 @@ private:
                 cosClient.multiUpload(requestInfo.key, requestInfo.localPath, QMap<QString, QString>());
             } else if (requestInfo.methodId == 1) {
                 cosClient.save2LocalWithoutVersion(requestInfo.key, requestInfo.localPath);
+            }else if (requestInfo.methodId == 2) {
+                cosClient.putObjectCopy(requestInfo.copyto,requestInfo.RemotePath);
+            }else if (requestInfo.methodId == 3) {
+                cosClient.deleteObject(requestInfo.RemotePath,requestInfo.versionId);
             }
             //requestFunc();
         });
@@ -104,7 +137,7 @@ private:
     QQueue<QPair<RequestInfo, int>> requestQueue;
     QMutex mutex;
     int activeRequests = 0;
-    const int maxConcurrentRequests;
+    std::atomic<int> maxConcurrentRequests;
 };
 
 #endif // FILEQUEUE_H
