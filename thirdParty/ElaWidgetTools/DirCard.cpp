@@ -19,23 +19,23 @@ DirCard::DirCard(QString f, quint64 d,QString b,int Id)
     QString size;
     QString dataStr;
     double data=d;
-    data/=1000;
-    if(data<1000)
+    data/=1024;
+    if(data<1024)
     {
         dataStr=QString::number(data,'f',1);
         size=dataStr+"KB";
     }
     else
     {
-        data/=1000;
-        if(data<1000)
+        data/=1024;
+        if(data<1024)
         {
             dataStr=QString::number(data,'f',1);
             size=dataStr+"MB";
         }
         else
         {
-            data/=1000;
+            data/=1024;
             dataStr=QString::number(data,'f',1);
             size=dataStr+"GB";
         }
@@ -145,23 +145,23 @@ void DirCard::modify(quint64 d,QString b)
     QString size;
     QString dataStr;
     double data=d;
-    data/=1000;
-    if(data<1000)
+    data/=1024;
+    if(data<1024)
     {
         dataStr=QString::number(data,'f',1);
         size=dataStr+"KB";
     }
     else
     {
-        data/=1000;
-        if(data<1000)
+        data/=1024;
+        if(data<1024)
         {
             dataStr=QString::number(data,'f',1);
             size=dataStr+"MB";
         }
         else
         {
-            data/=1000;
+            data/=1024;
             dataStr=QString::number(data,'f',1);
             size=dataStr+"GB";
         }
