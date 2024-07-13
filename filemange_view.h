@@ -20,6 +20,7 @@ public:
     ~FileManagePage();
     void addDirCard(QString filename,QString cloudname,quint64 datasize,QString bindtime,int syncStatus,int id);
     void removeDirCard(int id);
+    void removeChecked();
     void modifyDirCard(quint64 datasize,QString bindtime,int id);
     DirCardProxy*_dircardProxy;
     linkNewFolder_window* linknewfolderwindow=new linkNewFolder_window();

@@ -97,7 +97,7 @@ FileManagePage::FileManagePage(QWidget* parent,UserManager *um):ElaScrollPage(pa
     pushButtonLayout->addStretch();
     pushButtonLayout->addWidget(comboBoxArea);
     connect(_pushButton1,&ElaPushButton::clicked,[=](){
-        _dircardProxy->removeChecked();
+        removeChecked();
     });
     connect(_pushButton2,&ElaPushButton::clicked,[=](){
         setexcludeditemsview->show();
@@ -216,6 +216,19 @@ void FileManagePage::removeDirCard(int id)
 {
     _dircardProxy->removeDirCard(id);
     emit deleteTask(id);
+}
+
+void FileManagePage::removeChecked()
+{
+    QMapIterator<int, DirCard*> i(_dircardProxy->cardMap);
+    while (i.hasNext())
+    {
+        i.next();
+        int id = i.key();
+        DirCard *card = i.value();
+        if(card->ischecked())
+            removeDirCard(id);
+    }
 }
 
 void FileManagePage::modifyDirCard(quint64 datasize,QString bindtime,int id)
