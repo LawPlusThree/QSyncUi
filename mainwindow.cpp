@@ -267,7 +267,11 @@ void MainWindow::onUserLoggedIn(User user)
         }
         _syncCore->addTask(task);
     }
-
+    QVector<QString> s3Dirs = CurrentUser->getS3Dirs();
+    qDebug() << "S3 Dirs:";
+    for (const QString& s3Dir : s3Dirs) {
+        qDebug() << s3Dir;
+    }
 }
 
 void MainWindow::exitLogin()
