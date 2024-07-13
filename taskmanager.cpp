@@ -11,7 +11,7 @@ void TaskManager::createConnection(QString account)
         qDebug() << "无法建立数据库连接";
         return;
     }
-    QSqlQuery query;
+    QSqlQuery query(db);
     // 检查任务表是否存在
     query.exec("SELECT name FROM sqlite_master WHERE type='table' AND name='uptask'");
     if (!query.next()) {
@@ -31,7 +31,7 @@ void TaskManager::createConnection(QString account)
 
 void TaskManager::insertUpTask(QString remotePath, QString localPath, quint64 dataSize, int totalPiece, QMap<int,QString> etags, bool isPause)
 {
-    QSqlQuery query;
+    QSqlQuery query(db);
     query.prepare("INSERT INTO uptask (remotePath, localPath, dataSize, totalPiece, etags, isPause) VALUES (:remotePath, :localPath, :dataSize, :totalPiece, :etags, :isPause)");
     query.bindValue(":remotePath", remotePath);
     query.bindValue(":localPath", localPath);
@@ -44,7 +44,7 @@ void TaskManager::insertUpTask(QString remotePath, QString localPath, quint64 da
 
 void TaskManager::insertDownTask(QString remotePath, QString localPath, quint64 dataSize, int totalPiece, QMap<int, QString> etags, bool isPause)
 {
-    QSqlQuery query;
+    QSqlQuery query(db);
     query.prepare("INSERT INTO downtask (remotePath, localPath, dataSize, totalPiece, etags, isPause) VALUES (:remotePath, :localPath, :dataSize, :totalPiece, :etags, :isPause)");
     query.bindValue(":remotePath", remotePath);
     query.bindValue(":localPath", localPath);
@@ -57,7 +57,7 @@ void TaskManager::insertDownTask(QString remotePath, QString localPath, quint64 
 
 void TaskManager::insertFinishTask(int taskId, QString localPath, quint64 dataSize, QDate sycnTime, int status)
 {
-    QSqlQuery query;
+    QSqlQuery query(db);
     query.prepare("INSERT INTO finishtask (taskId, localPath, dataSize, sycnTime, status) VALUES (:taskId, :localPath, :dataSize, :sycnTime, :status)");
     query.bindValue(":taskId", taskId);
     query.bindValue(":localPath", localPath);
@@ -69,7 +69,7 @@ void TaskManager::insertFinishTask(int taskId, QString localPath, quint64 dataSi
 
 void TaskManager::deleteUpTask(QString localPath)
 {
-    QSqlQuery query;
+    QSqlQuery query(db);
     query.prepare("DELETE FROM uptask WHERE localPath = :localPath");
     query.bindValue(":localPath", localPath);
     query.exec();
@@ -77,7 +77,7 @@ void TaskManager::deleteUpTask(QString localPath)
 
 void TaskManager::deleteDownTask(QString localPath)
 {
-    QSqlQuery query;
+    QSqlQuery query(db);
     query.prepare("DELETE FROM downtask WHERE localPath = :localPath");
     query.bindValue(":localPath", localPath);
     query.exec();
@@ -85,7 +85,7 @@ void TaskManager::deleteDownTask(QString localPath)
 
 void TaskManager::deleteFinishTask(QString localPath)
 {
-    QSqlQuery query;
+    QSqlQuery query(db);
     query.prepare("DELETE FROM finishtask WHERE localPath = :localPath");
     query.bindValue(":localPath", localPath);
     query.exec();
@@ -93,7 +93,7 @@ void TaskManager::deleteFinishTask(QString localPath)
 
 void TaskManager::updateUpTask(QString remotePath, QString localPath, quint64 dataSize, int totalPiece, QMap<int, QString> etags, bool isPause)
 {
-    QSqlQuery query;
+    QSqlQuery query(db);
     query.prepare("UPDATE uptask SET remotePath = :remotePath, dataSize = :dataSize, totalPiece = :totalPiece, etags = :etags, isPause = :isPause WHERE localPath = :localPath");
     query.bindValue(":remotePath", remotePath);
     query.bindValue(":localPath", localPath);
@@ -106,7 +106,7 @@ void TaskManager::updateUpTask(QString remotePath, QString localPath, quint64 da
 
 void TaskManager::updateDownTask(QString remotePath, QString localPath, quint64 dataSize, int totalPiece, QMap<int, QString> etags, bool isPause)
 {
-    QSqlQuery query;
+    QSqlQuery query(db);
     query.prepare("UPDATE downtask SET remotePath = :remotePath, dataSize = :dataSize, totalPiece = :totalPiece, etags = :etags, isPause = :isPause WHERE localPath = :localPath");
     query.bindValue(":remotePath", remotePath);
     query.bindValue(":localPath", localPath);
@@ -119,7 +119,7 @@ void TaskManager::updateDownTask(QString remotePath, QString localPath, quint64 
 
 void TaskManager::updateFinishTask(int taskId, QString localPath, quint64 dataSize, QDate sycnTime, int status)
 {
-    QSqlQuery query;
+    QSqlQuery query(db);
     query.prepare("UPDATE finishtask SET taskId = :taskId, dataSize = :dataSize, sycnTime = :sycnTime, status = :status WHERE localPath = :localPath");
     query.bindValue(":taskId", taskId);
     query.bindValue(":localPath", localPath);
@@ -132,7 +132,7 @@ void TaskManager::updateFinishTask(int taskId, QString localPath, quint64 dataSi
 QList<upTask> TaskManager::readUpTask()
 {
     QList<upTask> tasks;
-    QSqlQuery query;
+    QSqlQuery query(db);
     query.exec("SELECT * FROM uptask");
     while (query.next())
     {
@@ -151,7 +151,7 @@ QList<upTask> TaskManager::readUpTask()
 QList<downTask> TaskManager::readDownTask()
 {
     QList<downTask> tasks;
-    QSqlQuery query;
+    QSqlQuery query(db);
     query.exec("SELECT * FROM downtask");
     while (query.next())
     {
@@ -170,7 +170,7 @@ QList<downTask> TaskManager::readDownTask()
 QList<finishTask> TaskManager::readFinishTask()
 {
     QList<finishTask> tasks;
-    QSqlQuery query;
+    QSqlQuery query(db);
     query.exec("SELECT * FROM finishtask");
     while (query.next())
     {
