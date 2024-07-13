@@ -24,7 +24,7 @@ void TaskManager::createConnection(QString account)
     }
     query.exec("SELECT name FROM sqlite_master WHERE type='table' AND name='finishtask'");
     if (!query.next()) {
-        query.exec("CREATE TABLE finishtask (id INTEGER PRIMARY KEY,taskId INTEGER, localPath VARCHAR, dataSize BIGINT, sycnTime DATE, status INTEGER)");
+        query.exec("CREATE TABLE finishtask (id INTEGER PRIMARY KEY,taskId INTEGER, remotePath VARCHAR, localPath VARCHAR, dataSize BIGINT, sycnTime DATE, status INTEGER)");
     }
 
 }
@@ -55,11 +55,12 @@ void TaskManager::insertDownTask(QString remotePath, QString localPath, quint64 
     query.exec();
 }
 
-void TaskManager::insertFinishTask(int taskId, QString localPath, quint64 dataSize, QDate sycnTime, int status)
+void TaskManager::insertFinishTask(int taskId,QString remotePath, QString localPath, quint64 dataSize, QDate sycnTime, int status)
 {
     QSqlQuery query(db);
-    query.prepare("INSERT INTO finishtask (taskId, localPath, dataSize, sycnTime, status) VALUES (:taskId, :localPath, :dataSize, :sycnTime, :status)");
+    query.prepare("INSERT INTO finishtask (taskId,remotePath, localPath, dataSize, sycnTime, status) VALUES (:taskId, :localPath, :dataSize, :sycnTime, :status)");
     query.bindValue(":taskId", taskId);
+    query.bindValue(":remotePath", remotePath);
     query.bindValue(":localPath", localPath);
     query.bindValue(":dataSize", dataSize);
     query.bindValue(":sycnTime", sycnTime);
@@ -117,11 +118,12 @@ void TaskManager::updateDownTask(QString remotePath, QString localPath, quint64 
     query.exec();
 }
 
-void TaskManager::updateFinishTask(int taskId, QString localPath, quint64 dataSize, QDate sycnTime, int status)
+void TaskManager::updateFinishTask(int taskId,QString remotePath, QString localPath, quint64 dataSize, QDate sycnTime, int status)
 {
     QSqlQuery query(db);
-    query.prepare("UPDATE finishtask SET taskId = :taskId, dataSize = :dataSize, sycnTime = :sycnTime, status = :status WHERE localPath = :localPath");
+    query.prepare("UPDATE finishtask SET taskId = :taskId,remotePath = :remotePath, dataSize = :dataSize, sycnTime = :sycnTime, status = :status WHERE localPath = :localPath");
     query.bindValue(":taskId", taskId);
+    query.bindValue(":remotePath", remotePath);
     query.bindValue(":localPath", localPath);
     query.bindValue(":dataSize", dataSize);
     query.bindValue(":sycnTime", sycnTime);
@@ -176,10 +178,11 @@ QList<finishTask> TaskManager::readFinishTask()
     {
         finishTask task;
         task.taskId = query.value(1).toInt();
-        task.localPath = query.value(2).toString();
-        task.dataSize = query.value(3).toULongLong();
-        task.sycnTime = query.value(4).toDate();
-        task.status = query.value(5).toInt();
+        task.remotePath = query.value(2).toString();
+        task.localPath = query.value(3).toString();
+        task.dataSize = query.value(4).toULongLong();
+        task.sycnTime = query.value(5).toDate();
+        task.status = query.value(6).toInt();
         tasks.append(task);
     }
     return tasks;
