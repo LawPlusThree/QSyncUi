@@ -15,26 +15,11 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
-if (WINDOWS_BUILD) # Set the location where CMake can find the installed libraries for the AWS SDK.
-    message(STATUS "CMAKE_SYSTEM_PREFIX_PATH: ${CMAKE_SYSTEM_PREFIX_PATH}")
-    message(STATUS "SYSTEM_MODULE_PATH: ${SYSTEM_MODULE_PATH}")
-    string(REPLACE ";" "/aws;" SYSTEM_MODULE_PATH "${CMAKE_SYSTEM_PREFIX_PATH}/aws")
-    list(APPEND CMAKE_PREFIX_PATH ${SYSTEM_MODULE_PATH})
-    message(STATUS "SYSTEM_MODULE_PATH: ${SYSTEM_MODULE_PATH}")
-endif ()
+
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Core Network Sql)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Core Network Sql)
 # Find the AWS SDK for C++ package.
-find_package(AWSSDK REQUIRED COMPONENTS ${SERVICE_COMPONENTS})
-message(STATUS "CMAKE: ${CMAKE_CURRENT_BINARY_DIR}")
-if (WINDOWS_BUILD AND AWSSDK_INSTALL_AS_SHARED_LIBS)
-    # Copy relevant AWS SDK for C++ libraries into the current binary directory for running and debugging.
 
-    set(BIN_SUB_DIR ${CMAKE_BUILD_TYPE}) # if you are building from the command line you may need to uncomment this
-    # and set the proper subdirectory to the executables' location.
-
-    AWSSDK_CPY_DYN_LIBS(SERVICE_COMPONENTS "" ${CMAKE_CURRENT_BINARY_DIR}/${BIN_SUB_DIR})
-endif ()
 set(PROJECT_SOURCES
         main.cpp
 
@@ -121,7 +106,7 @@ include_directories(
 )
 find_package(Qt6 REQUIRED COMPONENTS Xml)
 target_link_libraries(QSyncUi PRIVATE Qt6::Xml)
-target_link_libraries(QSyncUi PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Xml Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Network Qt${QT_VERSION_MAJOR}::Sql ${AWSSDK_LINK_LIBRARIES} elawidgettools)
+target_link_libraries(QSyncUi PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Xml Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Network Qt${QT_VERSION_MAJOR}::Sql elawidgettools)
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
 # If you are developing for iOS or macOS you should consider setting an
 # explicit, fixed bundle identifier manually though.

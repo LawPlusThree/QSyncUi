@@ -1,22 +1,60 @@
 #include "SyncThread.h"
 #include "crc64util.h"
 #include "globalvalue.h"
-//用多线程遍历本地文件夹
-int SyncThread::fileTaskId=0;
+// 用多线程遍历本地文件夹
+int SyncThread::fileTaskId = 0;
 void SyncThread::run()
 {
     crc64_init();
-    if(task->getSyncStatus()==1){
+    if (task->getSyncStatus() == 1)
+    {
         readDirectory(path);
-        readCloudDirectory(task->getRemotePath());}
-    else if(task->getSyncStatus()==2){
+        readCloudDirectory(task->getRemotePath());
+    }
+    else if (task->getSyncStatus() == 2)
+    {
         readDirectory(path);
     }
-    else if(task->getSyncStatus()==3){
+    else if (task->getSyncStatus() == 3)
+    {
         readCloudDirectory(task->getRemotePath());
     }
     emit this->localTotalSize(totalSize);
     emit this->upTotalSize(upFileSize);
+    QDir listen = task->getLocalPath();
+
+    if (task->getSyncStatus() == 1 || task->getSyncStatus() == 2)
+    {
+        qDebug() << "upload/download";
+        auto path=listen.filesystemAbsolutePath();
+        watch *w = new watch(path, [](struct event e)
+                             {
+                QFileInfo info(e.path_name);
+    // 读取 path_type 状态
+    // 读取 effect_type 状态
+    switch (e.effect_type) {
+    case event::effect_type::rename:
+        {
+
+    }
+        break;
+    case event::effect_type::modify:
+        qDebug() << "Effect type: Modify";
+        break;
+    case event::effect_type::create:
+        qDebug() << "Effect type: Create";
+        break;
+    case event::effect_type::destroy:
+        qDebug() << "Effect type: Destroy";
+        break;
+    case event::effect_type::owner:
+        qDebug() << "Effect type: Owner change";
+        break;
+    case event::effect_type::other:
+        qDebug() << "Effect type: Other";
+        break;
+    } });
+    }
 }
 
 void SyncThread::readDirectory(const QString &path)
@@ -30,14 +68,18 @@ void SyncThread::recursiveRead(const QString &path)
     QDir dir(path);
     QFileInfoList list = dir.entryInfoList(QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot);
 
-    foreach (const QFileInfo &info, list) {
-        if (info.isDir()) {
+    foreach (const QFileInfo &info, list)
+    {
+        if (info.isDir())
+        {
             // 如果是目录，递归读取
             recursiveRead(info.filePath());
-        } else {
+        }
+        else
+        {
             // 如果是文件，添加到文件信息列表
-            qDebug()<<info.fileName();
-            totalSize+=info.size();
+            qDebug() << info.fileName();
+            totalSize += info.size();
             addSynctask(info);
         }
     }
@@ -48,69 +90,77 @@ void SyncThread::readCloudDirectory(const QString &cloudpath)
     XmlProcesser processer;
     QString xml;
     Bucket bucket;
-    bucket.isTruncated=false;
-    bucket.nextMarker="";
-    do{
-        xml=cosclient->listObjects(cloudpath,bucket.nextMarker);
-        bucket=processer.processXml(xml);
-        for(auto ct:bucket.contents){
-            //不保留key的md5
-            QString localPath=task->getLocalPath()+"/"+ct.key.mid(task->getRemotePath().length()+33);
+    bucket.isTruncated = false;
+    bucket.nextMarker = "";
+    do
+    {
+        xml = cosclient->listObjects(cloudpath, bucket.nextMarker);
+        bucket = processer.processXml(xml);
+        for (auto ct : bucket.contents)
+        {
+            // 不保留key的md5
+            QString localPath = task->getLocalPath() + "/" + ct.key.mid(task->getRemotePath().length() + 33);
             QFileInfo info(localPath);
-            bool needDownload=false;
-            if(!info.exists()){
-                needDownload=true;
-
+            bool needDownload = false;
+            if (!info.exists())
+            {
+                needDownload = true;
             }
-            else if(info.isDir()){
-                //如果是文件夹，直接跳过
+            else if (info.isDir())
+            {
+                // 如果是文件夹，直接跳过
                 continue;
             }
-            else{
+            else
+            {
                 headHeader tmpHeaders;
-                preResponse response=cosclient->headObject(ct.key,"",tmpHeaders);
-                //read local file
+                preResponse response = cosclient->headObject(ct.key, "", tmpHeaders);
+                // read local file
                 QFile file(localPath);
                 file.open(QIODevice::ReadOnly);
-                QByteArray data=file.readAll();
+                QByteArray data = file.readAll();
                 file.close();
-                uint64_t crc64_data=0;
-                crc64_data=crc64(crc64_data,data.data(),data.size());
-                uint64_t cloudCRC=response.headers["x-cos-hash-crc64ecma"].toULongLong();
-                if(crc64_data!=cloudCRC){
-                    needDownload=true;
+                uint64_t crc64_data = 0;
+                crc64_data = crc64(crc64_data, data.data(), data.size());
+                uint64_t cloudCRC = response.headers["x-cos-hash-crc64ecma"].toULongLong();
+                if (crc64_data != cloudCRC)
+                {
+                    needDownload = true;
                 }
             }
-            if(needDownload){
-                downFileSize+=ct.size;
-                int fileTaskId=getNextFileTaskId();
-                emit this->newDownloadTask(localPath,fileTaskId,ct.size);
-                emit this->callDownloadTask(localPath,ct.key,fileTaskId);
+            if (needDownload)
+            {
+                downFileSize += ct.size;
+                int fileTaskId = getNextFileTaskId();
+                emit this->newDownloadTask(localPath, fileTaskId, ct.size);
+                emit this->callDownloadTask(localPath, ct.key, fileTaskId);
             }
         }
-    }while(bucket.isTruncated);
+    } while (bucket.isTruncated);
+}
 
+void SyncThread::fileSystemChanged(struct event e)
+{
+    qDebug() << e.path_name;
 }
 
 void SyncThread::addSynctask(const QFileInfo &info)
 {
-    //把path前面和task->getLocalPath()相同的部分去掉
-    QString path=info.absoluteFilePath();
-    QString relativePath=path.mid(task->getLocalPath().length()+1);
-    QString cloudPath=task->getRemotePath()+relativePath;
+    // 把path前面和task->getLocalPath()相同的部分去掉
+    QString path = info.absoluteFilePath();
+    QString relativePath = path.mid(task->getLocalPath().length() + 1);
+    QString cloudPath = task->getRemotePath() + relativePath;
     headHeader tmpHeaders;
-    preResponse response=cosclient->headObject(cloudPath,"",tmpHeaders);
-    if(!cosclient->isExist(response)){
-        upFileSize+=info.size();
-        int fileTaskId=getNextFileTaskId();
-        emit this->newUploadTask(path,fileTaskId);
-        emit this->callUploadTask(path,cloudPath,fileTaskId);
+    preResponse response = cosclient->headObject(cloudPath, "", tmpHeaders);
+    if (!cosclient->isExist(response))
+    {
+        upFileSize += info.size();
+        int fileTaskId = getNextFileTaskId();
+        emit this->newUploadTask(path, fileTaskId);
+        emit this->callUploadTask(path, cloudPath, fileTaskId);
     }
 }
 
 void SyncThread::onTaskCanceled(int fileTaskId)
 {
-
 }
-
-

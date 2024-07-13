@@ -31,7 +31,7 @@ public:
     QString marker;
     int maxKeys;
     QString delimiter;
-    bool isTruncated;
+    bool isTruncated=false;
     QString nextMarker;
     QVector<QString> commonPrefixes;
     QVector<Content> contents;
