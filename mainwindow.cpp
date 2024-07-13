@@ -203,6 +203,8 @@ void MainWindow::onUserLoggedIn(User user)
     CurrentUser=new User(user);
     connect(CurrentUser->channel,&MessageChannel::message,this,&MainWindow::onMessage);
     _modifyInfor_win->currentUser=CurrentUser;
+    QList<QString>s3dirs = CurrentUser->getS3Dirs();
+    _filemanagePage->linknewfolderwindow->setItems(s3dirs);
     um->updateUserInfo(CurrentUser);
     setUserInfoCardTitle(user.getUsername());
     setUserInfoCardSubTitle(user.getEmail());
@@ -338,9 +340,7 @@ void MainWindow::onUserAddNewTask(const SyncTask &_task)
         onMessage("请先登录","Error");
         return;
     }
-    if(
-        CurrentUser->addTask(_task.getLocalPath(),_task.getRemotePath(),_task.getSyncStatus(),1,1)){
-
+    if(CurrentUser->addTask(_task.getLocalPath(),_task.getRemotePath(),_task.getSyncStatus(),1,1)){
         if(_syncTaskDatabaseManager!=nullptr)
         {
             int res=_syncTaskDatabaseManager->addTask(_task);

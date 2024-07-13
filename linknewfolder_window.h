@@ -4,6 +4,7 @@
 #include <QWidget>
 #include "ElaWidget.h"
 #include "synctask.h"
+#include"user.h"
 class ElaPushButton;
 class ElaCheckBox;
 class ElaComboBox;
@@ -13,6 +14,7 @@ class linkNewFolder_window : public ElaWidget
 public:
     linkNewFolder_window(QWidget *parent = nullptr);
     ~linkNewFolder_window();
+    void setItems(QStringList&);
 signals:
     void onNewTask(const SyncTask &task);
 private:
@@ -21,6 +23,7 @@ private:
      ElaPushButton* _pushButton3{nullptr};
      ElaCheckBox* _checkBox{nullptr};
      ElaComboBox* _comboBox{nullptr};
+     ElaComboBox* folderName2;
 };
 
 #endif // LINKNEWFOLDER_WINDOW_H

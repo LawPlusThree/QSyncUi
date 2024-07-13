@@ -54,9 +54,8 @@ linkNewFolder_window::linkNewFolder_window(QWidget *parent)
     lineEditArea2->setAttribute(Qt::WA_TranslucentBackground); // 设置背景透明
     QHBoxLayout* lineEditLayout2 = new QHBoxLayout(lineEditArea2);// 创建一个水平布局
     lineEditLayout2->setContentsMargins(0, 0, 0, 0); // 设置布局的边距
-    ElaComboBox* folderName2 = new ElaComboBox(this);
+    folderName2 = new ElaComboBox(this);
     QStringList folderName2List{"haha/", "lala/", "yuanshen/"};
-    folderName2->addItems(folderName2List);
     folderName2->setEditable(true); // 设置为可编辑
     folderName2->lineEdit()->setPlaceholderText("云端文件夹地址(只能包含大小写字母、数字、'-'和'/'，且必须以'/'结尾)"); // 设置输入提示文本
     folderName2->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
@@ -169,4 +168,12 @@ linkNewFolder_window::linkNewFolder_window(QWidget *parent)
 linkNewFolder_window::~linkNewFolder_window()
 {
 
+}
+
+void linkNewFolder_window::setItems(QStringList &folderName2List)
+{
+    qDebug() << folderName2List;
+    int index = folderName2List.size();
+    folderName2->removeItem(index);
+    folderName2->addItems(folderName2List);
 }
