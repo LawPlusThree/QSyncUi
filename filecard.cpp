@@ -12,23 +12,23 @@ FileCard::FileCard(QString f, quint64 d,double s,int p,int Id)
     QString size;
     QString dataStr;
     double data=d;
-    data/=1000;
-    if(data<1000)
+    data/=1024;
+    if(data<1024)
     {
         dataStr=QString::number(data,'f',1);
         size=dataStr+"KB";
     }
     else
     {
-        data/=1000;
-        if(data<1000)
+        data/=1024;
+        if(data<1024)
         {
             dataStr=QString::number(data,'f',1);
             size=dataStr+"MB";
         }
         else
         {
-            data/=1000;
+            data/=1024;
             dataStr=QString::number(data,'f',1);
             size=dataStr+"GB";
         }
@@ -37,9 +37,9 @@ FileCard::FileCard(QString f, quint64 d,double s,int p,int Id)
 
     QString speedStr;
     QString Speed;
-    if(s>1000)
+    if(s>1024)
     {
-        s/=1000;
+        s/=1024;
         QString speedStr=QString::number(s,'f',1);
         Speed=speedStr+"MB/s";
     }
@@ -190,23 +190,23 @@ void FileCard::modify(quint64 totalSize,quint64 currentSize)
     QString size;
     QString dataStr;
     double data=d;
-    data/=1000;
-    if(data<1000)
+    data/=1024;
+    if(data<1024)
     {
         dataStr=QString::number(data,'f',1);
         size=dataStr+"KB";
     }
     else
     {
-        data/=1000;
-        if(data<1000)
+        data/=1024;
+        if(data<1024)
         {
             dataStr=QString::number(data,'f',1);
             size=dataStr+"MB";
         }
         else
         {
-            data/=1000;
+            data/=1024;
             dataStr=QString::number(data,'f',1);
             size=dataStr+"GB";
         }
@@ -214,9 +214,9 @@ void FileCard::modify(quint64 totalSize,quint64 currentSize)
 
     QString speedStr;
     QString Speed;
-    if(s>1000)
+    if(s>1024)
     {
-        s/=1000;
+        s/=1024;
         QString speedStr=QString::number(s,'f',1);
         Speed=speedStr+"MB/s";
     }
