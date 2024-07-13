@@ -491,7 +491,7 @@ void MainWindow::onTaskTotalSize(qint64 size, int taskid) {
 }
 
 void MainWindow::onTaskUploadSize(qint64 size, int taskid) {
-    this->_filemanagePage->modifyDirCard(size,"同步完成",taskid);
+    //this->_filemanagePage->modifyDirCard(size,"同步完成",taskid);
 }
 
 void MainWindow::onFileUploadTaskFinished(int fileTaskId)
