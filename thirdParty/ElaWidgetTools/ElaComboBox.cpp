@@ -71,8 +71,7 @@ void ElaComboBox::paintEvent(QPaintEvent* event)
     QRect foregroundRect(1, 1, width() - 2, height() - 2);
     painter.drawRoundedRect(foregroundRect, d->_pBorderRadius, d->_pBorderRadius);
     painter.setPen(d->_themeMode == ElaApplicationType::Light ? Qt::black : Qt::white);
-    if(!this->isEditable())
-        painter.drawText(10, height() / 2 + painter.fontMetrics().ascent() / 2 - 1, this->currentText());
+    painter.drawText(10, height() / 2 + painter.fontMetrics().ascent() / 2 - 1, this->currentText());
     //展开指示器绘制
     painter.setPen(Qt::NoPen);
     painter.setBrush(d->_themeMode == ElaApplicationType::Light ? QColor(0x0E, 0x6F, 0xC3) : QColor(0x4C, 0xA0, 0xE0));

@@ -37,7 +37,7 @@ MainWindow::MainWindow(QWidget *parent)
     setUserInfoCardSubTitle("");
     setWindowTitle("珞珈云");
     _syncingPage = new SyncingPage(this);
-    _filemanagePage=new FileManagePage(this);
+    _filemanagePage=new FileManagePage(this,this->um);
     _historysyncPage = new HistorysyncPage(this);
     _historyviewPage = new HistoryViewPage(this);
 
@@ -111,7 +111,7 @@ MainWindow::MainWindow(QWidget *parent)
                     ElaText* subTitle = new ElaText("确定要注销账号吗?一旦注销账号无法恢复！", this);
                     subTitle->setTextStyle(ElaTextType::Body);
                     cancelcheckBox = new ElaCheckBox("我已了解注销账号的后果，并确认继续。", this);
-                    cancelcheckBox->setStyleSheet("QCheckBox { font-size: 14px; }");
+                    //cancelcheckBox->setStyleSheet("ElaCheckBox { font-size: 14px; }");
                     centralVLayout->addWidget(title);
                     centralVLayout->addWidget(subTitle);
                     centralVLayout->addWidget(cancelcheckBox);
@@ -202,8 +202,6 @@ void MainWindow::onUserLoggedIn(User user)
 {
     CurrentUser=new User(user);
     connect(CurrentUser->channel,&MessageChannel::message,this,&MainWindow::onMessage);
-    COSConfig cosConfig=CurrentUser->getS3Config();
-    TaskToken tt=CurrentUser->getUnifiedTaskToken();
     _modifyInfor_win->currentUser=CurrentUser;
     um->updateUserInfo(CurrentUser);
     setUserInfoCardTitle(user.getUsername());
@@ -230,7 +228,8 @@ void MainWindow::onUserLoggedIn(User user)
     QString filename=QDir::toNativeSeparators(file.fileName());
     QPixmap pix(filename);
     setUserInfoCardPixmap(pix);
-
+    COSConfig cosConfig=CurrentUser->getS3Config();
+    TaskToken tt=CurrentUser->getUnifiedTaskToken();
     cosConfig.taskToken=tt;
     _syncCore=new SyncCore(cosConfig,this);
     qDebug() << "Connecting taskTotalSize signal";
@@ -250,10 +249,14 @@ void MainWindow::onUserLoggedIn(User user)
     connect(_filemanagePage,&FileManagePage::deleteTask,[=](int taskId){
         this->_syncTaskDatabaseManager->deleteTask(taskId);
     });
+    connect(_filemanagePage,&FileManagePage::setThreadNum,[=](int num){
+        this->_syncCore->requestManager->setMaxConcurrentRequests(num);
+    });
 
     ReadUpTask();
     ReadDownTask();
     ReadFinishTask();
+    
     for (auto const &x:_syncTaskDatabaseManager->getTasks()){
         SyncTask* task=new SyncTask(x);
 
@@ -267,7 +270,11 @@ void MainWindow::onUserLoggedIn(User user)
         }
         _syncCore->addTask(task);
     }
-
+    QVector<QString> s3Dirs = CurrentUser->getS3Dirs();
+    qDebug() << "S3 Dirs:";
+    for (const QString& s3Dir : s3Dirs) {
+        qDebug() << s3Dir;
+    }
 }
 
 void MainWindow::exitLogin()
@@ -488,7 +495,7 @@ void MainWindow::onTaskTotalSize(qint64 size, int taskid) {
 }
 
 void MainWindow::onTaskUploadSize(qint64 size, int taskid) {
-    this->_filemanagePage->modifyDirCard(size,"同步完成",taskid);
+    //this->_filemanagePage->modifyDirCard(size,"同步完成",taskid);
 }
 
 void MainWindow::onFileUploadTaskFinished(int fileTaskId)

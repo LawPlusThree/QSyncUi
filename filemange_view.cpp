@@ -12,7 +12,7 @@
 #include"DirCard.h"
 #include"dircardproxy.h"
 
-FileManagePage::FileManagePage(QWidget* parent):ElaScrollPage(parent)
+FileManagePage::FileManagePage(QWidget* parent,UserManager *um):ElaScrollPage(parent)
 {
     /*ElaWidget*topCard=new ElaWidget();
     topCard->setMaximumHeight(50);
@@ -61,6 +61,7 @@ FileManagePage::FileManagePage(QWidget* parent):ElaScrollPage(parent)
     QStringList comboList{"1", "2", "3", "4", "5", "6", "7"};
     _comboBox->addItems(comboList);
     _comboBox->setFixedSize(60,30);
+    _comboBox->setCurrentIndex(2);
     QWidget* comboBoxArea = new QWidget(this);
     comboBoxArea->setWindowFlags(Qt::FramelessWindowHint); // 去除窗口边框
     comboBoxArea->setAttribute(Qt::WA_TranslucentBackground); // 设置背景透明
@@ -69,6 +70,14 @@ FileManagePage::FileManagePage(QWidget* parent):ElaScrollPage(parent)
     comboBoxText->setTextSize(15);
     comboBoxLayout->addWidget(comboBoxText);
     comboBoxLayout->addWidget(_comboBox);
+    connect(_comboBox, &ElaComboBox::currentIndexChanged, [this](int index) {
+        qDebug() << "当前选中的索引为：" << index;
+        qDebug() << "当前选中的文本为：" << _comboBox->currentText();
+        emit setThreadNum(_comboBox->currentText().toInt());
+    });    
+    connect(_comboBox, &ElaComboBox::currentIndexChanged, [=](int index) {
+        um->setThread(index+1);
+    });
 
     QWidget* pushButtonArea = new QWidget();
     pushButtonArea->setWindowFlags(Qt::FramelessWindowHint); // 去除窗口边框

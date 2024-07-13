@@ -14,7 +14,7 @@ UserManager::UserManager( QObject *parent) : QObject(parent){}
 bool UserManager::updateUserInfo(User *user)
 {
     // 保存更改到文件
-    return saveToFile(user->getEmail(),user->encryptPassword(),true);
+    return saveToFile(user->getEmail(),user->encryptPassword(),true,3);
 }
 
 QString UserManager::getUserAccount()
@@ -70,13 +70,14 @@ QString UserManager::getUserPassWord(const QString &account)
 }
 
 // 将用户数据保存到文件
-bool UserManager::saveToFile(const QString&account,const QString&password,const bool autoLogin)
+bool UserManager::saveToFile(const QString&account,const QString&password,const bool autoLogin,const int threadnum)
 {
     QJsonObject json;
 
     json["act"] = account;
     json["psw"] = password;
     json["auto"] = (autoLogin?"true":"false");
+    json["trd"] = threadnum;
 
     QJsonDocument doc(json);
     QFile file(filePath_);
@@ -147,6 +148,69 @@ bool UserManager::setAutoLoginStaus(bool autoLogin)
     }
     file.write(jsonDoc.toJson());
     file.close();
+    return true;
+}
+
+int UserManager::getThread()
+{
+    QFile file(filePath_); // 创建一个QFile对象，用于操作文件
+    // 检查文件是否存在以及是否可以打开
+    if (!file.exists() || !file.open(QIODevice::ReadOnly)) {
+        return 0; // 如果文件不存在或无法打开，则返回空字符串
+    }
+
+    QByteArray data = file.readAll(); // 读取文件的全部内容到一个QByteArray对象中
+    file.close(); // 关闭文件
+
+    QJsonParseError error; // 创建一个QJsonParseError对象，用于接收JSON解析的错误信息
+    QJsonDocument doc = QJsonDocument::fromJson(data, &error); // 将读取的数据解析为一个QJsonDocument对象
+    // 检查JSON解析是否成功
+    if (error.error != QJsonParseError::NoError) {
+        qWarning() << "Failed to parse JSON file:" << error.errorString(); // 如果解析失败，打印错误信息
+        return 0; // 并返回空字符串
+    }
+
+    QJsonObject json = doc.object(); // 从QJsonDocument对象中获取一个QJsonObject对象
+    return json.value("trd").toInt(); // 从JSON对象中获取键为"trd"的值，并将其转换为整数返回
+}
+
+bool UserManager::setThread(int threadnum)
+{
+    // 打开文件
+    QFile file(filePath_);
+    // 尝试以只读模式打开文件，如果失败则打印错误信息并返回false
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        qDebug() << "无法打开文件：" << filePath_;
+        return false;
+    }
+
+    // 读取文件内容到QByteArray对象中
+    QByteArray jsonData = file.readAll();
+    // 关闭文件
+    file.close();
+
+    // 将QByteArray对象转换为QJsonDocument对象
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonData);
+
+    // 从QJsonDocument对象中获取JSON对象
+    QJsonObject jsonObj = jsonDoc.object();
+
+    // 修改JSON对象中对应的值
+    jsonObj["trd"] = threadnum;
+
+    // 将修改后的JSON对象重新设置到QJsonDocument对象中
+    jsonDoc.setObject(jsonObj);
+
+    // 尝试以只写模式重新打开文件，如果失败则打印错误信息并返回false
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        qDebug() << "无法打开文件以写入：" << filePath_;
+        return false;
+    }
+    // 将修改后的JSON文档写入文件
+    file.write(jsonDoc.toJson());
+    // 关闭文件
+    file.close();
+    // 返回true表示操作成功
     return true;
 }
 

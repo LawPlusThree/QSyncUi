@@ -5,6 +5,7 @@
 #include "ElaProgressBar.h"
 #include "linknewfolder_window.h"
 #include "setexcludeditems_view.h"
+#include "usermanager.h"
 
 class ElaToggleButton;
 class ElaPushButton;
@@ -15,7 +16,7 @@ class FileManagePage:public ElaScrollPage
 {
     Q_OBJECT
 public:
-    FileManagePage(QWidget* parent = nullptr);
+    FileManagePage(QWidget* parent = nullptr,UserManager *um = nullptr);
     ~FileManagePage();
     void addDirCard(QString filename,QString cloudname,quint64 datasize,QString bindtime,int syncStatus,int id);
     void removeDirCard(int id);
@@ -34,6 +35,10 @@ private:
     setExcludedItems_view* setexcludeditemsview=new setExcludedItems_view();
 signals:
     void deleteTask(int id);
+    void pauseTask(int id);
+    void resumeTask(int id);
+    void setExcludedItems(QVector<QString> items);
+    void setThreadNum(int num);
 protected:
     void resizeEvent(QResizeEvent* event) override;
     void showEvent(QShowEvent* event) override;
