@@ -7,13 +7,13 @@ void SyncThread::run()
 {
     crc64_init();
     if(task->getSyncStatus()==1){
-       readDirectory(path);
-        readCLoudDirectory(task->getRemotePath());}
+        readDirectory(path);
+        readCloudDirectory(task->getRemotePath());}
     else if(task->getSyncStatus()==2){
         readDirectory(path);
     }
     else if(task->getSyncStatus()==3){
-        readCLoudDirectory(task->getRemotePath());
+        readCloudDirectory(task->getRemotePath());
     }
     emit this->localTotalSize(totalSize);
     emit this->upTotalSize(upFileSize);
@@ -43,7 +43,7 @@ void SyncThread::recursiveRead(const QString &path)
     }
 }
 
-void SyncThread::readCLoudDirectory(const QString &cloudpath)
+void SyncThread::readCloudDirectory(const QString &cloudpath)
 {
     XmlProcesser processer;
     QString xml;

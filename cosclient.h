@@ -96,6 +96,7 @@ public:
 public slots:
     bool save2LocalWithoutVersion(const QString &path, const QString &localpath);
     QString multiUpload(const QString &path, const QString &localpath, QMap<QString,QString> metaDatas=QMap<QString,QString>());
+    QString ResumeMultiUpload(const QString &path, const QString &localpath, QMap<QString,QString>,QMap<int, QString>,QString);
     bool save2Local(const QString &path, const QString &localpath,const QString &versionId, QMap<QString,QString> &respMetaDatas);
     void onNewLocalPutRequest(const QString &path, const QString &localpath, int & task_id)
     {
