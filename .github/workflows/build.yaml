@@ -41,22 +41,25 @@ jobs:
           #set DCMAKE_PREFIX_PATH to environment variable %QTDIR%
           cmake -B build -S . -G "MinGW Makefiles" -DCMAKE_PREFIX_PATH=$env:QTDIR  -DCMAKE_BUILD_TYPE=${{ matrix.build-type }}
           cd build
+          ls
           mingw32-make -j16 
+          cd ..
+          ls
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          path: build/${{ matrix.build-type }}
+          path: build/
           name: ${{ matrix.build-type }}
 
       - name: Use windeployqt
         run: |
-          windeployqt.exe build/${{ matrix.build-type }}/QSyncUi.exe
+          windeployqt.exe build/QSyncUi.exe
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          path: build/${{ matrix.build-type }}
+          path: build/
           name: ${{ matrix.build-type }}-deployed
 
 
