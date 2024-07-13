@@ -40,7 +40,8 @@ jobs:
         run: |
           #set DCMAKE_PREFIX_PATH to environment variable %QTDIR%
           cmake -B build -S . -G "MinGW Makefiles" -DCMAKE_PREFIX_PATH=$env:QTDIR  -DCMAKE_BUILD_TYPE=${{ matrix.build-type }}
-          cmake --build build --config ${{ matrix.build-type }} --parallel 32
+          cd build
+          mingw32-make -j16 
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
