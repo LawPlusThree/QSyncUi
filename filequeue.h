@@ -62,6 +62,18 @@ public:
         }
     }
 
+    void addDeleteObjectRequest(const QString &RemotePath, const QString &versionId, int fileTaskId) {
+        QMutexLocker locker(&mutex);
+        RequestInfo requestInfo;
+        requestInfo.RemotePath = RemotePath;
+        requestInfo.versionId = versionId;
+        requestInfo.methodId = 3;
+        requestQueue.enqueue({requestInfo, fileTaskId});
+        if (activeRequests < maxConcurrentRequests) {
+            startNextRequest();
+        }
+    }
+
 signals:
     void requestProgress(int fileTaskId, qint64 bytesReceived, qint64 bytesTotal);
     void requestFinished(int fileTaskId, QNetworkReply::NetworkError error);
@@ -109,6 +121,8 @@ private:
                 cosClient.save2LocalWithoutVersion(requestInfo.key, requestInfo.localPath);
             }else if (requestInfo.methodId == 2) {
                 cosClient.putObjectCopy(requestInfo.copyto,requestInfo.RemotePath);
+            }else if (requestInfo.methodId == 3) {
+                cosClient.deleteObject(requestInfo.RemotePath,requestInfo.versionId);
             }
             //requestFunc();
         });
