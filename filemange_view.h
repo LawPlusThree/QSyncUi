@@ -5,6 +5,7 @@
 #include "ElaProgressBar.h"
 #include "linknewfolder_window.h"
 #include "setexcludeditems_view.h"
+#include "usermanager.h"
 
 class ElaToggleButton;
 class ElaPushButton;
@@ -15,7 +16,7 @@ class FileManagePage:public ElaScrollPage
 {
     Q_OBJECT
 public:
-    FileManagePage(QWidget* parent = nullptr);
+    FileManagePage(QWidget* parent = nullptr,UserManager *um = nullptr);
     ~FileManagePage();
     void addDirCard(QString filename,quint64 datasize,QString bindtime,int id);
     void removeDirCard(int id);

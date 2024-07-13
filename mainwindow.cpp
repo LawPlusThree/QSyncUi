@@ -37,7 +37,7 @@ MainWindow::MainWindow(QWidget *parent)
     setUserInfoCardSubTitle("");
     setWindowTitle("珞珈云");
     _syncingPage = new SyncingPage(this);
-    _filemanagePage=new FileManagePage(this);
+    _filemanagePage=new FileManagePage(this,this->um);
     _historysyncPage = new HistorysyncPage(this);
     _historyviewPage = new HistoryViewPage(this);
 
@@ -111,7 +111,7 @@ MainWindow::MainWindow(QWidget *parent)
                     ElaText* subTitle = new ElaText("确定要注销账号吗?一旦注销账号无法恢复！", this);
                     subTitle->setTextStyle(ElaTextType::Body);
                     cancelcheckBox = new ElaCheckBox("我已了解注销账号的后果，并确认继续。", this);
-                    cancelcheckBox->setStyleSheet("QCheckBox { font-size: 14px; }");
+                    //cancelcheckBox->setStyleSheet("ElaCheckBox { font-size: 14px; }");
                     centralVLayout->addWidget(title);
                     centralVLayout->addWidget(subTitle);
                     centralVLayout->addWidget(cancelcheckBox);
