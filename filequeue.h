@@ -85,10 +85,9 @@ private:
             connect(&cosClient, &COSClient::finished, this, [=](QNetworkReply::NetworkError error){
                 onRequestFinished(fileTaskId, error);
                 },Qt::BlockingQueuedConnection);
-
             if (requestInfo.methodId == 0) {
-                    cosClient.blockingPutFinishSignal=true;
-                 cosClient.multiUpload(requestInfo.key, requestInfo.localPath, QMap<QString, QString>());
+                cosClient.blockingPutFinishSignal=true;
+                cosClient.multiUpload(requestInfo.key, requestInfo.localPath, QMap<QString, QString>());
             } else if (requestInfo.methodId == 1) {
                 cosClient.save2LocalWithoutVersion(requestInfo.key, requestInfo.localPath);
             }

@@ -4,6 +4,8 @@
 #include <QHBoxLayout>
 #include <QStackedWidget>
 #include <QVBoxLayout>
+#include <QDesktopServices>
+#include <QUrl>
 
 #include "ElaContentDialog.h"
 #include "ElaEventBus.h"
@@ -166,6 +168,11 @@ MainWindow::MainWindow(QWidget *parent)
                         onMessage("请先登录!","Error");
                     }
                 }
+                else if(feedbackKey==nodeKey)
+                {
+                    QUrl surveyUrl("https://www.wjx.cn/vm/mnzxQPj.aspx/");
+                    QDesktopServices::openUrl(surveyUrl);
+                }
     });
 
     qDebug() << ElaEventBus::getInstance()->getRegisteredEventsName();
@@ -317,7 +324,7 @@ void MainWindow::onMessage( QString message, QString type)
     }
 }
 
-void MainWindow::onUserAddNewTask(const SyncTask &task)
+void MainWindow::onUserAddNewTask(const SyncTask &_task)
 {
     if(CurrentUser==nullptr)
     {
@@ -325,19 +332,20 @@ void MainWindow::onUserAddNewTask(const SyncTask &task)
         return;
     }
     if(
-        CurrentUser->addTask(task.getLocalPath(),task.getRemotePath(),task.getSyncStatus(),1,1)){
+        CurrentUser->addTask(_task.getLocalPath(),_task.getRemotePath(),_task.getSyncStatus(),1,1)){
 
         if(_syncTaskDatabaseManager!=nullptr)
         {
-            int res=_syncTaskDatabaseManager->addTask(task);
+            int res=_syncTaskDatabaseManager->addTask(_task);
             bool isSuccess=false;
             TaskToken tt=CurrentUser->getUnifiedTaskToken();
             COSConfig cosConfig=CurrentUser->getS3Config();
             cosConfig.taskToken=tt;
+            SyncTask* task=nullptr;
             if(_syncCore!=nullptr)
             {
-                SyncTask mytask(task);
-                SyncTask* task=new SyncTask(mytask);
+                SyncTask mytask(_task);
+                task=new SyncTask(mytask);
                 task->setId(res);
                 QDateTime expiredTime=tt.expiredTime;
                 COSClient *cosclient=new COSClient(cosConfig, this);
@@ -346,13 +354,13 @@ void MainWindow::onUserAddNewTask(const SyncTask &task)
             }
             if(isSuccess)
             {
-                if (task.getLastSyncTime()==QDateTime::fromString("2000-01-01 00:00:00","yyyy-MM-dd hh:mm:ss"))
+                if (_task.getLastSyncTime()==QDateTime::fromString("2000-01-01 00:00:00","yyyy-MM-dd hh:mm:ss"))
                 {
                     QString timeDelta="从未同步";
-                    this->_filemanagePage->addDirCard(task.getLocalPath(),111,timeDelta,task.getId());
+                    this->_filemanagePage->addDirCard(task->getLocalPath(),111,timeDelta,task->getId());
                 }else{
-                    QString timeDelta=QString::number(task.getLastSyncTime().daysTo(QDateTime::currentDateTime()))+"天前";
-                    this->_filemanagePage->addDirCard(task.getLocalPath(),1111,timeDelta,task.getId());
+                    QString timeDelta=QString::number(task->getLastSyncTime().daysTo(QDateTime::currentDateTime()))+"天前";
+                    this->_filemanagePage->addDirCard(task->getLocalPath(),1111,timeDelta,task->getId());
                 }
                 onMessage("新文件夹链接成功。","Success");
             }
@@ -480,7 +488,7 @@ void MainWindow::onTaskTotalSize(qint64 size, int taskid) {
 }
 
 void MainWindow::onTaskUploadSize(qint64 size, int taskid) {
-    this->_filemanagePage->modifyDirCard(size,"正在同步",taskid);
+    this->_filemanagePage->modifyDirCard(size,"同步完成",taskid);
 }
 
 void MainWindow::onFileUploadTaskFinished(int fileTaskId)
