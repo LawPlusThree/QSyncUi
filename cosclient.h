@@ -83,6 +83,7 @@ public:
     }
     QString listObjects(const QString &prefix, const QString &marker);
     bool putObject(const QString &path, const QByteArray &data,const QString &contentType="application/octet-stream");
+    bool putObjectCopy(const QString &path, const QString &sourcePath);
     bool putLocalObject(const QString &path, const QString &localpath);
     QString initMultiUpload(const QString &path,const QMap<QString,QString> metaDatas=QMap<QString,QString>(),const  QString &contentType="application/octet-stream");
     QString initLocalMultiUpload(const QString &path, const  QString &localpath,QMap<QString,QString> metaDatas=QMap<QString,QString>());
