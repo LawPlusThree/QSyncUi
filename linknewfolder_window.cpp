@@ -11,6 +11,7 @@
 #include "ElaComboBox.h"
 #include "ElaMessageBar.h"
 #include "synctask.h"
+#include <QCompleter>
 
 linkNewFolder_window::linkNewFolder_window(QWidget *parent)
     : ElaWidget(parent,900,400)
@@ -53,10 +54,17 @@ linkNewFolder_window::linkNewFolder_window(QWidget *parent)
     lineEditArea2->setAttribute(Qt::WA_TranslucentBackground); // 设置背景透明
     QHBoxLayout* lineEditLayout2 = new QHBoxLayout(lineEditArea2);// 创建一个水平布局
     lineEditLayout2->setContentsMargins(0, 0, 0, 0); // 设置布局的边距
-    ElaLineEdit* folderName2 = new ElaLineEdit(this); // 创建一个 ElaLineEdit 对象
-    folderName2->setPlaceholderText("云端文件夹地址(只能包含大小写字母、数字、'-'和'/'，且必须以'/'结尾)"); // 设置输入提示文本
+    ElaComboBox* folderName2 = new ElaComboBox(this);
+    QStringList folderName2List{"haha/", "lala/", "yuanshen/"};
+    folderName2->addItems(folderName2List);
+    folderName2->setEditable(true); // 设置为可编辑
+    folderName2->lineEdit()->setPlaceholderText("云端文件夹地址(只能包含大小写字母、数字、'-'和'/'，且必须以'/'结尾)"); // 设置输入提示文本
     folderName2->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     folderName2->setFixedHeight(40); // 固定高度为40
+    folderName2->setCompleter(new QCompleter(folderName2->model(), folderName2));// 为下拉菜单设置自动完成器，使用下拉菜单自身的模型作为数据源
+    folderName2->completer()->setCompletionMode(QCompleter::PopupCompletion);// 设置自动完成器的完成模式为弹出补全，即输入时显示匹配的选项列表
+    folderName2->completer()->setCaseSensitivity(Qt::CaseInsensitive);// 设置自动完成器的大小写敏感性为不敏感，即输入时忽略大小写差异
+    folderName2->setCurrentIndex(-1);
     _checkBox = new ElaCheckBox("使用原文件夹名", this);
     _checkBox->setFixedSize(130, 20); // 设置按钮的固定大小
     lineEditLayout2->addWidget(folderName2, 1); // 将输入框添加到布局中
@@ -69,8 +77,8 @@ linkNewFolder_window::linkNewFolder_window(QWidget *parent)
     errorLabel->setFixedSize(500,20);
     errorLabel->hide(); // 默认隐藏错误信息标签
     // 然后，为folderName2添加失焦事件的处理
-    connect(folderName2, &ElaLineEdit::focusOut, [=]() {
-        QString inputText = folderName2->text();
+    connect(folderName2, &ElaComboBox::editTextChanged, [=]() {
+        QString inputText = folderName2->currentText();
         QRegularExpression re("^[a-zA-Z0-9/-]+/$");
         if (!re.match(inputText).hasMatch()) {
             // 如果输入不符合要求，显示错误信息标签
@@ -88,8 +96,8 @@ linkNewFolder_window::linkNewFolder_window(QWidget *parent)
             // 如果找到了'/'，则复制其后的内容到folderName2
             if (lastSlashIndex != -1) {
                 QString lastPart = folderName1Text.mid(lastSlashIndex + 1); // 包含最后一个'/'及其后的所有内容
-                folderName2->setText(lastPart + "/"); // 在folderName2中设置文本，并在末尾加上一个'/'
-                QString inputText = folderName2->text();
+                folderName2->setCurrentText(lastPart + "/"); // 在folderName2中设置文本，并在末尾加上一个'/'
+                QString inputText = folderName2->currentText();
                 QRegularExpression re("^[a-zA-Z0-9/-]+/$");
                 if (!re.match(inputText).hasMatch())
                     errorLabel->show();
@@ -124,7 +132,7 @@ linkNewFolder_window::linkNewFolder_window(QWidget *parent)
         this->hide();
     });
     connect(_pushButton3, &ElaPushButton::clicked, [=]() {
-        QString inputText = folderName2->text();
+        QString inputText = folderName2->currentText();
         QRegularExpression re("^[a-zA-Z0-9/-]+/$");
 
         if (!re.match(inputText).hasMatch()) {
@@ -135,10 +143,10 @@ linkNewFolder_window::linkNewFolder_window(QWidget *parent)
             // 如果输入符合要求，执行后续操作
             this->hide();
             qDebug() << "本地文件夹地址：" << folderName1->text();
-            qDebug() << "云端文件夹地址：" << folderName2->text();
+            qDebug() << "云端文件夹地址：" << folderName2->currentText();
             int syncOption = comboOptionToNumber[_comboBox->currentText()];
             qDebug() << "同步方式：" << syncOption;//["仅上传"] = 2;["仅下载"] = 3;["同步上传与下载"] = 1;
-            SyncTask task(folderName1->text(), folderName2->text(), syncOption);
+            SyncTask task(folderName1->text(), folderName2->currentText(), syncOption);
             emit onNewTask(task);
         }
     });
