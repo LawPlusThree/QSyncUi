@@ -156,6 +156,11 @@ void SyncCore::doTask(SyncTask *task)
     connect(thread,&SyncThread::callRenameFileTask,this,[=](const QString &cloudPath, const QString &copyToPath, int fileTaskId){
             requestManager->addPutObjectCopyRequest(cloudPath,copyToPath,fileTaskId);
     },Qt::BlockingQueuedConnection);
+    connect(thread,&SyncThread::callDeleteFileTask,this,[=](const QString &cloudPath, const QString &versionId, int fileTaskId){
+            requestManager->addDeleteObjectRequest(cloudPath,versionId,fileTaskId);
+    },Qt::BlockingQueuedConnection);
+
+
     thread->start();
 }
 
