@@ -25,38 +25,18 @@ jobs:
           version: '6.7.2'
           host: 'windows'
           target: 'desktop'
-          arch: 'win64_msvc2019_64'
+          arch: 'win64_mingw'
+          tools: 'tools_mingw,qt.tools.win64_mingw810 tools_ninja tools_opensslv3_x64 tools_vcredist,qt.tools.vcredist_msvc2022_x64'
           cache: true
 
       - uses: lukka/get-cmake@latest
 
-      - name: Cache AWS SDK
-        id: cache-aws-sdk-cpp
-        uses: actions/cache@v3
-        env:
-          cache-name: cache-aws-sdk
-        with:
-          path: "C:/Program Files (x86)/aws"
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{matrix.build-type}}
 
-      - if: ${{ steps.cache-aws-sdk-cpp.outputs.cache-hit != 'true' }}
-        name: Setup aws-sdk-cpp
-        run: |
-          git clone --recurse-submodules https://github.com/aws/aws-sdk-cpp
-          cd aws-sdk-cpp
-          mkdir build
-          cd build
-          cmake .. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX="C:/Program Files (x86)/aws" -DBUILD_ONLY="s3"
-          cmake --build . --config=${{matrix.build-type}}
-          cmake --install . --config=${{matrix.build-type}}
-          #使用xcopy复制C:\Program Files (x86)\aws\bin下的所有dll到build/${{ matrix.build-type }}文件夹，自动覆盖
-          cd ../..
-          #display the content of the directory
 
       - name: Run CMake
         run: |
           #set DCMAKE_PREFIX_PATH to environment variable %QTDIR%
-          cmake -B build -S . -G "Visual Studio 17 2022" -DCMAKE_PREFIX_PATH=$env:QTDIR  -DCMAKE_BUILD_TYPE=${{ matrix.build-type }}
+          cmake -B build -S . -G "MinGW Makefiles" -DCMAKE_PREFIX_PATH=$env:QTDIR  -DCMAKE_BUILD_TYPE=${{ matrix.build-type }}
           cmake --build build --config ${{ matrix.build-type }} --parallel 32
           xcopy "C:\Program Files (x86)\aws\bin" "build\${{ matrix.build-type }}" /s /y
 
