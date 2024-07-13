@@ -20,9 +20,9 @@ void FileCardProxy::addFileCard(FileCard *card, const int &id) {
     }
 }
 
-void FileCardProxy::addFileCard(QString filename,quint64 datasize,double speed,int progress,const int &id)
+void FileCardProxy::addFileCard(QString filename,quint64 datasize,double speed,int progress,int syncStatus,const int &id)
 {
-    FileCard*card=new FileCard(filename,datasize,speed,progress,id);
+    FileCard*card=new FileCard(filename,datasize,speed,progress,syncStatus,id);
     if (card && parentWidget && !cardMap.contains(id)) {
         cardMap[id] = card;
         filesLayout->addWidget(card);

@@ -17,7 +17,7 @@ class SyncingPage : public ElaScrollPage
 public:
     SyncingPage(QWidget* parent = nullptr);
     ~SyncingPage();
-    void addFile(QString filename, quint64 datasize,double speed,int progress,int id);
+    void addFile(QString filename, quint64 datasize,double speed,int progress,int syncStatus,int id);
     void removeFile(int id);
     //void modifyFile(int d,int s,int p,int id);
     //void modifyFile(int p,int id);

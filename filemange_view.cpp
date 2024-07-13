@@ -112,7 +112,7 @@ FileManagePage::FileManagePage(QWidget* parent):ElaScrollPage(parent)
     QVBoxLayout* catalogueArea0 = new QVBoxLayout();
     catalogueArea0->addWidget(catalogueText0, 0, Qt::AlignCenter);
 
-    ElaText* catalogueText1 = new ElaText("文件名", this);
+    ElaText* catalogueText1 = new ElaText("文件夹名", this);
     catalogueText1->setTextSize(16);
     catalogueText1->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     //QWidget* filenameWidget = new QWidget();
@@ -159,7 +159,7 @@ FileManagePage::FileManagePage(QWidget* parent):ElaScrollPage(parent)
     scrollArea->viewport()->setStyleSheet("background:transparent;");//设置背景透明
 
     _dircardProxy=new DirCardProxy(this);
-    addDirCard("崩坏：星穹铁道",4300000000,"2024.7.12",710);
+    addDirCard("崩坏：星穹铁道4444444444444444444444445","米游社19999999999999999999992",4300000000,"2024.7.12",3,710);
 
     scrollArea->setWidget(_dircardProxy);
     scrollArea->setWidgetResizable(true); // 允许scrollArea根据内容自动调整大小
@@ -186,15 +186,21 @@ FileManagePage::~FileManagePage()
 
 }
 
-void FileManagePage::addDirCard(QString filename,quint64 datasize,QString bindtime,int id)
+void FileManagePage::addDirCard(QString filename,QString cloudname,quint64 datasize,QString bindtime,int syncStatus,int id)
 {
-    DirCard*newDir=new DirCard(filename,datasize,bindtime,id);
+    DirCard*newDir=new DirCard(filename,cloudname,datasize,bindtime,syncStatus,id);
     connect(newDir,&DirCard::relieve,this,&FileManagePage::removeDirCard);
     _dircardProxy->addDirCard(newDir,id);
+
     QFontMetrics metrics(newDir->filename->font());
-    QString elidedText = metrics.elidedText(newDir->fullText, Qt::ElideMiddle, filenameWidget->width()-20);
+    QString elidedText = metrics.elidedText(newDir->fullText, Qt::ElideMiddle, filenameWidget->width()/2-25);
     newDir->filename->setText(elidedText);
     newDir->filename->setToolTip(newDir->fullText);
+
+    QFontMetrics metrics2(newDir->filename->font());
+    QString elidedText2 = metrics2.elidedText(newDir->cfullText, Qt::ElideMiddle, filenameWidget->width()/2-25);
+    newDir->cloudname->setText(elidedText2);
+    newDir->cloudname->setToolTip(newDir->cfullText);
 }
 
 void FileManagePage::removeDirCard(int id)
@@ -213,9 +219,14 @@ void FileManagePage::resizeEvent(QResizeEvent* event) {
     auto thisMap=this->_dircardProxy->cardMap;
     for (auto &x:thisMap){
         QFontMetrics metrics(x->filename->font());
-        QString elidedText = metrics.elidedText(x->fullText, Qt::ElideMiddle, filenameWidget->width()-20);
+        QString elidedText = metrics.elidedText(x->fullText, Qt::ElideMiddle, filenameWidget->width()/2-25);
         x->filename->setText(elidedText);
         x->filename->setToolTip(x->fullText);
+
+        QFontMetrics metrics2(x->filename->font());
+        QString elidedText2 = metrics2.elidedText(x->cfullText, Qt::ElideMiddle, filenameWidget->width()/2-25);
+        x->cloudname->setText(elidedText2);
+        x->cloudname->setToolTip(x->cfullText);
     }
 }
 
@@ -224,8 +235,13 @@ void FileManagePage::showEvent(QShowEvent* event) {
     auto thisMap=this->_dircardProxy->cardMap;
     for (auto &x:thisMap){
         QFontMetrics metrics(x->filename->font());
-        QString elidedText = metrics.elidedText(x->fullText, Qt::ElideMiddle, filenameWidget->width()-20);
+        QString elidedText = metrics.elidedText(x->fullText, Qt::ElideMiddle, filenameWidget->width()/2-25);
         x->filename->setText(elidedText);
         x->filename->setToolTip(x->fullText);
+
+        QFontMetrics metrics2(x->filename->font());
+        QString elidedText2 = metrics2.elidedText(x->cfullText, Qt::ElideMiddle, filenameWidget->width()/2-25);
+        x->cloudname->setText(elidedText2);
+        x->cloudname->setToolTip(x->cfullText);
     }
 }

@@ -4,10 +4,22 @@
 #include"ElaCheckBox.h"
 #include"ElaIconButton.h"
 #include"ElaProgressBar.h"
-FileCard::FileCard(QString f, quint64 d,double s,int p,int Id)
+FileCard::FileCard(QString f, quint64 d,double s,int p,int syncStatus,int Id)
 {
     // 创建ElaText对象来显示文件名，而不是直接在_checkBox中显示
     filename = new ElaText(f, this);
+
+    if(syncStatus==1)//上传
+    {
+        syncBtn=new ElaIconButton(ElaIconType::ArrowUp,15);
+        syncBtn->setEnabled(true);
+    }
+    else//下载
+    {
+        syncBtn=new ElaIconButton(ElaIconType::ArrowDown,15);
+        syncBtn->setEnabled(true);
+    }
+    syncBtn->setFixedSize(15, 15);
 
     QString size;
     QString dataStr;
@@ -92,13 +104,16 @@ FileCard::FileCard(QString f, quint64 d,double s,int p,int Id)
     proBar->setMinimum(0);
     proBar->setMaximum(100);
     proBar->setValue(progress);
-    //progress->setTextSize(16);
     speed->setTextSize(16);
-    QHBoxLayout* upBarArea = new QHBoxLayout();
-    upBarArea->addWidget(speed,0,Qt::AlignCenter);
-    //upBarArea->addWidget(progress,0,Qt::AlignCenter);
+    speed->setFixedWidth(80);
+
+    QWidget*upBar=new QWidget();
+    QHBoxLayout* upBarArea = new QHBoxLayout(upBar);
+    upBarArea->addWidget(syncBtn,0,Qt::AlignRight);
+    upBarArea->addWidget(speed,0,Qt::AlignLeft);
     QVBoxLayout* proBarArea = new QVBoxLayout();
-    proBarArea->addLayout(upBarArea);
+    //upBar->setFixedWidth(110);
+    proBarArea->addWidget(upBar,0,Qt::AlignLeft);
     proBarArea->addWidget(proBar, 0, Qt::AlignCenter);
     proBarArea->setAlignment(Qt::AlignCenter);
 
@@ -120,8 +135,8 @@ FileCard::FileCard(QString f, quint64 d,double s,int p,int Id)
     FileCardArea->addLayout(actionArea);
     FileCardArea->setStretchFactor(checkBoxArea, 25);
     FileCardArea->setStretchFactor(filenameWidget, 500);
-    FileCardArea->setStretchFactor(dataSizeArea, 100);
-    FileCardArea->setStretchFactor(proBarArea, 140);
+    FileCardArea->setStretchFactor(dataSizeArea, 110);
+    FileCardArea->setStretchFactor(proBarArea, 130);
     FileCardArea->setStretchFactor(actionArea, 60);
 
     connect(relieveBtn, &ElaIconButton::clicked, this, &FileCard::on_relieveBtn_clicked);

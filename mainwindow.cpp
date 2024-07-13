@@ -260,10 +260,10 @@ void MainWindow::onUserLoggedIn(User user)
         if (x.getLastSyncTime()==QDateTime::fromString("2000-01-01 00:00:00","yyyy-MM-dd hh:mm:ss"))
         {
             QString timeDelta="从未同步";
-            this->_filemanagePage->addDirCard(x.getLocalPath(),11,timeDelta,x.getId());
+            this->_filemanagePage->addDirCard(x.getLocalPath(),x.getRemotePath(),11,timeDelta,task->getSyncStatus(),x.getId());
         }else{
             QString timeDelta=QString::number(x.getLastSyncTime().daysTo(QDateTime::currentDateTime()))+"天前";
-            this->_filemanagePage->addDirCard(x.getLocalPath(),11,timeDelta,x.getId());
+            this->_filemanagePage->addDirCard(x.getLocalPath(),x.getRemotePath(),11,timeDelta,task->getSyncStatus(),x.getId());
         }
         _syncCore->addTask(task);
     }
@@ -357,10 +357,10 @@ void MainWindow::onUserAddNewTask(const SyncTask &_task)
                 if (_task.getLastSyncTime()==QDateTime::fromString("2000-01-01 00:00:00","yyyy-MM-dd hh:mm:ss"))
                 {
                     QString timeDelta="从未同步";
-                    this->_filemanagePage->addDirCard(task->getLocalPath(),111,timeDelta,task->getId());
+                    this->_filemanagePage->addDirCard(task->getLocalPath(),task->getRemotePath(),111,timeDelta,task->getSyncStatus(),task->getId());
                 }else{
                     QString timeDelta=QString::number(task->getLastSyncTime().daysTo(QDateTime::currentDateTime()))+"天前";
-                    this->_filemanagePage->addDirCard(task->getLocalPath(),1111,timeDelta,task->getId());
+                    this->_filemanagePage->addDirCard(task->getLocalPath(),task->getRemotePath(),1111,timeDelta,task->getSyncStatus(),task->getId());
                 }
                 onMessage("新文件夹链接成功。","Success");
             }
@@ -434,7 +434,7 @@ void MainWindow::onFileUploadTaskCreated(const QString &localPath, int fileTaskI
 
     QFile file(localPath);
     quint64 size=file.size();
-    _syncingPage->addFile(localPath,size,0,0,fileTaskId);
+    _syncingPage->addFile(localPath,size,0,0,1,fileTaskId);
     qDebug()<<"File upload task created"<<localPath<<" "<<fileTaskId;
 }
 
@@ -458,7 +458,7 @@ void MainWindow::onFileUploadTaskPaused(int fileTaskId) {
 }
 
 void MainWindow::onFileDownloadTaskCreated(const QString &localPath, int fileTaskId,quint64 totalSize) {
-    _syncingPage->addFile(localPath,totalSize,0,0,fileTaskId);
+    _syncingPage->addFile(localPath,totalSize,0,0,2,fileTaskId);
     qDebug()<<"File download task created"<<localPath<<" "<<fileTaskId;
 }
 

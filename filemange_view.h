@@ -17,7 +17,7 @@ class FileManagePage:public ElaScrollPage
 public:
     FileManagePage(QWidget* parent = nullptr);
     ~FileManagePage();
-    void addDirCard(QString filename,quint64 datasize,QString bindtime,int id);
+    void addDirCard(QString filename,QString cloudname,quint64 datasize,QString bindtime,int syncStatus,int id);
     void removeDirCard(int id);
     void modifyDirCard(quint64 datasize,QString bindtime,int id);
     DirCardProxy*_dircardProxy;
