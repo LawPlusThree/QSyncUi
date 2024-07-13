@@ -40,7 +40,7 @@ public:
     int getId() const { return id; }
     int getSyncStatus() const { return syncStatus; }
     void setSyncStatus(int status) { syncStatus = status; }
-    void setId(int id) { this->id = id; }
+    void setId(int _id) { id = _id; }
     QDateTime getLastSyncTime() const { return lastSyncTime; }
     void setLastSyncTime(QDateTime time) { lastSyncTime = time; }
     friend class SyncTaskDatabaseManager;
