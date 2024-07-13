@@ -54,7 +54,8 @@ void SyncThread::readCLoudDirectory(const QString &cloudpath)
         xml=cosclient->listObjects(cloudpath,bucket.nextMarker);
         bucket=processer.processXml(xml);
         for(auto ct:bucket.contents){
-            QString localPath=task->getLocalPath()+"/"+ct.key.mid(task->getRemotePath().length());
+            //不保留key的md5
+            QString localPath=task->getLocalPath()+"/"+ct.key.mid(task->getRemotePath().length()+33);
             QFileInfo info(localPath);
             bool needDownload=false;
             if(!info.exists()){

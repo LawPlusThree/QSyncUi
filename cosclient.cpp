@@ -47,22 +47,20 @@ QString COSClient::listObjects(const QString &prefix, const QString &marker)
 }
 QString COSClient::_prefixHandle(const QString &rawPath)
 {
-    QString prefix = rawPath;
-    if(rawPath.contains(allowPrefix))
+    QString myPath = rawPath;
+    //如果前33位是allowPrefix，什么都不做
+    if (myPath.startsWith(allowPrefix))
     {
-        return rawPath;
-    }
-    if(rawPath.startsWith("/"))
-    {
-        prefix = rawPath.mid(1);
-    }
-    if(rawPath.endsWith("/"))
-    {
-        return allowPrefix + prefix;
+        return myPath;
     }
     else
     {
-        return allowPrefix + prefix + "/";
+        if (myPath.startsWith("/"))
+        {
+            myPath = myPath.mid(1);
+        }
+        myPath = allowPrefix + myPath;
+        return myPath;
     }
 }
 bool COSClient::putObject(const QString &path, const QByteArray &data, const QString &contentType)
