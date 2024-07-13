@@ -4,6 +4,8 @@
 #include <QHBoxLayout>
 #include <QStackedWidget>
 #include <QVBoxLayout>
+#include <QDesktopServices>
+#include <QUrl>
 
 #include "ElaContentDialog.h"
 #include "ElaEventBus.h"
@@ -165,6 +167,11 @@ MainWindow::MainWindow(QWidget *parent)
                     else{
                         onMessage("请先登录!","Error");
                     }
+                }
+                else if(feedbackKey==nodeKey)
+                {
+                    QUrl surveyUrl("https://www.wjx.cn/vm/mnzxQPj.aspx/");
+                    QDesktopServices::openUrl(surveyUrl);
                 }
     });
 
