@@ -270,7 +270,11 @@ void MainWindow::onUserLoggedIn(User user)
         }
         _syncCore->addTask(task);
     }
-
+    QVector<QString> s3Dirs = CurrentUser->getS3Dirs();
+    qDebug() << "S3 Dirs:";
+    for (const QString& s3Dir : s3Dirs) {
+        qDebug() << s3Dir;
+    }
 }
 
 void MainWindow::exitLogin()
@@ -491,7 +495,7 @@ void MainWindow::onTaskTotalSize(qint64 size, int taskid) {
 }
 
 void MainWindow::onTaskUploadSize(qint64 size, int taskid) {
-    this->_filemanagePage->modifyDirCard(size,"同步完成",taskid);
+    //this->_filemanagePage->modifyDirCard(size,"同步完成",taskid);
 }
 
 void MainWindow::onFileUploadTaskFinished(int fileTaskId)
