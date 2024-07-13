@@ -241,7 +241,7 @@ QString COSClient::multiUpload(const QString &path, const QString &localpath, QM
     //初始化分片上传
     QString uploadId = initLocalMultiUpload(path, localpath, metaDatas);
     //分片上传
-    int partNumber = 1;
+    int partNumber = 1;//x
     QMap<int, QString> partEtagMap;
     while (!file.atEnd())
     {

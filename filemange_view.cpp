@@ -69,7 +69,11 @@ FileManagePage::FileManagePage(QWidget* parent):ElaScrollPage(parent)
     comboBoxText->setTextSize(15);
     comboBoxLayout->addWidget(comboBoxText);
     comboBoxLayout->addWidget(_comboBox);
-
+    connect(_comboBox, &ElaComboBox::currentIndexChanged, [this](int index) {
+        qDebug() << "当前选中的索引为：" << index;
+        qDebug() << "当前选中的文本为：" << _comboBox->currentText();
+        emit setThreadNum(_comboBox->currentText().toInt());
+    });
     QWidget* pushButtonArea = new QWidget();
     pushButtonArea->setWindowFlags(Qt::FramelessWindowHint); // 去除窗口边框
     pushButtonArea->setAttribute(Qt::WA_TranslucentBackground); // 设置背景透明
