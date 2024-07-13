@@ -17,7 +17,7 @@
 //下载任务表名是downtask:
 //字段有text remotePath,text localPath,bigint dataSize,int totalPiece,text etags, int isPause
 //历史任务表名是finishtask:
-//字段有text localPath,bigint dataSize,date sycnTime,int status
+//字段有text remotePath,text localPath,bigint dataSize,date sycnTime,int status
 
 struct upTask
 {
@@ -64,6 +64,7 @@ struct downTask
 struct finishTask
 {
     int taskId;
+    QString remotePath;
     QString localPath;
     quint64 dataSize;
     QDate sycnTime;
@@ -88,13 +89,13 @@ public:
     void createConnection(QString account);
     void insertUpTask(QString remotePath, QString localPath, quint64 dataSize,int totalPiece,QMap<int,QString> etags, bool isPause);
     void insertDownTask(QString remotePath, QString localPath, quint64 dataSize,int totalPiece,QMap<int,QString> etags, bool isPause);
-    void insertFinishTask(int taskId, QString localPath, quint64 dataSize, QDate sycnTime, int status);
+    void insertFinishTask(int taskId,QString remotePath, QString localPath, quint64 dataSize, QDate sycnTime, int status);
     void deleteUpTask(QString localPath);
     void deleteDownTask(QString localPath);
     void deleteFinishTask(QString localPath);
     void updateUpTask(QString remotePath, QString localPath, quint64 dataSize,int totalPiece,QMap<int,QString> etags, bool isPause);
     void updateDownTask(QString remotePath, QString localPath, quint64 dataSize,int totalPiece,QMap<int,QString> etags, bool isPause);
-    void updateFinishTask(int taskId, QString localPath, quint64 dataSize, QDate sycnTime, int status);
+    void updateFinishTask(int taskId,QString remotePath, QString localPath, quint64 dataSize, QDate sycnTime, int status);
     QList<upTask> readUpTask();
     QList<downTask> readDownTask();
     QList<finishTask> readFinishTask();
