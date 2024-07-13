@@ -4,6 +4,10 @@ on:
   #每天早上，中午，下午触发
   schedule:
     - cron: '0 0,12,18 * * *'
+  #每次push到master分支触发
+  push:
+    branches:
+      - main
 
 jobs:
   build:
@@ -38,7 +42,6 @@ jobs:
           #set DCMAKE_PREFIX_PATH to environment variable %QTDIR%
           cmake -B build -S . -G "MinGW Makefiles" -DCMAKE_PREFIX_PATH=$env:QTDIR  -DCMAKE_BUILD_TYPE=${{ matrix.build-type }}
           cmake --build build --config ${{ matrix.build-type }} --parallel 32
-          xcopy "C:\Program Files (x86)\aws\bin" "build\${{ matrix.build-type }}" /s /y
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
