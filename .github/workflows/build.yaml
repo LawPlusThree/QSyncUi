@@ -21,7 +21,6 @@ jobs:
         with:
           submodules: recursive
 
-      - uses: ilammy/msvc-dev-cmd@v1
 
       - name: Setup Qt
         uses: jurplel/install-qt-action@v4
@@ -30,7 +29,7 @@ jobs:
           host: 'windows'
           target: 'desktop'
           arch: 'win64_mingw'
-          tools: 'tools_mingw,qt.tools.win64_mingw810 tools_ninja tools_opensslv3_x64 tools_vcredist,qt.tools.vcredist_msvc2022_x64'
+          tools: 'tools_ninja tools_opensslv3_x64 tools_vcredist,qt.tools.vcredist_msvc2022_x64 tools_mingw1310'
           cache: true
 
       - uses: lukka/get-cmake@latest
