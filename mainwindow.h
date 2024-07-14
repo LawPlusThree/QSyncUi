@@ -30,6 +30,7 @@ class MainWindow : public ElaWindow
 
 public:
     MainWindow(QWidget *parent = nullptr);
+    MainWindow(QString action,QVector<QString> argv, QWidget *parent = nullptr);
     ~MainWindow();
     loginwin* login=new loginwin();
     Q_SLOT void onCloseButtonClicked();

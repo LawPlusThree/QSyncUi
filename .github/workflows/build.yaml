@@ -48,6 +48,7 @@ jobs:
           copy $env:QT_ROOT_DIR\bin\libwinpthread-1.dll .
           #clean up
           Remove-Item -Recurse -Force CMakeFiles
+          Remove-Item -Recurse -Force thirdParty
           Remove-Item -Force CMakeCache.txt
           Remove-Item -Force cmake_install.cmake
           Remove-Item -Force Makefile
@@ -91,3 +92,25 @@ jobs:
           files: |
             build/${{ matrix.build-type }}.7z
       
+
+      - name: Install NSIS
+        if: startsWith(github.ref, 'refs/tags/') && ${{ matrix.build-type }} == 'Release'
+        run: |
+          iwr -useb get.scoop.sh -outfile 'install.ps1'
+          .\install.ps1 -RunAsAdmin
+          scoop update
+          scoop bucket add extras
+          scoop install nsis
+      
+      - name: Create installer
+        if: startsWith(github.ref, 'refs/tags/') && ${{ matrix.build-type }} == 'Release'
+        uses: joncloud/makensis-action@v4.1
+        with:
+          arguments: "/DPRODUCT_VERSION=${{ github.ref_name }}"
+
+      - name: Upload installer
+        if: startsWith(github.ref, 'refs/tags/') && ${{ matrix.build-type }} == 'Release'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            LogiCloud.exe
