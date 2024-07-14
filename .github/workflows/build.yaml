@@ -6,8 +6,8 @@ on:
     - cron: '0 0,12,18 * * *'
   #每次push到master分支触发
   push:
-    branches:
-      - main
+    tags:
+      - '*' # Push events to matching refs (exact tag match)
 
 jobs:
   build:
