@@ -202,12 +202,12 @@ void FileManagePage::addDirCard(QString filename,QString cloudname,quint64 datas
     _dircardProxy->addDirCard(newDir,id);
 
     QFontMetrics metrics(newDir->filename->font());
-    QString elidedText = metrics.elidedText(newDir->fullText, Qt::ElideMiddle, filenameWidget->width()/2-25);
+    QString elidedText = metrics.elidedText(newDir->fullText, Qt::ElideMiddle, filenameWidget->width()/2-35);
     newDir->filename->setText(elidedText);
     newDir->filename->setToolTip(newDir->fullText);
 
     QFontMetrics metrics2(newDir->filename->font());
-    QString elidedText2 = metrics2.elidedText(newDir->cfullText, Qt::ElideMiddle, filenameWidget->width()/2-25);
+    QString elidedText2 = metrics2.elidedText(newDir->cfullText, Qt::ElideMiddle, filenameWidget->width()/2-35);
     newDir->cloudname->setText(elidedText2);
     newDir->cloudname->setToolTip(newDir->cfullText);
 }
@@ -241,12 +241,12 @@ void FileManagePage::resizeEvent(QResizeEvent* event) {
     auto thisMap=this->_dircardProxy->cardMap;
     for (auto &x:thisMap){
         QFontMetrics metrics(x->filename->font());
-        QString elidedText = metrics.elidedText(x->fullText, Qt::ElideMiddle, filenameWidget->width()/2-25);
+        QString elidedText = metrics.elidedText(x->fullText, Qt::ElideMiddle, filenameWidget->width()/2-35);
         x->filename->setText(elidedText);
         x->filename->setToolTip(x->fullText);
 
         QFontMetrics metrics2(x->filename->font());
-        QString elidedText2 = metrics2.elidedText(x->cfullText, Qt::ElideMiddle, filenameWidget->width()/2-25);
+        QString elidedText2 = metrics2.elidedText(x->cfullText, Qt::ElideMiddle, filenameWidget->width()/2-35);
         x->cloudname->setText(elidedText2);
         x->cloudname->setToolTip(x->cfullText);
     }
@@ -257,12 +257,12 @@ void FileManagePage::showEvent(QShowEvent* event) {
     auto thisMap=this->_dircardProxy->cardMap;
     for (auto &x:thisMap){
         QFontMetrics metrics(x->filename->font());
-        QString elidedText = metrics.elidedText(x->fullText, Qt::ElideMiddle, filenameWidget->width()/2-25);
+        QString elidedText = metrics.elidedText(x->fullText, Qt::ElideMiddle, filenameWidget->width()/2-35);
         x->filename->setText(elidedText);
         x->filename->setToolTip(x->fullText);
 
         QFontMetrics metrics2(x->filename->font());
-        QString elidedText2 = metrics2.elidedText(x->cfullText, Qt::ElideMiddle, filenameWidget->width()/2-25);
+        QString elidedText2 = metrics2.elidedText(x->cfullText, Qt::ElideMiddle, filenameWidget->width()/2-35);
         x->cloudname->setText(elidedText2);
         x->cloudname->setToolTip(x->cfullText);
     }
