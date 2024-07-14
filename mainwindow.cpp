@@ -184,6 +184,29 @@ MainWindow::MainWindow(QWidget *parent)
     autologin();
 }
 
+MainWindow::MainWindow(QString action, QVector<QString> argv, QWidget *parent):
+    MainWindow(parent)
+{
+    if (CurrentUser==nullptr){
+        onMessage("请先登录","Error");
+    _action=action;
+    _argv=argv;
+    login->show();
+    }
+    else{
+        ArgvProcess(action,argv);
+    }
+}
+
+void MainWindow::ArgvProcess(QString action, QVector<QString> argv)
+{
+    onMessage(action,"Info");
+    onMessage(argv.join(" "),"Info");
+    if (action=="ver"){
+        this->navigation(this->_historyviewPage->property("ElaPageKey").toString());
+    }
+}
+
 MainWindow::~MainWindow()
 {
     delete um;
@@ -276,6 +299,10 @@ void MainWindow::onUserLoggedIn(User user)
     qDebug() << "S3 Dirs:";
     for (const QString& s3Dir : s3Dirs) {
         qDebug() << s3Dir;
+    }
+
+    if(_action!=""){
+        ArgvProcess(_action,_argv);
     }
 }
 

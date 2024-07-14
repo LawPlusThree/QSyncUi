@@ -33,6 +33,7 @@ jobs:
           arch: 'win64_mingw'
           tools: 'tools_ninja tools_opensslv3_x64 tools_vcredist,qt.tools.vcredist_msvc2022_x64 tools_mingw1310'
           cache: true
+          modules: 'qt5compat'
 
       - uses: lukka/get-cmake@latest
 
@@ -79,7 +80,7 @@ jobs:
       - name: Compress artifacts
         if: startsWith(github.ref, 'refs/tags/')
         run: |
-          7z a build/${{ matrix.build-type }}.7z build/${{ matrix.build-type }}
+          7z a ${{ matrix.build-type }}.7z build/
 
       - name: Create Release
         if: startsWith(github.ref, 'refs/tags/')
@@ -92,11 +93,11 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            build/${{ matrix.build-type }}.7z
+            ${{ matrix.build-type }}.7z
       
 
       - name: Install NSIS
-        if: startsWith(github.ref, 'refs/tags/') && matrix.build-type == 'Release'
+        if:  matrix.build-type == 'Release'
         run: |
           iwr -useb get.scoop.sh -outfile 'install.ps1'
           .\install.ps1 -RunAsAdmin
@@ -105,10 +106,15 @@ jobs:
           scoop install nsis
       
       - name: Create installer
-        if: startsWith(github.ref, 'refs/tags/') && matrix.build-type == 'Release'
+        if: matrix.build-type == 'Release'
         uses: joncloud/makensis-action@v4.1
         with:
           arguments: "/DPRODUCT_VERSION=${{ github.ref_name }}"
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          path: LogiCloud.exe
+          name: ${{ matrix.build-type }}-installer
 
       - name: Upload installer
         if: startsWith(github.ref, 'refs/tags/') && matrix.build-type == 'Release'

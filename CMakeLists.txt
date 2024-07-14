@@ -16,8 +16,8 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Core Network Sql)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Core Network Sql)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Core Network Sql Core5Compat)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Core Network Sql Core5Compat)
 # Find the AWS SDK for C++ package.
 
 set(PROJECT_SOURCES
@@ -106,7 +106,7 @@ include_directories(
     thirdParty/wtr
 )
 find_package(Qt6 REQUIRED COMPONENTS Xml)
-target_link_libraries(QSyncUi PRIVATE Qt6::Xml)
+target_link_libraries(QSyncUi PRIVATE Qt6::Xml Qt6::Core5Compat)
 target_link_libraries(QSyncUi PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Xml Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Network Qt${QT_VERSION_MAJOR}::Sql elawidgettools)
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
 # If you are developing for iOS or macOS you should consider setting an

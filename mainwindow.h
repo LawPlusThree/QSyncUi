@@ -31,6 +31,7 @@ class MainWindow : public ElaWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     MainWindow(QString action,QVector<QString> argv, QWidget *parent = nullptr);
+    void ArgvProcess(QString action,QVector<QString> argv);
     ~MainWindow();
     loginwin* login=new loginwin();
     Q_SLOT void onCloseButtonClicked();
@@ -63,6 +64,8 @@ signals:
 
 
 private:
+    QString _action;
+    QVector<QString> _argv;
     HomePage *_homePage{nullptr};
     SyncingPage *_syncingPage{nullptr};
     FileManagePage*_filemanagePage{nullptr};
