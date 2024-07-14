@@ -29,38 +29,35 @@ int main(int argc, char *argv[])
 		}
 		return 0; // 退出程序
 	}
-
+    MainWindow* w = nullptr;
     QVector<QString> argvs;
-    QString sb("哦你");
     QString action;
     if(realArgc>1){
         action=a.arguments().at(1);
         for(int i=2;i<realArgc;i++){
             argvs.push_back(a.arguments().at(i));
         }
-        MainWindow w(action,argvs);
-
-        QLocalServer server;
-        server.listen("QSyncUi");
-        QObject::connect(&server, &QLocalServer::newConnection, [&server,&w]() {
-            QLocalSocket *newSocket = server.nextPendingConnection();
-            QByteArray data;
-            while (newSocket->waitForReadyRead(100)) {
-                data.append(newSocket->readAll());
-            }
-            QStringList list=QString::fromUtf8(data).split('\n');
-            QString action=list.at(0);
-            QVector<QString> argvs;
-            for(int i=1;i<list.size();i++){
-                argvs.push_back(list.at(i));
-            }
-            w.ArgvProcess(action,argvs);
-        });
-
-        w.show();
-        return a.exec();
+        w=new MainWindow(action,argvs);
+    }else{
+        w=new MainWindow();
     }
-	MainWindow w;
-	w.show();
+
+    QLocalServer server;
+    server.listen("QSyncUi");
+    QObject::connect(&server, &QLocalServer::newConnection, [&server,&w]() {
+        QLocalSocket *newSocket = server.nextPendingConnection();
+        QByteArray data;
+        while (newSocket->waitForReadyRead(100)) {
+            data.append(newSocket->readAll());
+        }
+        QStringList list=QString::fromUtf8(data).split('\n');
+        QString action=list.at(0);
+        QVector<QString> argvs;
+        for(int i=1;i<list.size();i++){
+            argvs.push_back(list.at(i));
+        }
+        w->ArgvProcess(action,argvs);
+    });
+    w->show();
 	return a.exec();
 }
