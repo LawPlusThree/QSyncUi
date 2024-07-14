@@ -47,12 +47,12 @@ jobs:
           copy $env:QT_ROOT_DIR\bin\libstdc++-6.dll .
           copy $env:QT_ROOT_DIR\bin\libwinpthread-1.dll .
           #clean up
-          rm -rf CMakeFiles
-          rm -f CMakeCache.txt
-          rm -f cmake_install.cmake
-          rm -f Makefile
-          rm -rf QSyncUi_autogen
-          rm -rf .qt
+          Remove-Item -Recurse -Force CMakeFiles
+          Remove-Item -Force CMakeCache.txt
+          Remove-Item -Force cmake_install.cmake
+          Remove-Item -Force Makefile
+          Remove-Item -Recurse -Force QSyncUi_autogen
+          Remove-Item -Recurse -Force .qt
           cd ..
           ls
 
