@@ -14,7 +14,7 @@
 
 ; 安装包文件信息
 !define INSTALLER_NAME "LogiCloud" ; 安装包的前缀名字
-!define INSTALLER_ICON ".\logo.ico"    ; 安装包的图标; 如需替换，请修改文件路径
+!define INSTALLER_ICON ".\icon.ico"    ; 安装包的图标; 如需替换，请修改文件路径
 
 ; 其他选项
 !define BOOT_START "true"          ; 是否创建软件开机自启动链接
