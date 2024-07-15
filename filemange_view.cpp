@@ -74,7 +74,7 @@ FileManagePage::FileManagePage(QWidget* parent,UserManager *um):ElaScrollPage(pa
         qDebug() << "当前选中的索引为：" << index;
         qDebug() << "当前选中的文本为：" << _comboBox->currentText();
         emit setThreadNum(_comboBox->currentText().toInt());
-    });    
+    });
     connect(_comboBox, &ElaComboBox::currentIndexChanged, [=](int index) {
         um->setThread(index+1);
     });
@@ -236,5 +236,11 @@ void FileManagePage::showEvent(QShowEvent* event) {
         QString elidedText = metrics.elidedText(x->fullText, Qt::ElideMiddle, filenameWidget->width()-20);
         x->filename->setText(elidedText);
         x->filename->setToolTip(x->fullText);
+    }
+}
+
+void FileManagePage::updateComboBoxIndex(int index) {
+    if (index-1 >= 0 && index-1 < _comboBox->count()) {
+        _comboBox->setCurrentIndex(index-1);
     }
 }

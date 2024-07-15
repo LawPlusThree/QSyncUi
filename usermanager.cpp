@@ -14,7 +14,7 @@ UserManager::UserManager( QObject *parent) : QObject(parent){}
 bool UserManager::updateUserInfo(User *user)
 {
     // 保存更改到文件
-    return saveToFile(user->getEmail(),user->encryptPassword(),true,3);
+    return saveToFile(user->getEmail(),user->encryptPassword(),true,getThread());
 }
 
 QString UserManager::getUserAccount()
@@ -72,24 +72,46 @@ QString UserManager::getUserPassWord(const QString &account)
 // 将用户数据保存到文件
 bool UserManager::saveToFile(const QString&account,const QString&password,const bool autoLogin,const int threadnum)
 {
+    //Read File, find diffs and then write to file
+    QFile file(filePath_);
+    // 检查文件是否存在以及是否可以打开
+    if (!file.exists() || !file.open(QIODevice::ReadOnly)) {
+        return false; // 文件不存在或无法打开不是错误条件
+    }
+    QByteArray data = file.readAll();
+    //读取为json对象
     QJsonObject json;
-
-    json["act"] = account;
-    json["psw"] = password;
-    json["auto"] = (autoLogin?"true":"false");
-    json["trd"] = threadnum;
+    json = QJsonDocument::fromJson(data).object();
+    file.close();
+    //只更新不同的数据
+    if( json.value("act") != account )
+    {
+        json["act"] = account;
+    }
+    if( json.value("psw") != password )
+    {
+        json["psw"] = password;
+    }
+    if( json.value("auto") != (autoLogin?"true":"false") )
+    {
+        json["auto"] = (autoLogin?"true":"false");
+    }
+    if( json.value("trd") != threadnum )
+    {
+        json["trd"] = threadnum;
+    }
 
     QJsonDocument doc(json);
-    QFile file(filePath_);
+    QFile file2(filePath_);
     // 打开文件用于写入
-    if (!file.open(QIODevice::WriteOnly)) {
+    if (!file2.open(QIODevice::WriteOnly)) {
         qWarning() << "Failed to open file for writing:" << filePath_;
         return false;
     }
 
     // 将JSON文档转换为字符串并写入文件
-    file.write(doc.toJson());
-    file.close();
+    file2.write(doc.toJson());
+    file2.close();
     return true;
 }
 

@@ -232,6 +232,8 @@ void MainWindow::onUserLoggedIn(User user)
     TaskToken tt=CurrentUser->getUnifiedTaskToken();
     cosConfig.taskToken=tt;
     _syncCore=new SyncCore(cosConfig,this);
+    _syncCore->requestManager->setMaxConcurrentRequests(um->getThread());
+    this->_filemanagePage->updateComboBoxIndex(um->getThread());
     qDebug() << "Connecting taskTotalSize signal";
     connect(_syncCore,&SyncCore::taskTotalSize,this,&MainWindow::onTaskTotalSize);
     qDebug() << "Connecting taskUploadSize signal";
