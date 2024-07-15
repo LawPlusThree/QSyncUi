@@ -44,6 +44,7 @@ protected:
 
 private slots:
     void toggleSelectAll();
+    void buttonShowHide();
 };
 
 #endif // SYNCING_VIEW_H

@@ -41,8 +41,8 @@ signals:
     void resumeTask(int id);
     void setExcludedItems(QVector<QString> items);
     void setThreadNum(int num);
-public slots:
-
+private slots:
+    void buttonShowHide();
 protected:
     void resizeEvent(QResizeEvent* event) override;
     void showEvent(QShowEvent* event) override;
