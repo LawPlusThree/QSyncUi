@@ -54,8 +54,11 @@ QString COSClient::listVersions(const QString &prefix, const QString &keyMarker,
     preRequest request;
     QString prefix_=_prefixHandle(prefix);
     request.queryParams.insert("prefix", prefix_);
-    QString keyMarker_=_prefixHandle(keyMarker);
-    request.queryParams.insert("key-marker", keyMarker_);
+    if(keyMarker!="")
+    {
+        QString keyMarker_=_prefixHandle(keyMarker);
+        request.queryParams.insert("key-marker", keyMarker_);
+    }
     request.queryParams.insert("version-id-marker", versionIdMarker);
     request.queryParams.insert("max-keys", QString::number(maxKeys));
     request.queryParams.insert("versions", "");
@@ -63,23 +66,24 @@ QString COSClient::listVersions(const QString &prefix, const QString &keyMarker,
     return QString::fromUtf8(response.data);
 }
 
-QVector<Version> COSClient::listAllVersionsByPrefix(const QString &prefix)
+QVector<Version> COSClient::listAllVersionsByPrefix(const QString & key)
 {
 
-    QString marker = "";
+    QString versionMarker = "";
+    QString keyMarker = "";
     VersionResult versionResult;
     QVector<Version> res;
     do
     {
-        QString xml = listVersions(prefix,"",marker,1000);
+        QString xml = listVersions(key,keyMarker,versionMarker,1000);
         HistoryXMLProcesser processer;
         versionResult = processer.processXml(xml);
         for (Version version : versionResult.versions)
         {
-            res.push_back(version);
+                res.push_back(version);
         }
-        marker = versionResult.nextVersionIdMarker;
-
+        versionMarker = versionResult.nextVersionIdMarker;
+        keyMarker = versionResult.nextKeyMarker;
     } while (versionResult.isTruncated);
     return res;
 }
@@ -89,6 +93,10 @@ QVector<Version> COSClient::listAllVersionsByPrefix(const QString &prefix)
 
 QString COSClient::_prefixHandle(const QString &rawPath)
 {
+    if (rawPath=="/")
+    {
+        return "/";
+    }
     QString myPath = rawPath;
     //如果前33位是allowPrefix，什么都不做
     if (myPath.startsWith(allowPrefix))

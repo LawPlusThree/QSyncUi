@@ -15,6 +15,10 @@ public:
         tmpSecretKey = other.tmpSecretKey;
         expiredTime = other.expiredTime;
     }
+    bool isExpired(){
+        qDebug()<<"expiredTime"<<expiredTime<<QDateTime::currentDateTime();
+        return QDateTime::currentDateTime()>expiredTime;
+    }
     QString sessionToken;
     QString tmpSecretId;
     QString tmpSecretKey;

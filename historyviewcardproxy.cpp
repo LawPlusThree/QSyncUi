@@ -18,8 +18,8 @@ HistoryviewCardProxy::~HistoryviewCardProxy()
 void HistoryviewCardProxy::addHistoryviewCard(HistoryViewCard *card) {
     if (card && parentWidget) {
         SubCardProxy*subcard=new SubCardProxy(this);
-        subcard->setStyleSheet("background-color: red;");
         cardMap[subcard]=card;
+        subcard->subLayout->setContentsMargins(10,0,10,10);
         filesLayout->addWidget(card);
         filesLayout->addWidget(subcard);
         subcard->setVisible(false);

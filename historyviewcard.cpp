@@ -2,6 +2,8 @@
 #include<QVBoxLayout>
 #include"ElaCheckBox.h"
 #include"ElaIconButton.h"
+#include<QPainter>
+#include"ElaApplication.h"
 
 HistoryViewCard::HistoryViewCard(QString file,QString cloud)
 {
@@ -118,11 +120,39 @@ SubCard::SubCard(QString ID,quint64 d,QString time)
     QVBoxLayout*bindtimeArea=new QVBoxLayout();
     bindtimeArea->addWidget(bindtime,0,Qt::AlignCenter);
 
+    rollback=new ElaPushButton("回滚到此版本");
+    rollback->setFixedWidth(100);
+    QHBoxLayout *rollbackArea=new QHBoxLayout();
+    rollbackArea->addWidget(rollback);
+
     QHBoxLayout*subcardLayout=new QHBoxLayout(this);
     subcardLayout->addLayout(bindtimeArea);
     subcardLayout->addLayout(versionIDArea);
     subcardLayout->addLayout(dataSizeArea);
-    subcardLayout->setStretchFactor(bindtimeArea,280);
-    subcardLayout->setStretchFactor(versionIDArea,280);
-    subcardLayout->setStretchFactor(dataSizeArea,280);
+    subcardLayout->addLayout(rollbackArea);
+    subcardLayout->setStretchFactor(bindtimeArea,245);
+    subcardLayout->setStretchFactor(versionIDArea,245);
+    subcardLayout->setStretchFactor(dataSizeArea,245);
+    subcardLayout->setStretchFactor(rollback,100);
+}
+
+
+void SubCard::paintEvent(QPaintEvent* event)
+{
+    QPainter painter(this);
+    painter.save();
+    auto themeMode=ElaApplication::getInstance()->getThemeMode();
+    if (themeMode == ElaApplicationType::Light)
+    {
+        painter.setPen(QPen(QColor(0xDF, 0xDF, 0xDF), 1));
+        painter.setBrush(QColor(0xF5, 0xF5, 0xF5));
+    }
+    else
+    {
+        painter.setPen(QPen(QColor(0x37, 0x37, 0x37), 1));
+        painter.setBrush(QColor(0x1C, 0x22, 0x32));
+    }
+    QRect foregroundRect(1, 1, width() - 2, height() - 2);
+    painter.drawRoundedRect(foregroundRect, 6, 6);
+    painter.restore();
 }
