@@ -37,7 +37,6 @@ public:
 
 private:
     QMap<SubCardProxy*,HistoryViewCard*>cardMap;
-    //QMap<HistoryViewCard*,ElaWidget*>cardMap;
     QWidget *parentWidget;
     friend class HistoryViewPage;
 };
