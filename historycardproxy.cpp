@@ -29,3 +29,15 @@ void HistoryCardProxy::addHistoryCard(QString filename,QString datasize,QString 
     }
 }
 
+void HistoryCardProxy::removeHistoryCard(QString filename)
+{
+    for(auto &x:cardVector)
+    {
+        if(x->fullText==filename)
+        {
+            filesLayout->removeWidget(x);
+            x->setParent(nullptr);
+            x->deleteLater();
+        }
+    }
+}
