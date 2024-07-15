@@ -34,7 +34,7 @@ linkNewFolder_window::linkNewFolder_window(QWidget *parent)
     lineEditArea1->setAttribute(Qt::WA_TranslucentBackground); // 设置背景透明
     QHBoxLayout* lineEditLayout1 = new QHBoxLayout(lineEditArea1);// 创建一个水平布局
     lineEditLayout1->setContentsMargins(0, 0, 0, 0); // 设置布局的边距
-    ElaLineEdit* folderName1 = new ElaLineEdit(this); // 创建一个 ElaLineEdit 对象
+    folderName1 = new ElaLineEdit(this); // 创建一个 ElaLineEdit 对象
     folderName1->setPlaceholderText("本地文件夹地址"); // 设置输入提示文本
     folderName1->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     folderName1->setFixedHeight(40); // 固定高度为40
@@ -176,4 +176,9 @@ void linkNewFolder_window::setItems(QStringList &folderName2List)
     int index = folderName2List.size();
     folderName2->removeItem(index);
     folderName2->addItems(folderName2List);
+}
+
+ElaLineEdit* linkNewFolder_window::getfolderName1()
+{
+    return folderName1;
 }

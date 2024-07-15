@@ -15,11 +15,13 @@ public:
     bool updateUserInfo(User *user);//保存登陆成功后的用户信息
     QString getUserAccount();
     QString getUserPassWord(const QString &account);
-    bool saveToFile(const QString&,const QString&,const bool,const int);
+    bool saveToFile(const QString&,const QString&,const bool,const int,const QString&);
     bool getAutoLoginStaus();
     bool setAutoLoginStaus(bool autoLogin);
     int getThread();
     bool setThread(int thread);
+    QString getExcludedItems();
+    bool setExcludedItems(QString excludedItems);
 
 private:
     QString filePath_ = "usif.json";

@@ -205,6 +205,11 @@ void MainWindow::ArgvProcess(QString action, QVector<QString> argv)
     if (action=="ver"){
         this->navigation(this->_historyviewPage->property("ElaPageKey").toString());
     }
+    else if (action=="add"){
+        this->navigation(this->_filemanagePage->linknewfolderwindow->property("ElaPageKey").toString());
+        this->_filemanagePage->linknewfolderwindow->show();
+        this->_filemanagePage->linknewfolderwindow->getfolderName1()->setText(argv[0]);
+    }
 }
 
 MainWindow::~MainWindow()
@@ -259,6 +264,7 @@ void MainWindow::onUserLoggedIn(User user)
     _syncCore=new SyncCore(cosConfig,this);
     _syncCore->requestManager->setMaxConcurrentRequests(um->getThread());
     this->_filemanagePage->updateComboBoxIndex(um->getThread());
+    this->_filemanagePage->setexcludeditemsview->updateExcludedItems(um->getExcludedItems());
     qDebug() << "Connecting taskTotalSize signal";
     connect(_syncCore,&SyncCore::taskTotalSize,this,&MainWindow::onTaskTotalSize);
     qDebug() << "Connecting taskUploadSize signal";
