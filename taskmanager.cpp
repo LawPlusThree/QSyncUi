@@ -78,7 +78,7 @@ void TaskManager::insertDownTask(QString remotePath, QString localPath, quint64 
     }
 }
 
-void TaskManager::insertFinishTask(int taskId,QString remotePath, QString localPath, quint64 dataSize, QDate sycnTime, int status)
+bool TaskManager::insertFinishTask(int taskId,QString remotePath, QString localPath, quint64 dataSize, QDate sycnTime, int status)
 {
     QSqlQuery query(db);
     //检查任务信息是否已存在，如果存在则更新，不存在则插入
@@ -88,7 +88,7 @@ void TaskManager::insertFinishTask(int taskId,QString remotePath, QString localP
     if(query.next())
     {
         updateFinishTask(taskId,remotePath, localPath, dataSize, sycnTime, status);
-        return;
+        return false;
     }
     else{
     query.prepare("INSERT INTO finishtask (taskId,remotePath, localPath, dataSize, sycnTime, status) VALUES (:taskId,:remotePath, :localPath, :dataSize, :sycnTime, :status)");
@@ -98,7 +98,9 @@ void TaskManager::insertFinishTask(int taskId,QString remotePath, QString localP
     query.bindValue(":dataSize", dataSize);
     query.bindValue(":sycnTime", sycnTime);
     query.bindValue(":status", status);
-    query.exec();}
+    query.exec();
+    return true;
+    }
 }
 
 void TaskManager::deleteUpTask(QString localPath)
