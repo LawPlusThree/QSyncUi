@@ -14,6 +14,7 @@ public:
 
     void addHistoryCard(HistoryCard *card);
     void addHistoryCard(QString filename,QString datasize,QString time,bool upif);
+    void removeHistoryCard(QString filename);
     QVBoxLayout*filesLayout;
 
 private:

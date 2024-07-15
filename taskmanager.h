@@ -92,7 +92,7 @@ public:
     void createConnection(QString account);
     void insertUpTask(int uploadId,QString remotePath, QString localPath, quint64 dataSize,int totalPiece,QMap<int,QString> etags, bool isPause);
     void insertDownTask(QString remotePath, QString localPath, quint64 dataSize,int totalPiece,QMap<int,QString> etags, bool isPause);
-    void insertFinishTask(int taskId,QString remotePath, QString localPath, quint64 dataSize, QDate sycnTime, int status);
+    bool insertFinishTask(int taskId,QString remotePath, QString localPath, quint64 dataSize, QDate sycnTime, int status);
     void deleteUpTask(QString localPath);
     void deleteDownTask(QString localPath);
     void deleteFinishTask(QString localPath);

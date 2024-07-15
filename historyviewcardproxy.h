@@ -37,8 +37,7 @@ public:
     void addHistoryviewCard(QString filename,QString cloudname,QString path);
     void addSubCard(QString filename,QString versionID,quint64 datasize,QString bindtime);
     QVBoxLayout*filesLayout;
-    QString cloudname;
-    QString path;
+
 
 signals:
     void Message(QString versionID,QString cloudname,QString filename,QString path);

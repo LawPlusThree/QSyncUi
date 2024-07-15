@@ -28,11 +28,11 @@
 #include "qthread.h"
 #include "modifyinfor_win.h"
 #include"historyviewcardproxy.h"
+#include <QSysInfo>
 
 MainWindow::MainWindow(QWidget *parent)
     : ElaWindow(parent)
 {
-
     um = new UserManager(this);
     setUserInfoCardPixmap(QPixmap(":/include/Image/Cirno.jpg"));
     setUserInfoCardTitle("未登录");
@@ -624,17 +624,19 @@ void MainWindow::onUserPausedFileTask(int fileTaskId)
 void MainWindow::onTaskFinsished(RequestInfo requestInfo)
 {
     QFileInfo fileInfo(requestInfo.localPath);
+    bool taskExist=false;
     if(requestInfo.methodId==0){
-        _taskManager->insertFinishTask(0,requestInfo.RemotePath,requestInfo.localPath,fileInfo.size(),QDate::currentDate(),2);
+        taskExist=_taskManager->insertFinishTask(0,requestInfo.RemotePath,requestInfo.localPath,fileInfo.size(),QDate::currentDate(),2);
         _taskManager->deleteUpTask(requestInfo.localPath);
     }
     else if(requestInfo.methodId==1){
-        _taskManager->insertFinishTask(0,requestInfo.RemotePath,requestInfo.localPath,fileInfo.size(),QDate::currentDate(),3);
+        taskExist=_taskManager->insertFinishTask(0,requestInfo.RemotePath,requestInfo.localPath,fileInfo.size(),QDate::currentDate(),3);
         _taskManager->deleteDownTask(requestInfo.localPath);
     }
-    ReadUpTask();
-    ReadDownTask();
-    ReadFinishTask();
+    if(taskExist)
+    {
+        ReadFinishTask();
+    }
 }
 
 void MainWindow::ReadUpTask()
@@ -669,3 +671,11 @@ void MainWindow::autologin()
         }
     }
 }
+
+QString MainWindow::getComputerName()
+{
+    QString machineHostName = QSysInfo::machineHostName();
+    qDebug() << "设备名称（主机名）：" << machineHostName;
+    return machineHostName;
+}
+

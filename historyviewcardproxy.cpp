@@ -18,8 +18,6 @@ HistoryviewCardProxy::~HistoryviewCardProxy()
 void HistoryviewCardProxy::addHistoryviewCard(HistoryViewCard *card) {
     if (card && parentWidget) {
         SubCardProxy*subcard=new SubCardProxy(this);
-        path=card->path;
-        cloudname=card->cloudName;
         cardMap[subcard]=card;
         subcard->subLayout->setContentsMargins(10,0,10,10);
         filesLayout->addWidget(card);
@@ -67,6 +65,7 @@ void HistoryviewCardProxy::addSubCard(QString filename,QString versionID,quint64
         if(card->fullText==filename)
         {
             SubCardProxy*subcard=i.key();
+            disconnect(subcard, &SubCardProxy::message, this, 0);
             subcard->addSubCard(versionID,datasize,bindtime);
             connect(subcard,&SubCardProxy::message,[=](QString versionID){
                 emit Message(versionID,card->cloudName,filename,card->path);
