@@ -77,6 +77,7 @@ public:
 signals:
     void requestProgress(int fileTaskId, qint64 bytesReceived, qint64 bytesTotal);
     void requestFinished(int fileTaskId, QNetworkReply::NetworkError error);
+    void sendRequestInfo(RequestInfo requestInfo);
 public slots:
     void setMaxConcurrentRequests(int max) {
         qDebug() << "setMaxConcurrentRequests: " << max;
@@ -84,8 +85,9 @@ public slots:
         maxConcurrentRequests.store(max);
     }
 private slots:
-    void onRequestFinished(int fileTaskId, QNetworkReply::NetworkError error) {
+    void onRequestFinished(int fileTaskId, QNetworkReply::NetworkError error,RequestInfo requestInfo) {
         emit requestFinished(fileTaskId, error);
+        emit sendRequestInfo(requestInfo);
         QMutexLocker locker(&mutex);
         activeRequests--;
         startNextRequest();
@@ -112,7 +114,7 @@ private:
                 onRequestProgress(fileTaskId, bytesReceived, bytesTotal);
             },Qt::BlockingQueuedConnection);
             connect(&cosClient, &COSClient::finished, this, [=](QNetworkReply::NetworkError error){
-                onRequestFinished(fileTaskId, error);
+                onRequestFinished(fileTaskId, error,requestInfo);
                 },Qt::BlockingQueuedConnection);
             if (requestInfo.methodId == 0) {
                 cosClient.blockingPutFinishSignal=true;

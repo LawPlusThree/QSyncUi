@@ -14,6 +14,7 @@
 #include "tasktoken.h"
 #include "synccore.h"
 #include "taskmanager.h"
+#include "filequeue.h"
 class HomePage;
 class SyncingPage;
 class FileManagePage;
@@ -58,6 +59,7 @@ public slots:
     void onFileUploadTaskFinished(int fileTaskId);
     void onFileDownloadTaskFinished(int fileTaskId);
     void onUserPausedFileTask(int fileTaskId);
+    void onTaskFinsished(RequestInfo requestInfo);
 
 
 signals:

@@ -70,7 +70,7 @@ struct finishTask
     QString localPath;
     quint64 dataSize;
     QDate sycnTime;
-    int status;//1表示上传，0表示下载
+    int status;//2表示上传，3表示下载
     finishTask(){};//默认构造函数
     //复制构造函数
     finishTask(const finishTask &task)

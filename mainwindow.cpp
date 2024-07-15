@@ -591,6 +591,22 @@ void MainWindow::onUserPausedFileTask(int fileTaskId)
 
 }
 
+void MainWindow::onTaskFinsished(RequestInfo requestInfo)
+{
+    QFileInfo fileInfo(requestInfo.localPath);
+    if(requestInfo.methodId==0){
+        _taskManager->insertFinishTask(0,requestInfo.RemotePath,requestInfo.localPath,fileInfo.size(),QDate::currentDate(),2);
+        _taskManager->deleteUpTask(requestInfo.localPath);
+    }
+    else if(requestInfo.methodId==1){
+        _taskManager->insertFinishTask(0,requestInfo.RemotePath,requestInfo.localPath,fileInfo.size(),QDate::currentDate(),3);
+        _taskManager->deleteDownTask(requestInfo.localPath);
+    }
+    ReadUpTask();
+    ReadDownTask();
+    ReadFinishTask();
+}
+
 void MainWindow::ReadUpTask()
 {
 
@@ -604,7 +620,7 @@ void MainWindow::ReadDownTask()
 void MainWindow::ReadFinishTask()
 {
     for (auto const &task:_taskManager->readFinishTask()){
-        this->_historysyncPage->addHistory(task.localPath,QString::number(task.dataSize),task.sycnTime.toString("yyyy-MM-dd"),task.status==1?true:false);
+        this->_historysyncPage->addHistory(task.localPath,QString::number(task.dataSize),task.sycnTime.toString("yyyy-MM-dd"),task.status==2?true:false);
     }
 }
 
