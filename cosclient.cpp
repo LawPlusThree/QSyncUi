@@ -6,6 +6,9 @@
 #include <QDir>
 #include <QFileInfo>
 #include <QIODevice>
+#include "bucket.h"
+#include "xmlprocesser.h"
+
 COSClient::COSClient(QObject *parent)
 {
     return ;
@@ -45,6 +48,45 @@ QString COSClient::listObjects(const QString &prefix, const QString &marker)
     preResponse response = invokeGetFileRequest("/", request);
     return QString::fromUtf8(response.data);
 }
+
+QString COSClient::listVersions(const QString &prefix, const QString &keyMarker, const QString &versionIdMarker, int maxKeys)
+{
+    preRequest request;
+    QString prefix_=_prefixHandle(prefix);
+    request.queryParams.insert("prefix", prefix_);
+    QString keyMarker_=_prefixHandle(keyMarker);
+    request.queryParams.insert("key-marker", keyMarker_);
+    request.queryParams.insert("version-id-marker", versionIdMarker);
+    request.queryParams.insert("max-keys", QString::number(maxKeys));
+    request.queryParams.insert("versions", "");
+    preResponse response = invokeGetFileRequest("/", request);
+    return QString::fromUtf8(response.data);
+}
+
+QVector<Version> COSClient::listAllVersionsByPrefix(const QString &prefix)
+{
+
+    QString marker = "";
+    VersionResult versionResult;
+    QVector<Version> res;
+    do
+    {
+        QString xml = listVersions(prefix,"",marker,1000);
+        HistoryXMLProcesser processer;
+        versionResult = processer.processXml(xml);
+        for (Version version : versionResult.versions)
+        {
+            res.push_back(version);
+        }
+        marker = versionResult.nextVersionIdMarker;
+
+    } while (versionResult.isTruncated);
+    return res;
+}
+
+
+
+
 QString COSClient::_prefixHandle(const QString &rawPath)
 {
     QString myPath = rawPath;
@@ -797,6 +839,8 @@ QNetworkRequest COSClient::buildHeadRequest(const QString &path, const QMap<QStr
     }
     return request;
 }
+
+
 
 QNetworkRequest COSClient::buildDeleteRequest(const QString &path, const QMap<QString, QString> queryParams)
 {

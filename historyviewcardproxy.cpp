@@ -1,6 +1,9 @@
 #include "historyviewcardproxy.h"
 #include"historyviewcard.h"
 #include<QVBoxLayout>
+#include"ElaWidget.h"
+#include"ElaCheckBox.h"
+#include"ElaIconButton.h"
 
 HistoryviewCardProxy::HistoryviewCardProxy(QWidget*parent) {
     parentWidget = qobject_cast<QWidget*>(parent);
@@ -9,23 +12,82 @@ HistoryviewCardProxy::HistoryviewCardProxy(QWidget*parent) {
 
 HistoryviewCardProxy::~HistoryviewCardProxy()
 {
-    cardVector.clear();
+    cardMap.clear();
 }
 
 void HistoryviewCardProxy::addHistoryviewCard(HistoryViewCard *card) {
     if (card && parentWidget) {
-        cardVector.push_back(card);
+        SubCardProxy*subcard=new SubCardProxy(this);
+        cardMap[subcard]=card;
+        subcard->subLayout->setContentsMargins(10,0,10,10);
         filesLayout->addWidget(card);
+        filesLayout->addWidget(subcard);
+        subcard->setVisible(false);
         filesLayout->setAlignment(Qt::AlignTop);
+    }
+    connect(card->button, &ElaIconButton::clicked, this, [=]()
+            {
+        QMapIterator<SubCardProxy*,HistoryViewCard*> i(cardMap);
+        while(i.hasNext())
+        {
+            i.next();
+            if(card==i.value())
+            {
+                SubCardProxy* Sub=i.key();
+                if(card->button->getAwesome()==ElaIconType::AngleDown)
+                {
+                    card->button->setAwesome(ElaIconType::AngleUp);
+                    Sub->setVisible(true);
+                }
+                else
+                {
+                    card->button->setAwesome(ElaIconType::AngleDown);
+                    Sub->setVisible(false);
+                }
+            }
+        }
+    });
+}
+
+void HistoryviewCardProxy::addHistoryviewCard(QString filename,QString cloudname)
+{
+    HistoryViewCard*card=new HistoryViewCard(filename,cloudname);
+    addHistoryviewCard(card);
+}
+
+void HistoryviewCardProxy::addSubCard(QString filename,QString versionID,quint64 datasize,QString bindtime)
+{
+    QMapIterator<SubCardProxy*,HistoryViewCard*> i(cardMap);
+    while(i.hasNext())
+    {
+        i.next();
+        HistoryViewCard*card=i.value();
+        if(card->filename->text()==filename)
+        {
+            SubCardProxy*subcard=i.key();
+            subcard->addSubCard(versionID,datasize,bindtime);
+            return;
+        }
     }
 }
 
-void HistoryviewCardProxy::addHistoryviewCard(QString filename,QString datasize,QString bindtime)
+SubCardProxy::SubCardProxy(QWidget*parent) {
+    parentWidget = qobject_cast<QWidget*>(parent);
+    subLayout=new QVBoxLayout(this);
+}
+
+SubCardProxy::~SubCardProxy()
 {
-    HistoryViewCard*card=new HistoryViewCard(filename,datasize,bindtime);
-    if (card && parentWidget) {
+    cardVector.clear();
+}
+
+void SubCardProxy::addSubCard(QString versionID,quint64 datasize,QString bindtime)
+{
+    SubCard*card=new SubCard(versionID,datasize,bindtime);
+    if(card&&parentWidget)
+    {
         cardVector.push_back(card);
-        filesLayout->addWidget(card);
-        filesLayout->setAlignment(Qt::AlignTop);
+        subLayout->addWidget(card);
+        subLayout->setAlignment(Qt::AlignTop);
     }
 }

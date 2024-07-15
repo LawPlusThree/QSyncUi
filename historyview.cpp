@@ -57,7 +57,7 @@ HistoryViewPage::HistoryViewPage(QWidget* parent): ElaScrollPage(parent)
     QVBoxLayout* catalogueArea0 = new QVBoxLayout();
     catalogueArea0->addWidget(catalogueText0, 0, Qt::AlignCenter);
 
-    ElaText* catalogueText1 = new ElaText("版本名", this);
+    ElaText* catalogueText1 = new ElaText("本地文件夹", this);
     catalogueText1->setTextSize(16);
     catalogueText1->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     //QWidget* filenameWidget = new QWidget();
@@ -67,11 +67,17 @@ HistoryViewPage::HistoryViewPage(QWidget* parent): ElaScrollPage(parent)
     QVBoxLayout* filenameArea = new QVBoxLayout(filenameWidget);
     filenameArea->addWidget(catalogueText1, 0, Qt::AlignLeft);
 
-    ElaText* catalogueText2 = new ElaText("数据大小", this);
+    ElaText* catalogueText2 = new ElaText("云端文件夹", this);
     catalogueText2->setTextSize(16);
     catalogueText2->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    catalogueText2->setFixedSize(100,20);
-    catalogueText2->setAlignment(Qt::AlignCenter); // 设置文本居中对齐
+    cloudnameWidget->setWindowFlags(Qt::FramelessWindowHint); // 去除窗口边框
+    cloudnameWidget->setAttribute(Qt::WA_TranslucentBackground); // 设置背景透明
+    cloudnameWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    QVBoxLayout* cloudnameArea = new QVBoxLayout(cloudnameWidget);
+    cloudnameArea->addWidget(catalogueText2, 0, Qt::AlignLeft);
+
+    //catalogueText2->setFixedSize(100,20);
+    /*catalogueText2->setAlignment(Qt::AlignCenter); // 设置文本居中对齐
     QVBoxLayout* catalogueArea2 = new QVBoxLayout();
     catalogueArea2->addWidget(catalogueText2, 0, Qt::AlignCenter);
     ElaText* catalogueText4 = new ElaText("同步时间", this);
@@ -97,23 +103,35 @@ HistoryViewPage::HistoryViewPage(QWidget* parent): ElaScrollPage(parent)
     catalogueLayout->setStretchFactor(filenameWidget, 500);
     catalogueLayout->setStretchFactor(catalogueArea2, 100);
     catalogueLayout->setStretchFactor(catalogueArea4, 160);
-    catalogueLayout->setStretchFactor(catalogueArea5, 100);
+    catalogueLayout->setStretchFactor(catalogueArea5, 100);*/
+    catalogueLayout->addLayout(catalogueArea0);
+    catalogueLayout->addWidget(filenameWidget);
+    catalogueLayout->addWidget(cloudnameWidget);
+    catalogueLayout->setStretchFactor(catalogueArea0,25);
+    catalogueLayout->setStretchFactor(filenameWidget,430);
+    catalogueLayout->setStretchFactor(cloudnameWidget,430);
 
     ElaScrollArea* scrollArea = new ElaScrollArea();
     scrollArea->viewport()->setStyleSheet("background:transparent;");//设置背景透明
 
     _historyviewcardPage=new HistoryviewCardProxy(this);
-    addHistoryViewCard("原神须弥3.0版本“千朵玫瑰带来的黎明”全新开启","3.5G","2024.7.2");
-    addHistoryViewCard("原神稻妻2.0版本“不动鸣神，泡影破灭”全新开启","3.5G","2024.5.3");
-    addHistoryViewCard("原神枫丹4.0版本“仿若无因飘落的细雨”全新开启","3.5G","2024.12.6");
-    addHistoryViewCard("历史版本4","3.5G","2024.1.6");
-    addHistoryViewCard("历史版本5","3.5G","2024.1.26");
-    addHistoryViewCard("历史版本6","3.5G","2024.7.9");
-    addHistoryViewCard("历史版本7","3.5G","2024.7.17");
-    addHistoryViewCard("历史版本8","3.5G","2024.8.8");
-    addHistoryViewCard("历史版本9","3.5G","2024.6.9");
-    addHistoryViewCard("历史版本10","3.5G","2024.10.10");
-    addHistoryViewCard("历史版本11","45.14G","1919.8.10");
+    addHistoryViewCard("C:/Users/27284/1111111111111Documents/114514","/mk111111111555757575775757711111111111szyjbyl");
+    addHistoryViewCard("C:/Users/27284/Documents/books","/books");
+    addSubCard("C:/Users/27284/Documents/books","4.6",43000,"2024.7.15");
+    addSubCard("C:/Users/27284/Documents/books","4.7",555007,"2024.7.16");
+    addHistoryViewCard("C:/Users/114514/Documents/books","/1919810");
+
+    /*addHistoryViewCard("原神须弥3.0版本“千朵玫瑰带来的黎明”全新开启","3.5G");
+    addHistoryViewCard("原神稻妻2.0版本“不动鸣神，泡影破灭”全新开启","3.5G");
+    addHistoryViewCard("原神枫丹4.0版本“仿若无因飘落的细雨”全新开启","3.5G");
+    addHistoryViewCard("历史版本4","3.5G");
+    addHistoryViewCard("历史版本5","3.5G");
+    addHistoryViewCard("历史版本6","3.5G");
+    addHistoryViewCard("历史版本7","3.5G");
+    addHistoryViewCard("历史版本8","3.5G");
+    addHistoryViewCard("历史版本9","3.5G");
+    addHistoryViewCard("历史版本10","3.5G");
+    addHistoryViewCard("历史版本11","45.14G");*/
 
     scrollArea->setWidget(_historyviewcardPage);
     scrollArea->setWidgetResizable(true); // 允许scrollArea根据内容自动调整大小
@@ -125,34 +143,54 @@ HistoryViewPage::HistoryViewPage(QWidget* parent): ElaScrollPage(parent)
     this->addCentralWidget(centralWidget); // 将中心部件添加到窗口
 }
 
-void HistoryViewPage::addHistoryViewCard(QString filename,QString datasize,QString bindtime)
+void HistoryViewPage::addSubCard(QString filename,QString versionID,quint64 datasize,QString bindtime)
 {
-    HistoryViewCard*newHV=new HistoryViewCard(filename,datasize,bindtime);
+    _historyviewcardPage->addSubCard(filename,versionID,datasize,bindtime);
+}
+
+void HistoryViewPage::addHistoryViewCard(QString filename,QString datasize)
+{
+    HistoryViewCard*newHV=new HistoryViewCard(filename,datasize);
     _historyviewcardPage->addHistoryviewCard(newHV);
+
     QFontMetrics metrics(newHV->filename->font());
-    QString elidedText = metrics.elidedText(newHV->fullText, Qt::ElideMiddle, filenameWidget->width()-20);
+    QString elidedText = metrics.elidedText(newHV->fullText, Qt::ElideMiddle, filenameWidget->width()-30);
     newHV->filename->setText(elidedText);
     newHV->filename->setToolTip(newHV->fullText);
+    QFontMetrics metrics2(newHV->cloudname->font());
+    QString elidedText2 = metrics2.elidedText(newHV->cfullText, Qt::ElideMiddle, cloudnameWidget->width()-30);
+    newHV->cloudname->setText(elidedText2);
+    newHV->cloudname->setToolTip(newHV->cfullText);
 }
 
 void HistoryViewPage::resizeEvent(QResizeEvent* event) {
     QWidget::resizeEvent(event);
-    auto thisMap=this->_historyviewcardPage->cardVector;
+    auto thisMap=this->_historyviewcardPage->cardMap;
     for (auto &x:thisMap){
         QFontMetrics metrics(x->filename->font());
-        QString elidedText = metrics.elidedText(x->fullText, Qt::ElideMiddle, filenameWidget->width()-20);
+        QString elidedText = metrics.elidedText(x->fullText, Qt::ElideMiddle, filenameWidget->width()-30);
         x->filename->setText(elidedText);
         x->filename->setToolTip(x->fullText);
+
+        QFontMetrics metrics2(x->cloudname->font());
+        QString elidedText2 = metrics2.elidedText(x->cfullText, Qt::ElideMiddle, cloudnameWidget->width()-30);
+        x->cloudname->setText(elidedText2);
+        x->cloudname->setToolTip(x->cfullText);
     }
 }
 
 void HistoryViewPage::showEvent(QShowEvent* event) {
     QWidget::showEvent(event);
-    auto thisMap=this->_historyviewcardPage->cardVector;
+    auto thisMap=this->_historyviewcardPage->cardMap;
     for (auto &x:thisMap){
         QFontMetrics metrics(x->filename->font());
-        QString elidedText = metrics.elidedText(x->fullText, Qt::ElideMiddle, filenameWidget->width()-20);
+        QString elidedText = metrics.elidedText(x->fullText, Qt::ElideMiddle, filenameWidget->width()-30);
         x->filename->setText(elidedText);
         x->filename->setToolTip(x->fullText);
+
+        QFontMetrics metrics2(x->cloudname->font());
+        QString elidedText2 = metrics2.elidedText(x->cfullText, Qt::ElideMiddle, cloudnameWidget->width()-30);
+        x->cloudname->setText(elidedText2);
+        x->cloudname->setToolTip(x->cfullText);
     }
 }

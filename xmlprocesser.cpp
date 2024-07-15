@@ -101,3 +101,91 @@ Bucket XmlProcesser::processXml(const QString &xmlString)
     return bucket;
 }
 
+
+
+
+
+VersionResult HistoryXMLProcesser::processXml(const QString &xmlString)
+{
+    VersionResult versionResult;
+    QDomDocument dom;
+    dom.setContent(xmlString);
+    QDomElement ListVersionsResultEle = dom.documentElement();
+    QString ListVersionsResult = ListVersionsResultEle.tagName();
+    qDebug() << ListVersionsResult;
+
+    QDomNodeList nodeList = ListVersionsResultEle.childNodes();
+    for (int i = 0; i < nodeList.count(); ++i) {
+        QDomNode node = nodeList.at(i);
+        if (node.isElement()) {
+            QDomElement element = node.toElement();
+            QString tagName = element.tagName();
+            QString content = element.text();
+            if(tagName == "Name"){
+                versionResult.name=content;
+            }else if(tagName == "EncodingType"){
+                versionResult.encodingType=content;
+            }else if(tagName == "KeyMarker"){
+                versionResult.keyMarker=content;
+            }else if(tagName == "VersionIdMarker"){
+                versionResult.versionIdMarker=content;
+            }
+
+            if (tagName == "Version") {
+                QDomNodeList versionList = element.childNodes();
+                Version version;
+                for (int j = 0; j < versionList.count(); ++j) {
+                    QDomNode versionNode = versionList.at(j);
+                    if (versionNode.isElement()) {
+                        QDomElement versionElement = versionNode.toElement();
+                        QString versionTagName = versionElement.tagName();
+                        QString versionContent = versionElement.text();
+                        if(versionTagName=="Key"){
+                            version.key=versionContent;
+                        }
+                        else if(versionTagName=="VersionId"){
+                            version.versionId=versionContent;
+                        }
+                        else if(versionTagName=="IsLatest"){
+                            version.isLatest=(versionContent.toStdString()=="true"?true:false);
+                        }
+                        else if(versionTagName=="LastModified"){
+                            version.lastModified=QDateTime::fromString(versionContent,"yyyy-MM-ddThh:mm:ss.zzzZ");
+                        }
+                        else if(versionTagName=="ETag"){
+                            version.eTag=versionContent;
+                        }
+                        else if(versionTagName=="Size"){
+                            version.size=versionContent.toInt();
+                        }
+                        else if(versionTagName=="Owner"){
+                            QDomNodeList ownerList = versionElement.childNodes();
+                            for (int k = 0; k < ownerList.count(); ++k) {
+                                QDomNode ownerNode = ownerList.at(k);
+                                if (ownerNode.isElement()) {
+                                    QDomElement ownerElement = ownerNode.toElement();
+                                    QString ownerTagName = ownerElement.tagName();
+                                    QString ownerContent = ownerElement.text();
+                                    if(ownerTagName=="ID"){
+                                        version.owner.id=ownerContent;
+                                    }
+                                    else if(ownerTagName=="DisplayName"){
+                                        version.owner.displayName=ownerContent;
+                                    }
+                                }
+                            }
+                        }
+                        else if(versionTagName=="StorageClass"){
+                            version.storageClass=versionContent;
+                        }
+                        else if(versionTagName=="StorageTier"){
+                            version.storageTier=versionContent;
+                        }
+                    }
+                }
+                versionResult.versions.push_back(version);
+            }
+        }
+    }
+    return versionResult;
+}
