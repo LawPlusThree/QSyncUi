@@ -23,6 +23,14 @@ class NetworkRequestManager : public QObject {
     Q_OBJECT
 
 public:
+    void test(){
+        RequestInfo requestInfo;
+        requestInfo.localPath="localpath";
+        requestInfo.RemotePath="remotepath";
+        requestInfo.methodId=2;
+        emit sendRequestInfo(requestInfo);
+    }
+
     NetworkRequestManager(const COSConfig &config, QObject *parent = nullptr)
         : QObject(parent), cosConfig(config), maxConcurrentRequests(3) {}
 
