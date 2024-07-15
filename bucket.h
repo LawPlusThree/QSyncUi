@@ -61,7 +61,7 @@ public:
     QString keyMarker;
     QString versionIdMarker;
     int maxKeys;
-    bool isTruncated;
+    bool isTruncated=false;
     QString nextKeyMarker;
     QString nextVersionIdMarker;
     QString delimiter;
