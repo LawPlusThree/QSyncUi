@@ -96,6 +96,7 @@ private:
 
     QTimer*timer;//定时器
     void doSomething();
+    QString getComputerName();
 
 signals:
     void isActive(bool);

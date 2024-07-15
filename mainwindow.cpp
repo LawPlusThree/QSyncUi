@@ -28,11 +28,11 @@
 #include "qthread.h"
 #include "modifyinfor_win.h"
 #include"historyviewcardproxy.h"
+#include <QSysInfo>
 
 MainWindow::MainWindow(QWidget *parent)
     : ElaWindow(parent)
 {
-
     um = new UserManager(this);
     setUserInfoCardPixmap(QPixmap(":/include/Image/Cirno.jpg"));
     setUserInfoCardTitle("未登录");
@@ -671,3 +671,11 @@ void MainWindow::autologin()
         }
     }
 }
+
+QString MainWindow::getComputerName()
+{
+    QString machineHostName = QSysInfo::machineHostName();
+    qDebug() << "设备名称（主机名）：" << machineHostName;
+    return machineHostName;
+}
+
