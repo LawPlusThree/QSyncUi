@@ -8,6 +8,7 @@
 HistoryViewCard::HistoryViewCard(QString file,QString cloud,QString p)
 {
     filename=new ElaText(file);
+    cloudName=cloud;
     cloudname=new ElaText(cloud);
     this->path=p;
 

@@ -119,7 +119,30 @@ void HistorysyncPage::addHistory(QString filename, QString datasize,QString time
 {
     /*HistoryCard*historyCard=new HistoryCard(filename,datasize,time,upif);
     filesLayout->addWidget(historyCard);*/
-    HistoryCard*newHistory=new HistoryCard(filename,datasize,time,upif);
+    double data=datasize.toDouble();
+    QString dataStr;
+    QString size;
+    if(data<1024)
+    {
+        dataStr=QString::number(data,'f',1);
+        size=dataStr+"KB";
+    }
+    else
+    {
+        data/=1024;
+        if(data<1024)
+        {
+            dataStr=QString::number(data,'f',1);
+            size=dataStr+"MB";
+        }
+        else
+        {
+            data/=1024;
+            dataStr=QString::number(data,'f',1);
+            size=dataStr+"GB";
+        }
+    }
+    HistoryCard*newHistory=new HistoryCard(filename,size,time,upif);
     _historycardPage->addHistoryCard(newHistory);
     QFontMetrics metrics(newHistory->filename->font());
     QString elidedText = metrics.elidedText(newHistory->fullText, Qt::ElideMiddle, filenameWidget->width()-20);

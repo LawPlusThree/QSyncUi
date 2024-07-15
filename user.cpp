@@ -387,6 +387,8 @@ QVector<QString> User::getS3Dirs()
         return s3Dirs; // 返回空的s3Dirs
     }
 
+    QSet<QString> s3DirsSet; // 使用QSet去重
+
     // 遍历data数组中的每个任务对象
     for (const QJsonValue& taskValue : tasksArray)
     {
@@ -416,9 +418,12 @@ QVector<QString> User::getS3Dirs()
             continue; // 跳过空的s3Dir
         }
 
-        // 将提取的s3Dir路径添加到s3Dirs向量中
-        s3Dirs.append(s3Dir);
+        // 将提取的s3Dir路径添加到s3DirsSet中去重
+        s3DirsSet.insert(s3Dir);
     }
+
+    // 将QSet转换回QVector
+    s3Dirs = QVector<QString>(s3DirsSet.begin(), s3DirsSet.end());
 
     return s3Dirs;
 }
