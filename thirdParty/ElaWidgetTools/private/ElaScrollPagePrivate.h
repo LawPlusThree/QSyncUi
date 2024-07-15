@@ -21,6 +21,7 @@ public:
     ~ElaScrollPagePrivate();
     Q_INVOKABLE void onNavigationRouteBack(QVariantMap routeData);
 
+    friend class SubCard;
 private:
     QHBoxLayout* _pageTitleLayout{nullptr};
     QStackedWidget* _centralStackedWidget{nullptr};

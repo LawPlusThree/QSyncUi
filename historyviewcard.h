@@ -29,6 +29,8 @@ public:
     ElaText*bindtime;
     ElaPushButton*rollback;
 
+protected:
+    void paintEvent(QPaintEvent*event)override;
 };
 
 #endif // HISTORYVIEWCARD_H

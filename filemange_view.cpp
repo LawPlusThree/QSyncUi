@@ -18,6 +18,8 @@ FileManagePage::FileManagePage(QWidget* parent,UserManager *um):ElaScrollPage(pa
     topCard->setMaximumHeight(50);
     QVBoxLayout*topCardArea=new QVBoxLayout(topCard);*/
 
+    setexcludeditemsview=new setExcludedItems_view(nullptr,um);
+
     QWidget* centralWidget = new QWidget(this); // 创建中心部件
     QVBoxLayout* centerVLayout = new QVBoxLayout(centralWidget); // 为中心部件设置垂直布局
     centerVLayout->setContentsMargins(0, 0, 5, 0); // 设置布局边距,5为到右边的距离

@@ -203,7 +203,44 @@ void MainWindow::ArgvProcess(QString action, QVector<QString> argv)
     onMessage(action,"Info");
     onMessage(argv.join(" "),"Info");
     if (action=="ver"){
+        //first find the localpath
+        QString localPath=argv[0];
+        QFileInfo fileInfo(localPath);
+        if (!fileInfo.exists()){
+            onMessage("文件不存在","Error");
+            return;
+        }
+        if(fileInfo.isDir()){
+            onMessage("请选择文件，而不是文件夹","Error");
+            return;
+        }
+        QString taskRemotePath="";
+        QString taskRelativePath="";
+        QString
+            standardPath=fileInfo.absoluteFilePath();
+        for (auto const&x:_syncTaskDatabaseManager->getTasks()){
+            auto thisLocal=x.getLocalPath();
+            if (standardPath.startsWith(thisLocal)){
+                taskRemotePath=x.getRemotePath();
+                QDir dir(thisLocal);
+                taskRelativePath=dir.relativeFilePath(standardPath);
+            }
+        }
+        if(taskRemotePath==""){
+            onMessage("未找到对应的远程路径","Error");
+            return;
+        }
+        COSClient versionClient(cosConfig, this);
+        QString remotePrefix=taskRemotePath+taskRelativePath;
+        QVector<Version> v= versionClient.listAllVersionsByPrefix(remotePrefix);
         this->navigation(this->_historyviewPage->property("ElaPageKey").toString());
+        //mainwindow窗口激活
+        this->activateWindow();
+    }
+    else if (action=="add"){
+        this->navigation(this->_filemanagePage->linknewfolderwindow->property("ElaPageKey").toString());
+        this->_filemanagePage->linknewfolderwindow->show();
+        this->_filemanagePage->linknewfolderwindow->getfolderName1()->setText(argv[0]);
     }
 }
 
@@ -253,12 +290,13 @@ void MainWindow::onUserLoggedIn(User user)
     QString filename=QDir::toNativeSeparators(file.fileName());
     QPixmap pix(filename);
     setUserInfoCardPixmap(pix);
-    COSConfig cosConfig=CurrentUser->getS3Config();
-    TaskToken tt=CurrentUser->getUnifiedTaskToken();
+    cosConfig=CurrentUser->getS3Config();
+    tt=CurrentUser->getUnifiedTaskToken();
     cosConfig.taskToken=tt;
     _syncCore=new SyncCore(cosConfig,this);
     _syncCore->requestManager->setMaxConcurrentRequests(um->getThread());
     this->_filemanagePage->updateComboBoxIndex(um->getThread());
+    this->_filemanagePage->setexcludeditemsview->updateExcludedItems(um->getExcludedItems());
     qDebug() << "Connecting taskTotalSize signal";
     connect(_syncCore,&SyncCore::taskTotalSize,this,&MainWindow::onTaskTotalSize);
     qDebug() << "Connecting taskUploadSize signal";
@@ -374,7 +412,7 @@ void MainWindow::onUserAddNewTask(const SyncTask &_task)
         {
             int res=_syncTaskDatabaseManager->addTask(_task);
             bool isSuccess=false;
-            TaskToken tt=CurrentUser->getUnifiedTaskToken();
+            tt=CurrentUser->getUnifiedTaskToken();
             COSConfig cosConfig=CurrentUser->getS3Config();
             cosConfig.taskToken=tt;
             SyncTask* task=nullptr;

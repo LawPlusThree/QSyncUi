@@ -6,7 +6,7 @@
 #include <QTextEdit>
 #include "ElaPushButton.h"
 
-setExcludedItems_view::setExcludedItems_view(QWidget *parent)
+setExcludedItems_view::setExcludedItems_view(QWidget *parent,UserManager *um)
     : ElaWidget(parent,700,400)
 {
     this->setWindowTitle("珞珈云"); // 设置窗口标题
@@ -22,7 +22,6 @@ setExcludedItems_view::setExcludedItems_view(QWidget *parent)
     ElaText* Title = new ElaText("设置排除项目", this);
     Title->setTextSize(25); // 设置文字大小
 
-    QTextEdit* textEdit = new QTextEdit(this);
     textEdit->setPlaceholderText("输入示例。。。。。。"); // 设置输入提示文本
 
     QWidget* buttonArea = new QWidget();
@@ -40,6 +39,8 @@ setExcludedItems_view::setExcludedItems_view(QWidget *parent)
         this->hide();
     });
     connect(_pushButton3,&ElaPushButton::clicked,[=](){
+        um->setExcludedItems(textEdit->toPlainText());
+        //emit settingExcludedItems(textEdit->toPlainText());
         this->hide();
     });
 
@@ -53,4 +54,9 @@ setExcludedItems_view::setExcludedItems_view(QWidget *parent)
 setExcludedItems_view::~setExcludedItems_view()
 {
 
+}
+
+void setExcludedItems_view::updateExcludedItems(QString items)
+{
+    textEdit->setText(items);
 }

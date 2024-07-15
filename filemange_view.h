@@ -22,8 +22,10 @@ public:
     void removeDirCard(int id);
     void removeChecked();
     void modifyDirCard(quint64 datasize,QString bindtime,int id);
+    void updateComboBoxIndex(int index);
     DirCardProxy*_dircardProxy;
     linkNewFolder_window* linknewfolderwindow=new linkNewFolder_window();
+    setExcludedItems_view* setexcludeditemsview=new setExcludedItems_view();
     QWidget* filenameWidget = new QWidget();
 private:
     ElaProgressBar* _progressBar{nullptr};
@@ -33,7 +35,6 @@ private:
     ElaToggleButton* _toggleButton{nullptr};
     ElaComboBox* _comboBox{nullptr};
 
-    setExcludedItems_view* setexcludeditemsview=new setExcludedItems_view();
 signals:
     void deleteTask(int id);
     void pauseTask(int id);
@@ -41,7 +42,7 @@ signals:
     void setExcludedItems(QVector<QString> items);
     void setThreadNum(int num);
 public slots:
-    void updateComboBoxIndex(int index);
+
 protected:
     void resizeEvent(QResizeEvent* event) override;
     void showEvent(QShowEvent* event) override;

@@ -11,6 +11,7 @@
 #include "user.h"
 #include <QQueue>
 #include "synctask.h"
+#include "tasktoken.h"
 #include "synccore.h"
 #include "taskmanager.h"
 #include "filequeue.h"
@@ -66,6 +67,8 @@ signals:
 
 
 private:
+    COSConfig cosConfig;
+    TaskToken tt;
     QString _action;
     QVector<QString> _argv;
     HomePage *_homePage{nullptr};

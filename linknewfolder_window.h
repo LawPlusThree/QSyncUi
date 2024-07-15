@@ -8,6 +8,7 @@
 class ElaPushButton;
 class ElaCheckBox;
 class ElaComboBox;
+class ElaLineEdit;
 class linkNewFolder_window : public ElaWidget
 {
     Q_OBJECT
@@ -15,6 +16,7 @@ public:
     linkNewFolder_window(QWidget *parent = nullptr);
     ~linkNewFolder_window();
     void setItems(QStringList&);
+    ElaLineEdit* getfolderName1();
 signals:
     void onNewTask(const SyncTask &task);
 private:
@@ -23,6 +25,7 @@ private:
      ElaPushButton* _pushButton3{nullptr};
      ElaCheckBox* _checkBox{nullptr};
      ElaComboBox* _comboBox{nullptr};
+     ElaLineEdit* folderName1;
      ElaComboBox* folderName2;
 };
 
