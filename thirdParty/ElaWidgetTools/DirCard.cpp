@@ -3,7 +3,11 @@
 #include <QGraphicsDropShadowEffect>
 #include <QPainter>
 #include <QPainterPath>
-#include<QVBoxLayout>
+#include <QVBoxLayout>
+#include <QEvent>
+#include <QMouseEvent>
+#include <QDesktopServices>
+#include <QUrl>
 
 #include"ElaCheckBox.h"
 #include "private/DirCardPrivate.h"
@@ -93,6 +97,8 @@ DirCard::DirCard(QString f, QString c,quint64 d,QString b,int syncStatus,int Id)
     filenameWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     QVBoxLayout* filenameArea = new QVBoxLayout(filenameWidget);
     filenameArea->addWidget(filename, 0, Qt::AlignLeft); // 将文件名放在左侧
+    filename->installEventFilter(this);
+    filename->setCursor(Qt::PointingHandCursor); // 设置鼠标手势为手形，提示用户可以点击
 
     cloudname->setTextSize(16);
     cloudname->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
@@ -209,4 +215,16 @@ void DirCard::modify(quint64 d,QString b)
     }
     datasize->setText(size);
     bindtime->setText(b);
+}
+
+bool DirCard::eventFilter(QObject *watched, QEvent *event) {
+    if (watched == filename && event->type() == QEvent::MouseButtonPress) {
+        QMouseEvent *mouseEvent = static_cast<QMouseEvent *>(event);
+        if (mouseEvent->button() == Qt::LeftButton) {
+            QString filePath = this->fullText;
+            QDesktopServices::openUrl(QUrl::fromLocalFile(filePath));
+            return true; // 事件处理完毕，不再传递
+        }
+    }
+    return QObject::eventFilter(watched, event); // 对于其他事件，保持默认处理
 }

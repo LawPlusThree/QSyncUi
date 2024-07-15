@@ -18,6 +18,8 @@ class ELA_EXPORT DirCard : public ElaScrollPageArea
 public:
     explicit DirCard(QString filename,QString cloudname, quint64 datasize,QString bindtime,int syncStatus,int Id);
     ElaCheckBox* getCheckBox() const;
+    void modify(quint64 d,QString b);
+    bool eventFilter(QObject *watched, QEvent *event);
 
     ElaCheckBox* _checkBox{nullptr};
     ElaIconButton*pauseBtn;
@@ -27,10 +29,8 @@ public:
     ElaText *bindtime;
     ElaIconButton*relieveBtn;
     ElaIconButton*syncBtn;
-    void modify(quint64 d,QString b);
     QString fullText;
     QString cfullText;
-
     int id;
     bool ischecked();
 
