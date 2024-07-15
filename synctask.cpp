@@ -127,7 +127,7 @@ QList<SyncTask> SyncTaskDatabaseManager::getTasks() {
 }
 
 void SyncTaskDatabaseManager::initializeDatabase(QString name) {
-    db = QSqlDatabase::addDatabase("QSQLITE","syncTasks");
+    db = QSqlDatabase::addDatabase("QSQLITE");
     //存到userData文件夹
     db.setDatabaseName(name+"syncTasks.db");
     if (!db.open()) {
