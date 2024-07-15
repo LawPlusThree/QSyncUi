@@ -176,7 +176,20 @@ FileManagePage::FileManagePage(QWidget* parent,UserManager *um):ElaScrollPage(pa
     scrollArea->setWidgetResizable(true); // 允许scrollArea根据内容自动调整大小
 
     connect(_dircardProxy, &DirCardProxy::checkBoxToggled, [this](bool checked) {
-        if(checked) {
+        QMapIterator<int, DirCard*> i(_dircardProxy->cardMap);
+        bool allNotChecked = true;
+        while (i.hasNext())
+        {
+            i.next();
+            //int id = i.key();
+            DirCard *card = i.value();
+            if(card->ischecked())
+            {
+                allNotChecked = false;
+                break;
+            }
+        }
+        if(!allNotChecked) {
             _pushButton1->show(); // 如果复选框被勾选，显示按钮
         } else {
             _pushButton1->hide(); // 如果复选框未被勾选，隐藏按钮
