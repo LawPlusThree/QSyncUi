@@ -6,17 +6,28 @@
 
 class ElaCheckBox;
 class ElaProgressBar;
+class ElaIconButton;
 class HistoryViewCard : public ElaScrollPageArea
 {
 public:
-    explicit HistoryViewCard(QString f, QString d,QString t);
+    explicit HistoryViewCard(QString filename,QString cloudname);
 
-    ElaCheckBox* _checkBox{nullptr};
+    ElaIconButton*button;
     ElaText *filename;
-    ElaText *datasize;
-    ElaText *time;
-    ElaPushButton *rollback;
+    ElaText*cloudname;
     QString fullText;
+    QString cfullText;
+};
+
+class SubCard:public ElaScrollPageArea
+{
+public:
+    explicit SubCard(QString versionID,quint64 datasize,QString bindtime);
+
+    ElaText*versionID;
+    quint64 datasize;
+    ElaText*bindtime;
+    ElaPushButton*rollback;
 };
 
 #endif // HISTORYVIEWCARD_H
