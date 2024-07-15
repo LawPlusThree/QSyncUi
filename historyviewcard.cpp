@@ -5,10 +5,11 @@
 #include<QPainter>
 #include"ElaApplication.h"
 
-HistoryViewCard::HistoryViewCard(QString file,QString cloud)
+HistoryViewCard::HistoryViewCard(QString file,QString cloud,QString p)
 {
     filename=new ElaText(file);
     cloudname=new ElaText(cloud);
+    this->path=p;
 
     fullText=file;
     cfullText=cloud;
@@ -52,16 +53,11 @@ HistoryViewCard::HistoryViewCard(QString file,QString cloud)
     FileCardArea->addWidget(filenameWidget);
     FileCardArea->addWidget(cloudnameWidget);
     FileCardArea->addLayout(buttonArea);
-    //FileCardArea->addLayout(dataSizeArea);
-    //FileCardArea->addLayout(timeArea);
-    //FileCardArea->addLayout(rollbackArea);
+
     FileCardArea->setStretchFactor(catalogueArea0,25);
     FileCardArea->setStretchFactor(filenameWidget,430);
     FileCardArea->setStretchFactor(cloudnameWidget,375);
     FileCardArea->setStretchFactor(buttonArea,35);
-    //FileCardArea->setStretchFactor(dataSizeArea,100);
-    //FileCardArea->setStretchFactor(timeArea,160);
-    //FileCardArea->setStretchFactor(rollbackArea,100);
 
     filenameWidget->setStyleSheet("QToolTip { color: #5C5C5C; background-color: #F9F9F9; border: 1px solid #808080; border-radius: 3px; }");
     cloudnameWidget->setStyleSheet("QToolTip { color: #5C5C5C; background-color: #F9F9F9; border: 1px solid #808080; border-radius: 3px; }");
@@ -116,11 +112,11 @@ SubCard::SubCard(QString ID,quint64 d,QString time)
     dataSizeArea->addWidget(dataSize,0,Qt::AlignCenter);
 
     bindtime->setTextSize(16);
-    bindtime->setFixedWidth(160);
+    bindtime->setFixedWidth(200);
     QVBoxLayout*bindtimeArea=new QVBoxLayout();
     bindtimeArea->addWidget(bindtime,0,Qt::AlignCenter);
 
-    rollback=new ElaPushButton("回滚到此版本");
+    rollback=new ElaPushButton("下载");
     rollback->setFixedWidth(100);
     QHBoxLayout *rollbackArea=new QHBoxLayout();
     rollbackArea->addWidget(rollback);

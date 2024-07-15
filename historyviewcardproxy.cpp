@@ -49,9 +49,9 @@ void HistoryviewCardProxy::addHistoryviewCard(HistoryViewCard *card) {
     });
 }
 
-void HistoryviewCardProxy::addHistoryviewCard(QString filename,QString cloudname)
+void HistoryviewCardProxy::addHistoryviewCard(QString filename,QString cloudname,QString path)
 {
-    HistoryViewCard*card=new HistoryViewCard(filename,cloudname);
+    HistoryViewCard*card=new HistoryViewCard(filename,cloudname,path);
     addHistoryviewCard(card);
 }
 
@@ -62,7 +62,7 @@ void HistoryviewCardProxy::addSubCard(QString filename,QString versionID,quint64
     {
         i.next();
         HistoryViewCard*card=i.value();
-        if(!card->fullText.compare(filename))
+        if(card->fullText==filename)
         {
             SubCardProxy*subcard=i.key();
             subcard->addSubCard(versionID,datasize,bindtime);

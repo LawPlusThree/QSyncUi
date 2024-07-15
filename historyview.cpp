@@ -76,34 +76,6 @@ HistoryViewPage::HistoryViewPage(QWidget* parent): ElaScrollPage(parent)
     QVBoxLayout* cloudnameArea = new QVBoxLayout(cloudnameWidget);
     cloudnameArea->addWidget(catalogueText2, 0, Qt::AlignLeft);
 
-    //catalogueText2->setFixedSize(100,20);
-    /*catalogueText2->setAlignment(Qt::AlignCenter); // 设置文本居中对齐
-    QVBoxLayout* catalogueArea2 = new QVBoxLayout();
-    catalogueArea2->addWidget(catalogueText2, 0, Qt::AlignCenter);
-    ElaText* catalogueText4 = new ElaText("同步时间", this);
-    catalogueText4->setTextSize(16);
-    catalogueText4->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    catalogueText4->setFixedSize(160,20);
-    catalogueText4->setAlignment(Qt::AlignCenter); // 设置文本居中对齐
-    QVBoxLayout* catalogueArea4 = new QVBoxLayout();
-    catalogueArea4->addWidget(catalogueText4, 0, Qt::AlignCenter);
-    ElaText* catalogueText5 = new ElaText("操作", this);
-    catalogueText5->setTextSize(16);
-    catalogueText5->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    catalogueText5->setFixedSize(100,20);
-    catalogueText5->setAlignment(Qt::AlignCenter); // 设置文本居中对齐
-    QHBoxLayout* catalogueArea5 = new QHBoxLayout();
-    catalogueArea5->addWidget(catalogueText5, 0, Qt::AlignCenter);
-    catalogueLayout->addLayout(catalogueArea0);
-    catalogueLayout->addWidget(filenameWidget);
-    catalogueLayout->addLayout(catalogueArea2);
-    catalogueLayout->addLayout(catalogueArea4);
-    catalogueLayout->addLayout(catalogueArea5);
-    catalogueLayout->setStretchFactor(catalogueArea0, 25);
-    catalogueLayout->setStretchFactor(filenameWidget, 500);
-    catalogueLayout->setStretchFactor(catalogueArea2, 100);
-    catalogueLayout->setStretchFactor(catalogueArea4, 160);
-    catalogueLayout->setStretchFactor(catalogueArea5, 100);*/
     catalogueLayout->addLayout(catalogueArea0);
     catalogueLayout->addWidget(filenameWidget);
     catalogueLayout->addWidget(cloudnameWidget);
@@ -115,18 +87,12 @@ HistoryViewPage::HistoryViewPage(QWidget* parent): ElaScrollPage(parent)
     scrollArea->viewport()->setStyleSheet("background:transparent;");//设置背景透明
 
     _historyviewcardPage=new HistoryviewCardProxy(this);
-
-    /*addHistoryViewCard("原神须弥3.0版本“千朵玫瑰带来的黎明”全新开启","3.5G");
-    addHistoryViewCard("原神稻妻2.0版本“不动鸣神，泡影破灭”全新开启","3.5G");
-    addHistoryViewCard("原神枫丹4.0版本“仿若无因飘落的细雨”全新开启","3.5G");
-    addHistoryViewCard("历史版本4","3.5G");
-    addHistoryViewCard("历史版本5","3.5G");
-    addHistoryViewCard("历史版本6","3.5G");
-    addHistoryViewCard("历史版本7","3.5G");
-    addHistoryViewCard("历史版本8","3.5G");
-    addHistoryViewCard("历史版本9","3.5G");
-    addHistoryViewCard("历史版本10","3.5G");
-    addHistoryViewCard("历史版本11","45.14G");*/
+    /*addHistoryViewCard("C:/Users/27284/1111111111111Documents/114514","/mk111111111555757575775757711111111111szyjbyl");
+    addHistoryViewCard("C:/Users/27284/Documents/books","/books");
+    addSubCard("C:/Users/27284/Documents/books","4.6",43000,"2024.7.15 09:28:20");
+    addSubCard("C:/Users/27284/Documents/books","4.7",555007,"2024.7.16 10:30:25");
+    addSubCard("C:/Users/27284/1111111111111Documents/114514","4.7",555007,"2024.7.16 15:42:16");
+    addHistoryViewCard("C:/Users/114514/Documents/books","/1919810");*/
 
     scrollArea->setWidget(_historyviewcardPage);
     scrollArea->setWidgetResizable(true); // 允许scrollArea根据内容自动调整大小
@@ -143,9 +109,9 @@ void HistoryViewPage::addSubCard(QString filename,QString versionID,quint64 data
     _historyviewcardPage->addSubCard(filename,versionID,datasize,bindtime);
 }
 
-void HistoryViewPage::addHistoryViewCard(QString filename,QString datasize)
+void HistoryViewPage::addHistoryViewCard(QString filename,QString cloudname,QString path)
 {
-    HistoryViewCard*newHV=new HistoryViewCard(filename,datasize);
+    HistoryViewCard*newHV=new HistoryViewCard(filename,cloudname,path);
     _historyviewcardPage->addHistoryviewCard(newHV);
 
     QFontMetrics metrics(newHV->filename->font());
