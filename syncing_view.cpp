@@ -151,27 +151,8 @@ SyncingPage::SyncingPage(QWidget* parent)
     //scrollArea->setWidget(filesWidget); // 设置scrollArea的内容部件
     scrollArea->setWidgetResizable(true); // 允许scrollArea根据内容自动调整大小
 
-    connect(_filecardProxy, &FileCardProxy::checkBoxToggled, [this](bool checked) {
-        QMapIterator<int, FileCard*> i(_filecardProxy->cardMap);
-        bool allNotChecked = true;
-        while (i.hasNext())
-        {
-            i.next();
-            FileCard *card = i.value();
-            if(card->ischecked())
-            {
-                allNotChecked = false;
-                break;
-            }
-        }
-        if(!allNotChecked) {
-            _PauseButton->show(); // 如果复选框被勾选，显示按钮
-            _CancelButton->show();
-        } else {
-            _PauseButton->hide();
-            _CancelButton->hide(); // 如果复选框未被勾选，隐藏按钮
-        }
-    });
+    connect(_filecardProxy, &FileCardProxy::checkBoxToggled, this, &SyncingPage::buttonShowHide);
+    connect(_filecardProxy, &FileCardProxy::removeCard, this, &SyncingPage::buttonShowHide);
 
     centerVLayout->addWidget(progressBarArea); // 将上方固定区域添加到布局中
     centerVLayout->addWidget(pushButtonArea); // 将切换按钮容器添加到布局中
@@ -286,3 +267,25 @@ void SyncingPage::toggleSelectAll()
     _selectAllButton->setChecked(!_selectAllButton->isChecked());
 }
 
+void SyncingPage::buttonShowHide()
+{
+    QMapIterator<int, FileCard*> i(_filecardProxy->cardMap);
+    bool allNotChecked = true;
+    while (i.hasNext())
+    {
+        i.next();
+        FileCard *card = i.value();
+        if(card->ischecked())
+        {
+            allNotChecked = false;
+            break;
+        }
+    }
+    if(!allNotChecked) {
+        _PauseButton->show(); // 如果复选框被勾选，显示按钮
+        _CancelButton->show();
+    } else {
+        _PauseButton->hide();
+        _CancelButton->hide(); // 如果复选框未被勾选，隐藏按钮
+    }
+}

@@ -27,6 +27,7 @@ private:
 
 signals:
     void checkBoxToggled(bool checked); // 当DirCard中的复选框被勾选时发出的信号
+    void removeCard();
 
 private slots:
     void onCheckBoxStateChanged(int state); // 处理复选框状态变化的槽

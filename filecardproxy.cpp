@@ -29,6 +29,7 @@ void FileCardProxy::addFileCard(QString filename,quint64 datasize,double speed,i
         cardMap[id] = card;
         filesLayout->addWidget(card);
         filesLayout->setAlignment(Qt::AlignTop);
+        connect(card->getCheckBox(), &ElaCheckBox::stateChanged, this, &FileCardProxy::onCheckBoxStateChanged);
     }
 }
 
@@ -40,6 +41,7 @@ void FileCardProxy::removeFileCard(const int &id) {
         filesLayout->removeWidget(card);
         card->setParent(nullptr);
         card->deleteLater();
+        emit removeCard();
     }
 }
 

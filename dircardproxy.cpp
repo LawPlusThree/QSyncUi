@@ -39,6 +39,7 @@ void DirCardProxy::removeDirCard(const int &id) {
         filesLayout->removeWidget(card);
         card->setParent(nullptr);
         card->deleteLater();
+        emit removeCard();
     }
 }
 
@@ -53,6 +54,7 @@ void DirCardProxy::removeChecked()
         if(card->ischecked())
             removeDirCard(id);
     }
+    emit removeCard();
 }
 
 void DirCardProxy::modifyDirCard(quint64 datasize,QString bindtime,int id)
