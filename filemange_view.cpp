@@ -25,7 +25,7 @@ FileManagePage::FileManagePage(QWidget* parent,UserManager *um):ElaScrollPage(pa
     centerVLayout->setContentsMargins(0, 0, 5, 0); // 设置布局边距,5为到右边的距离
     centralWidget->setWindowTitle("同步文件夹管理"); // 设置窗口标题
 
-    // 创建一个 ElaProgressBar 对象，用作进度条
+    /*// 创建一个 ElaProgressBar 对象，用作进度条
     _progressBar = new ElaProgressBar(this);
     // 设置QProgressBar的大小策略为水平方向可扩展，垂直方向固定
     _progressBar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
@@ -48,7 +48,7 @@ FileManagePage::FileManagePage(QWidget* parent,UserManager *um):ElaScrollPage(pa
     progressBarText->setTextSize(15);
     // 将进度条文本标签和进度条控件添加到布局中
     progressBarLayout->addWidget(progressBarText);
-    progressBarLayout->addWidget(_progressBar);
+    progressBarLayout->addWidget(_progressBar);*/
     // 创建一个 ElaToggleButton 对象，设置其标签为 "Head" 并指定其父对象
     _pushButton1 = new ElaPushButton("解除绑定", this);
     _pushButton1->setFixedSize(100, 40); // 设置按钮的固定大小
@@ -176,7 +176,7 @@ FileManagePage::FileManagePage(QWidget* parent,UserManager *um):ElaScrollPage(pa
 
     connect(_dircardProxy, &DirCardProxy::checkBoxToggled, this, &FileManagePage::buttonShowHide);
     connect(_dircardProxy, &DirCardProxy::removeCard, this, &FileManagePage::buttonShowHide);
-    centerVLayout->addWidget(progressBarArea); // 将上方固定区域添加到布局中
+    //centerVLayout->addWidget(progressBarArea); // 将上方固定区域添加到布局中
     centerVLayout->addWidget(pushButtonArea); // 将切换按钮容器添加到布局中
     centerVLayout->addWidget(catalogueArea); // 将目录文本添加到布局中
     centerVLayout->addWidget(scrollArea); // 将scrollArea添加到布局中

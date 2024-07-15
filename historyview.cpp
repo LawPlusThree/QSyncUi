@@ -19,7 +19,7 @@ HistoryViewPage::HistoryViewPage(QWidget* parent): ElaScrollPage(parent)
     centralWidget->setWindowTitle("查看历史"); // 设置窗口标题
 
     // 创建一个 ElaProgressBar 对象，用作进度条
-    _progressBar = new ElaProgressBar(this);
+    /*_progressBar = new ElaProgressBar(this);
     // 设置QProgressBar的大小策略为水平方向可扩展，垂直方向固定
     _progressBar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     // 设置最小尺寸，可以适当调整宽度以减少填充效果
@@ -41,7 +41,7 @@ HistoryViewPage::HistoryViewPage(QWidget* parent): ElaScrollPage(parent)
     progressBarText->setTextSize(15);
     // 将进度条文本标签和进度条控件添加到布局中
     progressBarLayout->addWidget(progressBarText);
-    progressBarLayout->addWidget(_progressBar);
+    progressBarLayout->addWidget(_progressBar);*/
 
     QWidget* catalogueArea = new QWidget();
     catalogueArea->setWindowFlags(Qt::FramelessWindowHint); // 去除窗口边框
@@ -91,7 +91,7 @@ HistoryViewPage::HistoryViewPage(QWidget* parent): ElaScrollPage(parent)
     scrollArea->setWidget(_historyviewcardPage);
     scrollArea->setWidgetResizable(true); // 允许scrollArea根据内容自动调整大小
 
-    centerVLayout->addWidget(progressBarArea); // 将上方固定区域添加到布局中
+    //centerVLayout->addWidget(progressBarArea); // 将上方固定区域添加到布局中
     centerVLayout->addWidget(catalogueArea); // 将目录文本添加到布局中
     centerVLayout->addWidget(scrollArea); // 将scrollArea添加到布局中
 
