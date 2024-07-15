@@ -561,7 +561,7 @@ void MainWindow::ReadDownTask()
 void MainWindow::ReadFinishTask()
 {
     for (auto const &task:_taskManager->readFinishTask()){
-        this->_historysyncPage->addHistory(task.localPath,QString::number(task.dataSize),task.sycnTime.toString("yyyy-MM-dd"),task.status==1?true:false);
+        this->_historysyncPage->addHistory(task.localPath,QString::number(task.dataSize),task.sycnTime.toString("yyyy-MM-dd"),task.status==2?true:false);
     }
 }
 
