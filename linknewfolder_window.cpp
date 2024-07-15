@@ -55,7 +55,6 @@ linkNewFolder_window::linkNewFolder_window(QWidget *parent)
     QHBoxLayout* lineEditLayout2 = new QHBoxLayout(lineEditArea2);// 创建一个水平布局
     lineEditLayout2->setContentsMargins(0, 0, 0, 0); // 设置布局的边距
     folderName2 = new ElaComboBox(this);
-    QStringList folderName2List{"haha/", "lala/", "yuanshen/"};
     folderName2->setEditable(true); // 设置为可编辑
     folderName2->lineEdit()->setPlaceholderText("云端文件夹地址(只能包含大小写字母、数字、'-'和'/'，且必须以'/'结尾)"); // 设置输入提示文本
     folderName2->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);

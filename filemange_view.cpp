@@ -175,26 +175,8 @@ FileManagePage::FileManagePage(QWidget* parent,UserManager *um):ElaScrollPage(pa
     scrollArea->setWidget(_dircardProxy);
     scrollArea->setWidgetResizable(true); // 允许scrollArea根据内容自动调整大小
 
-    connect(_dircardProxy, &DirCardProxy::checkBoxToggled, [this](bool checked) {
-        QMapIterator<int, DirCard*> i(_dircardProxy->cardMap);
-        bool allNotChecked = true;
-        while (i.hasNext())
-        {
-            i.next();
-            DirCard *card = i.value();
-            if(card->ischecked())
-            {
-                allNotChecked = false;
-                break;
-            }
-        }
-        if(!allNotChecked) {
-            _pushButton1->show(); // 如果复选框被勾选，显示按钮
-        } else {
-            _pushButton1->hide(); // 如果复选框未被勾选，隐藏按钮
-        }
-    });
-
+    connect(_dircardProxy, &DirCardProxy::checkBoxToggled, this, &FileManagePage::buttonShowHide);
+    connect(_dircardProxy, &DirCardProxy::removeCard, this, &FileManagePage::buttonShowHide);
     centerVLayout->addWidget(progressBarArea); // 将上方固定区域添加到布局中
     centerVLayout->addWidget(pushButtonArea); // 将切换按钮容器添加到布局中
     centerVLayout->addWidget(catalogueArea); // 将目录文本添加到布局中
@@ -285,5 +267,26 @@ void FileManagePage::showEvent(QShowEvent* event) {
 void FileManagePage::updateComboBoxIndex(int index) {
     if (index-1 >= 0 && index-1 < _comboBox->count()) {
         _comboBox->setCurrentIndex(index-1);
+    }
+}
+
+void FileManagePage::buttonShowHide()
+{
+    QMapIterator<int, DirCard*> i(_dircardProxy->cardMap);
+    bool allNotChecked = true;
+    while (i.hasNext())
+    {
+        i.next();
+        DirCard *card = i.value();
+        if(card->ischecked())
+        {
+            allNotChecked = false;
+            break;
+        }
+    }
+    if(!allNotChecked) {
+        _pushButton1->show(); // 如果复选框被勾选，显示按钮
+    } else {
+        _pushButton1->hide(); // 如果复选框未被勾选，隐藏按钮
     }
 }

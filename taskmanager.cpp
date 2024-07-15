@@ -32,6 +32,16 @@ void TaskManager::createConnection(QString account)
 void TaskManager::insertUpTask(int uploadId,QString remotePath, QString localPath, quint64 dataSize, int totalPiece, QMap<int,QString> etags, bool isPause)
 {
     QSqlQuery query(db);
+    //检查任务信息是否已存在，如果存在则更新，不存在则插入
+    query.prepare("SELECT * FROM uptask WHERE localPath = :localPath");
+    query.bindValue(":localPath", localPath);
+    query.exec();
+    if(query.next())
+    {
+        updateUpTask(uploadId,remotePath, localPath, dataSize, totalPiece, etags, isPause);
+        return;
+    }
+    else{
     query.prepare("INSERT INTO uptask (uploadId,remotePath, localPath, dataSize, totalPiece, etags, isPause) VALUES (:uploadId,:remotePath, :localPath, :dataSize, :totalPiece, :etags, :isPause)");
     query.bindValue(":uploadId", uploadId);
     query.bindValue(":remotePath", remotePath);
@@ -41,11 +51,22 @@ void TaskManager::insertUpTask(int uploadId,QString remotePath, QString localPat
     query.bindValue(":etags", processEtag(etags));
     query.bindValue(":isPause", isPause);
     query.exec();
+    }
 }
 
 void TaskManager::insertDownTask(QString remotePath, QString localPath, quint64 dataSize, int totalPiece, QMap<int, QString> etags, bool isPause)
 {
     QSqlQuery query(db);
+    //检查任务信息是否已存在，如果存在则更新，不存在则插入
+    query.prepare("SELECT * FROM downtask WHERE localPath = :localPath");
+    query.bindValue(":localPath", localPath);
+    query.exec();
+    if(query.next())
+    {
+        updateDownTask(remotePath, localPath, dataSize, totalPiece, etags, isPause);
+        return;
+    }
+    else{
     query.prepare("INSERT INTO downtask (remotePath, localPath, dataSize, totalPiece, etags, isPause) VALUES (:remotePath, :localPath, :dataSize, :totalPiece, :etags, :isPause)");
     query.bindValue(":remotePath", remotePath);
     query.bindValue(":localPath", localPath);
@@ -54,11 +75,22 @@ void TaskManager::insertDownTask(QString remotePath, QString localPath, quint64 
     query.bindValue(":etags", processEtag(etags));
     query.bindValue(":isPause", isPause);
     query.exec();
+    }
 }
 
 void TaskManager::insertFinishTask(int taskId,QString remotePath, QString localPath, quint64 dataSize, QDate sycnTime, int status)
 {
     QSqlQuery query(db);
+    //检查任务信息是否已存在，如果存在则更新，不存在则插入
+    query.prepare("SELECT * FROM finishtask WHERE localPath = :localPath");
+    query.bindValue(":localPath", localPath);
+    query.exec();
+    if(query.next())
+    {
+        updateFinishTask(taskId,remotePath, localPath, dataSize, sycnTime, status);
+        return;
+    }
+    else{
     query.prepare("INSERT INTO finishtask (taskId,remotePath, localPath, dataSize, sycnTime, status) VALUES (:taskId,:remotePath, :localPath, :dataSize, :sycnTime, :status)");
     query.bindValue(":taskId", taskId);
     query.bindValue(":remotePath", remotePath);
@@ -66,7 +98,7 @@ void TaskManager::insertFinishTask(int taskId,QString remotePath, QString localP
     query.bindValue(":dataSize", dataSize);
     query.bindValue(":sycnTime", sycnTime);
     query.bindValue(":status", status);
-    query.exec();
+    query.exec();}
 }
 
 void TaskManager::deleteUpTask(QString localPath)

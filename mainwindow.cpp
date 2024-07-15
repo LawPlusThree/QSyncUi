@@ -327,6 +327,8 @@ void MainWindow::onUserLoggedIn(User user)
     connect(_filemanagePage,&FileManagePage::setThreadNum,[=](int num){
         this->_syncCore->requestManager->setMaxConcurrentRequests(num);
     });
+    //链接synccore中filequeue的sendRequestInfo信号和mainwindow的onTaskFinsished槽函数
+    connect(_syncCore->requestManager,&NetworkRequestManager::sendRequestInfo,this,&MainWindow::onTaskFinsished);
 
     ReadUpTask();
     ReadDownTask();
