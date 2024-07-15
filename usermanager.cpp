@@ -72,12 +72,7 @@ QString UserManager::getUserPassWord(const QString &account)
 // 将用户数据保存到文件
 bool UserManager::saveToFile(const QString &account,const QString &password,const bool autoLogin,const int threadnum,const QString &excludedItems)
 {
-    //Read File, find diffs and then write to file
     QFile file(filePath_);
-    // 检查文件是否存在以及是否可以打开
-    if (!file.exists() || !file.open(QIODevice::ReadOnly)) {
-        return false; // 文件不存在或无法打开不是错误条件
-    }
     QByteArray data = file.readAll();
     //读取为json对象
     QJsonObject json;

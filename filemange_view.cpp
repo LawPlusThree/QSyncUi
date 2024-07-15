@@ -181,7 +181,6 @@ FileManagePage::FileManagePage(QWidget* parent,UserManager *um):ElaScrollPage(pa
         while (i.hasNext())
         {
             i.next();
-            //int id = i.key();
             DirCard *card = i.value();
             if(card->ischecked())
             {
