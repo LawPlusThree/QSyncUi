@@ -154,6 +154,8 @@ public:
     preResponse deleteObject(const QString &path, const QString &versionId);
     bool isExist(preResponse &response);//和headobject一起使用，判断文件是否存在
     bool setManager(QNetworkAccessManager* submanager);
+    bool putObjectTagging(const QString &path,const QString &versionId, const QMap<QString, QString> &tags);
+    QMap<QString,QString> getObjectTagging(const QString &path,const QString &versionId);
 public slots:
     bool save2LocalWithoutVersion(const QString &path, const QString &localpath);
     QString multiUpload(const QString &path, const QString &localpath, QMap<QString,QString> metaDatas=QMap<QString,QString>());

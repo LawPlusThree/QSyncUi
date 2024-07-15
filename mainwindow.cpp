@@ -6,7 +6,7 @@
 #include <QVBoxLayout>
 #include <QDesktopServices>
 #include <QUrl>
-
+#include <QFileDialog>
 #include "ElaContentDialog.h"
 #include "ElaEventBus.h"
 #include "ElaGraphicsItem.h"
@@ -23,6 +23,7 @@
 #include"filemange_view.h"
 #include "historysync_view.h"
 #include"historyview.h"
+#include "globalvalue.h"
 #include "SyncThread.h"
 #include "qthread.h"
 #include "modifyinfor_win.h"
@@ -185,7 +186,12 @@ MainWindow::MainWindow(QWidget *parent)
     autologin();
 
     connect(_historyviewPage->_historyviewcardPage,&HistoryviewCardProxy::Message,this,[=](QString versionID,QString cloudname,QString local,QString path){
-        qDebug()<<versionID<<" "<<cloudname<<" "<<local<<" "<<path;
+        int fileTaskId=getNextFileTaskId();
+        QString key=cloudname+path;
+        //询问用户保存位置，打开文件选择框
+        QString savePath=QFileDialog::getSaveFileName(this,"保存文件",local+versionID);
+        _syncCore->requestManager->addSave2LocalRequest(key,savePath,fileTaskId,versionID);
+        emit _syncCore->addFileDownloadTask(savePath,fileTaskId,0);
     });
 }
 
@@ -239,7 +245,7 @@ void MainWindow::ArgvProcess(QString action, QVector<QString> argv)
         QString remotePrefix=taskRemotePath+taskRelativePath;
         QVector<Version> v= versionClient.listAllVersionsByPrefix(remotePrefix);
         this->navigation(this->_historyviewPage->property("ElaPageKey").toString());
-        this->_historyviewPage->addHistoryViewCard(standardPath,taskRemotePath,"");
+        this->_historyviewPage->addHistoryViewCard(standardPath,taskRemotePath,taskRelativePath);
         for (auto const&x:v){
             QString readableTime=x.lastModified.toString("yyyy-MM-dd hh:mm:ss");
             this->_historyviewPage->addSubCard(standardPath,x.versionId,x.size,readableTime);
