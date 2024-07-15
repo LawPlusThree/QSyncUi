@@ -16,7 +16,6 @@ public:
     SyncCore(COSConfig config, QObject *parent = nullptr);
     bool addTask(SyncTask *task);
     void doTask(SyncTask *task);
-    void filesystemChanged(struct event e);
     NetworkRequestManager *requestManager;
 signals:
     void taskTotalSize(qint64 size,int taskid);

@@ -53,10 +53,67 @@ struct preResponse{
     };
     int statusCode;
 };
+#include<QFile>
+#include<QFileInfo>
+#include<QDir>
 class COSClient : public QObject
 {
     Q_OBJECT
 public:
+    qint64 getFileSize(const QString &path);
+    QByteArray getObject(const QString &path, const QString &versionId, QMap<QString,QString> &respHeaders, qint64 startPosition) {
+        preRequest request;
+        if (!versionId.isEmpty()) {
+            request.customHeaders.insert("versionId", versionId);
+        }
+        request.customHeaders.insert("Range", QString("bytes=%1-").arg(startPosition));
+        preResponse response = invokeGetFileRequest(path, request);
+        respHeaders = response.headers;
+        return response.data;
+    }
+    bool save2Local(const QString &path, const QString &localpath, const QString &versionId, QMap<QString,QString> &respMetaDatas, qint64 startPosition) {
+        QMap<QString, QString> tempHeaders;
+        QByteArray data = getObject(path, versionId, tempHeaders, startPosition);
+        QFile file(localpath);
+        // 获取文件的父文件夹，如果不存在，循环创建
+        QFileInfo fileInfo(localpath);
+        QDir dir = fileInfo.dir();
+        if (!dir.exists()) {
+            dir.mkpath(dir.absolutePath());
+        }
+
+        if (!file.open(QIODevice::WriteOnly | QIODevice::Append)) {
+            qDebug() << "Failed To open" << localpath;
+            return false;
+        }
+        file.write(data);
+        file.close();
+
+        // 提取以 x-cos-meta-* 开头的元数据
+        for (auto it = tempHeaders.begin(); it!= tempHeaders.end(); ++it) {
+            if (it.key().startsWith("x-cos-meta-")) {
+                // 去除 x-cos-meta- 前缀
+                respMetaDatas.insert(it.key().mid(11), it.value());
+            }
+        }
+        return true;
+    }
+    // 新的 save2Local 函数，用于从指定位置开始断点续下载
+    bool save2LocalWithResume(const QString &path, const QString &localpath, const QString &versionId, QMap<QString,QString> &respMetaDatas, qint64 startPosition) {
+        qint64 fileSize = getFileSize(path);
+        if (fileSize == -1) {
+            return false;
+        }
+
+        QFile file(localpath);
+        if (file.exists() && file.size() >= fileSize) {
+            qDebug() << "File already downloaded completely";
+            return true;
+        }
+
+        return save2Local(path, localpath, versionId, respMetaDatas, fileSize);
+    }
+
     COSClient(QObject *parent = nullptr);
     COSClient(COSConfig config,QObject *parent = nullptr);
     COSClient(QString bucketName, QString appId, QString region, QString allowPrefix,QString secretId, QString secretKey, QString token, QDateTime expiredTime,QObject *parent = nullptr);

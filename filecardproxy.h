@@ -13,7 +13,7 @@ public:
     ~FileCardProxy() override;
 
     void addFileCard(FileCard *card, const int &id);
-    void addFileCard(QString filename,quint64 datasize,double speed,int progress,const int &id);
+    void addFileCard(QString filename,quint64 datasize,double speed,int progress,int syncStatus,const int &id);
     void removeFileCard(const int &id);
     //void modify(int d,int s,int p,int Id);
     void modify(quint64 totalsize,quint64 currentsize,int id);
