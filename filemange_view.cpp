@@ -170,7 +170,6 @@ FileManagePage::FileManagePage(QWidget* parent,UserManager *um):ElaScrollPage(pa
     scrollArea->viewport()->setStyleSheet("background:transparent;");//设置背景透明
 
     _dircardProxy=new DirCardProxy(this);
-    addDirCard("崩坏：星穹铁道4444444444444444444444445","米游社19999999999999999999992",4300000000,"2024.7.12",3,710);
 
     scrollArea->setWidget(_dircardProxy);
     scrollArea->setWidgetResizable(true); // 允许scrollArea根据内容自动调整大小
