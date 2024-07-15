@@ -28,6 +28,7 @@ public:
     quint64 datasize;
     ElaText*bindtime;
     ElaPushButton*rollback;
+
 };
 
 #endif // HISTORYVIEWCARD_H

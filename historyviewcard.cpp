@@ -118,11 +118,18 @@ SubCard::SubCard(QString ID,quint64 d,QString time)
     QVBoxLayout*bindtimeArea=new QVBoxLayout();
     bindtimeArea->addWidget(bindtime,0,Qt::AlignCenter);
 
+    rollback=new ElaPushButton("回滚到此版本");
+    rollback->setFixedWidth(100);
+    QHBoxLayout *rollbackArea=new QHBoxLayout();
+    rollbackArea->addWidget(rollback);
+
     QHBoxLayout*subcardLayout=new QHBoxLayout(this);
     subcardLayout->addLayout(bindtimeArea);
     subcardLayout->addLayout(versionIDArea);
     subcardLayout->addLayout(dataSizeArea);
-    subcardLayout->setStretchFactor(bindtimeArea,280);
-    subcardLayout->setStretchFactor(versionIDArea,280);
-    subcardLayout->setStretchFactor(dataSizeArea,280);
+    subcardLayout->addLayout(rollbackArea);
+    subcardLayout->setStretchFactor(bindtimeArea,245);
+    subcardLayout->setStretchFactor(versionIDArea,245);
+    subcardLayout->setStretchFactor(dataSizeArea,245);
+    subcardLayout->setStretchFactor(rollback,100);
 }
