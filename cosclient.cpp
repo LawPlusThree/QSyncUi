@@ -382,6 +382,101 @@ bool COSClient::setManager(QNetworkAccessManager *submanager)
     return true;
 }
 
+bool COSClient::putObjectTagging(const QString &path,const QString &versionId, const QMap<QString, QString> &tags)
+{
+    QDomDocument document;
+    // 创建根元素
+    QDomElement tagging = document.createElement("Tagging");
+    document.appendChild(tagging);
+    // 创建TagSet元素
+    QDomElement tagSet = document.createElement("TagSet");
+    tagging.appendChild(tagSet);
+
+    // 遍历tags QMap
+    QMapIterator<QString, QString> i(tags);
+    while (i.hasNext()) {
+        i.next();
+
+        // 对于每个键值对，创建Tag元素
+        QDomElement tag = document.createElement("Tag");
+        tagSet.appendChild(tag);
+
+        // 创建Key元素，并设置为当前键
+        QDomElement key = document.createElement("Key");
+        key.appendChild(document.createTextNode(i.key())); // 使用实际的键
+        tag.appendChild(key);
+
+        // 创建Value元素，并设置为当前值
+        QDomElement value = document.createElement("Value");
+        value.appendChild(document.createTextNode(i.value())); // 使用实际的值
+        tag.appendChild(value);
+    }
+
+    // 将QDomDocument对象转换为字符串
+    QString xmlString = document.toString();
+
+    // 这里应该有代码将xmlString发送到服务器
+    preRequest request;
+    request.data = xmlString.toUtf8();
+    request.contentType = "application/xml";
+    request.queryParams.insert("VersionId", versionId);
+    preResponse response = invokePutRequest(path, request);
+
+    return response.statusCode >= 200 && response.statusCode < 300; // 根据实际情况可能需要返回不同的值
+}
+
+QMap<QString,QString> COSClient::getObjectTagging(const QString &path, const QString &versionId)
+{
+    preRequest request;
+    request.queryParams.insert("versionId", versionId);
+    preResponse response = invokeGetFileRequest(path, request);
+    // 解析XML并返回
+    QString xmlContent = response.data; // 这里应该是获取响应体中的XML字符串
+
+    QDomDocument document;
+    QString errorMsg;
+    int errorLine, errorColumn;
+
+    // 尝试解析XML
+    if (!document.setContent(xmlContent, &errorMsg, &errorLine, &errorColumn)) {
+        qDebug() << "Failed to parse XML:" << errorMsg << "Line:" << errorLine << "Column:" << errorColumn;
+    }
+    // 定义一个QMap来存储键值对
+    QMap<QString, QString> keyValueMap;
+    // 获取根元素
+    QDomElement root = document.documentElement();
+
+    // 遍历TagSet
+    QDomNodeList tagSets = root.elementsByTagName("TagSet");
+    for (int i = 0; i < tagSets.count(); ++i) {
+        QDomNode tagSetNode = tagSets.item(i);
+        if (tagSetNode.isElement()) {
+            QDomElement tagSetElement = tagSetNode.toElement();
+
+            // 遍历Tag
+            QDomNodeList tags = tagSetElement.elementsByTagName("Tag");
+            for (int j = 0; j < tags.count(); ++j) {
+                QDomNode tagNode = tags.item(j);
+                if (tagNode.isElement()) {
+                    QDomElement tagElement = tagNode.toElement();
+
+                    // 获取Key
+                    QDomElement keyElement = tagElement.elementsByTagName("Key").item(0).toElement();
+                    QString key = keyElement.text();
+
+                    // 获取Value
+                    QDomElement valueElement = tagElement.elementsByTagName("Value").item(0).toElement();
+                    QString value = valueElement.text();
+                    // 将键值对添加到QMap中
+                    keyValueMap.insert(key, value);
+                }
+            }
+        }
+    }
+    return keyValueMap;
+}
+
+
 // 修改后的函数实现
 
 preResponse COSClient::invokeGetFileRequest(const QString& path, const preRequest& request) {
