@@ -30,13 +30,15 @@ void SyncThread::run()
         watch *w = new watch(path, [](struct event e)
                              {
                 QFileInfo info(e.path_name);
+    qDebug() << info.fileName();
     // 读取 path_type 状态
     // 读取 effect_type 状态
     switch (e.effect_type) {
     case event::effect_type::rename:
         {
+        qDebug() << "Effect type: Rename";
+        }
 
-    }
         break;
     case event::effect_type::modify:
         qDebug() << "Effect type: Modify";
