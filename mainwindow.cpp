@@ -324,8 +324,6 @@ void MainWindow::onUserLoggedIn(User user)
     });
     //链接synccore中filequeue的sendRequestInfo信号和mainwindow的onTaskFinsished槽函数
     connect(_syncCore->requestManager,&NetworkRequestManager::sendRequestInfo,this,&MainWindow::onTaskFinsished);
-    _syncCore->requestManager->test();
-
 
     ReadUpTask();
     ReadDownTask();
