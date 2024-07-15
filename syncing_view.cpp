@@ -2,6 +2,8 @@
 #include "ElaText.h"
 #include "ElaPushButton.h"
 #include "ElaToggleButton.h"
+#include"ElaCheckBox.h"
+#include"ElaIconButton.h"
 #include <QVBoxLayout>
 #include"filecard.h"
 #include"ElaScrollArea.h"
@@ -50,6 +52,12 @@ SyncingPage::SyncingPage(QWidget* parent)
     _pushButton->setFixedSize(100, 40); // 设置按钮的固定大小
     _toggleButton = new ElaToggleButton("完成时提醒", this);
     _toggleButton->setFixedSize(100, 40); // 设置按钮的固定大小
+    _PauseButton = new ElaPushButton("暂停同步",this);
+    _PauseButton->setFixedSize(100, 40);
+    _CancelButton = new ElaPushButton("停止同步",this);
+    _CancelButton->setFixedSize(100, 40);
+    _selectAllButton = new ElaPushButton("全选/全不选", this);
+    _selectAllButton->setFixedSize(100, 40);
     QWidget* pushButtonArea = new QWidget();
     pushButtonArea->setWindowFlags(Qt::FramelessWindowHint); // 去除窗口边框
     pushButtonArea->setAttribute(Qt::WA_TranslucentBackground); // 设置背景透明
@@ -63,6 +71,18 @@ SyncingPage::SyncingPage(QWidget* parent)
     pushButtonLayout->addWidget(_toggleButton);
     // 在布局中添加一个弹性空间，使得所有控件靠左对齐
     pushButtonLayout->addStretch();
+
+    pushButtonLayout->addWidget(_PauseButton);
+    pushButtonLayout->addWidget(_CancelButton);
+    pushButtonLayout->addWidget(_selectAllButton);
+    connect(_selectAllButton, &QPushButton::clicked, this, &SyncingPage::toggleSelectAll);    connect(_PauseButton,&ElaPushButton::clicked,[=](){
+        PauseChecked();
+    });
+    connect(_CancelButton,&ElaPushButton::clicked,[=](){
+        CancelChecked();
+    });
+    _PauseButton->hide();
+    _CancelButton->hide();
 
     QWidget* catalogueArea = new QWidget();
     catalogueArea->setWindowFlags(Qt::FramelessWindowHint); // 去除窗口边框
@@ -131,6 +151,16 @@ SyncingPage::SyncingPage(QWidget* parent)
     //scrollArea->setWidget(filesWidget); // 设置scrollArea的内容部件
     scrollArea->setWidgetResizable(true); // 允许scrollArea根据内容自动调整大小
 
+    connect(_filecardProxy, &FileCardProxy::checkBoxToggled, [this](bool checked) {
+        if(checked) {
+            _PauseButton->show(); // 如果复选框被勾选，显示按钮
+            _CancelButton->show();
+        } else {
+            _PauseButton->hide();
+            _CancelButton->hide(); // 如果复选框未被勾选，隐藏按钮
+        }
+    });
+
     centerVLayout->addWidget(progressBarArea); // 将上方固定区域添加到布局中
     centerVLayout->addWidget(pushButtonArea); // 将切换按钮容器添加到布局中
     centerVLayout->addWidget(catalogueArea); // 将目录文本添加到布局中
@@ -175,6 +205,38 @@ void SyncingPage::totalProgress()
     _progressBar->setValue(totalpro);
 }
 
+void SyncingPage::PauseChecked()
+{
+
+    QMapIterator<int, FileCard*> i(_filecardProxy->cardMap);
+    while (i.hasNext())
+    {
+        i.next();
+        FileCard *card = i.value();
+        if(card->ischecked())
+            // 检查当前按钮状态，如果是播放状态，则切换到暂停状态
+            if(card->pauseBtn->getAwesome() == ElaIconType::CirclePlay)
+            {
+                card->pauseBtn->setAwesome(ElaIconType::CirclePause);
+            }
+        // 触发暂停按钮的点击事件，以调用on_pauseBtn_clicked槽函数
+        emit card->pauseBtn->clicked();
+        }
+}
+
+void SyncingPage::CancelChecked()
+{
+    QMapIterator<int, FileCard*> i(_filecardProxy->cardMap);
+    while (i.hasNext())
+    {
+        i.next();
+        int id = i.key();
+        FileCard *card = i.value();
+        if(card->ischecked())
+            removeFile(id);
+        }
+}
+
 // 重写resizeEvent
 void SyncingPage::resizeEvent(QResizeEvent* event) {
     QWidget::resizeEvent(event);
@@ -196,5 +258,19 @@ void SyncingPage::showEvent(QShowEvent* event) {
         x->filename->setText(elidedText);
         x->filename->setToolTip(x->fullText);
     }
+}
+
+void SyncingPage::toggleSelectAll()
+{
+    // 切换所有文件卡片的多选框状态
+    QMapIterator<int, FileCard*> i(_filecardProxy->cardMap);
+    while (i.hasNext()) {
+        i.next();
+        FileCard *card = i.value();
+        card->_checkBox->setChecked(!card->_checkBox->isChecked());
+    }
+
+    // 切换按钮状态
+    _selectAllButton->setChecked(!_selectAllButton->isChecked());
 }
 

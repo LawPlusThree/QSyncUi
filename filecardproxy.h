@@ -25,6 +25,12 @@ private:
     QMap<int, FileCard*> cardMap;
     QWidget *parentWidget;
     friend class SyncingPage;
+
+signals:
+    void checkBoxToggled(bool checked); // 当复选框被勾选时发出的信号
+
+private slots:
+    void onCheckBoxStateChanged(int state); // 处理复选框状态变化的槽
 };
 
 

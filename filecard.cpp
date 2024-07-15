@@ -155,6 +155,7 @@ void FileCard::on_pauseBtn_clicked()
         pauseBtn->setAwesome(ElaIconType::CirclePlay);
     else
         pauseBtn->setAwesome(ElaIconType::CirclePause);
+    emit Pause();
 }
 
 /*void FileCard::modify(int d,int s,int p)
@@ -250,5 +251,20 @@ void FileCard::modify(quint64 totalSize,quint64 currentSize)
 void FileCard::processing(int p)
 {
     progress=p;
-    proBar->setValue(progress);
+    if(pauseBtn->getAwesome()==ElaIconType::CirclePause)
+        proBar->setValue(progress);
+}
+
+bool FileCard::ischecked()
+{
+    return _checkBox->isChecked();
+}
+
+ElaCheckBox* FileCard::getCheckBox() const
+{
+    return _checkBox;
+}
+
+void FileCard::selectCheckBox(bool checked) {
+    _checkBox->setChecked(checked);
 }

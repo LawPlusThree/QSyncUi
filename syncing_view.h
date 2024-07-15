@@ -23,6 +23,8 @@ public:
     //void modifyFile(int p,int id);
     void modifyFile(quint64 totalSize,quint64 currentSize,int id);
     void totalProgress();
+    void PauseChecked();
+    void CancelChecked();
     FileCardProxy* _filecardProxy;
     QDateTime preTime;
     QDateTime currentTime;
@@ -33,9 +35,15 @@ private:
     ElaProgressBar* _progressBar{nullptr};
     ElaPushButton* _pushButton{nullptr};
     ElaToggleButton* _toggleButton{nullptr};
+    ElaPushButton* _PauseButton{nullptr};
+    ElaPushButton* _CancelButton{nullptr};
+    ElaPushButton*_selectAllButton{nullptr};
 protected:
     void resizeEvent(QResizeEvent* event) override;
     void showEvent(QShowEvent* event) override;
+
+private slots:
+    void toggleSelectAll();
 };
 
 #endif // SYNCING_VIEW_H
