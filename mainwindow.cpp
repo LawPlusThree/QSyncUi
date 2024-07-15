@@ -26,6 +26,7 @@
 #include "SyncThread.h"
 #include "qthread.h"
 #include "modifyinfor_win.h"
+#include"historyviewcardproxy.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : ElaWindow(parent)
@@ -182,6 +183,10 @@ MainWindow::MainWindow(QWidget *parent)
     this->setIsDefaultClosed(false);
     connect(this, &MainWindow::closeButtonClicked, this, &MainWindow::onCloseButtonClicked);
     autologin();
+
+    connect(_historyviewPage->_historyviewcardPage,&HistoryviewCardProxy::Message,this,[=](QString versionID,QString cloudname,QString path){
+        qDebug()<<versionID<<" "<<cloudname<<" "<<path;
+    });
 }
 
 MainWindow::MainWindow(QString action, QVector<QString> argv, QWidget *parent):
