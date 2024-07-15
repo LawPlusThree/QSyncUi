@@ -121,7 +121,7 @@ private:
                 cosClient.blockingPutFinishSignal=true;
                 cosClient.multiUpload(requestInfo.key, requestInfo.localPath, QMap<QString, QString>());
             } else if (requestInfo.methodId == 1) {
-                if(requestInfo.versionId.isEmpty()){
+                if(!requestInfo.versionId.isEmpty()){
                     QMap<QString, QString> metaData;
                     cosClient.save2Local(requestInfo.key, requestInfo.localPath,requestInfo.versionId,metaData);
                 }else{
