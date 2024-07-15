@@ -624,17 +624,19 @@ void MainWindow::onUserPausedFileTask(int fileTaskId)
 void MainWindow::onTaskFinsished(RequestInfo requestInfo)
 {
     QFileInfo fileInfo(requestInfo.localPath);
+    bool taskExist=false;
     if(requestInfo.methodId==0){
-        _taskManager->insertFinishTask(0,requestInfo.RemotePath,requestInfo.localPath,fileInfo.size(),QDate::currentDate(),2);
+        taskExist=_taskManager->insertFinishTask(0,requestInfo.RemotePath,requestInfo.localPath,fileInfo.size(),QDate::currentDate(),2);
         _taskManager->deleteUpTask(requestInfo.localPath);
     }
     else if(requestInfo.methodId==1){
-        _taskManager->insertFinishTask(0,requestInfo.RemotePath,requestInfo.localPath,fileInfo.size(),QDate::currentDate(),3);
+        taskExist=_taskManager->insertFinishTask(0,requestInfo.RemotePath,requestInfo.localPath,fileInfo.size(),QDate::currentDate(),3);
         _taskManager->deleteDownTask(requestInfo.localPath);
     }
-    ReadUpTask();
-    ReadDownTask();
-    ReadFinishTask();
+    if(taskExist)
+    {
+        ReadFinishTask();
+    }
 }
 
 void MainWindow::ReadUpTask()
