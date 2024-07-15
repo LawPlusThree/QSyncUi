@@ -39,4 +39,37 @@ public:
     Bucket(){}
 
 };
+
+struct Version{
+    QString key;
+    QString versionId;
+    bool isLatest;
+    QDateTime lastModified;
+    QString eTag;
+    int size;
+    QString storageClass;
+    QString storageTier;
+    Owner owner;
+    Version(){}
+};
+
+class VersionResult{
+public:
+    QString encodingType;
+    QString name;
+    QString prefix;
+    QString keyMarker;
+    QString versionIdMarker;
+    int maxKeys;
+    bool isTruncated;
+    QString nextKeyMarker;
+    QString nextVersionIdMarker;
+    QString delimiter;
+    QVector<QString> commonPrefixes;
+    QVector<Version> versions;
+    QVector<Version> deleteMarkers;
+    VersionResult(){}
+};
+
+
 #endif // BUCKET_H
