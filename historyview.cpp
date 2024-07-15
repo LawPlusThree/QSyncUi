@@ -115,11 +115,6 @@ HistoryViewPage::HistoryViewPage(QWidget* parent): ElaScrollPage(parent)
     scrollArea->viewport()->setStyleSheet("background:transparent;");//设置背景透明
 
     _historyviewcardPage=new HistoryviewCardProxy(this);
-    addHistoryViewCard("C:/Users/27284/1111111111111Documents/114514","/mk111111111555757575775757711111111111szyjbyl");
-    addHistoryViewCard("C:/Users/27284/Documents/books","/books");
-    addSubCard("C:/Users/27284/Documents/books","4.6",43000,"2024.7.15");
-    addSubCard("C:/Users/27284/Documents/books","4.7",555007,"2024.7.16");
-    addHistoryViewCard("C:/Users/114514/Documents/books","/1919810");
 
     /*addHistoryViewCard("原神须弥3.0版本“千朵玫瑰带来的黎明”全新开启","3.5G");
     addHistoryViewCard("原神稻妻2.0版本“不动鸣神，泡影破灭”全新开启","3.5G");
