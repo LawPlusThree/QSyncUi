@@ -184,8 +184,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(this, &MainWindow::closeButtonClicked, this, &MainWindow::onCloseButtonClicked);
     autologin();
 
-    connect(_historyviewPage->_historyviewcardPage,&HistoryviewCardProxy::Message,this,[=](QString versionID,QString cloudname,QString filename,QString path){
-        qDebug()<<versionID<<" "<<cloudname<<" "<<filename<<" "<<path;
+    connect(_historyviewPage->_historyviewcardPage,&HistoryviewCardProxy::Message,this,[=](QString versionID,QString cloudname,QString local,QString path){
+        qDebug()<<versionID<<" "<<cloudname<<" "<<local<<" "<<path;
     });
 }
 

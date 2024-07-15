@@ -96,6 +96,9 @@ private:
 
     QTimer*timer;//定时器
     void doSomething();
+
+signals:
+    void isActive(bool);
 };
 
 #endif // MAINWINDOW_H

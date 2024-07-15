@@ -18,8 +18,6 @@ HistoryviewCardProxy::~HistoryviewCardProxy()
 void HistoryviewCardProxy::addHistoryviewCard(HistoryViewCard *card) {
     if (card && parentWidget) {
         SubCardProxy*subcard=new SubCardProxy(this);
-        path=card->path;
-        cloudname=card->cloudName;
         cardMap[subcard]=card;
         subcard->subLayout->setContentsMargins(10,0,10,10);
         filesLayout->addWidget(card);
