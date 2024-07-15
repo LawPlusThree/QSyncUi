@@ -18,6 +18,7 @@ public:
     QString fullText;
     QString cfullText;
     QString path;
+    QString cloudName;
 };
 
 class SubCard:public ElaScrollPageArea
@@ -29,6 +30,8 @@ public:
     quint64 datasize;
     ElaText*bindtime;
     ElaPushButton*rollback;
+    QString path;
+    QString cloudname;
 
 protected:
     void paintEvent(QPaintEvent*event)override;

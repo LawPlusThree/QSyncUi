@@ -122,6 +122,7 @@ void HistorysyncPage::addHistory(QString filename, QString datasize,QString time
     double data=datasize.toDouble();
     QString dataStr;
     QString size;
+    data/=1024;
     if(data<1024)
     {
         dataStr=QString::number(data,'f',1);

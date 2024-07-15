@@ -66,6 +66,9 @@ void HistoryviewCardProxy::addSubCard(QString filename,QString versionID,quint64
         {
             SubCardProxy*subcard=i.key();
             subcard->addSubCard(versionID,datasize,bindtime);
+            connect(subcard,&SubCardProxy::message,this,[=](QString versionID){
+                emit  Message(versionID,card->cloudName,filename,card->path);
+            });
             return;
         }
     }
@@ -84,6 +87,9 @@ SubCardProxy::~SubCardProxy()
 void SubCardProxy::addSubCard(QString versionID,quint64 datasize,QString bindtime)
 {
     SubCard*card=new SubCard(versionID,datasize,bindtime);
+    connect(card->rollback,&ElaPushButton::clicked,this,[=](){
+        emit message(versionID);
+    });
     if(card&&parentWidget)
     {
         cardVector.push_back(card);

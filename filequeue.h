@@ -38,11 +38,12 @@ public:
         }
     }
 
-    void addSave2LocalRequest(const QString &key, const QString &localPath, int fileTaskId) {
+    void addSave2LocalRequest(const QString &key, const QString &localPath, int fileTaskId, QString versionId="") {
         QMutexLocker locker(&mutex);
         RequestInfo requestInfo;
         requestInfo.key = key;
         requestInfo.localPath = localPath;
+        requestInfo.versionId = versionId;
         requestInfo.methodId = 1;
         requestQueue.enqueue({requestInfo, fileTaskId});
         if (activeRequests < maxConcurrentRequests) {
@@ -120,7 +121,11 @@ private:
                 cosClient.blockingPutFinishSignal=true;
                 cosClient.multiUpload(requestInfo.key, requestInfo.localPath, QMap<QString, QString>());
             } else if (requestInfo.methodId == 1) {
-                cosClient.save2LocalWithoutVersion(requestInfo.key, requestInfo.localPath);
+                if(!requestInfo.versionId.isEmpty()){
+                    QMap<QString, QString> metaData;
+                    cosClient.save2Local(requestInfo.key, requestInfo.localPath,requestInfo.versionId,metaData);
+                }else{
+                    cosClient.save2LocalWithoutVersion(requestInfo.key, requestInfo.localPath);}
             }else if (requestInfo.methodId == 2) {
                 cosClient.putObjectCopy(requestInfo.copyto,requestInfo.RemotePath);
             }else if (requestInfo.methodId == 3) {

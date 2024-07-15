@@ -48,10 +48,10 @@ SyncingPage::SyncingPage(QWidget* parent)
     progressBarLayout->addWidget(_progressBar);
 
     // 创建一个 ElaToggleButton 对象，设置其标签为 "Head" 并指定其父对象
-    _pushButton = new ElaPushButton("上传文件", this);
+    /*_pushButton = new ElaPushButton("上传文件", this);
     _pushButton->setFixedSize(100, 40); // 设置按钮的固定大小
     _toggleButton = new ElaToggleButton("完成时提醒", this);
-    _toggleButton->setFixedSize(100, 40); // 设置按钮的固定大小
+    _toggleButton->setFixedSize(100, 40); // 设置按钮的固定大小*/
     _PauseButton = new ElaPushButton("暂停同步",this);
     _PauseButton->setFixedSize(100, 40);
     _CancelButton = new ElaPushButton("停止同步",this);
@@ -67,8 +67,8 @@ SyncingPage::SyncingPage(QWidget* parent)
     QHBoxLayout* pushButtonLayout = new QHBoxLayout(pushButtonArea);
     pushButtonLayout->setContentsMargins(50, 0, 55, 0);
     // 将切换按钮控件添加到布局中
-    pushButtonLayout->addWidget(_pushButton);
-    pushButtonLayout->addWidget(_toggleButton);
+    //pushButtonLayout->addWidget(_pushButton);
+    //pushButtonLayout->addWidget(_toggleButton);
     // 在布局中添加一个弹性空间，使得所有控件靠左对齐
     pushButtonLayout->addStretch();
 
@@ -145,7 +145,6 @@ SyncingPage::SyncingPage(QWidget* parent)
     scrollArea->viewport()->setStyleSheet("background:transparent;");//设置背景透明
 
     _filecardProxy=new FileCardProxy(this);
-    addFile("311111111111114244242424211111111111112",90000000000,500,0,1,141);
 
     scrollArea->setWidget(_filecardProxy);
     //scrollArea->setWidget(filesWidget); // 设置scrollArea的内容部件

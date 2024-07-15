@@ -18,6 +18,9 @@ public:
     void addSubCard(QString versionID,quint64 datasize,QString bindtime);
     QVBoxLayout*subLayout;
 
+signals:
+    void message(QString versionID);
+
 private:
     QVector<SubCard*>cardVector;
     QWidget *parentWidget;
@@ -34,6 +37,10 @@ public:
     void addHistoryviewCard(QString filename,QString cloudname,QString path);
     void addSubCard(QString filename,QString versionID,quint64 datasize,QString bindtime);
     QVBoxLayout*filesLayout;
+
+
+signals:
+    void Message(QString versionID,QString cloudname,QString filename,QString path);
 
 private:
     QMap<SubCardProxy*,HistoryViewCard*>cardMap;
