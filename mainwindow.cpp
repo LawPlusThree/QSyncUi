@@ -6,7 +6,7 @@
 #include <QVBoxLayout>
 #include <QDesktopServices>
 #include <QUrl>
-
+#include <QFileDialog>
 #include "ElaContentDialog.h"
 #include "ElaEventBus.h"
 #include "ElaGraphicsItem.h"
@@ -23,9 +23,11 @@
 #include"filemange_view.h"
 #include "historysync_view.h"
 #include"historyview.h"
+#include "globalvalue.h"
 #include "SyncThread.h"
 #include "qthread.h"
 #include "modifyinfor_win.h"
+#include"historyviewcardproxy.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : ElaWindow(parent)
@@ -182,6 +184,15 @@ MainWindow::MainWindow(QWidget *parent)
     this->setIsDefaultClosed(false);
     connect(this, &MainWindow::closeButtonClicked, this, &MainWindow::onCloseButtonClicked);
     autologin();
+
+    connect(_historyviewPage->_historyviewcardPage,&HistoryviewCardProxy::Message,this,[=](QString versionID,QString cloudname,QString local,QString path){
+        int fileTaskId=getNextFileTaskId();
+        QString key=cloudname+path;
+        //询问用户保存位置，打开文件选择框
+        QString savePath=QFileDialog::getSaveFileName(this,"保存文件",local+versionID);
+        _syncCore->requestManager->addSave2LocalRequest(key,savePath,fileTaskId,versionID);
+        emit _syncCore->addFileDownloadTask(savePath,fileTaskId,0);
+    });
 }
 
 MainWindow::MainWindow(QString action, QVector<QString> argv, QWidget *parent):
@@ -234,7 +245,7 @@ void MainWindow::ArgvProcess(QString action, QVector<QString> argv)
         QString remotePrefix=taskRemotePath+taskRelativePath;
         QVector<Version> v= versionClient.listAllVersionsByPrefix(remotePrefix);
         this->navigation(this->_historyviewPage->property("ElaPageKey").toString());
-        this->_historyviewPage->addHistoryViewCard(standardPath,taskRemotePath,"");
+        this->_historyviewPage->addHistoryViewCard(standardPath,taskRemotePath,taskRelativePath);
         for (auto const&x:v){
             QString readableTime=x.lastModified.toString("yyyy-MM-dd hh:mm:ss");
             this->_historyviewPage->addSubCard(standardPath,x.versionId,x.size,readableTime);
@@ -351,6 +362,16 @@ void MainWindow::onUserLoggedIn(User user)
     if(_action!=""){
         ArgvProcess(_action,_argv);
     }
+
+    timer = new QTimer(this);
+    connect(timer, &QTimer::timeout, this, &MainWindow::doSomething);
+    timer->setInterval(10000);
+    timer->start();
+}
+
+void MainWindow::doSomething()
+{
+
 }
 
 void MainWindow::exitLogin()
@@ -362,6 +383,13 @@ void MainWindow::exitLogin()
         setUserInfoCardPixmap(QPixmap(":/include/Image/Cirno.jpg"));
         onMessage("退出账号成功","Success");
         CurrentUser=nullptr;
+
+        if (timer) {
+            timer->stop();
+            disconnect(timer, &QTimer::timeout, this, &MainWindow::doSomething);
+            delete timer;
+            timer = nullptr;
+        }
     }
     else{
         onMessage("退出账号失败","Error");
