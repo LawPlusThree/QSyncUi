@@ -23,6 +23,7 @@
 #include"filemange_view.h"
 #include "historysync_view.h"
 #include"historyview.h"
+#include "globalvalue.h"
 #include "SyncThread.h"
 #include "qthread.h"
 #include "modifyinfor_win.h"
@@ -185,7 +186,10 @@ MainWindow::MainWindow(QWidget *parent)
     autologin();
 
     connect(_historyviewPage->_historyviewcardPage,&HistoryviewCardProxy::Message,this,[=](QString versionID,QString cloudname,QString path){
-        qDebug()<<versionID<<" "<<cloudname<<" "<<path;
+        int fileTaskId=getNextFileTaskId();
+        QString key=cloudname+path;
+        _syncCore->requestManager->addSave2LocalRequest(key,"",fileTaskId,versionID);
+        emit _syncCore->addFileDownloadTask("",fileTaskId,0);
     });
 }
 
