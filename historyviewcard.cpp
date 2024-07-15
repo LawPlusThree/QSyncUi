@@ -5,10 +5,11 @@
 #include<QPainter>
 #include"ElaApplication.h"
 
-HistoryViewCard::HistoryViewCard(QString file,QString cloud)
+HistoryViewCard::HistoryViewCard(QString file,QString cloud,QString p)
 {
     filename=new ElaText(file);
     cloudname=new ElaText(cloud);
+    this->path=p;
 
     fullText=file;
     cfullText=cloud;

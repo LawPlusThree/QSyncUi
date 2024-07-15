@@ -234,7 +234,7 @@ void MainWindow::ArgvProcess(QString action, QVector<QString> argv)
         QString remotePrefix=taskRemotePath+taskRelativePath;
         QVector<Version> v= versionClient.listAllVersionsByPrefix(remotePrefix);
         this->navigation(this->_historyviewPage->property("ElaPageKey").toString());
-        this->_historyviewPage->addHistoryViewCard(standardPath,taskRemotePath);
+        this->_historyviewPage->addHistoryViewCard(standardPath,taskRemotePath,"");
         for (auto const&x:v){
             QString readableTime=x.lastModified.toString("yyyy-MM-dd hh:mm:ss");
             this->_historyviewPage->addSubCard(standardPath,x.versionId,x.size,readableTime);

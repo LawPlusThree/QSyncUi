@@ -87,12 +87,12 @@ HistoryViewPage::HistoryViewPage(QWidget* parent): ElaScrollPage(parent)
     scrollArea->viewport()->setStyleSheet("background:transparent;");//设置背景透明
 
     _historyviewcardPage=new HistoryviewCardProxy(this);
-    addHistoryViewCard("C:/Users/27284/1111111111111Documents/114514","/mk111111111555757575775757711111111111szyjbyl");
+    /*addHistoryViewCard("C:/Users/27284/1111111111111Documents/114514","/mk111111111555757575775757711111111111szyjbyl");
     addHistoryViewCard("C:/Users/27284/Documents/books","/books");
     addSubCard("C:/Users/27284/Documents/books","4.6",43000,"2024.7.15 09:28:20");
     addSubCard("C:/Users/27284/Documents/books","4.7",555007,"2024.7.16 10:30:25");
     addSubCard("C:/Users/27284/1111111111111Documents/114514","4.7",555007,"2024.7.16 15:42:16");
-    addHistoryViewCard("C:/Users/114514/Documents/books","/1919810");
+    addHistoryViewCard("C:/Users/114514/Documents/books","/1919810");*/
 
     scrollArea->setWidget(_historyviewcardPage);
     scrollArea->setWidgetResizable(true); // 允许scrollArea根据内容自动调整大小
@@ -109,9 +109,9 @@ void HistoryViewPage::addSubCard(QString filename,QString versionID,quint64 data
     _historyviewcardPage->addSubCard(filename,versionID,datasize,bindtime);
 }
 
-void HistoryViewPage::addHistoryViewCard(QString filename,QString cloudname)
+void HistoryViewPage::addHistoryViewCard(QString filename,QString cloudname,QString path)
 {
-    HistoryViewCard*newHV=new HistoryViewCard(filename,cloudname);
+    HistoryViewCard*newHV=new HistoryViewCard(filename,cloudname,path);
     _historyviewcardPage->addHistoryviewCard(newHV);
 
     QFontMetrics metrics(newHV->filename->font());

@@ -49,9 +49,9 @@ void HistoryviewCardProxy::addHistoryviewCard(HistoryViewCard *card) {
     });
 }
 
-void HistoryviewCardProxy::addHistoryviewCard(QString filename,QString cloudname)
+void HistoryviewCardProxy::addHistoryviewCard(QString filename,QString cloudname,QString path)
 {
-    HistoryViewCard*card=new HistoryViewCard(filename,cloudname);
+    HistoryViewCard*card=new HistoryViewCard(filename,cloudname,path);
     addHistoryviewCard(card);
 }
 

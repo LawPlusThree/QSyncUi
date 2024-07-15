@@ -31,7 +31,7 @@ public:
     ~HistoryviewCardProxy() override;
 
     void addHistoryviewCard(HistoryViewCard *card);
-    void addHistoryviewCard(QString filename,QString cloudname);
+    void addHistoryviewCard(QString filename,QString cloudname,QString path);
     void addSubCard(QString filename,QString versionID,quint64 datasize,QString bindtime);
     QVBoxLayout*filesLayout;
 
