@@ -155,7 +155,7 @@ void FileCard::on_pauseBtn_clicked()
         pauseBtn->setAwesome(ElaIconType::CirclePlay);
     else
         pauseBtn->setAwesome(ElaIconType::CirclePause);
-    emit Pause();
+    emit pause();
 }
 
 /*void FileCard::modify(int d,int s,int p)
