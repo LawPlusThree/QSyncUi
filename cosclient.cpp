@@ -146,6 +146,25 @@ QString COSClient::completeMultipartUpload(QString path, QString uploadId, QMap<
     return QString::fromUtf8(response.data);
 }
 
+qint64 COSClient::getFileSize(const QString &path) {
+    QNetworkRequest request = buildGetRequest(path, {});
+    request.setRawHeader("Range", "bytes=0-0");
+    QNetworkReply* reply = manager->head(request);
+    QEventLoop loop;
+    connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+    loop.exec();
+
+    if (reply->error()!= QNetworkReply::NoError) {
+        qDebug() << "Error getting file size: " << reply->errorString();
+        reply->deleteLater();
+        return -1;
+    }
+
+    qint64 fileSize = reply->header(QNetworkRequest::ContentLengthHeader).toLongLong();
+    reply->deleteLater();
+    return fileSize;
+}
+
 QByteArray COSClient::getObject(const QString &path, const QString &versionId, QMap<QString,QString> &respHeaders)
 {
     preRequest request;
@@ -193,8 +212,16 @@ bool COSClient::save2Local(const QString &path, const QString &localpath, const 
 
 bool COSClient::save2LocalWithoutVersion(const QString &path, const QString &localpath)
 {
+    QFile file(localpath);
+    int startPosition;
+    if (file.exists()) {
+        startPosition = file.size();
+    } else {
+        startPosition = 0; // 文件不存在，从0开始下载
+    }
     QMap<QString, QString> tempMetaDatas;
     return save2Local(path, localpath, "", tempMetaDatas);
+    //return save2LocalWithResume(path,localpath,"",tempMetaDatas,startPosition);
 }
 
 preResponse COSClient::headObject(const QString &path,const QString &versionId, headHeader &reqHeader)
