@@ -41,7 +41,7 @@ public:
     QString path;
 
 signals:
-    void Message(QString versionID,QString cloudname,QString path);
+    void Message(QString versionID,QString cloudname,QString filename,QString path);
 
 private:
     QMap<SubCardProxy*,HistoryViewCard*>cardMap;

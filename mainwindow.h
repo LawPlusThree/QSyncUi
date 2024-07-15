@@ -94,6 +94,8 @@ private:
     void ReadDownTask();//数据库读取下载任务
     void ReadFinishTask();//数据库读取历史任务
 
+    QTimer*timer;//定时器
+    void doSomething();
 };
 
 #endif // MAINWINDOW_H
