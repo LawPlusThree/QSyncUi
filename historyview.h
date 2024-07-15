@@ -11,8 +11,10 @@ class HistoryViewPage : public ElaScrollPage
 public:
     explicit HistoryViewPage(QWidget* parent);
     QVBoxLayout*filesLayout;
-    void addHistoryViewCard(QString filename,QString datasize,QString bingtime);
+    void addHistoryViewCard(QString filename,QString datasize);
+    void addSubCard(QString filename,QString versionID,quint64 datasize,QString bindtime);
     QWidget* filenameWidget = new QWidget();
+    QWidget* cloudnameWidget = new QWidget();
     HistoryviewCardProxy*_historyviewcardPage;
 
 private:
