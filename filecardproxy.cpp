@@ -2,6 +2,7 @@
 
 #include"FileCard.h"
 #include<QVBoxLayout>
+#include"ElaCheckBox.h"
 
 FileCardProxy::FileCardProxy(QWidget *parent) : QWidget(parent) {
     parentWidget = qobject_cast<QWidget*>(parent);
@@ -17,6 +18,7 @@ void FileCardProxy::addFileCard(FileCard *card, const int &id) {
         cardMap[id] = card;
         filesLayout->addWidget(card);
         filesLayout->setAlignment(Qt::AlignTop);
+        connect(card->getCheckBox(), &ElaCheckBox::stateChanged, this, &FileCardProxy::onCheckBoxStateChanged);
     }
 }
 
@@ -94,4 +96,9 @@ int FileCardProxy::totalprogress()
     else
         progress=0;
     return progress;
+}
+
+void FileCardProxy::onCheckBoxStateChanged(int state)
+{
+    emit checkBoxToggled(state == Qt::Checked); // 发出信号，参数为复选框是否被勾选
 }

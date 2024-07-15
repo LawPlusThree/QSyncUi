@@ -17,7 +17,9 @@ public:
     //void modify(int d,int s,int p);
     void modify(quint64 totalsize,quint64 currentsize);
     void processing(int p);
-
+    bool ischecked();
+    void selectCheckBox(bool checked);
+    ElaCheckBox* getCheckBox()const;
     ElaCheckBox* _checkBox{nullptr};
     ElaText *filename;
     ElaText *datasize;

@@ -252,3 +252,17 @@ void FileCard::processing(int p)
     progress=p;
     proBar->setValue(progress);
 }
+
+bool FileCard::ischecked()
+{
+    return _checkBox->isChecked();
+}
+
+ElaCheckBox* FileCard::getCheckBox() const
+{
+    return _checkBox;
+}
+
+void FileCard::selectCheckBox(bool checked) {
+    _checkBox->setChecked(checked);
+}
