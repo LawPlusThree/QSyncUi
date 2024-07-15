@@ -10,6 +10,7 @@
 #include <QtNetwork/QNetworkReply>
 #include <QUrl>
 #include <QDomDocument>
+#include "bucket.h"
 struct COSConfig
 {
     COSConfig(){}
@@ -139,6 +140,8 @@ public:
         this->expiredTime = expiredTime;
     }
     QString listObjects(const QString &prefix, const QString &marker);
+    QString listVersions(const QString &prefix, const QString &keyMarker, const QString &versionIdMarker, int maxKeys);
+    QVector<Version> listAllVersionsByPrefix(const QString &prefix);
     bool putObject(const QString &path, const QByteArray &data,const QString &contentType="application/octet-stream");
     bool putObjectCopy(const QString &path, const QString &sourcePath);
     bool putLocalObject(const QString &path, const QString &localpath);

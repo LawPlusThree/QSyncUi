@@ -40,4 +40,17 @@ public:
     QFileInfoList getFileInfoList() const { return fileInfoList; }
 };
 
+
+class HistoryXMLProcesser : public QObject
+{
+    Q_OBJECT
+public:
+    explicit HistoryXMLProcesser(QObject *parent = nullptr) : QObject(parent) {}
+    VersionResult processXml(const QString &xmlString);
+private:
+    // 存储文件信息列表
+    QFileInfoList fileInfoList;
+    QByteArray dataxml;
+    //QNetworkAccessManager* manager;
+};
 #endif // XMLPROCESSER_H
