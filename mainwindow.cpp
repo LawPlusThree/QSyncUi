@@ -184,8 +184,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(this, &MainWindow::closeButtonClicked, this, &MainWindow::onCloseButtonClicked);
     autologin();
 
-    connect(_historyviewPage->_historyviewcardPage,&HistoryviewCardProxy::Message,this,[=](QString versionID,QString cloudname,QString path){
-        qDebug()<<versionID<<" "<<cloudname<<" "<<path;
+    connect(_historyviewPage->_historyviewcardPage,&HistoryviewCardProxy::Message,this,[=](QString versionID,QString cloudname,QString filename,QString path){
+        qDebug()<<versionID<<" "<<cloudname<<" "<<filename<<" "<<path;
     });
 }
 
@@ -356,6 +356,16 @@ void MainWindow::onUserLoggedIn(User user)
     if(_action!=""){
         ArgvProcess(_action,_argv);
     }
+
+    timer = new QTimer(this);
+    connect(timer, &QTimer::timeout, this, &MainWindow::doSomething);
+    timer->setInterval(10000);
+    timer->start();
+}
+
+void MainWindow::doSomething()
+{
+
 }
 
 void MainWindow::exitLogin()
@@ -367,6 +377,13 @@ void MainWindow::exitLogin()
         setUserInfoCardPixmap(QPixmap(":/include/Image/Cirno.jpg"));
         onMessage("退出账号成功","Success");
         CurrentUser=nullptr;
+
+        if (timer) {
+            timer->stop();
+            disconnect(timer, &QTimer::timeout, this, &MainWindow::doSomething);
+            delete timer;
+            timer = nullptr;
+        }
     }
     else{
         onMessage("退出账号失败","Error");
