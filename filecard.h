@@ -44,7 +44,6 @@ private slots:
     void on_pauseBtn_clicked();
 signals:
     void Relieve(int id);
-    void Pause();
 };
 
 #endif // FILECARD_H
