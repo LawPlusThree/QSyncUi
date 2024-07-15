@@ -152,7 +152,19 @@ SyncingPage::SyncingPage(QWidget* parent)
     scrollArea->setWidgetResizable(true); // 允许scrollArea根据内容自动调整大小
 
     connect(_filecardProxy, &FileCardProxy::checkBoxToggled, [this](bool checked) {
-        if(checked) {
+        QMapIterator<int, FileCard*> i(_filecardProxy->cardMap);
+        bool allNotChecked = true;
+        while (i.hasNext())
+        {
+            i.next();
+            FileCard *card = i.value();
+            if(card->ischecked())
+            {
+                allNotChecked = false;
+                break;
+            }
+        }
+        if(!allNotChecked) {
             _PauseButton->show(); // 如果复选框被勾选，显示按钮
             _CancelButton->show();
         } else {

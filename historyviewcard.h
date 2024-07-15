@@ -10,13 +10,14 @@ class ElaIconButton;
 class HistoryViewCard : public ElaScrollPageArea
 {
 public:
-    explicit HistoryViewCard(QString filename,QString cloudname);
+    explicit HistoryViewCard(QString filename,QString cloudname,QString path);
 
     ElaIconButton*button;
     ElaText *filename;
     ElaText*cloudname;
     QString fullText;
     QString cfullText;
+    QString path;
 };
 
 class SubCard:public ElaScrollPageArea
