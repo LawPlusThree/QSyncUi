@@ -102,6 +102,7 @@ public:
     QList<upTask> readUpTask();
     QList<downTask> readDownTask();
     QList<finishTask> readFinishTask();
+    finishTask getFinishTask(QString localPath);
     void closeConnection();
     ~TaskManager(){closeConnection();};
     QMap<int,QString> processJson(QString etags);//处理数据库中以json格式存储的etag

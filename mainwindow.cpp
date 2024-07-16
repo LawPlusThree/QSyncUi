@@ -636,7 +636,10 @@ void MainWindow::onTaskFinsished(RequestInfo requestInfo)
     }
     if(taskExist)
     {
-        ReadFinishTask();
+        //找到数据库中localpath为requestInfo.localPath的数据，并添加到卡片
+        finishTask task=_taskManager->getFinishTask(requestInfo.localPath);
+        QFileInfo fileInfo(requestInfo.localPath);
+        this->_historysyncPage->addHistory(task.localPath,QString::number(fileInfo.size()),task.sycnTime.toString("yyyy-MM-dd"),task.status==2?true:false);
     }
 }
 
