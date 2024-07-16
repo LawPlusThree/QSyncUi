@@ -248,10 +248,6 @@ bool SyncThread::isTheSameFile(const QString &localPath, const QString &cloudPat
     return result;
 }
 
-bool SyncThread::isRemoteFileExist(const QString &cloudPath)
-{
-
-}
 
 void SyncThread::onTaskCanceled(int fileTaskId)
 {
