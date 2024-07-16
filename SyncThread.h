@@ -18,25 +18,26 @@ class SyncThread : public QThread
 Q_OBJECT
 public:
     int lastTaskId = 0;
-    bool shouldListen = true;
+    bool shouldListen = false;
     QString path;
+    QString remotePath;
+    int syncStatus;
     COSClient* cosclient;
     COSConfig config;
-    SyncTask* task;
+    SyncTask* task=nullptr;
+    int getStatus();
+    QString getRemotePath();
     qint64 totalSize=0;
     qint64 upFileSize=0;
     qint64 downFileSize=0;
-    SyncThread(QString pathi,COSConfig configi,SyncTask* taski):path(pathi),config(configi),task(taski){
-              cosclient=new COSClient(config);
-          };
+    SyncThread(QString pathi, COSConfig configi, SyncTask *taski);
+    SyncThread(QString pathi, COSConfig configi, QString remotePath, int syncStatus);
     void run() override;
 public slots:
     void readDirectory(const QString &path);
     void recursiveRead(const QString &path);
     void readCloudDirectory(const QString &cloudpath);
     void addSynctask(const QFileInfo &info);//添加同步任务，把本地未上传文件添加入任务
-    void deleteSynctask(const QString &path);//删除同步任务，把本地已上传文件删除任务
-    void updateSynctask(const QString &path);//更新同步任务，把本地已上传文件更新任务
     bool isTheSameFile(const QString &localPath, const QString &cloudPath);//判断本地文件和云端文件是否相同
     void onTaskCanceled(int fileTaskId);
 signals:

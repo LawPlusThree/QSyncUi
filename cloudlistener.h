@@ -4,20 +4,25 @@
 #include <QObject>
 #include <QThread>
 #include "cosclient.h"
+#include "synctask.h"
 
-class CloudListener:QThread
+class CloudListener: public QThread
 {
     Q_OBJECT
 public:
+    QString computerName;
+    QMap<QString,QString> otherDeviceMap;
+    QStringList remotePaths;
+    QVector<SyncTask>  myTasks;
+    void setTasks(const QVector<SyncTask> &tasks);
+    void setRemotePaths(const QStringList &paths);
     COSConfig config;
     COSClient *cosclient;
     CloudListener();
-    CloudListener(COSConfig configi):config(configi){
-        cosclient=new COSClient(config);
-    };
+    CloudListener(COSConfig configi);
     void run() override;
 signals:
-    void cloudDirectoryChanged(const QString &cloudPath);
+    void cloudDirectoryChanged(SyncTask task);
 };
 
 #endif // CLOUDLISTENER_H

@@ -16,6 +16,7 @@ public:
     SyncCore(COSConfig config, QObject *parent = nullptr, QString excludedItems = "");
     bool addTask(SyncTask *task);
     void doTask(SyncTask *task);
+    void doCloudTask(QString local,QString remote, int status);
     NetworkRequestManager *requestManager;
 signals:
     void taskTotalSize(qint64 size,int taskid);
@@ -48,7 +49,7 @@ public slots:
     void onDirectoryChanged(const QString &path);
     void onFileChanged(const QString &path);
     void onCloudDirectoryChanged(const QString &cloudPath){
-        emit cloudDirectoryChanged(cloudPath);
+
     }
 };
 

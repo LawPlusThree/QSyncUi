@@ -344,7 +344,7 @@ void MainWindow::onUserLoggedIn(User user)
     ReadUpTask();
     ReadDownTask();
     ReadFinishTask();
-    
+    QStringList listenDirs;
     for (auto const &x:_syncTaskDatabaseManager->getTasks()){
         SyncTask* task=new SyncTask(x);
         otherDeviceMap[x.getRemotePath()]=getComputerName();
@@ -357,6 +357,7 @@ void MainWindow::onUserLoggedIn(User user)
             this->_filemanagePage->addDirCard(x.getLocalPath(),x.getRemotePath(),11,timeDelta,task->getSyncStatus(),x.getId());
         }
         _syncCore->addTask(task);
+        listenDirs.append(x.getRemotePath());
     }
     QVector<QString> s3Dirs = CurrentUser->getS3Dirs();
     qDebug() << "S3 Dirs:";
@@ -368,10 +369,10 @@ void MainWindow::onUserLoggedIn(User user)
         ArgvProcess(_action,_argv);
     }
 
-    timer = new QTimer(this);
-    connect(timer, &QTimer::timeout, this, &MainWindow::doSomething);
-    timer->setInterval(15000);
-    timer->start();
+    cloudListener=new CloudListener(cosConfig);
+    connect(cloudListener,&CloudListener::cloudDirectoryChanged,this,&MainWindow::onCloudDirectoryChanged);
+    cloudListener->setTasks(_syncTaskDatabaseManager->getTasks());
+    cloudListener->start();
 }
 
 void MainWindow::doSomething()
@@ -388,13 +389,6 @@ void MainWindow::exitLogin()
         setUserInfoCardPixmap(QPixmap(":/include/Image/Cirno.jpg"));
         onMessage("退出账号成功","Success");
         CurrentUser=nullptr;
-
-        if (timer) {
-            timer->stop();
-            disconnect(timer, &QTimer::timeout, this, &MainWindow::doSomething);
-            delete timer;
-            timer = nullptr;
-        }
     }
     else{
         onMessage("退出账号失败","Error");
@@ -405,6 +399,12 @@ void MainWindow::onNeedPassword(const QString &account)
 {
     QString password = um->getUserPassWord(account);
     emit dbPassword(password);
+}
+
+void MainWindow::onCloudDirectoryChanged(SyncTask thisTask)
+{
+    this->_syncCore->doCloudTask(thisTask.getLocalPath(),thisTask.getRemotePath(),3);
+    onMessage("云端文件夹 "+thisTask.getRemotePath()+" 有变动","Info");
 }
 /*
 void MainWindow::insertUserToDatabase(User user)
@@ -478,6 +478,7 @@ void MainWindow::onUserAddNewTask(const SyncTask &_task)
                     this->_filemanagePage->addDirCard(task->getLocalPath(),task->getRemotePath(),1111,timeDelta,task->getSyncStatus(),task->getId());
                 }
                 onMessage("新文件夹链接成功。","Success");
+                cloudListener->setTasks(_syncTaskDatabaseManager->getTasks());
             }
             else
             {

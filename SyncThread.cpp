@@ -5,32 +5,35 @@
 void SyncThread::run()
 {
     crc64_init();
-    if (task->getSyncStatus() == 1)
-    {
-        readDirectory(path);
-        readCloudDirectory(task->getRemotePath());
-    }
-    else if (task->getSyncStatus() == 2)
+    if (getStatus() == 1)
     {
         readDirectory(path);
     }
-    else if (task->getSyncStatus() == 3)
+    else if (getStatus() == 2)
     {
-        readCloudDirectory(task->getRemotePath());
+        readDirectory(path);
     }
+    else if (getStatus() == 3)
+    {
+        readCloudDirectory(path);
+        return ;
+    }
+    if(task==nullptr){
+        return ;
+    }
+    // Sync!
     emit this->localTotalSize(totalSize);
     emit this->upTotalSize(upFileSize);
-    // Sync!
     QString machine = QSysInfo::machineHostName();
     QString time = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
     QMap<QString, QString> map;
     map["computerName"] = machine;
     map["lastSyncTime"] = time;
-    cosclient->putObjectTagging(task->getRemotePath(), "", map);
+    cosclient->putObjectTagging(getRemotePath(), "", map);
 
-    QDir listen = task->getLocalPath();
+    QDir listen = path;
 
-    if (task->getSyncStatus() == 1 || task->getSyncStatus() == 2)
+    if (getStatus() == 1 || getStatus() == 2)
     {
         qDebug() << "upload/download";
         auto path = listen.filesystemAbsolutePath();
@@ -130,7 +133,6 @@ void SyncThread::recursiveRead(const QString &path)
 
 void SyncThread::readCloudDirectory(const QString &cloudpath)
 {
-    shouldListen = false;
     XmlProcesser processer;
     QString xml;
     Bucket bucket;
@@ -143,7 +145,7 @@ void SyncThread::readCloudDirectory(const QString &cloudpath)
         for (auto ct : bucket.contents)
         {
             // 不保留key的md5
-            QString localPath = task->getLocalPath() + "/" + ct.key.mid(task->getRemotePath().length() + 33);
+            QString localPath = path + "/" + ct.key.mid(getRemotePath().length() + 33);
             QFileInfo info(localPath);
             bool needDownload = false;
             if (!info.exists())
@@ -181,7 +183,6 @@ void SyncThread::readCloudDirectory(const QString &cloudpath)
             }
         }
     } while (bucket.isTruncated);
-    shouldListen = true;
 }
 
 
@@ -190,8 +191,8 @@ void SyncThread::addSynctask(const QFileInfo &info)
 {
     // 把path前面和task->getLocalPath()相同的部分去掉
     QString path = info.absoluteFilePath();
-    QString relativePath = path.mid(task->getLocalPath().length() + 1);
-    QString cloudPath = task->getRemotePath() + relativePath;
+    QString relativePath = path.mid(path.length() + 1);
+    QString cloudPath = getRemotePath() + relativePath;
     headHeader tmpHeaders;
     preResponse response = cosclient->headObject(cloudPath, "", tmpHeaders);
     if (cosclient->isExist(response))
@@ -206,22 +207,13 @@ void SyncThread::addSynctask(const QFileInfo &info)
     }
 }
 
-void SyncThread::deleteSynctask(const QString &path)
-{
-
-}
-
-void SyncThread::updateSynctask(const QString &path)
-{
-
-}
 
 bool SyncThread::isTheSameFile(const QString &localPath, const QString &cloudPath = "")
 {
     QString _cloudPath = cloudPath;
     if (_cloudPath.isEmpty())
     {
-        _cloudPath = task->getRemotePath() + localPath.mid(task->getLocalPath().length() + 1);
+        _cloudPath = getRemotePath() + localPath.mid(path.length() + 1);
     }
     bool result = false;
     QFile file(localPath);
@@ -252,3 +244,34 @@ bool SyncThread::isTheSameFile(const QString &localPath, const QString &cloudPat
 void SyncThread::onTaskCanceled(int fileTaskId)
 {
 }
+int SyncThread::getStatus()
+{
+    if (task==nullptr)
+    {
+        return syncStatus;
+    }
+    return task->getSyncStatus();
+}
+
+QString SyncThread::getRemotePath()
+{
+    if(task==nullptr)
+    {
+        return remotePath;
+    }
+    return task->getRemotePath();
+}
+
+SyncThread::SyncThread(QString pathi, COSConfig configi, SyncTask *taski)
+    : path(pathi), config(configi), task(taski) {
+    cosclient = new COSClient(config);
+}
+
+SyncThread::SyncThread(QString pathi, COSConfig configi, QString remotePath, int syncStatus)
+    {
+        path = pathi;
+        remotePath = remotePath;
+        syncStatus = syncStatus;
+        config = configi;
+        cosclient = new COSClient(config);
+    };

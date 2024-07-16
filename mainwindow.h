@@ -2,7 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-
+#include "cloudlistener.h"
 #include "ElaContentDialog.h"
 #include "ElaWindow.h"
 #include"loginwin.h"
@@ -40,9 +40,11 @@ public:
     User*CurrentUser=nullptr;
     UserManager *um;
     QMap<QString,QString> otherDeviceMap;
+    CloudListener* cloudListener;
 public slots:
     void onUserLoggedIn(User user);
     void onNeedPassword(const QString& account);
+    void onCloudDirectoryChanged(SyncTask thisTask);
     //void insertUserToDatabase(User user);
     void onMessage( QString message,QString type);
     void onUserAddNewTask(const SyncTask &task);
@@ -94,7 +96,6 @@ private:
     void ReadDownTask();//数据库读取下载任务
     void ReadFinishTask();//数据库读取历史任务
 
-    QTimer*timer;//定时器
     void doSomething();
     QString getComputerName();
 
