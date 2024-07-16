@@ -225,6 +225,25 @@ QList<finishTask> TaskManager::readFinishTask()
     return tasks;
 }
 
+finishTask TaskManager::getFinishTask(QString localPath)
+{
+    QSqlQuery query(db);
+    finishTask task;
+    query.prepare("SELECT * FROM finishtask WHERE localPath = :localPath");
+    query.bindValue(":localPath", localPath);
+    query.exec();
+    if(query.next())
+    {
+        task.taskId = query.value(1).toInt();
+        task.remotePath = query.value(2).toString();
+        task.localPath = query.value(3).toString();
+        task.dataSize = query.value(4).toULongLong();
+        task.sycnTime = query.value(5).toDate();
+        task.status = query.value(6).toInt();
+    }
+    return task;
+}
+
 void TaskManager::closeConnection()
 {
     QSqlDatabase::database().close();
