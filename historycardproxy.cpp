@@ -33,7 +33,7 @@ void HistoryCardProxy::removeHistoryCard(QString filename)
 {
     for(auto &x:cardVector)
     {
-        if(x.fullText.compare(filename)==0)
+        if(x->fullText.compare(filename)==0)
         {
             filesLayout->removeWidget(x);
             x->setParent(nullptr);
