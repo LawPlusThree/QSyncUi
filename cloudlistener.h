@@ -12,6 +12,7 @@ class CloudListener: public QThread
 public:
     QString computerName;
     QMap<QString,QString> otherDeviceMap;
+    QMap<QString,QDateTime> lastSyncTimeMap;
     QStringList remotePaths;
     QVector<SyncTask>  myTasks;
     void setTasks(const QVector<SyncTask> &tasks);

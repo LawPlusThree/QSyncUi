@@ -24,11 +24,21 @@ void CloudListener::run()
         if(map.contains("computerName")){
             if(map["computerName"]!=computerName){
                 if(map.contains("lastSyncTime")){
-                    if(otherDeviceMap[x.getRemotePath()]==map["computerName"]){
-                        continue;
+                    bool timeOut=false;
+                    if(lastSyncTimeMap.contains(x.getRemotePath())){
+                        if(lastSyncTimeMap[x.getRemotePath()].secsTo(QDateTime::currentDateTime())>20){
+                          timeOut=true;
+                        }
                     }
-                    emit cloudDirectoryChanged(x);
-                    otherDeviceMap[x.getRemotePath()]=map["computerName"];
+                    else{
+                        lastSyncTimeMap[x.getRemotePath()]=QDateTime::currentDateTime();
+                    }
+                    if(otherDeviceMap[x.getRemotePath()]!=map["computerName"]||timeOut){
+                        emit cloudDirectoryChanged(x);
+                        otherDeviceMap[x.getRemotePath()]=map["computerName"];
+                        lastSyncTimeMap[x.getRemotePath()]=QDateTime::currentDateTime();
+                    }
+
                 }
             }
         }
