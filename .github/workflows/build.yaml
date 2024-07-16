@@ -97,7 +97,7 @@ jobs:
       
 
       - name: Install NSIS
-        if:  matrix.build-type == 'Release'
+        if:  matrix.build-type == 'Debug'
         run: |
           iwr -useb get.scoop.sh -outfile 'install.ps1'
           .\install.ps1 -RunAsAdmin
@@ -106,7 +106,7 @@ jobs:
           scoop install nsis
       
       - name: Create installer
-        if: matrix.build-type == 'Release'
+        if: matrix.build-type == 'Debug'
         uses: joncloud/makensis-action@v4.1
         with:
           arguments: "/DPRODUCT_VERSION=${{ github.ref_name }}"
@@ -117,7 +117,7 @@ jobs:
           name: ${{ matrix.build-type }}-installer
 
       - name: Upload installer
-        if: startsWith(github.ref, 'refs/tags/') && matrix.build-type == 'Release'
+        if: startsWith(github.ref, 'refs/tags/') && matrix.build-type == 'Debug'
         uses: softprops/action-gh-release@v2
         with:
           files: |
