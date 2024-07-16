@@ -21,21 +21,25 @@ void SyncThread::run()
     emit this->localTotalSize(totalSize);
     emit this->upTotalSize(upFileSize);
     // Sync!
-    QString machine=QSysInfo::machineHostName();
-    QString time=QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
-    QMap<QString,QString> map;
-    map["computerName"]=machine;
-    map["lastSyncTime"]=time;
-    cosclient->putObjectTagging(task->getRemotePath(),"",map);
+    QString machine = QSysInfo::machineHostName();
+    QString time = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
+    QMap<QString, QString> map;
+    map["computerName"] = machine;
+    map["lastSyncTime"] = time;
+    cosclient->putObjectTagging(task->getRemotePath(), "", map);
 
     QDir listen = task->getLocalPath();
 
     if (task->getSyncStatus() == 1 || task->getSyncStatus() == 2)
     {
         qDebug() << "upload/download";
-        auto path=listen.filesystemAbsolutePath();
+        auto path = listen.filesystemAbsolutePath();
         watch *w = new watch(path, [this](struct event e)
                              {
+    if (!shouldListen)
+    {
+        return;
+    }
     QFileInfo info(e.path_name);
     QString path = info.absoluteFilePath();
     QString relativePath = path.mid(task->getLocalPath().length() + 1);
@@ -126,6 +130,7 @@ void SyncThread::recursiveRead(const QString &path)
 
 void SyncThread::readCloudDirectory(const QString &cloudpath)
 {
+    shouldListen = false;
     XmlProcesser processer;
     QString xml;
     Bucket bucket;
@@ -176,12 +181,10 @@ void SyncThread::readCloudDirectory(const QString &cloudpath)
             }
         }
     } while (bucket.isTruncated);
+    shouldListen = true;
 }
 
-void SyncThread::fileSystemChanged(struct event e)
-{
-    qDebug() << e.path_name;
-}
+
 
 void SyncThread::addSynctask(const QFileInfo &info)
 {
@@ -191,8 +194,8 @@ void SyncThread::addSynctask(const QFileInfo &info)
     QString cloudPath = task->getRemotePath() + relativePath;
     headHeader tmpHeaders;
     preResponse response = cosclient->headObject(cloudPath, "", tmpHeaders);
-    if (cosclient->isExist(response)){
-
+    if (cosclient->isExist(response))
+    {
     }
     else
     {
@@ -203,11 +206,20 @@ void SyncThread::addSynctask(const QFileInfo &info)
     }
 }
 
+void SyncThread::deleteSynctask(const QString &path)
+{
 
-bool SyncThread::isTheSameFile(const QString &localPath, const QString &cloudPath="")
+}
+
+void SyncThread::updateSynctask(const QString &path)
+{
+
+}
+
+bool SyncThread::isTheSameFile(const QString &localPath, const QString &cloudPath = "")
 {
     QString _cloudPath = cloudPath;
-    if(_cloudPath.isEmpty())
+    if (_cloudPath.isEmpty())
     {
         _cloudPath = task->getRemotePath() + localPath.mid(task->getLocalPath().length() + 1);
     }
@@ -224,7 +236,8 @@ bool SyncThread::isTheSameFile(const QString &localPath, const QString &cloudPat
     crc64_data = crc64(crc64_data, data.data(), data.size());
     headHeader tmpHeaders;
     preResponse response = cosclient->headObject(_cloudPath, "", tmpHeaders);
-    if(!cosclient->isExist(response)){
+    if (!cosclient->isExist(response))
+    {
         return false;
     }
     uint64_t cloudCRC = response.headers["x-cos-hash-crc64ecma"].toULongLong();
@@ -234,6 +247,7 @@ bool SyncThread::isTheSameFile(const QString &localPath, const QString &cloudPat
     }
     return result;
 }
+
 
 void SyncThread::onTaskCanceled(int fileTaskId)
 {

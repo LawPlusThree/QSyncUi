@@ -39,6 +39,7 @@ public:
     Q_SLOT void onCloseButtonClicked();
     User*CurrentUser=nullptr;
     UserManager *um;
+    QMap<QString,QString> otherDeviceMap;
 public slots:
     void onUserLoggedIn(User user);
     void onNeedPassword(const QString& account);
@@ -60,7 +61,6 @@ public slots:
     void onFileDownloadTaskFinished(int fileTaskId);
     void onUserPausedFileTask(int fileTaskId);
     void onTaskFinsished(RequestInfo requestInfo);
-
 
 signals:
     void dbPassword(const QString &);

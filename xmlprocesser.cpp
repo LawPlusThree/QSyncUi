@@ -150,7 +150,7 @@ VersionResult HistoryXMLProcesser::processXml(const QString &xmlString)
                             version.isLatest=(versionContent.toStdString()=="true"?true:false);
                         }
                         else if(versionTagName=="LastModified"){
-                            version.lastModified=QDateTime::fromString(versionContent,"yyyy-MM-ddThh:mm:ss.zzzZ");
+                            version.lastModified= QDateTime::fromString(versionContent, Qt::RFC2822Date);
                         }
                         else if(versionTagName=="ETag"){
                             version.eTag=versionContent;
