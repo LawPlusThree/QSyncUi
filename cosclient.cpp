@@ -220,7 +220,7 @@ QByteArray COSClient::getObject(const QString &path, const QString &versionId, Q
     preRequest request;
     if(!versionId.isEmpty())
     {
-        request.customHeaders.insert("versionId", versionId);
+        request.queryParams.insert("versionId", versionId);
     }
     preResponse response = invokeGetFileRequest(path, request);
     respHeaders = response.headers; // Assuming we want to pass back the headers
