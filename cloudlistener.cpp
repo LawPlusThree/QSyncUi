@@ -26,8 +26,7 @@ void CloudListener::run()
                 if(map.contains("lastSyncTime")){
                     bool timeOut=false;
                     if(lastSyncTimeMap.contains(x.getRemotePath())){
-                        if(lastSyncTimeMap[x.getRemotePath()].secsTo(QDateTime::currentDateTime())>20){
-                          timeOut=true;
+                        if(lastSyncTimeMap[x.getRemotePath()].secsTo(QDateTime::currentDateTime())>12){
                             emit cloudDirectoryChanged(x,0);
                           otherDeviceMap[x.getRemotePath()]=map["computerName"];
                           lastSyncTimeMap[x.getRemotePath()]=QDateTime::currentDateTime();
@@ -47,7 +46,7 @@ void CloudListener::run()
             }
         }
         }
-    QThread::sleep(10);
+    QThread::sleep(5);
     }
 }
 CloudListener::CloudListener(COSConfig configi) : config(configi) {
