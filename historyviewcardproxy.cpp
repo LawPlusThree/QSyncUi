@@ -62,7 +62,7 @@ void HistoryviewCardProxy::addSubCard(QString filename,QString versionID,quint64
     {
         i.next();
         HistoryViewCard*card=i.value();
-        if(card->fullText==filename)
+        if(card->fullText.compare(filename)==0)
         {
             SubCardProxy*subcard=i.key();
             disconnect(subcard, &SubCardProxy::message, this, 0);
