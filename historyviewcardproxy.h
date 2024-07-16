@@ -39,6 +39,7 @@ public:
     QVBoxLayout*filesLayout;
     bool isExist(QString filename);
     void clearAllSub(QString filename);
+    void removeAll();
 
 signals:
     void Message(QString versionID,QString cloudname,QString filename,QString path);

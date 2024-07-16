@@ -45,19 +45,6 @@ void FileCardProxy::removeFileCard(const int &id) {
     }
 }
 
-/*void FileCardProxy::modify(int d,int s,int p,int Id)
-{
-    QMapIterator<int,FileCard*> i(cardMap);
-    while(i.hasNext())
-    {
-        i.next();
-        int id=i.key();
-        FileCard*card=i.value();
-        if(id==Id)
-            card->modify(d,s,p);
-    }
-}*/
-
 void FileCardProxy::modify(quint64 totalsize,quint64 currentsize,int Id)
 {
     if(cardMap.find(Id)==cardMap.end())

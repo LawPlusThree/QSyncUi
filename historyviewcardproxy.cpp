@@ -72,6 +72,20 @@ bool HistoryviewCardProxy::isExist(QString filename)
     return false;
 }
 
+void HistoryviewCardProxy::removeAll()
+{
+    QMapIterator<SubCardProxy*,HistoryViewCard*> i(cardMap);
+    while(i.hasNext())
+    {
+        i.next();
+        HistoryViewCard*card=i.value();
+        clearAllSub(card->fullText);
+        filesLayout->removeWidget(card);
+        card->setParent(nullptr);
+        card->deleteLater();
+    }
+}
+
 void HistoryviewCardProxy::clearAllSub(QString filename)
 {
     QMapIterator<SubCardProxy*,HistoryViewCard*> i(cardMap);

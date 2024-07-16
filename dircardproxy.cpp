@@ -75,3 +75,15 @@ void DirCardProxy::modifyDirCard(quint64 datasize,QString bindtime,int id)
 void DirCardProxy::onCheckBoxStateChanged(int state) {
     emit checkBoxToggled(state == Qt::Checked); // 发出信号，参数为复选框是否被勾选
 }
+
+void DirCardProxy::removeAll()
+{
+    QMapIterator<int,DirCard*> i(cardMap);
+    while(i.hasNext())
+    {
+        i.next();
+        int Id=i.key();
+        DirCard*card=i.value();
+        removeDirCard(Id);
+    }
+}

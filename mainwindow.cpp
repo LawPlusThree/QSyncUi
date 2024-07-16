@@ -28,6 +28,7 @@
 #include "qthread.h"
 #include "modifyinfor_win.h"
 #include"historyviewcardproxy.h"
+#include"historycardproxy.h"
 #include <QSysInfo>
 
 MainWindow::MainWindow(QWidget *parent)
@@ -401,6 +402,10 @@ void MainWindow::exitLogin()
         setUserInfoCardPixmap(QPixmap(":/include/Image/Cirno.jpg"));
         onMessage("退出账号成功","Success");
         CurrentUser=nullptr;
+        _filemanagePage->_dircardProxy->removeAll();
+        _historysyncPage->_historycardPage->removeAll();
+        _historyviewPage->_historyviewcardPage->removeAll();
+        _filemanagePage->linknewfolderwindow->clearItems();
 
         if (timer) {
             timer->stop();
