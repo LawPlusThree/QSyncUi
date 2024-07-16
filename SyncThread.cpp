@@ -39,10 +39,6 @@ void SyncThread::run()
         auto path = listen.filesystemAbsolutePath();
         watch *w = new watch(path, [this](struct event e)
                              {
-    if (!shouldListen)
-    {
-        return;
-    }
     QFileInfo info(e.path_name);
     QString path = info.absoluteFilePath();
     QString relativePath = path.mid(task->getLocalPath().length() + 1);
@@ -267,11 +263,11 @@ SyncThread::SyncThread(QString pathi, COSConfig configi, SyncTask *taski)
     cosclient = new COSClient(config);
 }
 
-SyncThread::SyncThread(QString pathi, COSConfig configi, QString remotePath, int syncStatus)
+SyncThread::SyncThread(QString pathi, COSConfig configi, QString _remotePath, int _syncStatus)
     {
         path = pathi;
-        remotePath = remotePath;
-        syncStatus = syncStatus;
+        remotePath = _remotePath;
+        syncStatus = _syncStatus;
         config = configi;
         cosclient = new COSClient(config);
     };
