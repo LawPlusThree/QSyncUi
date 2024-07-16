@@ -60,7 +60,7 @@ public slots:
     void onFileDownloadTaskFinished(int fileTaskId);
     void onUserPausedFileTask(int fileTaskId);
     void onTaskFinsished(RequestInfo requestInfo);
-
+    QMap<QString,QString> otherDeviceMap;
 
 signals:
     void dbPassword(const QString &);

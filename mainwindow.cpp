@@ -251,7 +251,7 @@ void MainWindow::ArgvProcess(QString action, QVector<QString> argv)
             this->_historyviewPage->addHistoryViewCard(standardPath,taskRemotePath,taskRelativePath);}
         for (auto const&x:v){
             //将时间加上本地时区
-            QString readableTime=x.lastModified.toLocalTime().toString("yyyy-MM-dd hh:mm:ss");
+            QString readableTime=x.lastModified.toString("yyyy-MM-dd hh:mm:ss");
             this->_historyviewPage->addSubCard(standardPath,x.versionId,x.size,readableTime);
         }
         //mainwindow窗口激活
@@ -347,7 +347,7 @@ void MainWindow::onUserLoggedIn(User user)
     
     for (auto const &x:_syncTaskDatabaseManager->getTasks()){
         SyncTask* task=new SyncTask(x);
-
+        otherDeviceMap[x.getRemotePath()]=getComputerName();
         if (x.getLastSyncTime()==QDateTime::fromString("2000-01-01 00:00:00","yyyy-MM-dd hh:mm:ss"))
         {
             QString timeDelta="从未同步";
@@ -376,6 +376,9 @@ void MainWindow::onUserLoggedIn(User user)
 
 void MainWindow::doSomething()
 {
+    if(CurrentUser==nullptr||_syncCore==nullptr||_syncTaskDatabaseManager==nullptr){
+        return;
+    }
     QString cn=this->getComputerName();
     QVector<SyncTask> tasks=_syncTaskDatabaseManager->getTasks();
     COSClient client(cosConfig,this);
@@ -385,7 +388,12 @@ void MainWindow::doSomething()
         if(map.contains("computerName")){
             if(map["computerName"]!=cn){
                 if(map.contains("lastSyncTime")){
+                    if(otherDeviceMap[x.getRemotePath()]==map["computerName"]){
+                        continue;
+                    }
                     onMessage("文件夹"+x.getLocalPath()+"在其他设备上进行了同步","Info");
+                    this->_syncCore->onCloudDirectoryChanged(x.getRemotePath());
+                    otherDeviceMap[x.getRemotePath()]=map["computerName"];
                 }
             }
         }
@@ -474,6 +482,7 @@ void MainWindow::onUserAddNewTask(const SyncTask &_task)
                 SyncTask mytask(_task);
                 task=new SyncTask(mytask);
                 task->setId(res);
+                otherDeviceMap[task->getRemotePath()]=getComputerName();
                 QDateTime expiredTime=tt.expiredTime;
                 COSClient *cosclient=new COSClient(cosConfig, this);
                 task->cosclient=cosclient;

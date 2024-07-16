@@ -26,6 +26,7 @@ signals:
     void updateFileDownloadTask(int fileTaskId, qint64 nowSize,qint64 totalSize);
     void finishFileUploadTask(int fileTaskId);
     void finishFileDownloadTask(int fileTaskId);
+    void cloudDirectoryChanged(const QString &cloudPath);
 public slots:
     void pauseTask(int taskid){};
     void pauseAllTask(){};
@@ -43,9 +44,12 @@ private:
         }
         return nullptr;
     }
-private slots:
+public slots:
     void onDirectoryChanged(const QString &path);
     void onFileChanged(const QString &path);
+    void onCloudDirectoryChanged(const QString &cloudPath){
+        emit cloudDirectoryChanged(cloudPath);
+    }
 };
 
 #endif // SYNCCORE_H

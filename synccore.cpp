@@ -153,7 +153,10 @@ void SyncCore::doTask(SyncTask *task)
             requestManager->addDeleteObjectRequest(cloudPath,versionId,fileTaskId);
     },Qt::BlockingQueuedConnection);
 
-
+    connect(this,&SyncCore::cloudDirectoryChanged,thread,[=](const QString &cloudPath){
+            if(cloudPath.compare(task->getRemotePath())==0)
+                thread->readCloudDirectory(cloudPath);
+    },Qt::BlockingQueuedConnection);
     thread->start();
 }
 

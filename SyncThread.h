@@ -18,6 +18,7 @@ class SyncThread : public QThread
 Q_OBJECT
 public:
     int lastTaskId = 0;
+    bool shouldListen = true;
     QString path;
     COSClient* cosclient;
     COSConfig config;
@@ -29,6 +30,7 @@ public:
               cosclient=new COSClient(config);
           };
     void run() override;
+public slots:
     void readDirectory(const QString &path);
     void recursiveRead(const QString &path);
     void readCloudDirectory(const QString &cloudpath);
@@ -38,7 +40,6 @@ public:
     void updateSynctask(const QString &path);//更新同步任务，把本地已上传文件更新任务
     bool isTheSameFile(const QString &localPath, const QString &cloudPath);//判断本地文件和云端文件是否相同
     bool isRemoteFileExist(const QString &cloudPath);//判断云端文件是否存在
-public slots:
     void onTaskCanceled(int fileTaskId);
 signals:
     void localTotalSize(qint64);//本地文件总大小
