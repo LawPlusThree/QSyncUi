@@ -19,6 +19,7 @@ public:
     void processing(int p);
     bool ischecked();
     void selectCheckBox(bool checked);
+    bool eventFilter(QObject *watched, QEvent *event);
     ElaCheckBox* getCheckBox()const;
     ElaCheckBox* _checkBox{nullptr};
     ElaText *filename;
