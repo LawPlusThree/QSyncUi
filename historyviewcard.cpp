@@ -30,8 +30,6 @@ HistoryViewCard::HistoryViewCard(QString file,QString cloud,QString p)
     filenameWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     QVBoxLayout* filenameArea = new QVBoxLayout(filenameWidget);
     filenameArea->addWidget(filename, 0, Qt::AlignLeft);
-    filename->installEventFilter(this);
-    filename->setCursor(Qt::PointingHandCursor); // 设置鼠标手势为手形，提示用户可以点击
 
     cloudname->setTextSize(16);
     cloudname->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Fixed);
@@ -70,17 +68,6 @@ HistoryViewCard::HistoryViewCard(QString file,QString cloud,QString p)
     cloudnameWidget->setStyleSheet("QToolTip { color: #5C5C5C; background-color: #F9F9F9; border: 1px solid #808080; border-radius: 3px; }");
 }
 
-bool HistoryViewCard::eventFilter(QObject *watched, QEvent *event) {
-    if (watched == filename && event->type() == QEvent::MouseButtonPress) {
-        QMouseEvent *mouseEvent = static_cast<QMouseEvent *>(event);
-        if (mouseEvent->button() == Qt::LeftButton) {
-            QString filePath = this->fullText;
-            QDesktopServices::openUrl(QUrl::fromLocalFile(filePath));
-            return true; // 事件处理完毕，不再传递
-        }
-    }
-    return QObject::eventFilter(watched, event); // 对于其他事件，保持默认处理
-}
 
 SubCard::SubCard(QString ID,quint64 d,QString time)
 {

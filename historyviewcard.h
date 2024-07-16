@@ -11,7 +11,6 @@ class HistoryViewCard : public ElaScrollPageArea
 {
 public:
     explicit HistoryViewCard(QString filename,QString cloudname,QString path);
-    bool eventFilter(QObject *watched, QEvent *event);
 
     ElaIconButton*button;
     ElaText *filename;
