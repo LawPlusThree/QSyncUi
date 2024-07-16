@@ -15,7 +15,7 @@ public:
     explicit SubCardProxy(QWidget*parent =nullptr);
     ~SubCardProxy() override;
 
-    void addSubCard(QString versionID,quint64 datasize,QString bindtime);
+    SubCard* addSubCard(QString versionID,quint64 datasize,QString bindtime);
     QVBoxLayout*subLayout;
     QVector<SubCard*>cardVector;
 

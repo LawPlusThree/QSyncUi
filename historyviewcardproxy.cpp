@@ -5,6 +5,7 @@
 #include"ElaCheckBox.h"
 #include"ElaIconButton.h"
 
+
 HistoryviewCardProxy::HistoryviewCardProxy(QWidget*parent) {
     parentWidget = qobject_cast<QWidget*>(parent);
     filesLayout=new QVBoxLayout(this);
@@ -102,8 +103,8 @@ void HistoryviewCardProxy::addSubCard(QString filename,QString versionID,quint64
         {
             SubCardProxy*subcard=i.key();
             disconnect(subcard, &SubCardProxy::message, this, 0);
-            subcard->addSubCard(versionID,datasize,bindtime);
-            connect(subcard,&SubCardProxy::message,[=](){
+            SubCard* thisCard=subcard->addSubCard(versionID,datasize,bindtime);
+            connect(thisCard->rollback,&ElaPushButton::clicked,[=](){
                 emit Message(versionID,card->cloudName,filename,card->path);
             });
             return;
@@ -121,16 +122,15 @@ SubCardProxy::~SubCardProxy()
     cardVector.clear();
 }
 
-void SubCardProxy::addSubCard(QString versionID,quint64 datasize,QString bindtime)
+SubCard *SubCardProxy::addSubCard(QString versionID, quint64 datasize, QString bindtime)
 {
     SubCard*card=new SubCard(versionID,datasize,bindtime);
-    connect(card->rollback,&ElaPushButton::clicked,[=](){
-        emit message(versionID);
-    });
     if(card&&parentWidget)
     {
         cardVector.push_back(card);
         subLayout->addWidget(card);
         subLayout->setAlignment(Qt::AlignTop);
     }
+    return card;
 }
+
