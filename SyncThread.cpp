@@ -20,6 +20,12 @@ void SyncThread::run()
     }
     emit this->localTotalSize(totalSize);
     emit this->upTotalSize(upFileSize);
+    QString machine=QSysInfo::machineHostName();
+    QString time=QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
+    QMap<QString,QString> map;
+    map["computerName"]=machine;
+    map["lastSyncTime"]=time;
+    cosclient->putObjectTagging(task->getRemotePath(),"",map);
     QDir listen = task->getLocalPath();
 
     if (task->getSyncStatus() == 1 || task->getSyncStatus() == 2)
