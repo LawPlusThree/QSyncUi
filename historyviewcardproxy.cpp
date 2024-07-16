@@ -69,6 +69,7 @@ bool HistoryviewCardProxy::isExist(QString filename)
             return true;
         }
     }
+    return false;
 }
 
 void HistoryviewCardProxy::clearAllSub(QString filename)
