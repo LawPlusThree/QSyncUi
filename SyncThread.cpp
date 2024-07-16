@@ -48,8 +48,8 @@ void SyncThread::run()
         {
             qDebug() << "Different file";
             QFile file(path);
-            //是否可写
-            if (!file.open(QIODevice::ReadWrite))
+            //是否可读
+            if (!file.open(QIODevice::ReadOnly))
             {
                 break;
             }
