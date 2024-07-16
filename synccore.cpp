@@ -73,6 +73,9 @@ void SyncCore::doTask(SyncTask *task)
         QStringList excludedItemsList = excludedItems.split("\n");
         bool shouldSkip = false;
         for (const QString &line : excludedItemsList) {
+            if (line.compare("")==0){
+                continue;
+            }
             if (localPath.contains(line)) {
                 shouldSkip = true;
                 break; // 如果localPath或cloudPath包含任一排除项，则不执行后续操作
@@ -85,6 +88,9 @@ void SyncCore::doTask(SyncTask *task)
         QStringList excludedItemsList = excludedItems.split("\n");
         bool shouldSkip = false;
         for (const QString &line : excludedItemsList) {
+            if (line.compare("")==0){
+                continue;
+            }
             if (localPath.contains(line)) {
                 shouldSkip = true;
                 break; // 如果localPath或cloudPath包含任一排除项，则不执行后续操作
@@ -105,6 +111,9 @@ void SyncCore::doTask(SyncTask *task)
         QStringList excludedItemsList = excludedItems.split("\n");
         bool shouldSkip = false;
         for (const QString &line : excludedItemsList) {
+            if (line.compare("")==0){
+                continue;
+            }
             if (localPath.contains(line) || cloudPath.contains(line)) {
                 shouldSkip = true;
                 break; // 如果localPath或cloudPath包含任一排除项，则不执行后续操作
@@ -114,39 +123,48 @@ void SyncCore::doTask(SyncTask *task)
             requestManager->addPutObjectRequest(localPath,cloudPath,fileTaskId,QMap<QString,QString>()); 
     }, Qt::BlockingQueuedConnection);
     connect(thread,&SyncThread::callDownloadTask,this,[=](const QString &localPath, const QString &cloudPath, int fileTaskId){
-        QStringList excludedItemsList = excludedItems.split("\n");
-        bool shouldSkip = false;
-        for (const QString &line : excludedItemsList) {
-            if (localPath.contains(line) || cloudPath.contains(line)) {
-                shouldSkip = true;
-                break; // 如果localPath或cloudPath包含任一排除项，则不执行后续操作
+            QStringList excludedItemsList = excludedItems.split("\n");
+            bool shouldSkip = false;
+            for (const QString &line : excludedItemsList) {
+                if (line.compare("")==0){
+                    continue;
+                }
+                if (localPath.contains(line) || cloudPath.contains(line)) {
+                    shouldSkip = true;
+                    break; // 如果localPath或cloudPath包含任一排除项，则不执行后续操作
+                }
             }
-        }
         if (!shouldSkip)
             requestManager->addSave2LocalRequest(cloudPath,localPath,fileTaskId);
     },Qt::BlockingQueuedConnection);
     connect(thread,&SyncThread::callRenameFileTask,this,[=](const QString &cloudPath, const QString &copyToPath, int fileTaskId){
-        QStringList excludedItemsList = excludedItems.split("\n");
-        bool shouldSkip = false;
-        for (const QString &line : excludedItemsList) {
-            if (cloudPath.contains(line)) {
-                shouldSkip = true;
-                break; // 如果localPath或cloudPath包含任一排除项，则不执行后续操作
+            QStringList excludedItemsList = excludedItems.split("\n");
+            bool shouldSkip = false;
+            for (const QString &line : excludedItemsList) {
+                if (line.compare("")==0){
+                    continue;
+                }
+                if (cloudPath.contains(line)) {
+                    shouldSkip = true;
+                    break; // 如果localPath或cloudPath包含任一排除项，则不执行后续操作
+                }
             }
-        }
         if (!shouldSkip)
             requestManager->addPutObjectCopyRequest(cloudPath,copyToPath,fileTaskId);
     },Qt::BlockingQueuedConnection);
     connect(thread,&SyncThread::callDeleteFileTask,this,[=](const QString &cloudPath, const QString &versionId, int fileTaskId){
-        QStringList excludedItemsList = excludedItems.split("\n");
-        bool shouldSkip = false;
-        for (const QString &line : excludedItemsList) {
-            if (cloudPath.contains(line)) {
-                shouldSkip = true;
-                break; // 如果localPath或cloudPath包含任一排除项，则不执行后续操作
+            QStringList excludedItemsList = excludedItems.split("\n");
+            bool shouldSkip = false;
+            for (const QString &line : excludedItemsList) {
+                if (line.compare("")==0){
+                    continue;
+                }
+                if (cloudPath.contains(line)) {
+                    shouldSkip = true;
+                    break; // 如果localPath或cloudPath包含任一排除项，则不执行后续操作
+                }
             }
-        }
-        if (!shouldSkip)
+            if (!shouldSkip)
             requestManager->addDeleteObjectRequest(cloudPath,versionId,fileTaskId);
     },Qt::BlockingQueuedConnection);
     thread->start();
@@ -160,6 +178,9 @@ SyncThread *thread=new SyncThread(local,config,remote,status);
         QStringList excludedItemsList = excludedItems.split("\n");
         bool shouldSkip = false;
         for (const QString &line : excludedItemsList) {
+            if (line.compare("")==0){
+                continue;
+            }
             if (localPath.contains(line)) {
                 shouldSkip = true;
                 break; // 如果localPath或cloudPath包含任一排除项，则不执行后续操作
@@ -169,14 +190,17 @@ SyncThread *thread=new SyncThread(local,config,remote,status);
                 emit addFileUploadTask(localPath,fileTaskId);
         },Qt::BlockingQueuedConnection);
     connect(thread,&SyncThread::newDownloadTask,this,[=](const QString &localPath, qint64 fileTaskId,quint64 totalSize){
-        QStringList excludedItemsList = excludedItems.split("\n");
-        bool shouldSkip = false;
-        for (const QString &line : excludedItemsList) {
-            if (localPath.contains(line)) {
-                shouldSkip = true;
-                break; // 如果localPath或cloudPath包含任一排除项，则不执行后续操作
+            QStringList excludedItemsList = excludedItems.split("\n");
+            bool shouldSkip = false;
+            for (const QString &line : excludedItemsList) {
+                if (line.compare("")==0){
+                    continue;
+                }
+                if (localPath.contains(line)) {
+                    shouldSkip = true;
+                    break; // 如果localPath或cloudPath包含任一排除项，则不执行后续操作
+                }
             }
-        }
         if (!shouldSkip)
             emit addFileDownloadTask(localPath,fileTaskId,totalSize);
         },Qt::BlockingQueuedConnection);
@@ -189,50 +213,62 @@ SyncThread *thread=new SyncThread(local,config,remote,status);
         },Qt::BlockingQueuedConnection);
 
     connect(thread, &SyncThread::callUploadTask, this, [=](const QString &localPath, const QString &cloudPath, int fileTaskId){
-        QStringList excludedItemsList = excludedItems.split("\n");
-        bool shouldSkip = false;
-        for (const QString &line : excludedItemsList) {
-            if (localPath.contains(line) || cloudPath.contains(line)) {
-                shouldSkip = true;
-                break; // 如果localPath或cloudPath包含任一排除项，则不执行后续操作
+            QStringList excludedItemsList = excludedItems.split("\n");
+            bool shouldSkip = false;
+            for (const QString &line : excludedItemsList) {
+                if (line.compare("")==0){
+                    continue;
+                }
+                if (localPath.contains(line) || cloudPath.contains(line)) {
+                    shouldSkip = true;
+                    break; // 如果localPath或cloudPath包含任一排除项，则不执行后续操作
+                }
             }
-        }
         if (!shouldSkip)
                 requestManager->addPutObjectRequest(localPath,cloudPath,fileTaskId,QMap<QString,QString>());
         }, Qt::BlockingQueuedConnection);
     connect(thread,&SyncThread::callDownloadTask,this,[=](const QString &localPath, const QString &cloudPath, int fileTaskId){
-        QStringList excludedItemsList = excludedItems.split("\n");
-        bool shouldSkip = false;
-        for (const QString &line : excludedItemsList) {
-            if (localPath.contains(line) || cloudPath.contains(line)) {
-                shouldSkip = true;
-                break; // 如果localPath或cloudPath包含任一排除项，则不执行后续操作
+            QStringList excludedItemsList = excludedItems.split("\n");
+            bool shouldSkip = false;
+            for (const QString &line : excludedItemsList) {
+                if (line.compare("")==0){
+                    continue;
+                }
+                if (localPath.contains(line) || cloudPath.contains(line)) {
+                    shouldSkip = true;
+                    break; // 如果localPath或cloudPath包含任一排除项，则不执行后续操作
+                }
             }
-        }
         if (!shouldSkip)
                 requestManager->addSave2LocalRequest(cloudPath,localPath,fileTaskId);
         },Qt::BlockingQueuedConnection);
     connect(thread,&SyncThread::callRenameFileTask,this,[=](const QString &cloudPath, const QString &copyToPath, int fileTaskId){
-        QStringList excludedItemsList = excludedItems.split("\n");
-        bool shouldSkip = false;
-        for (const QString &line : excludedItemsList) {
-            if (cloudPath.contains(line)) {
-                shouldSkip = true;
-                break; // 如果localPath或cloudPath包含任一排除项，则不执行后续操作
+            QStringList excludedItemsList = excludedItems.split("\n");
+            bool shouldSkip = false;
+            for (const QString &line : excludedItemsList) {
+                if (line.compare("")==0){
+                    continue;
+                }
+                if (cloudPath.contains(line)) {
+                    shouldSkip = true;
+                    break; // 如果localPath或cloudPath包含任一排除项，则不执行后续操作
+                }
             }
-        }
         if (!shouldSkip)
                 requestManager->addPutObjectCopyRequest(cloudPath,copyToPath,fileTaskId);
         },Qt::BlockingQueuedConnection);
     connect(thread,&SyncThread::callDeleteFileTask,this,[=](const QString &cloudPath, const QString &versionId, int fileTaskId){
-        QStringList excludedItemsList = excludedItems.split("\n");
-        bool shouldSkip = false;
-        for (const QString &line : excludedItemsList) {
-            if (cloudPath.contains(line)) {
-                shouldSkip = true;
-                break; // 如果localPath或cloudPath包含任一排除项，则不执行后续操作
+            QStringList excludedItemsList = excludedItems.split("\n");
+            bool shouldSkip = false;
+            for (const QString &line : excludedItemsList) {
+                if (line.compare("")==0){
+                    continue;
+                }
+                if (cloudPath.contains(line)) {
+                    shouldSkip = true;
+                    break; // 如果localPath或cloudPath包含任一排除项，则不执行后续操作
+                }
             }
-        }
         if (!shouldSkip)
                 requestManager->addDeleteObjectRequest(cloudPath,versionId,fileTaskId);
         },Qt::BlockingQueuedConnection);
