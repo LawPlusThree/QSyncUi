@@ -90,6 +90,8 @@ FileCard::FileCard(QString f, quint64 d,double s,int p,int syncStatus,int Id)
     filenameWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     QVBoxLayout* filenameArea = new QVBoxLayout(filenameWidget);
     filenameArea->addWidget(filename, 0, Qt::AlignLeft); // 将文件名放在左侧
+    filename->installEventFilter(this);
+    filename->setCursor(Qt::PointingHandCursor); // 设置鼠标手势为手形，提示用户可以点击
 
     datasize->setTextSize(16);
     datasize->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);

@@ -67,6 +67,12 @@ void SyncThread::run()
             int fileTaskId = getNextFileTaskId();
             emit this->newUploadTask(path, fileTaskId);
             emit this->callUploadTask(path, cloudPath, fileTaskId);
+            QString machine = QSysInfo::machineHostName();
+            QString time = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
+            QMap<QString, QString> map;
+            map["computerName"] = machine;
+            map["lastSyncTime"] = time;
+            cosclient->putObjectTagging(getRemotePath(), "", map);
         }
         break;
     }
