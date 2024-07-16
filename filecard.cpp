@@ -1,6 +1,10 @@
 #include "filecard.h"
 
 #include<QVBoxLayout>
+#include <QEvent>
+#include <QMouseEvent>
+#include <QDesktopServices>
+#include <QUrl>
 #include"ElaCheckBox.h"
 #include"ElaIconButton.h"
 #include"ElaProgressBar.h"
@@ -269,4 +273,16 @@ ElaCheckBox* FileCard::getCheckBox() const
 
 void FileCard::selectCheckBox(bool checked) {
     _checkBox->setChecked(checked);
+}
+
+bool FileCard::eventFilter(QObject *watched, QEvent *event) {
+    if (watched == filename && event->type() == QEvent::MouseButtonPress) {
+        QMouseEvent *mouseEvent = static_cast<QMouseEvent *>(event);
+        if (mouseEvent->button() == Qt::LeftButton) {
+            QString filePath = this->fullText;
+            QDesktopServices::openUrl(QUrl::fromLocalFile(filePath));
+            return true; // 事件处理完毕，不再传递
+        }
+    }
+    return QObject::eventFilter(watched, event); // 对于其他事件，保持默认处理
 }

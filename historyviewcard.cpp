@@ -3,6 +3,10 @@
 #include"ElaCheckBox.h"
 #include"ElaIconButton.h"
 #include<QPainter>
+#include <QEvent>
+#include <QMouseEvent>
+#include <QDesktopServices>
+#include <QUrl>
 #include"ElaApplication.h"
 
 HistoryViewCard::HistoryViewCard(QString file,QString cloud,QString p)
@@ -63,6 +67,7 @@ HistoryViewCard::HistoryViewCard(QString file,QString cloud,QString p)
     filenameWidget->setStyleSheet("QToolTip { color: #5C5C5C; background-color: #F9F9F9; border: 1px solid #808080; border-radius: 3px; }");
     cloudnameWidget->setStyleSheet("QToolTip { color: #5C5C5C; background-color: #F9F9F9; border: 1px solid #808080; border-radius: 3px; }");
 }
+
 
 SubCard::SubCard(QString ID,quint64 d,QString time)
 {

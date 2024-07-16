@@ -11,6 +11,7 @@ class HistoryCard : public ElaScrollPageArea
 {
 public:
     explicit HistoryCard(QString f, QString d,QString t,bool u);
+    bool eventFilter(QObject *watched, QEvent *event);
 
     ElaCheckBox* _checkBox{nullptr};
     ElaText *filename;

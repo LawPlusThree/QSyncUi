@@ -1,6 +1,10 @@
 #include "historycard.h"
 
 #include<QVBoxLayout>
+#include <QEvent>
+#include <QMouseEvent>
+#include <QDesktopServices>
+#include <QUrl>
 #include"ElaCheckBox.h"
 #include"ElaIcon.h"
 #include"ElaIconButton.h"
@@ -32,6 +36,8 @@ HistoryCard::HistoryCard(QString f, QString d,QString t,bool u)
     filenameWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     QVBoxLayout* filenameArea = new QVBoxLayout(filenameWidget);
     filenameArea->addWidget(filename, 0, Qt::AlignLeft);
+    filename->installEventFilter(this);
+    filename->setCursor(Qt::PointingHandCursor); // 设置鼠标手势为手形，提示用户可以点击
 
     datasize->setTextSize(16);
     datasize->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
@@ -71,4 +77,16 @@ HistoryCard::HistoryCard(QString f, QString d,QString t,bool u)
     HistoryCardArea->setStretchFactor(bingoArea,60);
 
     filenameWidget->setStyleSheet("QToolTip { color: #5C5C5C; background-color: #F9F9F9; border: 1px solid #808080; border-radius: 3px; }");
+}
+
+bool HistoryCard::eventFilter(QObject *watched, QEvent *event) {
+    if (watched == filename && event->type() == QEvent::MouseButtonPress) {
+        QMouseEvent *mouseEvent = static_cast<QMouseEvent *>(event);
+        if (mouseEvent->button() == Qt::LeftButton) {
+            QString filePath = this->fullText;
+            QDesktopServices::openUrl(QUrl::fromLocalFile(filePath));
+            return true; // 事件处理完毕，不再传递
+        }
+    }
+    return QObject::eventFilter(watched, event); // 对于其他事件，保持默认处理
 }

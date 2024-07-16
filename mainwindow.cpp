@@ -397,7 +397,7 @@ void MainWindow::exitLogin()
 
         if (cloudListener!=nullptr)
         {
-            cloudListener->terminate();
+            //cloudListener->terminate();
             cloudListener=nullptr;
         }
     }
