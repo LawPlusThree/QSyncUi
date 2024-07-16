@@ -17,7 +17,7 @@ class SyncThread : public QThread
 {
 Q_OBJECT
 public:
-    static int fileTaskId;
+    int lastTaskId = 0;
     QString path;
     COSClient* cosclient;
     COSConfig config;
@@ -36,6 +36,8 @@ public:
     void addSynctask(const QFileInfo &info);//添加同步任务，把本地未上传文件添加入任务
     void deleteSynctask(const QString &path);//删除同步任务，把本地已上传文件删除任务
     void updateSynctask(const QString &path);//更新同步任务，把本地已上传文件更新任务
+    bool isTheSameFile(const QString &localPath, const QString &cloudPath);//判断本地文件和云端文件是否相同
+    bool isRemoteFileExist(const QString &cloudPath);//判断云端文件是否存在
 public slots:
     void onTaskCanceled(int fileTaskId);
 signals:
@@ -51,7 +53,6 @@ signals:
     void callDownloadTask(const QString &localPath, const QString &cloudPath, int fileTaskId);
     void callRenameFileTask(const QString &cloudPath, const QString &copyToPath, int fileTaskId);
     void callDeleteFileTask(const QString &cloudPath,const QString &versionId, int fileTaskId);
-
 };
 
 

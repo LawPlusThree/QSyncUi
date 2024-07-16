@@ -2,7 +2,6 @@
 #include "crc64util.h"
 #include "globalvalue.h"
 // 用多线程遍历本地文件夹
-int SyncThread::fileTaskId = 0;
 void SyncThread::run()
 {
     crc64_init();
@@ -27,28 +26,58 @@ void SyncThread::run()
     {
         qDebug() << "upload/download";
         auto path=listen.filesystemAbsolutePath();
-        watch *w = new watch(path, [](struct event e)
+        watch *w = new watch(path, [this](struct event e)
                              {
-                QFileInfo info(e.path_name);
-    qDebug() << info.fileName();
+    QFileInfo info(e.path_name);
+    QString path = info.absoluteFilePath();
+    QString relativePath = path.mid(task->getLocalPath().length() + 1);
+    QString cloudPath = task->getRemotePath() + relativePath;
     // 读取 path_type 状态
     // 读取 effect_type 状态
     switch (e.effect_type) {
     case event::effect_type::rename:
-        {
         qDebug() << "Effect type: Rename";
-        }
-
         break;
-    case event::effect_type::modify:
+    case event::effect_type::modify:{
         qDebug() << "Effect type: Modify";
+        if (isTheSameFile(path, cloudPath))
+        {
+            qDebug() << "Same file";
+        }
+        else
+        {
+            qDebug() << "Different file";
+            QFile file(path);
+            //是否可读
+            if (!file.open(QIODevice::ReadOnly))
+            {
+                break;
+            }
+            int fileTaskId = getNextFileTaskId();
+            emit this->newUploadTask(path, fileTaskId);
+            emit this->callUploadTask(path, cloudPath, fileTaskId);
+        }
         break;
-    case event::effect_type::create:
+    }
+    case event::effect_type::create:{
         qDebug() << "Effect type: Create";
+        QFile file(path);
+        //是否可写
+        if (!file.open(QIODevice::ReadWrite))
+        {
+            break;
+        }
+        int fileTaskId = getNextFileTaskId();
+        emit this->newUploadTask(path, fileTaskId);
+        emit this->callUploadTask(path, cloudPath, fileTaskId);
         break;
-    case event::effect_type::destroy:
+    }
+    case event::effect_type::destroy:{
         qDebug() << "Effect type: Destroy";
+        int fileTaskId = getNextFileTaskId();
+        emit this->callDeleteFileTask(cloudPath, "", fileTaskId);
         break;
+    }
     case event::effect_type::owner:
         qDebug() << "Effect type: Owner change";
         break;
@@ -154,13 +183,48 @@ void SyncThread::addSynctask(const QFileInfo &info)
     QString cloudPath = task->getRemotePath() + relativePath;
     headHeader tmpHeaders;
     preResponse response = cosclient->headObject(cloudPath, "", tmpHeaders);
-    if (!cosclient->isExist(response))
+    if (cosclient->isExist(response)){
+
+    }
+    else
     {
         upFileSize += info.size();
         int fileTaskId = getNextFileTaskId();
         emit this->newUploadTask(path, fileTaskId);
         emit this->callUploadTask(path, cloudPath, fileTaskId);
     }
+}
+
+
+bool SyncThread::isTheSameFile(const QString &localPath, const QString &cloudPath="")
+{
+    QString _cloudPath = cloudPath;
+    if(_cloudPath.isEmpty())
+    {
+        _cloudPath = task->getRemotePath() + localPath.mid(task->getLocalPath().length() + 1);
+    }
+    bool result = false;
+    QFile file(localPath);
+    if (!file.open(QIODevice::ReadOnly))
+    {
+        return false;
+    }
+    file.open(QIODevice::ReadOnly);
+    QByteArray data = file.readAll();
+    file.close();
+    uint64_t crc64_data = 0;
+    crc64_data = crc64(crc64_data, data.data(), data.size());
+    headHeader tmpHeaders;
+    preResponse response = cosclient->headObject(_cloudPath, "", tmpHeaders);
+    if(!cosclient->isExist(response)){
+        return false;
+    }
+    uint64_t cloudCRC = response.headers["x-cos-hash-crc64ecma"].toULongLong();
+    if (crc64_data == cloudCRC)
+    {
+        result = true;
+    }
+    return result;
 }
 
 void SyncThread::onTaskCanceled(int fileTaskId)
