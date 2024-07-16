@@ -376,28 +376,7 @@ void MainWindow::onUserLoggedIn(User user)
 
 void MainWindow::doSomething()
 {
-    if(CurrentUser==nullptr||_syncCore==nullptr||_syncTaskDatabaseManager==nullptr){
-        return;
-    }
-    QString cn=this->getComputerName();
-    QVector<SyncTask> tasks=_syncTaskDatabaseManager->getTasks();
-    COSClient client(cosConfig,this);
-    for (auto const &x:tasks){
-        QMap<QString,QString> map;
-        map = client.getObjectTagging(x.getRemotePath(),"");
-        if(map.contains("computerName")){
-            if(map["computerName"]!=cn){
-                if(map.contains("lastSyncTime")){
-                    if(otherDeviceMap[x.getRemotePath()]==map["computerName"]){
-                        continue;
-                    }
-                    onMessage("文件夹"+x.getLocalPath()+"在其他设备上进行了同步","Info");
-                    this->_syncCore->onCloudDirectoryChanged(x.getRemotePath());
-                    otherDeviceMap[x.getRemotePath()]=map["computerName"];
-                }
-            }
-        }
-    }
+
 }
 
 void MainWindow::exitLogin()

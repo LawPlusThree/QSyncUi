@@ -76,6 +76,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
 
         taskmanager.h taskmanager.cpp
         globalvalue.h globalvalue.cpp
+        cloudlistener.h cloudlistener.cpp
 
 
     )
