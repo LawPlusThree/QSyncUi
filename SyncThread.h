@@ -34,7 +34,6 @@ public slots:
     void readDirectory(const QString &path);
     void recursiveRead(const QString &path);
     void readCloudDirectory(const QString &cloudpath);
-    void fileSystemChanged(struct event e);
     void addSynctask(const QFileInfo &info);//添加同步任务，把本地未上传文件添加入任务
     void deleteSynctask(const QString &path);//删除同步任务，把本地已上传文件删除任务
     void updateSynctask(const QString &path);//更新同步任务，把本地已上传文件更新任务

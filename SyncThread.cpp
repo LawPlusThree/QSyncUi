@@ -184,10 +184,7 @@ void SyncThread::readCloudDirectory(const QString &cloudpath)
     shouldListen = true;
 }
 
-void SyncThread::fileSystemChanged(struct event e)
-{
-    qDebug() << e.path_name;
-}
+
 
 void SyncThread::addSynctask(const QFileInfo &info)
 {
@@ -207,6 +204,16 @@ void SyncThread::addSynctask(const QFileInfo &info)
         emit this->newUploadTask(path, fileTaskId);
         emit this->callUploadTask(path, cloudPath, fileTaskId);
     }
+}
+
+void SyncThread::deleteSynctask(const QString &path)
+{
+
+}
+
+void SyncThread::updateSynctask(const QString &path)
+{
+
 }
 
 bool SyncThread::isTheSameFile(const QString &localPath, const QString &cloudPath = "")
@@ -239,6 +246,11 @@ bool SyncThread::isTheSameFile(const QString &localPath, const QString &cloudPat
         result = true;
     }
     return result;
+}
+
+bool SyncThread::isRemoteFileExist(const QString &cloudPath)
+{
+
 }
 
 void SyncThread::onTaskCanceled(int fileTaskId)
