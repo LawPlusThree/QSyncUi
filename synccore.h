@@ -18,10 +18,12 @@ public:
     void doTask(SyncTask *task);
     void doCloudTask(QString local,QString remote, int status);
     NetworkRequestManager *requestManager;
+    QMap<QString,int> fileTaskMap;
+    QMap<QString,int> uiMap;
 signals:
     void taskTotalSize(qint64 size,int taskid);
     void taskUploadSize(qint64 size,int taskid);
-    void addFileUploadTask(const QString &localPath, int fileTaskId);
+    void addFileUploadTask(const QString &localPath, int fileTaskId);//更新UI用
     void addFileDownloadTask(const QString &localPath , int fileTaskId,quint64 totalSize=0);
     void updateFileUploadTask(int fileTaskId, qint64 nowSize,qint64 totalSize);
     void updateFileDownloadTask(int fileTaskId, qint64 nowSize,qint64 totalSize);
