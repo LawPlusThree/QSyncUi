@@ -397,7 +397,7 @@ void MainWindow::exitLogin()
 
         if (cloudListener!=nullptr)
         {
-            cloudListener->terminate();
+            //cloudListener->terminate();
             cloudListener=nullptr;
         }
     }
@@ -623,7 +623,6 @@ void MainWindow::onFileUploadTaskFinished(int fileTaskId)
     _syncingPage->removeFile(
         fileTaskId
         );
-    onMessage("上传完成","Info");
 }
 
 void MainWindow::onFileDownloadTaskFinished(int fileTaskId)
@@ -631,7 +630,6 @@ void MainWindow::onFileDownloadTaskFinished(int fileTaskId)
     _syncingPage->removeFile(
         fileTaskId
         );
-    onMessage("下载完成","Info");
 }
 
 void MainWindow::onUserPausedFileTask(int fileTaskId)
@@ -658,6 +656,7 @@ void MainWindow::onTaskFinsished(RequestInfo requestInfo)
         QFileInfo fileInfo(requestInfo.localPath);
         this->_historysyncPage->addHistory(task.localPath,QString::number(fileInfo.size()),task.sycnTime.toString("yyyy-MM-dd"),task.status==2?true:false);
     }
+    onMessage("任务完成","Success");
 }
 
 void MainWindow::ReadUpTask()
