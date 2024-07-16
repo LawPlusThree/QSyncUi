@@ -188,9 +188,19 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(_historyviewPage->_historyviewcardPage,&HistoryviewCardProxy::Message,this,[=](QString versionID,QString cloudname,QString local,QString path){
         int fileTaskId=getNextFileTaskId();
+        //将local路径指向的文件的文件名前加上versionId
+        QFileInfo fileInfo(local);
+        // 获取目录路径
+        QString dirPath = fileInfo.absolutePath();
+        // 获取原始文件名
+        QString originalFileName = fileInfo.fileName();
+        // 将versionID添加到文件名前
+        QString newFileName = versionID.remove(0,8)+"_"+originalFileName;
+        // 重新组合成新的文件路径
+        QString newFilePath = QDir(dirPath).filePath(newFileName);
         QString key=cloudname+path;
         //询问用户保存位置，打开文件选择框
-        QString savePath=QFileDialog::getSaveFileName(this,"保存文件",versionID+local);
+        QString savePath=QFileDialog::getSaveFileName(this,"保存文件",newFilePath);
         _syncCore->requestManager->addSave2LocalRequest(key,savePath,fileTaskId,versionID);
         emit _syncCore->addFileDownloadTask(savePath,fileTaskId,0);
     });
@@ -614,6 +624,7 @@ void MainWindow::onTaskTotalSize(qint64 size, int taskid) {
     this->_syncTaskDatabaseManager->updateTaskTime(taskid,QDateTime::currentDateTime());
     QString timeFinished=QDateTime::currentDateTime().toString("hh:mm:ss");
     this->_filemanagePage->modifyDirCard(size,timeFinished,taskid);
+    onMessage("任务创建完成","Success");
 }
 
 void MainWindow::onTaskUploadSize(qint64 size, int taskid) {
@@ -658,7 +669,6 @@ void MainWindow::onTaskFinsished(RequestInfo requestInfo)
         QFileInfo fileInfo(requestInfo.localPath);
         this->_historysyncPage->addHistory(task.localPath,QString::number(fileInfo.size()),task.sycnTime.toString("yyyy-MM-dd"),task.status==2?true:false);
     }
-    onMessage("任务完成","Success");
 }
 
 void MainWindow::ReadUpTask()

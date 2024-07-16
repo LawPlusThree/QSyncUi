@@ -81,6 +81,12 @@ void SyncCore::doTask(SyncTask *task) {
     }
             );
     connect(thread, &SyncThread::newUploadTask, this, [=](const QString &localPath, qint64 fileTaskId) {
+            if (this->uiMap.contains(localPath)) {
+                qDebug()<<"file exists";
+                return;
+            } else {
+                uiMap[localPath]=fileTaskId;
+            }
             QStringList excludedItemsList = excludedItems.split("\n");
             bool shouldSkip = false;
             for (const QString &line : excludedItemsList) {
@@ -205,6 +211,12 @@ void SyncCore::doTask(SyncTask *task) {
 void SyncCore::doCloudTask(QString local, QString remote, int status) {
     SyncThread *thread = new SyncThread(local, config, remote, status);
     connect(thread, &SyncThread::newUploadTask, this, [=](const QString &localPath, qint64 fileTaskId) {
+            if (this->uiMap.contains(localPath)) {
+                qDebug()<<"file exists";
+                return;
+            } else {
+                uiMap[localPath]=fileTaskId;
+            }
             QStringList excludedItemsList = excludedItems.split("\n");
             bool shouldSkip = false;
             for (const QString &line : excludedItemsList) {
