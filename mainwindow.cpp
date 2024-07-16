@@ -244,15 +244,19 @@ void MainWindow::ArgvProcess(QString action, QVector<QString> argv)
         COSClient versionClient(cosConfig, this);
         QString remotePrefix=taskRemotePath+taskRelativePath;
         QVector<Version> v= versionClient.listAllVersionsByPrefix(remotePrefix);
-        this->navigation(this->_historyviewPage->property("ElaPageKey").toString());
-        this->_historyviewPage->addHistoryViewCard(standardPath,taskRemotePath,taskRelativePath);
+        if(this->_historyviewPage->_historyviewcardPage->isExist(standardPath)){
+            this->_historyviewPage->_historyviewcardPage->clearAllSub(standardPath);
+        }
+        else{
+            this->_historyviewPage->addHistoryViewCard(standardPath,taskRemotePath,taskRelativePath);}
         for (auto const&x:v){
             //将时间加上本地时区
-            QString readableTime=x.lastModified.toTimeZone(QTimeZone::systemTimeZone()).toString("yyyy-MM-dd hh:mm:ss");
+            QString readableTime=x.lastModified.toLocalTime().toString("yyyy-MM-dd hh:mm:ss");
             this->_historyviewPage->addSubCard(standardPath,x.versionId,x.size,readableTime);
         }
         //mainwindow窗口激活
         this->activateWindow();
+        this->navigation(this->_historyviewPage->property("ElaPageKey").toString());
     }
     else if (action=="add"){
         this->navigation(this->_filemanagePage->linknewfolderwindow->property("ElaPageKey").toString());
@@ -366,13 +370,26 @@ void MainWindow::onUserLoggedIn(User user)
 
     timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, &MainWindow::doSomething);
-    timer->setInterval(10000);
+    timer->setInterval(15000);
     timer->start();
 }
 
 void MainWindow::doSomething()
 {
-
+    QString cn=this->getComputerName();
+    QVector<SyncTask> tasks=_syncTaskDatabaseManager->getTasks();
+    COSClient client(cosConfig,this);
+    for (auto const &x:tasks){
+        QMap<QString,QString> map;
+        map = client.getObjectTagging(x.getRemotePath(),"");
+        if(map.contains("computerName")){
+            if(map["computerName"]!=cn){
+                if(map.contains("lastSyncTime")){
+                    onMessage("文件夹"+x.getLocalPath()+"在其他设备上进行了同步","Info");
+                }
+            }
+        }
+    }
 }
 
 void MainWindow::exitLogin()
