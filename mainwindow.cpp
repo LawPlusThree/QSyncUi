@@ -395,11 +395,10 @@ void MainWindow::exitLogin()
         _historyviewPage->_historyviewcardPage->removeAll();
         _filemanagePage->linknewfolderwindow->clearItems();
 
-        if (timer) {
-            timer->stop();
-            disconnect(timer, &QTimer::timeout, this, &MainWindow::doSomething);
-            delete timer;
-            timer = nullptr;
+        if (cloudListener!=nullptr)
+        {
+            cloudListener->terminate();
+            cloudListener=nullptr;
         }
     }
     else{

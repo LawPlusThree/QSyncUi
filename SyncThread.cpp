@@ -190,8 +190,8 @@ void SyncThread::readCloudDirectory(const QString &cloudpath)
 void SyncThread::addSynctask(const QFileInfo &info)
 {
     // 把path前面和task->getLocalPath()相同的部分去掉
-    QString path = info.absoluteFilePath();
-    QString relativePath = path.mid(path.length() + 1);
+    QString myPath = info.absoluteFilePath();
+    QString relativePath = myPath.mid(path.length() + 1);
     QString cloudPath = getRemotePath() + relativePath;
     headHeader tmpHeaders;
     preResponse response = cosclient->headObject(cloudPath, "", tmpHeaders);
@@ -202,8 +202,8 @@ void SyncThread::addSynctask(const QFileInfo &info)
     {
         upFileSize += info.size();
         int fileTaskId = getNextFileTaskId();
-        emit this->newUploadTask(path, fileTaskId);
-        emit this->callUploadTask(path, cloudPath, fileTaskId);
+        emit this->newUploadTask(myPath, fileTaskId);
+        emit this->callUploadTask(myPath, cloudPath, fileTaskId);
     }
 }
 

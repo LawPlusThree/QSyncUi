@@ -16,6 +16,9 @@ void CloudListener::run()
 {
     while (true) {
     for (auto const &x: myTasks){
+        if(x.getSyncStatus()==2||x.getSyncStatus()==-1){
+            continue;
+        }
         QMap<QString,QString> map;
         map = cosclient->getObjectTagging(x.getRemotePath(),"");
         if(map.contains("computerName")){
