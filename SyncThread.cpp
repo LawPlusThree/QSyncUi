@@ -78,21 +78,29 @@ void SyncThread::run()
     }
     case event::effect_type::create:{
         qDebug() << "Effect type: Create";
-        QFile file(path);
-        //是否可写
-        if (!file.open(QIODevice::ReadWrite))
+         if (isTheSameFile(path, cloudPath))
         {
-            break;
+            qDebug() << "Same file";
         }
-        int fileTaskId = getNextFileTaskId();
-        emit this->newUploadTask(path, fileTaskId);
-        emit this->callUploadTask(path, cloudPath, fileTaskId);
-        QString machine = QSysInfo::machineHostName();
-        QString time = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
-        QMap<QString, QString> map;
-        map["computerName"] = machine;
-        map["lastSyncTime"] = time;
-        cosclient->putObjectTagging(getRemotePath(), "", map);
+        else
+        {
+            qDebug() << "Different file";
+            QFile file(path);
+            //是否可读
+            if (!file.open(QIODevice::ReadOnly))
+            {
+                break;
+            }
+            int fileTaskId = getNextFileTaskId();
+            emit this->newUploadTask(path, fileTaskId);
+            emit this->callUploadTask(path, cloudPath, fileTaskId);
+            QString machine = QSysInfo::machineHostName();
+            QString time = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
+            QMap<QString, QString> map;
+            map["computerName"] = machine;
+            map["lastSyncTime"] = time;
+            cosclient->putObjectTagging(getRemotePath(), "", map);
+        }
         break;
     }
     case event::effect_type::destroy:{
