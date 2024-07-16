@@ -177,6 +177,11 @@ void linkNewFolder_window::setItems(QStringList &folderName2List)
     folderName2->addItems(folderName2List);
 }
 
+void linkNewFolder_window::clearItems()
+{
+    folderName2->clear();
+}
+
 ElaLineEdit* linkNewFolder_window::getfolderName1()
 {
     return folderName1;

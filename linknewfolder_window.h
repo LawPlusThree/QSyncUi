@@ -16,6 +16,7 @@ public:
     linkNewFolder_window(QWidget *parent = nullptr);
     ~linkNewFolder_window();
     void setItems(QStringList&);
+    void clearItems();
     ElaLineEdit* getfolderName1();
 signals:
     void onNewTask(const SyncTask &task);
@@ -27,6 +28,7 @@ private:
      ElaComboBox* _comboBox{nullptr};
      ElaLineEdit* folderName1;
      ElaComboBox* folderName2;
+     friend class MainWindow;
 };
 
 #endif // LINKNEWFOLDER_WINDOW_H

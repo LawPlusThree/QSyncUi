@@ -16,6 +16,7 @@ public:
     void addDirCard(QString filename,QString cloudname,quint64 datasize,QString bindtime,int syncStatus,const int &id);
     void removeDirCard(const int &id);
     void removeChecked();
+    void removeAll();
     void modifyDirCard(quint64 datasize,QString bindtime,int id);
     QVBoxLayout*filesLayout;
     friend class DirCard;

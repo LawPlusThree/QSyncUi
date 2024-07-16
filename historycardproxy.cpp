@@ -41,3 +41,14 @@ void HistoryCardProxy::removeHistoryCard(QString filename)
         }
     }
 }
+
+void HistoryCardProxy::removeAll()
+{
+    for(auto &x:cardVector)
+    {
+        filesLayout->removeWidget(x);
+        x->setParent(nullptr);
+        x->deleteLater();
+    }
+    cardVector.clear();
+}
