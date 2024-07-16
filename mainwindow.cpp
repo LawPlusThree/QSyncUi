@@ -247,7 +247,8 @@ void MainWindow::ArgvProcess(QString action, QVector<QString> argv)
         this->navigation(this->_historyviewPage->property("ElaPageKey").toString());
         this->_historyviewPage->addHistoryViewCard(standardPath,taskRemotePath,taskRelativePath);
         for (auto const&x:v){
-            QString readableTime=x.lastModified.toString("yyyy-MM-dd hh:mm:ss");
+            //将时间加上本地时区
+            QString readableTime=x.lastModified.toTimeZone(QTimeZone::systemTimeZone()).toString("yyyy-MM-dd hh:mm:ss");
             this->_historyviewPage->addSubCard(standardPath,x.versionId,x.size,readableTime);
         }
         //mainwindow窗口激活

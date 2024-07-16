@@ -73,7 +73,7 @@ void HistoryviewCardProxy::addSubCard(QString filename,QString versionID,quint64
             SubCardProxy*subcard=i.key();
             disconnect(subcard, &SubCardProxy::message, this, 0);
             subcard->addSubCard(versionID,datasize,bindtime);
-            connect(subcard,&SubCardProxy::message,[=](QString versionID){
+            connect(subcard,&SubCardProxy::message,[=](){
                 emit Message(versionID,card->cloudName,filename,card->path);
             });
             return;
