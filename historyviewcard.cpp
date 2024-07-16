@@ -66,6 +66,10 @@ HistoryViewCard::HistoryViewCard(QString file,QString cloud,QString p)
 
 SubCard::SubCard(QString ID,quint64 d,QString time)
 {
+    if(ID.length()>=9)
+    {
+        ID=ID.right(9);
+    }
     versionID=new ElaText(ID);
     datasize=d;
     bindtime=new ElaText(time);
@@ -96,13 +100,14 @@ SubCard::SubCard(QString ID,quint64 d,QString time)
     }
     ElaText *dataSize = new ElaText(size, this);
 
-    versionID->setWordWrap(false);
+    versionID->setWordWrap(true);
     dataSize->setWordWrap(false);
     bindtime->setWordWrap(false);
 
     versionID->setTextSize(16);
     versionID->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    versionID->setFixedSize(100,20);
+    versionID->setFixedSize(180,30);
+    versionID->setAlignment(Qt::AlignCenter);
     QVBoxLayout*versionIDArea=new QVBoxLayout();
     versionIDArea->addWidget(versionID,0,Qt::AlignCenter);
 

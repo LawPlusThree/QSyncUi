@@ -247,7 +247,8 @@ void MainWindow::ArgvProcess(QString action, QVector<QString> argv)
         this->navigation(this->_historyviewPage->property("ElaPageKey").toString());
         this->_historyviewPage->addHistoryViewCard(standardPath,taskRemotePath,taskRelativePath);
         for (auto const&x:v){
-            QString readableTime=x.lastModified.toString("yyyy-MM-dd hh:mm:ss");
+            //将时间加上本地时区
+            QString readableTime=x.lastModified.toTimeZone(QTimeZone::systemTimeZone()).toString("yyyy-MM-dd hh:mm:ss");
             this->_historyviewPage->addSubCard(standardPath,x.versionId,x.size,readableTime);
         }
         //mainwindow窗口激活
@@ -635,7 +636,10 @@ void MainWindow::onTaskFinsished(RequestInfo requestInfo)
     }
     if(taskExist)
     {
-        ReadFinishTask();
+        //找到数据库中localpath为requestInfo.localPath的数据，并添加到卡片
+        finishTask task=_taskManager->getFinishTask(requestInfo.localPath);
+        QFileInfo fileInfo(requestInfo.localPath);
+        this->_historysyncPage->addHistory(task.localPath,QString::number(fileInfo.size()),task.sycnTime.toString("yyyy-MM-dd"),task.status==2?true:false);
     }
 }
 
