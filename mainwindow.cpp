@@ -190,7 +190,7 @@ MainWindow::MainWindow(QWidget *parent)
         int fileTaskId=getNextFileTaskId();
         QString key=cloudname+path;
         //询问用户保存位置，打开文件选择框
-        QString savePath=QFileDialog::getSaveFileName(this,"保存文件",local+versionID);
+        QString savePath=QFileDialog::getSaveFileName(this,"保存文件",versionID+local);
         _syncCore->requestManager->addSave2LocalRequest(key,savePath,fileTaskId,versionID);
         emit _syncCore->addFileDownloadTask(savePath,fileTaskId,0);
     });
@@ -252,7 +252,7 @@ void MainWindow::ArgvProcess(QString action, QVector<QString> argv)
             this->_historyviewPage->addHistoryViewCard(standardPath,taskRemotePath,taskRelativePath);}
         for (auto const&x:v){
             //将时间加上本地时区
-            QString readableTime=x.lastModified.toString("yyyy-MM-dd hh:mm:ss");
+            QString readableTime=x.lastModified.toString("MM-dd hh:mm:ss");
             this->_historyviewPage->addSubCard(standardPath,x.versionId,x.size,readableTime);
         }
         //mainwindow窗口激活
