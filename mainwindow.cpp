@@ -190,7 +190,7 @@ MainWindow::MainWindow(QWidget *parent)
         int fileTaskId=getNextFileTaskId();
         QString key=cloudname+path;
         //询问用户保存位置，打开文件选择框
-        QString savePath=QFileDialog::getSaveFileName(this,"保存文件",local+versionID);
+        QString savePath=QFileDialog::getSaveFileName(this,"保存文件",versionID+local);
         _syncCore->requestManager->addSave2LocalRequest(key,savePath,fileTaskId,versionID);
         emit _syncCore->addFileDownloadTask(savePath,fileTaskId,0);
     });
