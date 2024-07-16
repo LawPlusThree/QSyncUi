@@ -55,6 +55,12 @@ void HistoryviewCardProxy::addHistoryviewCard(QString filename,QString cloudname
     addHistoryviewCard(card);
 }
 
+
+bool isExist(QString filename)
+{
+    return true;
+}
+
 void HistoryviewCardProxy::addSubCard(QString filename,QString versionID,quint64 datasize,QString bindtime)
 {
     QMapIterator<SubCardProxy*,HistoryViewCard*> i(cardMap);
