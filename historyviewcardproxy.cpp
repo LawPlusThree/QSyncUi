@@ -55,6 +55,42 @@ void HistoryviewCardProxy::addHistoryviewCard(QString filename,QString cloudname
     addHistoryviewCard(card);
 }
 
+
+bool HistoryviewCardProxy::isExist(QString filename)
+{
+    QMapIterator<SubCardProxy*,HistoryViewCard*> i(cardMap);
+    while(i.hasNext())
+    {
+        i.next();
+        HistoryViewCard*card=i.value();
+        if(card->fullText.compare(filename)==0)
+        {
+            return true;
+        }
+    }
+}
+
+void HistoryviewCardProxy::clearAllSub(QString filename)
+{
+    QMapIterator<SubCardProxy*,HistoryViewCard*> i(cardMap);
+    while(i.hasNext())
+    {
+        i.next();
+        HistoryViewCard*card=i.value();
+        if(card->fullText.compare(filename)==0)
+        {
+            auto subCardProxy=i.key();
+            for(auto&x:subCardProxy->cardVector)
+            {
+                subCardProxy->subLayout->removeWidget(x);
+                x->setParent(nullptr);
+                x->deleteLater();
+            }
+            subCardProxy->cardVector.clear();
+        }
+    }
+}
+
 void HistoryviewCardProxy::addSubCard(QString filename,QString versionID,quint64 datasize,QString bindtime)
 {
     QMapIterator<SubCardProxy*,HistoryViewCard*> i(cardMap);
@@ -62,12 +98,12 @@ void HistoryviewCardProxy::addSubCard(QString filename,QString versionID,quint64
     {
         i.next();
         HistoryViewCard*card=i.value();
-        if(card->fullText==filename)
+        if(card->fullText.compare(filename)==0)
         {
             SubCardProxy*subcard=i.key();
             disconnect(subcard, &SubCardProxy::message, this, 0);
             subcard->addSubCard(versionID,datasize,bindtime);
-            connect(subcard,&SubCardProxy::message,[=](QString versionID){
+            connect(subcard,&SubCardProxy::message,[=](){
                 emit Message(versionID,card->cloudName,filename,card->path);
             });
             return;

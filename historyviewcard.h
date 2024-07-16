@@ -18,7 +18,7 @@ public:
     QString fullText;
     QString cfullText;
     QString path;
-    QString cloudName;
+    QString cloudName;  
 };
 
 class SubCard:public ElaScrollPageArea

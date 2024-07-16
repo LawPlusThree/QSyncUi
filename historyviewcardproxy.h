@@ -17,12 +17,12 @@ public:
 
     void addSubCard(QString versionID,quint64 datasize,QString bindtime);
     QVBoxLayout*subLayout;
+    QVector<SubCard*>cardVector;
 
 signals:
     void message(QString versionID);
 
 private:
-    QVector<SubCard*>cardVector;
     QWidget *parentWidget;
     friend class HistoryViewPage;
 };
@@ -37,7 +37,8 @@ public:
     void addHistoryviewCard(QString filename,QString cloudname,QString path);
     void addSubCard(QString filename,QString versionID,quint64 datasize,QString bindtime);
     QVBoxLayout*filesLayout;
-
+    bool isExist(QString filename);
+    void clearAllSub(QString filename);
 
 signals:
     void Message(QString versionID,QString cloudname,QString filename,QString path);
