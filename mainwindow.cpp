@@ -412,10 +412,12 @@ void MainWindow::onNeedPassword(const QString &account)
     emit dbPassword(password);
 }
 
-void MainWindow::onCloudDirectoryChanged(SyncTask thisTask)
+void MainWindow::onCloudDirectoryChanged(SyncTask thisTask,int type)
 {
     this->_syncCore->doCloudTask(thisTask.getLocalPath(),thisTask.getRemotePath(),3);
-    onMessage("云端文件夹 "+thisTask.getRemotePath()+" 有变动","Info");
+    if(type==1){
+        onMessage("云端文件夹 "+thisTask.getRemotePath()+" 有变动","Info");
+    }
 }
 /*
 void MainWindow::insertUserToDatabase(User user)
@@ -610,7 +612,7 @@ void MainWindow::onFileDownloadTaskPaused(int fileTaskId) {
 
 void MainWindow::onTaskTotalSize(qint64 size, int taskid) {
     this->_syncTaskDatabaseManager->updateTaskTime(taskid,QDateTime::currentDateTime());
-    QString timeFinished=QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
+    QString timeFinished=QDateTime::currentDateTime().toString("hh:mm:ss");
     this->_filemanagePage->modifyDirCard(size,timeFinished,taskid);
 }
 

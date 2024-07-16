@@ -23,7 +23,7 @@ public:
     CloudListener(COSConfig configi);
     void run() override;
 signals:
-    void cloudDirectoryChanged(SyncTask task);
+    void cloudDirectoryChanged(SyncTask task,int type);
 };
 
 #endif // CLOUDLISTENER_H

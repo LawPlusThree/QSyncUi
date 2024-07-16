@@ -44,7 +44,7 @@ public:
 public slots:
     void onUserLoggedIn(User user);
     void onNeedPassword(const QString& account);
-    void onCloudDirectoryChanged(SyncTask thisTask);
+    void onCloudDirectoryChanged(SyncTask thisTask,int type);
     //void insertUserToDatabase(User user);
     void onMessage( QString message,QString type);
     void onUserAddNewTask(const SyncTask &task);
