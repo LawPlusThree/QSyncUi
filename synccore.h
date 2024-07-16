@@ -13,7 +13,7 @@ class SyncCore : public QObject
     Q_OBJECT
 public:
     explicit SyncCore(QObject *parent = nullptr);
-    SyncCore(COSConfig config, QObject *parent = nullptr);
+    SyncCore(COSConfig config, QObject *parent = nullptr, QString excludedItems = "");
     bool addTask(SyncTask *task);
     void doTask(SyncTask *task);
     NetworkRequestManager *requestManager;
@@ -34,6 +34,7 @@ private:
     COSConfig config;
     QVector<watch*> watchers;
     QVector<SyncTask *> tasks;
+    QString excludedItems;
     SyncTask* findTaskByLocalPath(const QString &path){
         for (auto task : tasks) {
             if (task->localPath.absolutePath() == path){

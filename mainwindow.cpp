@@ -309,10 +309,10 @@ void MainWindow::onUserLoggedIn(User user)
     cosConfig=CurrentUser->getS3Config();
     tt=CurrentUser->getUnifiedTaskToken();
     cosConfig.taskToken=tt;
-    _syncCore=new SyncCore(cosConfig,this);
-    _syncCore->requestManager->setMaxConcurrentRequests(um->getThread());
     this->_filemanagePage->updateComboBoxIndex(um->getThread());
     this->_filemanagePage->setexcludeditemsview->updateExcludedItems(um->getExcludedItems());
+    _syncCore=new SyncCore(cosConfig,this,um->getExcludedItems());
+    _syncCore->requestManager->setMaxConcurrentRequests(um->getThread());
     qDebug() << "Connecting taskTotalSize signal";
     connect(_syncCore,&SyncCore::taskTotalSize,this,&MainWindow::onTaskTotalSize);
     qDebug() << "Connecting taskUploadSize signal";
