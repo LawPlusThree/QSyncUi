@@ -189,6 +189,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(_historyviewPage->_historyviewcardPage,&HistoryviewCardProxy::Message,this,[=](QString versionID,QString cloudname,QString local,QString path){
         int fileTaskId=getNextFileTaskId();
         //将local路径指向的文件的文件名前加上versionId
+        QString rawVersionID=versionID;
         QFileInfo fileInfo(local);
         // 获取目录路径
         QString dirPath = fileInfo.absolutePath();
@@ -201,7 +202,7 @@ MainWindow::MainWindow(QWidget *parent)
         QString key=cloudname+path;
         //询问用户保存位置，打开文件选择框
         QString savePath=QFileDialog::getSaveFileName(this,"保存文件",newFilePath);
-        _syncCore->requestManager->addSave2LocalRequest(key,savePath,fileTaskId,versionID);
+        _syncCore->requestManager->addSave2LocalRequest(key,savePath,fileTaskId,rawVersionID);
         emit _syncCore->addFileDownloadTask(savePath,fileTaskId,0);
     });
 }
