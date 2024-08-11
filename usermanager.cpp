@@ -177,7 +177,7 @@ int UserManager::getThread()
     QFile file(filePath_); // 创建一个QFile对象，用于操作文件
     // 检查文件是否存在以及是否可以打开
     if (!file.exists() || !file.open(QIODevice::ReadOnly)) {
-        return 0; // 如果文件不存在或无法打开，则返回空字符串
+        return 3; // 如果文件不存在或无法打开，则返回空字符串
     }
 
     QByteArray data = file.readAll(); // 读取文件的全部内容到一个QByteArray对象中
@@ -188,7 +188,7 @@ int UserManager::getThread()
     // 检查JSON解析是否成功
     if (error.error != QJsonParseError::NoError) {
         qWarning() << "Failed to parse JSON file:" << error.errorString(); // 如果解析失败，打印错误信息
-        return 0; // 并返回空字符串
+        return 3; // 并返回空字符串
     }
 
     QJsonObject json = doc.object(); // 从QJsonDocument对象中获取一个QJsonObject对象

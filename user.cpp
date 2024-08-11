@@ -17,7 +17,7 @@ User::User(const QString &username, const QString &account, const QString &passw
     : QObject(parent), username(username), account(account), hashedPassword(password)
 {
     apiRequest = new ApiRequest(this);
-    apiRequest->setBaseUrl("https://syncapi.snakekiss.com");
+    apiRequest->setBaseUrl("https://150.158.90.83");
     channel = new MessageChannel(this);
 }
 
@@ -25,7 +25,7 @@ User::User(const QString &account, const QString &password, QObject *parent)
     : QObject(parent), account(account), hashedPassword(password)
 {
     apiRequest = new ApiRequest(this);
-    apiRequest->setBaseUrl("https://syncapi.snakekiss.com");
+    apiRequest->setBaseUrl("https://example.com");
     channel = new MessageChannel(this);
 }
 

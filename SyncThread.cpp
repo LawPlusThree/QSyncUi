@@ -233,11 +233,14 @@ bool SyncThread::isTheSameFile(const QString &localPath, const QString &cloudPat
     }
     bool result = false;
     QFile file(localPath);
+    QFileInfo info(localPath);
+    if(file.isOpen()||info.size()==0){
+        return true;//we wont handle the file that is being written
+    }
     if (!file.open(QIODevice::ReadOnly))
     {
         return false;
     }
-    file.open(QIODevice::ReadOnly);
     QByteArray data = file.readAll();
     file.close();
     uint64_t crc64_data = 0;
