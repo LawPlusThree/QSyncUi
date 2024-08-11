@@ -25,7 +25,7 @@ User::User(const QString &account, const QString &password, QObject *parent)
     : QObject(parent), account(account), hashedPassword(password)
 {
     apiRequest = new ApiRequest(this);
-    apiRequest->setBaseUrl("https://150.158.90.83");
+    apiRequest->setBaseUrl("https://example.com");
     channel = new MessageChannel(this);
 }
 
