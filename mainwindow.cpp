@@ -352,9 +352,6 @@ void MainWindow::onUserLoggedIn(User user)
     });
     //链接synccore中filequeue的sendRequestInfo信号和mainwindow的onTaskFinsished槽函数
     connect(_syncCore->requestManager,&NetworkRequestManager::sendRequestInfo,this,&MainWindow::onTaskFinsished);
-
-    ReadUpTask();
-    ReadDownTask();
     ReadFinishTask();
     QStringList listenDirs;
     for (auto const &x:_syncTaskDatabaseManager->getTasks()){
@@ -674,12 +671,12 @@ void MainWindow::onTaskFinsished(RequestInfo requestInfo)
 
 void MainWindow::ReadUpTask()
 {
-
+    return ;
 }
 
 void MainWindow::ReadDownTask()
 {
-
+    return ;
 }
 
 void MainWindow::ReadFinishTask()
